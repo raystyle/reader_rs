@@ -4,16 +4,14 @@
 
 ## 当前目标
 
-EPUB 支持（对应 `GOAL.md`，方案 P0003，登记日 2026-08-31）。**2026-08-31 达成：cargo test 20 例全绿，真实样本 37 章回归正确。** 下一刀候选：ROADMAP 阶段 2/3（提取质量、Agent 原生输出形态），待立项。
+mac 与 Linux 接管开发与跨平台兼容（对应 `GOAL.md`，方案 P0004，登记日 2026-08-31）。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 选型研究 S003 | 已完成 | `epub` crate GPL-3.0 出局；选 rbook 加 quick-xml | 2026-08-31 |
-| 立项 P0003 | 已完成 | `docs\proven\P0003-EPUB支持与格式分派.md` | 2026-08-31 |
-| 提取层格式分派 | 已完成 | `src\document.rs` TextUnit 统一页/章；`src\epub.rs` rbook 加 quick-xml 文本化（pre 保换行） | 2026-08-31 |
-| CLI 与测试 | 已完成 | 扩展名自动分派；EPUB 用例 4 个（builder 现造）；真实样本《Powershell For Sysadmins》37 章回归 | 2026-08-31 |
-| 门禁与登记 | 已完成 | 门禁三件与 rumdl 三件套全绿；INDEX/CHANGELOG/diary 登记 | 2026-08-31 |
-
-（P0003 已完成；过程与经验在方案文档「实施过程与经验」节。）
+| 立项 P0004 | 已完成 | `docs\proven\P0004-mac与Linux接管开发与跨平台兼容.md` | 2026-08-31 |
+| CI 三系统矩阵 | 进行中 | `.github\workflows\ci.yml`：fmt/clippy/test --locked 三系统 | 2026-08-31 |
+| 换行符钉 LF | 未开始 | `.gitattributes` 上 `text=auto eol=lf` | 2026-08-31 |
+| 文档双形态 | 未开始 | README 安装/命令 bash 形态；ROADMAP 阶段 4；R001 边界 | 2026-08-31 |
+| 门禁与登记 | 未开始 | 本地门禁；INDEX/CHANGELOG/diary；推送后看 CI 首跑 | 2026-08-31 |

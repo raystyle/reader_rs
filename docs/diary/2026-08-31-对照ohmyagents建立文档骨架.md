@@ -42,3 +42,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：README 改为使用者向
 
 用户指出 README 应是部署安装和命令参数使用方法。重写为使用者向：安装（cargo install --path / --git）、search/extract 参数表与输出格式、退出码、支持格式表；协作者导航压到末节。
+
+## 补记：跨平台接管准备
+
+用户要在 mac/Linux 接管开发测试。立项 P0004：GitHub Actions 三系统矩阵跑门禁三件（仓库已在 GitHub，零新增设施，R003 第三段既定路线落地）、.gitattributes 钉 LF、README 命令给 bash 形态。审计结论：代码层无平台专属假设（提取库全纯 Rust、测试用 temp_dir 加 pid），唯一已知差异是使用层路径形态（M002）。验收以 CI 首跑三系统绿为准。

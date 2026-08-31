@@ -7,9 +7,10 @@
 | 阶段 | 目标 | 状态 |
 | --- | --- | --- |
 | 0 | 项目基础设施：对照 ohmyagents 的文档与目录；定位为 Agent 原生文档阅读、搜索和提取工具（P0002） | 已完成 |
-| 1 | 最小闭环：search / extract + 集成测试 + 门禁（方案 P0001） | 进行中 |
+| 1 | 最小闭环：search / extract + 集成测试 + 门禁（P0001）；EPUB 支持（P0003） | 已完成 |
 | 2 | 提取质量：多栏阅读序、CJK 与编码问题页提示、扫描件检出提示 | 未开始 |
-| 3 | 输出形态：Markdown 导出、JSON 输出、批量目录扫描 | 未开始 |
+| 3 | 输出形态：Agent 原生（JSON 包膜、filter、分页、agent 发现，依据 S002） | 未开始 |
+| 4 | 跨平台接管：CI 三系统门禁、文档双形态（P0004） | 进行中 |
 
 ## 阶段 0：项目基础设施
 
@@ -26,3 +27,7 @@ pdf-inspector 提取层；`reader search` / `reader extract`；`rr` 缩写；tes
 ## 阶段 3：输出形态
 
 Agent 原生优先，设计依据 `docs\research\S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md`：结构化输出包膜（`{ok,data,error}` 加 meta，search/extract 的 `--format json` 为首要候选）；`--filter` 点路径裁剪；extract 分页原语（offset/limit 加 next_offset 与 cta）；agent 发现（`--llms` 索引与 SKILL.md 生成）；远期 MCP stdio 暴露。Markdown 导出（pdf-inspector 管线现成）与目录批量扫描同阶段候选。均按需立项。
+
+## 阶段 4：跨平台接管
+
+macOS / Linux 接管开发与测试：GitHub Actions 三系统矩阵跑门禁三件（`.github\workflows\ci.yml`）；`.gitattributes` 钉 LF；文档命令双形态。方案 P0004。验收以 CI 首跑三系统绿为准。

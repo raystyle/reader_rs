@@ -4,11 +4,11 @@ Agent 原生文档阅读、搜索和提取工具。Rust 单二进制 CLI，从�
 
 ## 安装
 
-前置：Rust 工具链（1.88+，推荐 <https://rustup.rs>）。
+前置：Rust 工具链（1.88+，推荐 <https://rustup.rs>）。支持 Windows / macOS / Linux，CI 三系统门禁见 `.github\workflows\ci.yml`。
 
 从源码安装（`reader` 与 `rr` 两个命令一起装）：
 
-```powershell
+```bash
 git clone https://github.com/raystyle/reader_rs
 cd reader_rs
 cargo install --path .
@@ -16,15 +16,15 @@ cargo install --path .
 
 或直接远端安装：
 
-```powershell
+```bash
 cargo install --git https://github.com/raystyle/reader_rs
 ```
 
-只构建不安装：`cargo build --release`，产物在 `target\release\reader.exe` 与 `rr.exe`。
+只构建不安装：`cargo build --release`，产物在 `target/release/reader` 与 `rr`（Windows 为 `target\release\reader.exe` 与 `rr.exe`）。
 
 验证：
 
-```powershell
+```bash
 reader --version
 reader --help
 ```
@@ -57,12 +57,12 @@ reader search <文件> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 
 退出码：命中 0；无命中 1；出错（缺文件、坏参数、不支持的格式）2。
 
-示例：
+示例（bash 与 pwsh 同形，Windows 路径换成反斜杠形态即可）：
 
-```powershell
-reader search .\doc.pdf "error" -i -C 1
-reader search .\doc.pdf "err(or|code)" --regex --pages 2-10
-rr search .\book.epub "Get-Process"
+```bash
+reader search ./doc.pdf "error" -i -C 1
+reader search ./doc.pdf "err(or|code)" --regex --pages 2-10
+rr search ./book.epub "Get-Process"
 ```
 
 ### extract 提取
@@ -81,10 +81,10 @@ reader extract <文件> [--pages 范围] [-o 输出文件]
 
 示例：
 
-```powershell
-reader extract .\doc.pdf
-reader extract .\doc.pdf --pages 1-3,5
-rr extract .\book.epub -o book.txt
+```bash
+reader extract ./doc.pdf
+reader extract ./doc.pdf --pages 1-3,5
+rr extract ./book.epub -o book.txt
 ```
 
 ## 支持格式
