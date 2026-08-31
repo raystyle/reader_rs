@@ -59,5 +59,6 @@
 ## 验收标准
 
 - CI workflow 推送后三系统绿（以 GitHub Actions 运行结果为准）。[实证: 2026-08-31 run 33378905306 三 job success]
+- mac 与 Linux 实机接管验收通过（lan-mac、lan-linux；原「以 CI 为验收面」的边界由实机验收补齐）。[实证: 2026-08-31 用户验收确认]
 - 本地门禁三件与 rumdl 三件套全过；`git add` 后无换行警告残留（.gitattributes 生效）。[实证: 2026-08-31]
 - INDEX 与三原语登记完整。[实证: 2026-08-31]

@@ -78,3 +78,6 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：mac 本地接管验收
 
 mac（arm64）本地门禁六件一次全绿 [实证]：fmt / clippy（冷缓存 13.6s）/ test --locked（34 测全过，单元 7 加集成 27，与 P0006 收官记录一致）加 rumdl 三件套（28 文件零告警、断链 0、括号标题 0）。开工首坑：接管时装的 rumdl 是 x86_64 资产，arm64 主机报 bad CPU type，换 aarch64-apple-darwin 后即通——记 M003（新分类 M103 开发环境安装错误），教训是换机装工具先验架构再进门禁。mac 侧接管由 CI 验证升级为本地实证。
+## 补记：mac 与 Linux 实机验收通过
+
+用户在 lan-mac（macOS）与 lan-linux 实机完成接管验收 [实证: 2026-08-31 用户验收确认]。P0004 原定的验收边界是「以 CI 为验收面、不做实机实测」，本轮由用户实机验收补齐：CI 绿加三平台实机过，跨平台开发测试面全部实证可用。两份真实测试样本（PDF 与 EPUB）前已 scp 至两台实机 home 目录，接管面完整。
