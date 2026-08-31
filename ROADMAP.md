@@ -6,7 +6,7 @@
 
 | 阶段 | 目标 | 状态 |
 | --- | --- | --- |
-| 0 | 项目基础设施：对照 ohmyagents 的文档与目录；定位 PDF 文本搜索与提取工具 | 已完成 |
+| 0 | 项目基础设施：对照 ohmyagents 的文档与目录；定位为 Agent 原生文档阅读、搜索和提取工具（P0002） | 已完成 |
 | 1 | 最小闭环：search / extract + 集成测试 + 门禁（方案 P0001） | 进行中 |
 | 2 | 提取质量：多栏阅读序、CJK 与编码问题页提示、扫描件检出提示 | 未开始 |
 | 3 | 输出形态：Markdown 导出、JSON 输出、批量目录扫描 | 未开始 |
@@ -25,4 +25,4 @@ pdf-inspector 提取层；`reader search` / `reader extract`；`rr` 缩写；tes
 
 ## 阶段 3：输出形态
 
-Markdown 导出（pdf-inspector markdown 管线直接可用）；结构化 JSON 输出；目录批量扫描。按需立项。
+Agent 原生优先：结构化 JSON 输出为首要候选（search/extract 的 `--json`）；Markdown 导出（pdf-inspector markdown 管线直接可用）；目录批量扫描。按需立项。

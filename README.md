@@ -1,6 +1,6 @@
-# Reader RS
+# Reader
 
-一句话定位：**PDF 文档文本搜索与提取工具**。Rust 编写的 CLI，对本地 PDF 做按页文本提取与关键词/正则搜索。显示名 Reader RS，仓库 `reader_rs`，CLI `reader`（缩写 `rr`，同一二进制两个名字）。提取引擎为 firecrawl/pdf-inspector（选型见 `docs\research\S001-PDF文本提取crate选型-pdf-inspector双通道核实.md`）。远端 <https://github.com/raystyle/reader_rs>。
+一句话定位：**Agent 原生文档阅读、搜索和提取工具**。为 Agent 管线设计的 Rust CLI，从本地文档读文本层：按页读、按词/正则搜、按页取。输出稳定可解析（行式标记、grep 语义退出码），单调用无交互，机器可读优先于人类美观。显示名 Reader，仓库 `reader_rs`，CLI `reader`（缩写 `rr`，同一二进制两个名字）。远端 <https://github.com/raystyle/reader_rs>。首个支持格式为 PDF，提取引擎 firecrawl/pdf-inspector（选型见 `docs\research\S001-PDF文本提取crate选型-pdf-inspector双通道核实.md`）。
 
 ## 快速开始
 
