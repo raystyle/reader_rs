@@ -30,3 +30,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：真实样本回归
 
 以《Command-Line Rust》原书 PDF（5.8MB、390 页）做非自造样本回归：全量提取 0.57s（release），`assert_cmd` 搜索 25 行页码与书内容一致，regex/-C/--pages 组合正确。发现两处行重建瑕疵（旁注 URL 粘连、图片占位符粘连），记入 S001「真实样本回归」节，归阶段 2 提取质量处理。另一坑：Git Bash 的 `/d/` 路径喂给原生 Windows 二进制会 os error 3，CLI 测试与脚本里要用 Windows 路径形态。
+
+## 补记：incurs 模块经验研究
+
+用户指定研究 incurs（wevm/incur 的 Rust 移植）。结论：库本体信号弱（1 star、0.5.x）不引为依赖，设计全盘可学——输出包膜（ExecuteResult/OutputEnvelope）、cta 与 next_offset 分页原语、TOON 默认格式与 token 计数、SKILL.md/--llms agent 发现、MCP 命令树投影、OutputPolicy 受众分路。落 S002，五条映射全部列为阶段 3 候选待立项。方法论收获：R002 的「选依赖 vs 选学习对象」分流第一次真实用上。

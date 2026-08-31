@@ -25,4 +25,4 @@ pdf-inspector 提取层；`reader search` / `reader extract`；`rr` 缩写；tes
 
 ## 阶段 3：输出形态
 
-Agent 原生优先：结构化 JSON 输出为首要候选（search/extract 的 `--json`）；Markdown 导出（pdf-inspector markdown 管线直接可用）；目录批量扫描。按需立项。
+Agent 原生优先，设计依据 `docs\research\S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md`：结构化输出包膜（`{ok,data,error}` 加 meta，search/extract 的 `--format json` 为首要候选）；`--filter` 点路径裁剪；extract 分页原语（offset/limit 加 next_offset 与 cta）；agent 发现（`--llms` 索引与 SKILL.md 生成）；远期 MCP stdio 暴露。Markdown 导出（pdf-inspector 管线现成）与目录批量扫描同阶段候选。均按需立项。
