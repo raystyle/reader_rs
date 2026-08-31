@@ -50,3 +50,11 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：CI 首跑三系统全绿
 
 推送后 GitHub Actions 首跑（run 33378905306）windows/ubuntu/macos 三 job 全 success，约 3.5 分钟。纯 Rust 依赖树零系统库需求，一次全绿。P0004 达成收官。仅有 actions/checkout Node.js 20 弃用注解，不影响结论。
+
+## 补记：WSL 本地接管验证
+
+用户开发环境切到 WSL2 Linux（仓库仍在 `/mnt/d/reader_rs`）。本地门禁六件一次全绿 [实证]：fmt / clippy / test --locked（20 测全过，单元 5 加集成 15）加 rumdl 三件套（26 文件零告警、断链 0、括号标题 0）。clippy 全量检查 19 秒，Windows 旧 target 产物与 Linux 共存无冲突（cargo 按主机指纹自动重建）。CLI 中文输出在 WSL 终端无乱码。Linux 侧接管由 CI 验证升级为本地实证。
+
+## 补记：P0005 立项
+
+用户点名阶段 2 立项。核实 pdf-inspector 1.17.0 本地源码：`extract_pages_markdown` 逐页返回 markdown 加 `needs_ocr` 信号（覆盖 GID 编码、编码问题、乱码、空提取），多栏阅读序与扫描件/编码页检出是同一条管线。关键裁决（用户定）：PDF 通道整体切 markdown 管线，不做双管线——search/extract 共享同一文本层，阶段 3 Markdown 导出顺带半达成；v0.1 输出行为变，CHANGELOG 将记破坏性变更。
