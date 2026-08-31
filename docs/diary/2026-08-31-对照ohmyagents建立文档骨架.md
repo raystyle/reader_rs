@@ -62,3 +62,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：P0005 当日达成
 
 管线切换一次过，22 测全绿（单元 5 加集成 17）。两栏测试 fixture 两轮定形：等距短网格被管线判成表格，读 `split_side_by_side` 阈值（items 至少 40、沟至少 30pt）后改 22 行变宽散文才触发栏检测——阈值门控行为先读实现再设计 fixture。真样本双验：O'Reilly 书 399 页 0.92s（基线 0.57s），24 个图像页全被 needs_ocr 命中，S001 两处粘连瑕疵修复，assert_cmd 25 行命中与旧记录一致；意外收获是 x-quake 论文为中文文档，标题摘要正文提取通顺、中文搜索命中正确，中文质量承诺当场实证。EPUB 37 章 0.083s 无回归。CHANGELOG 记破坏性变更（PDF 行带 markdown 语法）。
+
+## 补记：P0006 立项
+
+用户示意继续，阶段 3 第一刀落输出层三件套（S002 映射 1-3）：`--format json` 包膜、extract `--offset/--limit` 分页（next_offset 加 cta）、`--filter` 点路径裁剪。serde/serde_json 进依赖（事实标准免研究文档）。关键取舍：默认文本形态与退出码 0/1/2 不动，JSON 错误走 stdout 包膜加 stderr 人读行双通道；agent 发现与 MCP 留候选。

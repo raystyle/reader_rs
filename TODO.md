@@ -4,16 +4,14 @@
 
 ## 当前目标
 
-PDF 提取质量：markdown 管线与 needs_ocr 提示（对应 `GOAL.md`，方案 P0005，登记日 2026-08-31）。**2026-08-31 达成**：22 测全绿，中英文真样本双验。下一刀候选：ROADMAP 阶段 3（输出形态），待立项。
+输出形态：json 包膜与分页裁剪（对应 `GOAL.md`，方案 P0006，登记日 2026-08-31）。上一目标 P0005 已收官（阶段 2 提取质量，22 测全绿，中英文真样本双验）。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 立项 P0005 | 已完成 | `docs\proven\P0005-PDF提取质量-markdown管线与needs_ocr提示.md`；三原语与 ROADMAP/INDEX 登记；质量承诺收窄英文与中文 | 2026-08-31 |
-| pdf.rs 切 markdown 管线 | 已完成 | `extract_pages_markdown` 接管；0/1 基页码换算；朴素行重建删除 | 2026-08-31 |
-| TextUnit 扩展 needs_ocr | 已完成 | `Option<String>` 装原因；EPUB 通道恒 None | 2026-08-31 |
-| 输出提示两路径 | 已完成 | extract 页节后 `[needs_ocr: 原因]` 行；search stderr 汇总警示，stdout 保持纯命中 | 2026-08-31 |
-| 测试补强与回归 | 已完成 | 两栏阅读序正例、无文本页检出例、search 警示例；既有断言改锚稳定字段；22 测全绿 | 2026-08-31 |
-| 真实样本回归与性能观察 | 已完成 | S001 两瑕疵修复；assert_cmd 25 行一致；书 399 页 0.92s（基线 0.57s）；EPUB 37 章 0.083s；中文论文提取与搜索通顺 | 2026-08-31 |
-| 收官登记 | 已完成 | P0005 回填、CHANGELOG 破坏性变更行、README/AGENTS 更新、diary、门禁与提交 | 2026-08-31 |
+| 立项 P0006 | 已完成 | `docs\proven\P0006-输出形态-json包膜与分页裁剪.md`；三原语与 ROADMAP/INDEX 登记 | 2026-08-31 |
+| 输出层实现 | 进行中 | serde/serde_json 进依赖；`src\output.rs` 包膜、filter 点路径、cta；lib.rs 参数接线与两路径改造 | 2026-08-31 |
+| 测试补强 | 未开始 | JSON 各形态正例、无命中包膜、错误包码、分页与 next_offset/cta、filter 裁剪与负例；既有回归 | 2026-08-31 |
+| 真样本抽查 | 未开始 | 中英文真样本 `--format json` / `--filter` / `--offset` 组合；中文 JSON 转义正确 | 2026-08-31 |
+| 收官登记 | 未开始 | P0006 回填、README JSON 形态与参数表、AGENTS 意图路由、CHANGELOG、diary、门禁与提交 | 2026-08-31 |
