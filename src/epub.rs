@@ -33,6 +33,7 @@ pub fn extract_chapters(
                 no,
                 kind: UnitKind::Chapter,
                 lines,
+                needs_ocr: None,
             });
         }
     }

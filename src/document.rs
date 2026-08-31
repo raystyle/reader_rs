@@ -3,11 +3,13 @@
 use std::collections::HashSet;
 use std::path::Path;
 
-/// 一个文本单元。`no` 为 1 起序号（PDF 页码 / EPUB 章序），`lines` 按阅读序排列。
+/// 一个文本单元。`no` 为 1 起序号（PDF 页码 / EPUB 章序），`lines` 按阅读序排列；
+/// `needs_ocr` 为 `Some(原因)` 表示该单元文本层不可靠（扫描件、编码问题、乱码、空提取）。
 pub struct TextUnit {
     pub no: u32,
     pub kind: UnitKind,
     pub lines: Vec<String>,
+    pub needs_ocr: Option<String>,
 }
 
 /// 文本单元种类，决定输出分节标记（`== page N ==` / `== chapter N ==`）。

@@ -5,7 +5,7 @@
 
 ## 当前目标：PDF 提取质量——markdown 管线与 needs_ocr 提示
 
-> 对应 `GOAL.md`，方案 `docs\proven\P0005-PDF提取质量-markdown管线与needs_ocr提示.md`，登记日 2026-08-31。
+> 对应 `GOAL.md`，方案 `docs\proven\P0005-PDF提取质量-markdown管线与needs_ocr提示.md`，登记日 2026-08-31。**2026-08-31 已达成**（验收记录见方案「验收标准」节）；本文件在下一目标立项时整体替换。
 
 ### 1. 闸门
 

@@ -94,6 +94,7 @@ fn run_search(
     let page_set = parse_optional_pages(pages)?;
     let matcher = search::Matcher::new(pattern, regex_mode, ignore_case)?;
     let extracted = document::extract(file, page_set.as_ref())?;
+    warn_unreliable(&extracted);
     let hits = search::search(&extracted, &matcher, context);
     for hit in &hits {
         for (line_no, text) in &hit.before {
@@ -113,6 +114,9 @@ fn run_extract(file: &Path, pages: Option<String>, out: Option<PathBuf>) -> Resu
     let mut buf = String::new();
     for unit in &extracted {
         buf.push_str(&format!("== {} {} ==\n", unit.kind.label(), unit.no));
+        if let Some(reason) = &unit.needs_ocr {
+            buf.push_str(&format!("[needs_ocr: {reason}]\n"));
+        }
         for line in &unit.lines {
             buf.push_str(line);
             buf.push('\n');
@@ -127,6 +131,23 @@ fn run_extract(file: &Path, pages: Option<String>, out: Option<PathBuf>) -> Resu
             Ok(())
         }
     }
+}
+
+/// 文本层不可靠的单元给一条 stderr 警示（stdout 保持纯命中输出；退出码语义不变）。
+fn warn_unreliable(units: &[document::TextUnit]) {
+    let bad: Vec<&document::TextUnit> = units.iter().filter(|u| u.needs_ocr.is_some()).collect();
+    if bad.is_empty() {
+        return;
+    }
+    let label = bad[0].kind.label();
+    let list = bad
+        .iter()
+        .map(|u| u.no.to_string())
+        .collect::<Vec<_>>()
+        .join(",");
+    eprintln!(
+        "reader: 提示: {label} {list} 文本层不可靠（needs_ocr，疑似扫描件或编码问题），命中可能失真；Reader 不做 OCR"
+    );
 }
 
 fn parse_optional_pages(pages: Option<String>) -> Result<Option<HashSet<u32>>, String> {

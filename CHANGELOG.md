@@ -15,3 +15,4 @@
 - **最小闭环**：`reader search` / `reader extract` 落地；门禁三件与 rumdl 三件套全绿。
 - **EPUB 支持**：格式分派（`TextUnit` 统一页/章），rbook 加 quick-xml 提取；cargo test 20 过；真实样本回归。方案 `docs\proven\P0003-EPUB支持与格式分派.md`，选型 `docs\research\S003-EPUB解析crate选型-rbook双通道核实.md`。
 - **跨平台接管**：GitHub Actions 三系统门禁（windows/ubuntu/macos 跑 fmt/clippy/test --locked）与 LF 钉死。方案 `docs\proven\P0004-mac与Linux接管开发与跨平台兼容.md`。
+- **提取质量（破坏性变更）**：PDF 通道整体切 pdf-inspector markdown 布局管线——多栏阅读序、needs_ocr 检出提示（extract 页节提示行、search stderr 警示）、逐页分节补齐；PDF 输出行带 markdown 语法（标题、链接、表格），v0.1 朴素行重建退役。质量承诺面向英文与中文。方案 `docs\proven\P0005-PDF提取质量-markdown管线与needs_ocr提示.md`。

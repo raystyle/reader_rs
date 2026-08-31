@@ -12,6 +12,7 @@
 2. **边界**
    - 服务对象先 Agent 后人：输出稳定可解析（行式标记、grep 语义退出码 0/1/2）、单调用完成一件事、无交互无守护进程、错误走 stderr；机器可读优先于人类美观。
    - 当前只读支持 PDF 与 EPUB，不做渲染、编辑、OCR（扫描件检出后提示，不识别）；其它格式按需另立项。
+   - 文本质量只承诺英文与中文；其它语言不做质量承诺，不可靠页以 needs_ocr 提示兜底。
    - CLI 是唯一交互面；纯 Rust 单二进制，不外挂 pdfium 等二进制运行时。
    - Windows 优先验证；依赖均跨平台，不主动破坏其它平台。
 
@@ -82,7 +83,7 @@
 > 需求意图与操作方法的映射。显示名 Reader；仓库 `reader_rs`；CLI 二进制 `reader`（缩写 `rr`）。
 
 - **搜文本**：`reader search <文件> <关键词>`（.pdf / .epub；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/章；命中退出 0、无命中退出 1、出错退出 2）
-- **提文本**：`reader extract <文件>`（`--pages` 限页/章、`-o` 写文件；按单元输出 `== page N ==` / `== chapter N ==` 分节）
+- **提文本**：`reader extract <文件>`（`--pages` 限页/章、`-o` 写文件；按单元输出 `== page N ==` / `== chapter N ==` 分节；PDF 行为 markdown 形态，不可靠页节头后给 `[needs_ocr: 原因]` 提示行）
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`

@@ -57,4 +57,8 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 
 ## 补记：P0005 立项
 
-用户点名阶段 2 立项。核实 pdf-inspector 1.17.0 本地源码：`extract_pages_markdown` 逐页返回 markdown 加 `needs_ocr` 信号（覆盖 GID 编码、编码问题、乱码、空提取），多栏阅读序与扫描件/编码页检出是同一条管线。关键裁决（用户定）：PDF 通道整体切 markdown 管线，不做双管线——search/extract 共享同一文本层，阶段 3 Markdown 导出顺带半达成；v0.1 输出行为变，CHANGELOG 将记破坏性变更。
+用户点名阶段 2 立项。核实 pdf-inspector 1.17.0 本地源码：`extract_pages_markdown` 逐页返回 markdown 加 `needs_ocr` 信号（覆盖 GID 编码、编码问题、乱码、空提取），多栏阅读序与扫描件/编码页检出是同一条管线。关键裁决（用户定）：PDF 通道整体切 markdown 管线，不做双管线——search/extract 共享同一文本层，阶段 3 Markdown 导出顺带半达成；v0.1 输出行为变，CHANGELOG 将记破坏性变更。追加裁决（用户定）：文本质量只承诺英文与中文，落 R001 与 AGENTS 边界。
+
+## 补记：P0005 当日达成
+
+管线切换一次过，22 测全绿（单元 5 加集成 17）。两栏测试 fixture 两轮定形：等距短网格被管线判成表格，读 `split_side_by_side` 阈值（items 至少 40、沟至少 30pt）后改 22 行变宽散文才触发栏检测——阈值门控行为先读实现再设计 fixture。真样本双验：O'Reilly 书 399 页 0.92s（基线 0.57s），24 个图像页全被 needs_ocr 命中，S001 两处粘连瑕疵修复，assert_cmd 25 行命中与旧记录一致；意外收获是 x-quake 论文为中文文档，标题摘要正文提取通顺、中文搜索命中正确，中文质量承诺当场实证。EPUB 37 章 0.083s 无回归。CHANGELOG 记破坏性变更（PDF 行带 markdown 语法）。

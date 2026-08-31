@@ -20,6 +20,7 @@ Reader 是 Agent 原生文档阅读、搜索和提取工具：为 Agent（AI 智
 2. **边界**：
    - 服务对象先 Agent 后人；不做 GUI/TUI 交互式阅读器。[实证: P0002 方案]
    - 当前支持 PDF 与 EPUB（章为 EPUB 文本单元），均只读；不做渲染、编辑、OCR；扫描件与编码问题页检出后提示，不识别；docx/mobi 等其它格式按需另立项。[实证: P0003 方案]
+   - 文本质量承诺只面向英文与中文内容；其它语言（日韩等 CJK 兄弟语种、RTL）不做质量承诺，文本层不可靠时以 needs_ocr 提示兜底。[实证: 2026-08-31 用户裁定]
    - 纯 Rust 单二进制；不外挂 pdfium 等二进制运行时（pdf-inspector 默认构建即纯 Rust）。[实证: cargo info pdf-inspector 2026-08-31，default features 为空]
    - Windows 起步，macOS/Linux 由 CI 三系统门禁接管验证（P0004）；依赖均跨平台，不主动破坏其它平台。[实证: 2026-08-31 .github\workflows\ci.yml]
 
