@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-08-31 | 推送 5 笔提交，CI run 33389883062 三系统全绿（P0005/P0006 跨平台验证闭环）；开发测试移交 mac 接管 |
 | 2026-08-31 | P0006 达成：34 测全绿（单元 7 加集成 27）；包膜、分页（next_offset 加 cta）、filter 三件落地；真样本中英文抽查过（书 25 命中序列与 S001 一致，中文原样 UTF-8） |
 | 2026-08-31 | P0006 立项：`--format json` 包膜（ok/data/error 加 meta）、extract `--offset/--limit` 分页（next_offset 加 cta）、`--filter` 点路径裁剪；serde/serde_json 进依赖；agent 发现与 MCP 留候选 |
 | 2026-08-31 | P0004 达成：CI 首跑三系统全绿（run 33378905306）；mac/Linux 接管面就位 |

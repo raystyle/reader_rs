@@ -70,3 +70,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：P0006 当日达成
 
 实现一次过，34 测全绿（单元 7 加集成 27）。clippy `too_many_arguments` 拦下 8 参函数，顺势收成 `OutputOpts` 结构体而非打洞。两个认知点入库：serde_json 默认 BTreeMap 键字母序，包膜顶层用 typed struct 保 `ok/data/meta` 声明序；中文经 serde_json 原样 UTF-8 直出（不转义），对 Agent 省 token。真样本抽查：书 25 命中页号序列与 S001 记录一致，分页 next_offset/cta 正确，中文论文 JSON 通顺。无命中语义定型为 ok:true 加空 hits、退出码仍 1（执行成败与命中有无分轨），README 明示。
+
+## 补记：推送与 mac 接管
+
+用户指示推送后开发测试交 mac 接管。WSL 侧首推遇凭据缺口（https 无凭据），`gh auth setup-git` 接上即通——gh 已登录但 git 凭据助手未接，是 WSL 新环境的典型一步。推送 5 笔提交（P0005 立项至 P0006 收官），CI run 33389883062 三系统全绿（ubuntu 46s、macos 37s、windows 1m37s），P0005/P0006 代码跨平台验证闭环。mac 侧开工面：clone 后 `cargo build --release`，本地门禁三件加 rumdl 三件套；真样本不随仓库走，集成测试自造样本全覆盖。
