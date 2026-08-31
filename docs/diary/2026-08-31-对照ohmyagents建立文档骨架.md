@@ -38,3 +38,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：EPUB 支持达成
 
 用户追加 EPUB 需求并给真实样本。选型 S003：`epub` crate GPL-3.0 一票出局（license 一查到底），选 rbook 加 quick-xml。结构升级 TextUnit 统一页/章，搜索层零逻辑改动。三个实测坑：quick-xml 0.42 版本敏感（tag 名 &str、实体 GeneralRef）；行内标签边界丢空格（单元测试抓到）；pre 代码块塌一行（真实样本抓到，加 pre 通道）。cargo test 20 绿，样本 37 章回归正确。P0003 当日达成。
+
+## 补记：README 改为使用者向
+
+用户指出 README 应是部署安装和命令参数使用方法。重写为使用者向：安装（cargo install --path / --git）、search/extract 参数表与输出格式、退出码、支持格式表；协作者导航压到末节。
