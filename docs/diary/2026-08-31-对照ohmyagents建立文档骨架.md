@@ -46,3 +46,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：跨平台接管准备
 
 用户要在 mac/Linux 接管开发测试。立项 P0004：GitHub Actions 三系统矩阵跑门禁三件（仓库已在 GitHub，零新增设施，R003 第三段既定路线落地）、.gitattributes 钉 LF、README 命令给 bash 形态。审计结论：代码层无平台专属假设（提取库全纯 Rust、测试用 temp_dir 加 pid），唯一已知差异是使用层路径形态（M002）。验收以 CI 首跑三系统绿为准。
+
+## 补记：CI 首跑三系统全绿
+
+推送后 GitHub Actions 首跑（run 33378905306）windows/ubuntu/macos 三 job 全 success，约 3.5 分钟。纯 Rust 依赖树零系统库需求，一次全绿。P0004 达成收官。仅有 actions/checkout Node.js 20 弃用注解，不影响结论。

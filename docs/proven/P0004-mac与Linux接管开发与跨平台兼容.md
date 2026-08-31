@@ -2,7 +2,7 @@
 
 > 本方案文档照 `docs\guide\template.md` 写。进行中与否以 `TODO.md` 为准。
 
-- 状态：进行中
+- 状态：已完成
 - 日期：2026-08-31
 - 关联：TODO.md 当前目标 / `docs\references\R003-测试标准细则-分层断言与门禁流程.md`（演进路线第三段 CI 化，本方案即立项）
 
@@ -50,10 +50,14 @@
 
 ## 实施过程与经验
 
-> 完成时补全，不是留空。
+- 实际怎么做：按步骤走完，无偏差。CI 首跑（run 33378905306）windows/ubuntu/macos 三 job 全 success，约 3.5 分钟。[实证: 2026-08-31 gh run view]
+- 踩了什么坑 + 怎么解决：ROADMAP 追加「阶段 4」节时空行缺失被 rumdl MD022 拦下；补空行即过。append 写文件时注意节间空行。
+- 沉淀的经验：
+  - 纯 Rust 依赖树让三系统 CI 一次全绿，无系统库、无平台分支代码——选型阶段守住「纯 Rust 单二进制」边界的回报。
+  - 验收面设在 CI 而非本机模拟，是「无 mac/Linux 环境」下的正确分工；CI 注解（Node.js 20 deprecation 警告）不影响结论，后续 actions 大版本升级时顺带处理。
 
 ## 验收标准
 
-- CI workflow 推送后三系统绿（以 GitHub Actions 运行结果为准）。
-- 本地门禁三件与 rumdl 三件套全过；`git add` 后无换行警告残留（.gitattributes 生效）。
-- INDEX 与三原语登记完整。
+- CI workflow 推送后三系统绿（以 GitHub Actions 运行结果为准）。[实证: 2026-08-31 run 33378905306 三 job success]
+- 本地门禁三件与 rumdl 三件套全过；`git add` 后无换行警告残留（.gitattributes 生效）。[实证: 2026-08-31]
+- INDEX 与三原语登记完整。[实证: 2026-08-31]
