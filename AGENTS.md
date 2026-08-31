@@ -82,8 +82,8 @@
 
 > 需求意图与操作方法的映射。显示名 Reader；仓库 `reader_rs`；CLI 二进制 `reader`（缩写 `rr`）。
 
-- **搜文本**：`reader search <文件> <关键词>`（.pdf / .epub；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/章；命中退出 0、无命中退出 1、出错退出 2）
-- **提文本**：`reader extract <文件>`（`--pages` 限页/章、`-o` 写文件；按单元输出 `== page N ==` / `== chapter N ==` 分节；PDF 行为 markdown 形态，不可靠页节头后给 `[needs_ocr: 原因]` 提示行）
+- **搜文本**：`reader search <文件> <关键词>`（.pdf / .epub；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/章；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪）
+- **提文本**：`reader extract <文件>`（`--pages` 限页/章、`-o` 写文件；按单元输出 `== page N ==` / `== chapter N ==` 分节；PDF 行为 markdown 形态，不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`

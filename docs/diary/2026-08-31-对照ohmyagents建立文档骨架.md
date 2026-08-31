@@ -66,3 +66,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：P0006 立项
 
 用户示意继续，阶段 3 第一刀落输出层三件套（S002 映射 1-3）：`--format json` 包膜、extract `--offset/--limit` 分页（next_offset 加 cta）、`--filter` 点路径裁剪。serde/serde_json 进依赖（事实标准免研究文档）。关键取舍：默认文本形态与退出码 0/1/2 不动，JSON 错误走 stdout 包膜加 stderr 人读行双通道；agent 发现与 MCP 留候选。
+
+## 补记：P0006 当日达成
+
+实现一次过，34 测全绿（单元 7 加集成 27）。clippy `too_many_arguments` 拦下 8 参函数，顺势收成 `OutputOpts` 结构体而非打洞。两个认知点入库：serde_json 默认 BTreeMap 键字母序，包膜顶层用 typed struct 保 `ok/data/meta` 声明序；中文经 serde_json 原样 UTF-8 直出（不转义），对 Agent 省 token。真样本抽查：书 25 命中页号序列与 S001 记录一致，分页 next_offset/cta 正确，中文论文 JSON 通顺。无命中语义定型为 ok:true 加空 hits、退出码仍 1（执行成败与命中有无分轨），README 明示。

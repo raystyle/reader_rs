@@ -26,7 +26,7 @@ pdf-inspector 提取层；`reader search` / `reader extract`；`rr` 缩写；tes
 
 ## 阶段 3：输出形态
 
-Agent 原生优先，设计依据 `docs\research\S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md`：结构化输出包膜（`{ok,data,error}` 加 meta，search/extract 的 `--format json` 为首要候选）；`--filter` 点路径裁剪；extract 分页原语（offset/limit 加 next_offset 与 cta）；agent 发现（`--llms` 索引与 SKILL.md 生成）；远期 MCP stdio 暴露。Markdown 导出已由 P0005 顺带达成（PDF 默认输出即 markdown 行）；目录批量扫描同阶段候选。第一刀 P0006（S002 映射 1-3：JSON 包膜、分页、filter）；agent 发现与 MCP 留候选。
+Agent 原生优先，设计依据 `docs\research\S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md`：结构化输出包膜（`{ok,data,error}` 加 meta，search/extract 的 `--format json` 为首要候选）；`--filter` 点路径裁剪；extract 分页原语（offset/limit 加 next_offset 与 cta）；agent 发现（`--llms` 索引与 SKILL.md 生成）；远期 MCP stdio 暴露。Markdown 导出已由 P0005 顺带达成（PDF 默认输出即 markdown 行）；目录批量扫描同阶段候选。第一刀 P0006 已达成（2026-08-31：JSON 包膜、分页、filter，34 测全绿）；agent 发现、MCP、批量、token 计数留候选。
 
 ## 阶段 4：跨平台接管
 

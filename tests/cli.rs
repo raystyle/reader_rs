@@ -317,6 +317,229 @@ fn needs_ocr_page_hinted_in_extract_and_search() -> TestResult {
     Ok(())
 }
 
+// ---------- JSON 包膜与分页裁剪（P0006） ----------
+
+/// JSON stdout 解析为 Value（断言可解析本身就是验收点）。
+fn json_stdout(cmd: &mut Command) -> TestResult<serde_json::Value> {
+    let out = stdout_of(cmd)?;
+    Ok(
+        serde_json::from_str(out.trim())
+            .map_err(|e| format!("stdout 不是合法 JSON: {e}\n{out}"))?,
+    )
+}
+
+#[test]
+fn search_json_envelope_wraps_hits() -> TestResult {
+    let pdf = TestPdf::make("json_search")?;
+    let v = json_stdout(
+        reader()?
+            .args(["search"])
+            .arg(&pdf.0)
+            .args(["Reader", "--format", "json"]),
+    )?;
+    assert_eq!(v["ok"], serde_json::json!(true));
+    assert_eq!(v["data"]["hits"][0]["unit"], serde_json::json!(1));
+    assert_eq!(v["data"]["hits"][0]["line"], serde_json::json!(1));
+    assert!(
+        v["data"]["hits"][0]["text"]
+            .as_str()
+            .is_some_and(|t| t.contains(PAGE1_TEXT)),
+        "hits[0].text 应含写入文本: {v}"
+    );
+    assert_eq!(v["data"]["needs_ocr_units"], serde_json::json!([]));
+    assert_eq!(v["meta"]["command"], serde_json::json!("search"));
+    assert!(v["meta"]["duration_ms"].is_u64());
+    Ok(())
+}
+
+/// 无命中：ok 仍为 true（执行成功），退出码 1（grep 语义）。
+#[test]
+fn search_json_no_hit_ok_true_exit_1() -> TestResult {
+    let pdf = TestPdf::make("json_miss")?;
+    let out = reader()?
+        .args(["search"])
+        .arg(&pdf.0)
+        .args(["zzz-no-such", "--format", "json"])
+        .assert()
+        .code(1)
+        .get_output()
+        .stdout
+        .clone();
+    let v: serde_json::Value = serde_json::from_str(String::from_utf8(out)?.trim())?;
+    assert_eq!(v["ok"], serde_json::json!(true));
+    assert_eq!(v["data"]["hits"], serde_json::json!([]));
+    Ok(())
+}
+
+/// 错误路径：stdout 出 {ok:false,error,meta}，stderr 保留人读行，退出 2。
+#[test]
+fn json_error_envelope_on_stdout_exit_2() -> TestResult {
+    let out = reader()?
+        .args([
+            "search",
+            "no-such-file-reader-rs.pdf",
+            "x",
+            "--format",
+            "json",
+        ])
+        .assert()
+        .code(2)
+        .get_output()
+        .clone();
+    let v: serde_json::Value = serde_json::from_str(String::from_utf8(out.stdout.clone())?.trim())?;
+    assert_eq!(v["ok"], serde_json::json!(false));
+    assert!(v["error"].as_str().is_some_and(|e| e.contains("无法读取")));
+    assert_eq!(v["meta"]["command"], serde_json::json!("search"));
+    assert!(
+        String::from_utf8(out.stderr)?.contains("reader:"),
+        "stderr 人读行应保留"
+    );
+    Ok(())
+}
+
+#[test]
+fn extract_json_units_carry_needs_ocr() -> TestResult {
+    let path = pdf_path("json_textless");
+    make_pdf_with(&path, &[vec![line(PAGE1_TEXT, 72, 720)], vec![]])?;
+    let v = json_stdout(
+        reader()?
+            .args(["extract"])
+            .arg(&path)
+            .args(["--format", "json"]),
+    )?;
+    let units = v["data"]["units"]
+        .as_array()
+        .ok_or("units 应为数组")?
+        .clone();
+    assert_eq!(units.len(), 2);
+    assert_eq!(units[0]["kind"], serde_json::json!("page"));
+    assert_eq!(units[0]["needs_ocr"], serde_json::json!(null));
+    assert!(
+        units[1]["needs_ocr"].as_str().is_some(),
+        "无文本页 needs_ocr 应为原因串: {units:?}"
+    );
+    assert_eq!(v["meta"]["command"], serde_json::json!("extract"));
+    std::fs::remove_file(&path)?;
+    Ok(())
+}
+
+/// 分页：offset/limit 取单元切片；有剩余时 meta 带 next_offset 与 cta，末页不带。
+#[test]
+fn extract_json_pagination_meta() -> TestResult {
+    let pdf = TestPdf::make("json_page")?;
+    let v = json_stdout(
+        reader()?
+            .args(["extract"])
+            .arg(&pdf.0)
+            .args(["--format", "json", "--limit", "1"]),
+    )?;
+    assert_eq!(v["data"]["units"].as_array().unwrap().len(), 1);
+    assert_eq!(v["meta"]["next_offset"], serde_json::json!(1));
+    let cta = v["meta"]["cta"].as_str().unwrap_or_default().to_string();
+    assert!(
+        cta.contains("--offset 1") && cta.contains("--format json"),
+        "cta 应给下一页命令: {cta}"
+    );
+    let last = json_stdout(
+        reader()?
+            .args(["extract"])
+            .arg(&pdf.0)
+            .args(["--format", "json", "--offset", "1"]),
+    )?;
+    assert_eq!(last["data"]["units"].as_array().unwrap().len(), 1);
+    assert_eq!(
+        last["data"]["units"][0]["no"],
+        serde_json::json!(2),
+        "offset 1 应取第 2 页"
+    );
+    assert!(
+        last["meta"].get("next_offset").is_none() && last["meta"].get("cta").is_none(),
+        "末页不应带 next_offset/cta: {last}"
+    );
+    Ok(())
+}
+
+/// 文本形态同享分页：--offset 1 只出第 2 页。
+#[test]
+fn extract_text_mode_offset_skips_first_unit() -> TestResult {
+    let pdf = TestPdf::make("text_offset")?;
+    let out = stdout_of(
+        reader()?
+            .args(["extract"])
+            .arg(&pdf.0)
+            .args(["--offset", "1"]),
+    )?;
+    assert!(out.contains("== page 2 ==") && !out.contains("== page 1 =="));
+    Ok(())
+}
+
+#[test]
+fn search_json_filter_trims_data() -> TestResult {
+    let pdf = TestPdf::make("json_filter")?;
+    let v = json_stdout(reader()?.args(["search"]).arg(&pdf.0).args([
+        "Reader",
+        "--format",
+        "json",
+        "--filter",
+        "hits[].text",
+    ]))?;
+    let texts = v["data"].as_array().ok_or("filter 后 data 应为数组")?;
+    assert!(
+        texts
+            .iter()
+            .any(|t| t.as_str().is_some_and(|s| s.contains(PAGE1_TEXT))),
+        "裁剪后应只留命中文本: {v}"
+    );
+    Ok(())
+}
+
+#[test]
+fn dies_filter_without_json() -> TestResult {
+    let pdf = TestPdf::make("filter_no_json")?;
+    reader()?
+        .args(["extract"])
+        .arg(&pdf.0)
+        .args(["--filter", "units"])
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains(
+            "--filter 仅在 --format json 下可用",
+        ));
+    Ok(())
+}
+
+/// 非法 filter 路径：错误包膜加退出 2，不静默空值。
+#[test]
+fn json_filter_bad_path_error_envelope() -> TestResult {
+    let pdf = TestPdf::make("filter_bad")?;
+    let out = reader()?
+        .args(["search"])
+        .arg(&pdf.0)
+        .args(["Reader", "--format", "json", "--filter", "nope"])
+        .assert()
+        .code(2)
+        .get_output()
+        .stdout
+        .clone();
+    let v: serde_json::Value = serde_json::from_str(String::from_utf8(out)?.trim())?;
+    assert_eq!(v["ok"], serde_json::json!(false));
+    assert!(v["error"].as_str().is_some_and(|e| e.contains("无键 nope")));
+    Ok(())
+}
+
+#[test]
+fn dies_zero_limit() -> TestResult {
+    let pdf = TestPdf::make("zero_limit")?;
+    reader()?
+        .args(["extract"])
+        .arg(&pdf.0)
+        .args(["--limit", "0"])
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("无效 --limit"));
+    Ok(())
+}
+
 #[test]
 fn extract_outputs_page_sections() -> TestResult {
     let pdf = TestPdf::make("extract_all")?;

@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-08-31 | P0006 达成：34 测全绿（单元 7 加集成 27）；包膜、分页（next_offset 加 cta）、filter 三件落地；真样本中英文抽查过（书 25 命中序列与 S001 一致，中文原样 UTF-8） |
 | 2026-08-31 | P0006 立项：`--format json` 包膜（ok/data/error 加 meta）、extract `--offset/--limit` 分页（next_offset 加 cta）、`--filter` 点路径裁剪；serde/serde_json 进依赖；agent 发现与 MCP 留候选 |
 | 2026-08-31 | P0004 达成：CI 首跑三系统全绿（run 33378905306）；mac/Linux 接管面就位 |
 | 2026-08-31 | P0004 立项：CI 三系统矩阵（fmt/clippy/test --locked）、.gitattributes 钉 LF、README bash 双形态；验收以 CI 首跑为准 |
@@ -34,7 +35,7 @@
 
 > 当前目标的进程：只记录当前这一个目标的进行状态。
 
-- 当前目标（进行中）：输出形态——json 包膜与分页裁剪（P0006）。输出层实现、测试补强、真样本抽查、收官登记。
+- 当前目标（已达成）：输出形态第一刀——json 包膜与分页裁剪（P0006）。阶段 3 余下候选（agent 发现 `--llms`/SKILL.md、MCP 暴露、批量目录、token 计数）待用户点名立项。
 
 ## 历史
 
@@ -42,6 +43,7 @@
 
 | 日期 | 目标 | 结果 |
 | --- | --- | --- |
+| 2026-08-31 | 输出形态第一刀：json 包膜与分页裁剪（P0006） | 达成：`--format json` 包膜、extract 分页（next_offset 加 cta）、`--filter` 裁剪；34 测全绿 |
 | 2026-08-31 | PDF 提取质量：markdown 管线与 needs_ocr 提示（P0005） | 达成：多栏阅读序、needs_ocr 检出提示、S001 瑕疵修复；中英文真样本双验；22 测全绿 |
 | 2026-08-31 | mac 与 Linux 接管开发与跨平台兼容（P0004） | 达成：CI 三系统门禁首跑全绿；LF 钉死；文档双形态 |
 | 2026-08-31 | EPUB 支持（P0003） | 达成：格式分派 TextUnit；cargo test 20 过；真实样本 37 章回归正确 |

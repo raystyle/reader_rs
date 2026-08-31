@@ -3,12 +3,28 @@
 
 pub mod document;
 pub mod epub;
+pub mod output;
 pub mod pdf;
 pub mod search;
 
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
+use serde_json::{json, Value};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
+use std::time::Instant;
+
+/// 输出形态：text 行式（缺省）或 json 包膜（P0006）。
+#[derive(Clone, Copy, PartialEq, Eq, ValueEnum)]
+enum Format {
+    Text,
+    Json,
+}
+
+/// 输出选项：形态与 filter 裁剪路径（两子命令共用）。
+struct OutputOpts {
+    format: Format,
+    filter: Option<String>,
+}
 
 #[derive(Parser)]
 #[command(
@@ -41,6 +57,12 @@ enum Commands {
         /// 限定页/章范围（1 起），如 1-3,5
         #[arg(long)]
         pages: Option<String>,
+        /// 输出形态：text（行式，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+        /// 裁剪 JSON data 的点路径（如 hits[].text）；仅 --format json 下可用
+        #[arg(long)]
+        filter: Option<String>,
     },
     /// 按页/章提取文档文本（默认输出到 stdout）
     Extract {
@@ -52,6 +74,18 @@ enum Commands {
         /// 写入文件（缺省输出到 stdout）
         #[arg(short, long)]
         out: Option<PathBuf>,
+        /// 输出形态：text（行式，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+        /// 裁剪 JSON data 的点路径（如 units[].no）；仅 --format json 下可用
+        #[arg(long)]
+        filter: Option<String>,
+        /// 跳过前 N 个单元（0 起，两形态同用）
+        #[arg(long, default_value_t = 0)]
+        offset: usize,
+        /// 最多输出 M 个单元
+        #[arg(long)]
+        limit: Option<usize>,
     },
 }
 
@@ -65,22 +99,41 @@ pub fn run() -> i32 {
             ignore_case,
             context,
             pages,
-        } => match run_search(&file, &pattern, regex, ignore_case, context, pages) {
-            Ok(true) => 0,
-            Ok(false) => 1,
-            Err(err) => {
-                eprintln!("reader: {err}");
-                2
+            format,
+            filter,
+        } => {
+            let opts = OutputOpts { format, filter };
+            match run_search(&file, &pattern, regex, ignore_case, context, pages, &opts) {
+                Ok(true) => 0,
+                Ok(false) => 1,
+                Err(err) => fail("search", opts.format, err),
             }
-        },
-        Commands::Extract { file, pages, out } => match run_extract(&file, pages, out) {
-            Ok(()) => 0,
-            Err(err) => {
-                eprintln!("reader: {err}");
-                2
+        }
+        Commands::Extract {
+            file,
+            pages,
+            out,
+            format,
+            filter,
+            offset,
+            limit,
+        } => {
+            let opts = OutputOpts { format, filter };
+            match run_extract(&file, pages, out, &opts, offset, limit) {
+                Ok(()) => 0,
+                Err(err) => fail("extract", opts.format, err),
             }
-        },
+        }
     }
+}
+
+/// 失败出口：stderr 人读行恒出；json 形态下 stdout 补错误包膜（R001 错误走 stderr 不破）。
+fn fail(command: &'static str, format: Format, err: String) -> i32 {
+    if format == Format::Json {
+        println!("{}", output::err_json(command, Instant::now(), err.clone()));
+    }
+    eprintln!("reader: {err}");
+    2
 }
 
 fn run_search(
@@ -90,47 +143,139 @@ fn run_search(
     ignore_case: bool,
     context: usize,
     pages: Option<String>,
+    opts: &OutputOpts,
 ) -> Result<bool, String> {
+    let started = Instant::now();
     let page_set = parse_optional_pages(pages)?;
     let matcher = search::Matcher::new(pattern, regex_mode, ignore_case)?;
     let extracted = document::extract(file, page_set.as_ref())?;
     warn_unreliable(&extracted);
     let hits = search::search(&extracted, &matcher, context);
-    for hit in &hits {
-        for (line_no, text) in &hit.before {
-            println!("{}-{}-{}", hit.unit, line_no, text);
+    check_filter(opts)?;
+    match opts.format {
+        Format::Text => {
+            for hit in &hits {
+                for (line_no, text) in &hit.before {
+                    println!("{}-{}-{}", hit.unit, line_no, text);
+                }
+                println!("{}:{}:{}", hit.unit, hit.line_no, hit.text);
+                for (line_no, text) in &hit.after {
+                    println!("{}-{}-{}", hit.unit, line_no, text);
+                }
+            }
         }
-        println!("{}:{}:{}", hit.unit, hit.line_no, hit.text);
-        for (line_no, text) in &hit.after {
-            println!("{}-{}-{}", hit.unit, line_no, text);
+        Format::Json => {
+            let mut data = search_data(&extracted, &hits);
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
+            println!("{}", output::ok_json("search", started, data)?);
         }
     }
     Ok(!hits.is_empty())
 }
 
-fn run_extract(file: &Path, pages: Option<String>, out: Option<PathBuf>) -> Result<(), String> {
+fn run_extract(
+    file: &Path,
+    pages: Option<String>,
+    out: Option<PathBuf>,
+    opts: &OutputOpts,
+    offset: usize,
+    limit: Option<usize>,
+) -> Result<(), String> {
+    let started = Instant::now();
     let page_set = parse_optional_pages(pages)?;
-    let extracted = document::extract(file, page_set.as_ref())?;
-    let mut buf = String::new();
-    for unit in &extracted {
-        buf.push_str(&format!("== {} {} ==\n", unit.kind.label(), unit.no));
-        if let Some(reason) = &unit.needs_ocr {
-            buf.push_str(&format!("[needs_ocr: {reason}]\n"));
-        }
-        for line in &unit.lines {
-            buf.push_str(line);
-            buf.push('\n');
-        }
+    check_filter(opts)?;
+    if limit == Some(0) {
+        return Err("无效 --limit: 须为正整数".to_string());
     }
+    let extracted = document::extract(file, page_set.as_ref())?;
+    let total = extracted.len();
+    let visible: Vec<&document::TextUnit> = extracted
+        .iter()
+        .skip(offset)
+        .take(limit.unwrap_or(usize::MAX))
+        .collect();
+    let next_offset = (offset + visible.len() < total).then_some(offset + visible.len());
+    let content = match opts.format {
+        Format::Text => {
+            let mut buf = String::new();
+            for unit in &visible {
+                buf.push_str(&format!("== {} {} ==\n", unit.kind.label(), unit.no));
+                if let Some(reason) = &unit.needs_ocr {
+                    buf.push_str(&format!("[needs_ocr: {reason}]\n"));
+                }
+                for line in &unit.lines {
+                    buf.push_str(line);
+                    buf.push('\n');
+                }
+            }
+            buf
+        }
+        Format::Json => {
+            let mut data =
+                json!({ "units": visible.iter().map(|u| unit_value(u)).collect::<Vec<_>>() });
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
+            let cta = next_offset.map(|next| {
+                let limit_arg = limit.map(|l| format!(" --limit {l}")).unwrap_or_default();
+                format!(
+                    "reader extract {} --offset {next}{limit_arg} --format json",
+                    file.display()
+                )
+            });
+            format!(
+                "{}\n",
+                output::ok_json_paged("extract", started, data, next_offset, cta)?
+            )
+        }
+    };
     match out {
         Some(path) => {
-            std::fs::write(&path, buf).map_err(|e| format!("写入 {} 失败: {e}", path.display()))
+            std::fs::write(&path, content).map_err(|e| format!("写入 {} 失败: {e}", path.display()))
         }
         None => {
-            print!("{buf}");
+            print!("{content}");
             Ok(())
         }
     }
+}
+
+/// filter 仅在 json 形态下可用。
+fn check_filter(opts: &OutputOpts) -> Result<(), String> {
+    if opts.filter.is_some() && opts.format != Format::Json {
+        return Err("--filter 仅在 --format json 下可用".to_string());
+    }
+    Ok(())
+}
+
+/// search 的 data 树：hits 加 needs_ocr_units（不可靠页序号）。
+fn search_data(units: &[document::TextUnit], hits: &[search::Hit]) -> Value {
+    json!({
+        "hits": hits.iter().map(|h| json!({
+            "unit": h.unit,
+            "line": h.line_no,
+            "text": &h.text,
+            "before": h.before.iter().map(|(l, t)| json!({"line": l, "text": t})).collect::<Vec<_>>(),
+            "after": h.after.iter().map(|(l, t)| json!({"line": l, "text": t})).collect::<Vec<_>>(),
+        })).collect::<Vec<_>>(),
+        "needs_ocr_units": units
+            .iter()
+            .filter(|u| u.needs_ocr.is_some())
+            .map(|u| u.no)
+            .collect::<Vec<_>>(),
+    })
+}
+
+/// extract 的 data 树：units（kind / no / needs_ocr / lines）。
+fn unit_value(unit: &document::TextUnit) -> Value {
+    json!({
+        "kind": unit.kind.label(),
+        "no": unit.no,
+        "needs_ocr": &unit.needs_ocr,
+        "lines": &unit.lines,
+    })
 }
 
 /// 文本层不可靠的单元给一条 stderr 警示（stdout 保持纯命中输出；退出码语义不变）。

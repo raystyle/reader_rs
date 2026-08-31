@@ -4,14 +4,14 @@
 
 ## 当前目标
 
-输出形态：json 包膜与分页裁剪（对应 `GOAL.md`，方案 P0006，登记日 2026-08-31）。上一目标 P0005 已收官（阶段 2 提取质量，22 测全绿，中英文真样本双验）。
+输出形态：json 包膜与分页裁剪（对应 `GOAL.md`，方案 P0006，登记日 2026-08-31）。**2026-08-31 达成**：34 测全绿。阶段 3 余下候选（agent 发现、MCP、批量、token 计数）待立项。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
 | 立项 P0006 | 已完成 | `docs\proven\P0006-输出形态-json包膜与分页裁剪.md`；三原语与 ROADMAP/INDEX 登记 | 2026-08-31 |
-| 输出层实现 | 进行中 | serde/serde_json 进依赖；`src\output.rs` 包膜、filter 点路径、cta；lib.rs 参数接线与两路径改造 | 2026-08-31 |
-| 测试补强 | 未开始 | JSON 各形态正例、无命中包膜、错误包码、分页与 next_offset/cta、filter 裁剪与负例；既有回归 | 2026-08-31 |
-| 真样本抽查 | 未开始 | 中英文真样本 `--format json` / `--filter` / `--offset` 组合；中文 JSON 转义正确 | 2026-08-31 |
-| 收官登记 | 未开始 | P0006 回填、README JSON 形态与参数表、AGENTS 意图路由、CHANGELOG、diary、门禁与提交 | 2026-08-31 |
+| 输出层实现 | 已完成 | serde/serde_json 进依赖；`src\output.rs` 包膜、filter 点路径、cta；`OutputOpts` 收参；错误包膜走 `fail()` 出口 | 2026-08-31 |
+| 测试补强 | 已完成 | JSON 正例、无命中包膜、错误包膜、分页 next_offset/cta、filter 正负例、零 limit 负例；34 测全绿 | 2026-08-31 |
+| 真样本抽查 | 已完成 | 书 25 命中页号序列与 S001 一致；分页 next_offset/cta 正确；中文论文 JSON 中文原样 UTF-8 | 2026-08-31 |
+| 收官登记 | 已完成 | P0006 回填、README JSON 节与参数表、AGENTS 意图路由、CHANGELOG、diary、门禁与提交 | 2026-08-31 |

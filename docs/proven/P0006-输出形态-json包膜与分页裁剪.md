@@ -2,7 +2,7 @@
 
 > 本方案文档照 `docs\guide\template.md` 写。进行中与否以 `TODO.md` 为准。
 
-- 状态：进行中
+- 状态：已完成
 - 日期：2026-08-31
 - 关联：TODO.md 当前目标 / `docs\research\S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md`（落地映射 1-3 条）/ ROADMAP 阶段 3 / R001 设计约束一、三
 
@@ -64,17 +64,24 @@
 
 ## 实施过程与经验
 
-> 完成时补全，不是留空。
+> 2026-08-31 回填。
 
-- 实际怎么做（与计划偏差、关键决策点）：待回填。
-- 踩了什么坑 + 怎么解决：待回填。
-- 沉淀的经验：待回填。
+- 实际怎么做（与计划偏差、关键决策点）：
+  - 按方案四件走完，一次过。clippy `too_many_arguments` 拦下 8 参 `run_search`，顺势把 format 加 filter 收成 `OutputOpts` 结构体而非 `#[allow]` 打洞。
+  - 错误包膜收敛在 `run()` 的 `fail()` 出口：stderr 人读行恒出，json 形态 stdout 补包膜；命令内部只返回 `Err(String)`。
+  - 无命中语义分轨定型：`ok:true`（执行成功）加空 `hits`，退出码仍 1（grep 语义）——README 明示。
+- 踩了什么坑 + 怎么解决：无 mistakes 级坑。两个认知点：serde_json 默认 `Map` 为 BTreeMap，`json!` 宏构造的对象键按字母序（语义无差，见经验）；`Vec<&T>` 迭代出 `&&T`，函数引用作 map 参数会型不匹配，闭包解一层。
+- 沉淀的经验：
+  - 包膜顶层用 typed struct（字段按声明序，`ok/data/meta` 恒定）；`data` 内部经 `json!` 落字母序无妨——字段顺序契约只对顶层有意义。
+  - filter 在包膜前裁剪 `data`，包膜恒在——消费者解析面唯一，被裁剪的只是 data 子树。
+  - serde_json 默认原样输出 UTF-8（中文不转 `\uXXXX`），对 Agent 读输出省 token。
+  - 包膜 compact 单行（非 pretty），同为 token 经济。
 
 ## 验收标准
 
-- search / extract `--format json` 输出可被 serde_json 解析，包膜字段符合方案；无命中 `ok:true` 加空 `hits`，退出码 1。[待验]
-- 错误路径（缺文件、坏参数）：JSON 形态下 stdout 出 `{ok:false,error,meta}`，stderr 保留人读行，退出 2。[待验]
-- extract `--offset/--limit` 两形态分页正确；JSON meta 的 `next_offset` 与 `cta` 仅在有剩余页时出现。[待验]
-- `--filter hits[].text`、`units[0].lines` 式裁剪正确；`--filter` 无 `--format json` 报错退出 2；非法路径走错误包膜。[待验]
-- 既有测试全绿；门禁三件与 rumdl 三件套过；真样本（中英文）抽查过。[待验]
-- README / AGENTS / CHANGELOG / 三原语 / INDEX 登记完整。[待验]
+- search / extract `--format json` 输出可被 serde_json 解析，包膜字段符合方案；无命中 `ok:true` 加空 `hits`，退出码 1。[实证: 2026-08-31 search_json_envelope_wraps_hits / search_json_no_hit_ok_true_exit_1 绿]
+- 错误路径（缺文件、坏参数）：JSON 形态下 stdout 出 `{ok:false,error,meta}`，stderr 保留人读行，退出 2。[实证: 2026-08-31 json_error_envelope_on_stdout_exit_2 绿]
+- extract `--offset/--limit` 两形态分页正确；JSON meta 的 `next_offset` 与 `cta` 仅在有剩余页时出现。[实证: 2026-08-31 extract_json_pagination_meta / extract_text_mode_offset_skips_first_unit 绿]
+- `--filter hits[].text`、`units[0].lines` 式裁剪正确；`--filter` 无 `--format json` 报错退出 2；非法路径走错误包膜。[实证: 2026-08-31 search_json_filter_trims_data / dies_filter_without_json / json_filter_bad_path_error_envelope 绿]
+- 既有测试全绿（单元 7 加集成 27，共 34）；门禁三件与 rumdl 三件套过；真样本抽查过：书 `assert_cmd` 25 命中页号序列与 S001 记录一致，分页 `next_offset`/`cta` 正确，中文论文 JSON 中文原样 UTF-8。[实证: 2026-08-31 WSL 本机 release]
+- README / AGENTS / CHANGELOG / 三原语 / INDEX 登记完整。[实证: 2026-08-31]
