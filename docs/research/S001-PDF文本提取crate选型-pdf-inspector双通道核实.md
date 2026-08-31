@@ -40,6 +40,14 @@
 - `TextItem` 字段：text、x、y（PDF 坐标，原点左下）、width、height、font、font_tag、font_size、page（1 起）、is_bold/is_italic 等：`src\types.rs:98`。[实证: 同上]
 - 公开函数表（process_pdf / detect_pdf / extract_text / extract_pages_markdown 等）见上游仓库文档 <https://github.com/firecrawl/pdf-inspector/blob/main/docs/rust-api.md>。[经验: 官方文档，与本地源码抽样一致]
 
+### 真实样本回归
+
+> 2026-08-31 以真实书籍 PDF 回归（非自造样本，独立验证提取质量与性能）。
+
+- 样本：《Command-Line Rust》（O'Reilly 2022，5.8MB，PDF 1.6）。全量 extract 出 390 页 14696 行，release 构建耗时 0.57s。[实证: 2026-08-31 本机]
+- search 链路：`assert_cmd` 命中 25 行且页码正确（30 页 `assert_cmd = "1"`、53 页 `assert_cmd = "2"` 等与书内容一致）；`--regex` 加 `-C 1` 加 `--pages 30` 组合正确；`--pages 100-200` 过滤正确。[实证: 同上]
+- 观察到的行重建瑕疵（朴素几何法天花板的具体表现）：旁注 URL 与正文粘连（`Ihttps://oreil.ly/...`）、图片占位符与同行文字粘连（`[Image: Im0]Ken`）。不影响搜索召回，进阶段 2 提取质量时处理。[实证: 同上]
+
 ## 踩坑沉淀
 
 | 现象 | 根因 | 正确处理 |
@@ -48,5 +56,5 @@
 
 ## 待办
 
-1. pdf-inspector 官方基准数据未本机复核，保持 [经验] 标记；阶段 2 做提取质量时可用真实样本回归。
+1. pdf-inspector 官方基准数据（overall 0.875 等对比数字）未本机复核，保持 [经验] 标记；真实样本回归已做（见「真实样本回归」节），官方对比数字本身仍未复核。
 2. hayro 是 2026 新秀（0.7.1、偏渲染），若将来要做渲染或发现 pdf-inspector 解析缺口，重评。
