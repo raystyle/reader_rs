@@ -74,3 +74,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：推送与 mac 接管
 
 用户指示推送后开发测试交 mac 接管。WSL 侧首推遇凭据缺口（https 无凭据），`gh auth setup-git` 接上即通——gh 已登录但 git 凭据助手未接，是 WSL 新环境的典型一步。推送 5 笔提交（P0005 立项至 P0006 收官），CI run 33389883062 三系统全绿（ubuntu 46s、macos 37s、windows 1m37s），P0005/P0006 代码跨平台验证闭环。mac 侧开工面：clone 后 `cargo build --release`，本地门禁三件加 rumdl 三件套；真样本不随仓库走，集成测试自造样本全覆盖。
+
+## 补记：mac 本地接管验收
+
+mac（arm64）本地门禁六件一次全绿 [实证]：fmt / clippy（冷缓存 13.6s）/ test --locked（34 测全过，单元 7 加集成 27，与 P0006 收官记录一致）加 rumdl 三件套（28 文件零告警、断链 0、括号标题 0）。开工首坑：接管时装的 rumdl 是 x86_64 资产，arm64 主机报 bad CPU type，换 aarch64-apple-darwin 后即通——记 M003（新分类 M103 开发环境安装错误），教训是换机装工具先验架构再进门禁。mac 侧接管由 CI 验证升级为本地实证。
