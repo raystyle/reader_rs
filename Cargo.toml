@@ -1,0 +1,29 @@
+[package]
+name = "reader_rs"
+version = "0.1.0"
+edition = "2021"
+description = "Reader RS：PDF 文档文本搜索与提取工具"
+license = "MIT"
+repository = "https://github.com/raystyle/reader_rs"
+
+[[bin]]
+name = "reader"
+path = "src/main.rs"
+
+[[bin]]
+name = "rr"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+# 选型见 docs\research\S001：firecrawl/pdf-inspector，纯 Rust 默认构建（lopdf 解析），MIT，活跃维护
+pdf-inspector = "1"
+regex = "1"
+
+[dev-dependencies]
+# assert_cmd 与 predicates 为 clap 官方生态标准 CLI 测试件（R002 选型：
+# crates.io 稳定主流、持续维护），只进测试构建。
+assert_cmd = "2"
+predicates = "3"
+# 测试用 PDF 由 lopdf 现造（已是 pdf-inspector 传递依赖，锁定同族版本）
+lopdf = "0.44"
