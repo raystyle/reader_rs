@@ -4,15 +4,16 @@
 
 ## 当前目标
 
-mac 与 Linux 接管开发与跨平台兼容（对应 `GOAL.md`，方案 P0004，登记日 2026-08-31）。**2026-08-31 达成：CI 首跑三系统全绿（run 33378905306）。** 下一刀候选：ROADMAP 阶段 2/3（提取质量、Agent 原生输出形态），待立项。
+PDF 提取质量：markdown 管线与 needs_ocr 提示（对应 `GOAL.md`，方案 P0005，登记日 2026-08-31）。上一目标 P0004 已收官（CI 三系统绿，WSL 本地门禁实证绿）。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 立项 P0004 | 已完成 | `docs\proven\P0004-mac与Linux接管开发与跨平台兼容.md` | 2026-08-31 |
-| CI 三系统矩阵 | 已完成 | `.github\workflows\ci.yml`：windows/ubuntu/macos 跑 fmt/clippy/test --locked，带 rust-cache | 2026-08-31 |
-| 换行符钉 LF | 已完成 | `.gitattributes` 上 `text=auto eol=lf` | 2026-08-31 |
-| 文档双形态 | 已完成 | README 安装/命令 bash 形态；ROADMAP 阶段 4；R001 边界改「CI 接管验证」 | 2026-08-31 |
-| 本地门禁与登记 | 已完成 | 门禁三件与 rumdl 三件套全绿；INDEX/GOAL/CHANGELOG/diary 登记 | 2026-08-31 |
-| CI 首跑验收 | 已完成 | run 33378905306 三系统全 success（约 3.5 分钟）；仅 Node.js 20 弃用注解，不影响 | 2026-08-31 |
+| 立项 P0005 | 已完成 | `docs\proven\P0005-PDF提取质量-markdown管线与needs_ocr提示.md`；三原语与 ROADMAP/INDEX 登记 | 2026-08-31 |
+| pdf.rs 切 markdown 管线 | 进行中 | `extract_pages_markdown` 接管；0/1 基页码换算；朴素行重建删除 | 2026-08-31 |
+| TextUnit 扩展 needs_ocr | 进行中 | `Option<String>` 装原因；EPUB 通道恒 None（与上一项同批落地） | 2026-08-31 |
+| 输出提示两路径 | 未开始 | extract 页节后 `[needs_ocr: 原因]` 行；search stderr 汇总警示 | 2026-08-31 |
+| 测试补强与回归 | 未开始 | 两栏阅读序正例、无文本页检出例、search 警示例；既有 20 测回归 | 2026-08-31 |
+| 真实样本回归与性能观察 | 未开始 | 390 页 PDF 多栏抽查对比旧输出；release 计时对比 S001 基线 0.57s | 2026-08-31 |
+| 收官登记 | 未开始 | P0005 回填、CHANGELOG 破坏性变更行、diary、门禁与提交 | 2026-08-31 |

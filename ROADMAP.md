@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | 0 | 项目基础设施：对照 ohmyagents 的文档与目录；定位为 Agent 原生文档阅读、搜索和提取工具（P0002） | 已完成 |
 | 1 | 最小闭环：search / extract + 集成测试 + 门禁（P0001）；EPUB 支持（P0003） | 已完成 |
-| 2 | 提取质量：多栏阅读序、CJK 与编码问题页提示、扫描件检出提示 | 未开始 |
+| 2 | 提取质量：多栏阅读序、CJK 与编码问题页提示、扫描件检出提示（P0005） | 进行中 |
 | 3 | 输出形态：Agent 原生（JSON 包膜、filter、分页、agent 发现，依据 S002） | 未开始 |
 | 4 | 跨平台接管：CI 三系统门禁、文档双形态（P0004） | 已完成 |
 
@@ -22,7 +22,7 @@ pdf-inspector 提取层；`reader search` / `reader extract`；`rr` 缩写；tes
 
 ## 阶段 2：提取质量
 
-多栏排版阅读序（pdf-inspector layout 管线）；编码问题页与扫描件页明确提示（`needs_ocr` 信号）；大文档性能观察。
+多栏排版阅读序（pdf-inspector layout 管线）；编码问题页与扫描件页明确提示（`needs_ocr` 信号）；大文档性能观察。方案 P0005（PDF 通道整体切 `extract_pages_markdown`，TextUnit 扩展 needs_ocr，extract/search 提示路径）。
 
 ## 阶段 3：输出形态
 

@@ -42,7 +42,7 @@ reader_rs/
   Cargo.toml / LICENSE / .rumdl.toml
   .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-replace）
   src\
-    main.rs  lib.rs  pdf.rs  search.rs
+    main.rs  lib.rs  document.rs  pdf.rs  epub.rs  search.rs
   tests\
     cli.rs
   docs\
@@ -64,6 +64,7 @@ reader_rs/
 | P0002 | `P0002-项目重新定位-Agent原生文档阅读搜索和提取工具.md` | 现役定位（已完成 2026-08-31） |
 | P0003 | `P0003-EPUB支持与格式分派.md` | EPUB 支持（已完成 2026-08-31） |
 | P0004 | `P0004-mac与Linux接管开发与跨平台兼容.md` | CI 三系统门禁（已完成 2026-08-31） |
+| P0005 | `P0005-PDF提取质量-markdown管线与needs_ocr提示.md` | 阶段 2 提取质量（进行中） |
 
 ## 四、项目日记
 
