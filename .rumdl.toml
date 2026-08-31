@@ -1,0 +1,19 @@
+# rumdl：对应 AGENTS 操作规则「写文档时」
+# 保留格式类规则；关闭与中文技术文档冲突的内容风格类。
+
+[global]
+flavor = "standard"
+respect-gitignore = true
+exclude = [".git", "target"]
+
+[MD013]
+enabled = false
+
+[MD041]
+enabled = false
+
+[MD028]
+enabled = false
+
+[MD036]
+enabled = false

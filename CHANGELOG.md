@@ -1,0 +1,15 @@
+# Changelog
+
+本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
+
+## [Unreleased]
+
+### 里程碑
+
+> 文档地基与最小闭环已完成（2026-08-31）。代码尚未发布。
+
+- **项目定位**：Reader RS，PDF 文档文本搜索与提取工具。方案 `docs\proven\P0001-PDF文本搜索与提取CLI最小闭环.md`。
+- **文档骨架**：对照 `D:\ohmyagents` 的四段 AGENTS、三原语、docs 六目录、`.tools` 三件套。
+- **CLI 名**：二进制 `reader` 与 `rr`（同入口双 bin）；项目名 `reader_rs`。
+- **提取引擎**：firecrawl/pdf-inspector 1.17.0（纯 Rust 默认构建，lopdf 解析；选型 `docs\research\S001-PDF文本提取crate选型-pdf-inspector双通道核实.md`）。
+- **最小闭环**：`reader search` / `reader extract` 落地；cargo test 13 过；门禁三件与 rumdl 三件套全绿。

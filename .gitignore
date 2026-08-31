@@ -1,0 +1,11 @@
+/target/
+/.reader_rs/
+.claude/
+.codex/
+.kimi-code/
+.grok/
+.rumdl_cache/
+.DS_Store
+Thumbs.db
+*.evobak
+.secrets/
