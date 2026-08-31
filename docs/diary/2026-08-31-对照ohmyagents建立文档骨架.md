@@ -21,4 +21,4 @@
 
 ## 补记：最小闭环同日达成
 
-P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 bin 同入口；cargo test 13 过（单元 2 + 集成 11），门禁三件与 rumdl 三件套全绿，W3C dummy.pdf 真实冒烟正确。门禁真实拦到两处违规（标题括号、URL 内嵌路径误判），后者记 M001 并首开豁免清单「外部仓内路径」节。git 初始化与提交待用户确认后补。
+P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 bin 同入口；cargo test 13 过（单元 2 + 集成 11），门禁三件与 rumdl 三件套全绿，W3C dummy.pdf 真实冒烟正确。门禁真实拦到两处违规（标题括号、URL 内嵌路径误判），后者记 M001 并首开豁免清单「外部仓内路径」节。git 已初始化并推远端 `https://github.com/raystyle/reader_rs`（main 分支，两笔提交：docs 骨架 + feat 最小闭环）。
