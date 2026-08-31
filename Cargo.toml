@@ -2,7 +2,7 @@
 name = "reader_rs"
 version = "0.1.0"
 edition = "2021"
-description = "Reader RS：PDF 文档文本搜索与提取工具"
+description = "Reader：Agent 原生文档阅读、搜索和提取工具"
 license = "MIT"
 repository = "https://github.com/raystyle/reader_rs"
 
@@ -18,6 +18,10 @@ path = "src/main.rs"
 clap = { version = "4", features = ["derive"] }
 # 选型见 docs\research\S001：firecrawl/pdf-inspector，纯 Rust 默认构建（lopdf 解析），MIT，活跃维护
 pdf-inspector = "1"
+# XHTML 文本化（EPUB 章正文），事件流最小解；0.42 起实体报为 GeneralRef 事件
+quick-xml = "0.42.0"
+# 选型见 docs\research\S003：rbook 读 EPUB 容器与 spine 序（Apache-2.0；epub crate 为 GPL 出局）
+rbook = "0.7.10"
 regex = "1"
 
 [dev-dependencies]

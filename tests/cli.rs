@@ -86,6 +86,45 @@ impl Drop for TestPdf {
     }
 }
 
+const EPUB_CH1_TEXT: &str = "Hello EPUB Reader";
+const EPUB_CH2_TEXT: &str = "Second chapter powershell search";
+
+fn epub_path(name: &str) -> PathBuf {
+    std::env::temp_dir().join(format!("reader_rs_cli_{}_{name}.epub", std::process::id()))
+}
+
+/// 造两章测试 EPUB：章 1 为 EPUB_CH1_TEXT，章 2 为 EPUB_CH2_TEXT。
+fn make_test_epub(path: &Path) -> TestResult {
+    use rbook::epub::{Epub, EpubChapter};
+    Epub::builder()
+        .identifier("urn:reader-rs-test")
+        .title("Reader RS Test Book")
+        .language("en")
+        .chapter([
+            EpubChapter::new("One").xhtml_body(format!("<p>{EPUB_CH1_TEXT}</p>")),
+            EpubChapter::new("Two").xhtml_body(format!("<p>{EPUB_CH2_TEXT}</p>")),
+        ])
+        .write()
+        .save(path)?;
+    Ok(())
+}
+
+struct TestEpub(PathBuf);
+
+impl TestEpub {
+    fn make(name: &str) -> TestResult<Self> {
+        let path = epub_path(name);
+        make_test_epub(&path)?;
+        Ok(Self(path))
+    }
+}
+
+impl Drop for TestEpub {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.0);
+    }
+}
+
 #[test]
 fn runs_help() -> TestResult {
     reader()?
@@ -217,5 +256,64 @@ fn dies_bad_page_spec() -> TestResult {
 #[test]
 fn dies_no_args() -> TestResult {
     reader()?.assert().failure();
+    Ok(())
+}
+
+#[test]
+fn epub_search_finds_keyword_with_chapter() -> TestResult {
+    let epub = TestEpub::make("epub_search")?;
+    reader()?
+        .args(["search"])
+        .arg(&epub.0)
+        .arg("EPUB")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!("1:2:{EPUB_CH1_TEXT}")));
+    Ok(())
+}
+
+#[test]
+fn epub_extract_outputs_chapter_sections() -> TestResult {
+    let epub = TestEpub::make("epub_extract")?;
+    reader()?
+        .args(["extract"])
+        .arg(&epub.0)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("== chapter 1 =="))
+        .stdout(predicate::str::contains("== chapter 2 =="))
+        .stdout(predicate::str::contains(EPUB_CH1_TEXT))
+        .stdout(predicate::str::contains(EPUB_CH2_TEXT));
+    Ok(())
+}
+
+#[test]
+fn epub_pages_filter_selects_chapter() -> TestResult {
+    let epub = TestEpub::make("epub_pages")?;
+    reader()?
+        .args(["extract"])
+        .arg(&epub.0)
+        .args(["--pages", "2"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("== chapter 2 =="))
+        .stdout(predicate::str::contains(EPUB_CH2_TEXT))
+        .stdout(predicate::str::contains("== chapter 1 ==").not())
+        .stdout(predicate::str::contains(EPUB_CH1_TEXT).not());
+    Ok(())
+}
+
+#[test]
+fn dies_unsupported_format() -> TestResult {
+    let path = std::env::temp_dir().join(format!("reader_rs_cli_{}_note.txt", std::process::id()));
+    std::fs::write(&path, "plain text")?;
+    reader()?
+        .args(["search"])
+        .arg(&path)
+        .arg("plain")
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("不支持的格式"));
+    let _ = std::fs::remove_file(&path);
     Ok(())
 }

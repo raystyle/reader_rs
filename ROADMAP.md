@@ -17,7 +17,7 @@ AGENTS 四段职责、GOAL/TODO/PLAN 三原语、guide 元规范 G001-G003、ref
 
 ## 阶段 1：最小闭环
 
-pdf-inspector 提取层；`reader search` / `reader extract`；`rr` 缩写；tests\cli.rs 集成测试；本地门禁三件（fmt / clippy / test --locked）。
+pdf-inspector 提取层；`reader search` / `reader extract`；`rr` 缩写；tests\cli.rs 集成测试；本地门禁三件（fmt / clippy / test --locked）。同阶段完成 EPUB 支持（P0003：rbook 加 quick-xml，TextUnit 格式分派）。
 
 ## 阶段 2：提取质量
 

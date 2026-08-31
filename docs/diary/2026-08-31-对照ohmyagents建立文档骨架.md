@@ -34,3 +34,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：incurs 模块经验研究
 
 用户指定研究 incurs（wevm/incur 的 Rust 移植）。结论：库本体信号弱（1 star、0.5.x）不引为依赖，设计全盘可学——输出包膜（ExecuteResult/OutputEnvelope）、cta 与 next_offset 分页原语、TOON 默认格式与 token 计数、SKILL.md/--llms agent 发现、MCP 命令树投影、OutputPolicy 受众分路。落 S002，五条映射全部列为阶段 3 候选待立项。方法论收获：R002 的「选依赖 vs 选学习对象」分流第一次真实用上。
+
+## 补记：EPUB 支持达成
+
+用户追加 EPUB 需求并给真实样本。选型 S003：`epub` crate GPL-3.0 一票出局（license 一查到底），选 rbook 加 quick-xml。结构升级 TextUnit 统一页/章，搜索层零逻辑改动。三个实测坑：quick-xml 0.42 版本敏感（tag 名 &str、实体 GeneralRef）；行内标签边界丢空格（单元测试抓到）；pre 代码块塌一行（真实样本抓到，加 pre 通道）。cargo test 20 绿，样本 37 章回归正确。P0003 当日达成。

@@ -1,6 +1,8 @@
-//! Reader RS：PDF 文档文本搜索与提取工具。
-//! 薄壳在 `src\main.rs`；本文件承载 CLI 定义、`run()` 分发与页范围解析。
+//! Reader：Agent 原生文档阅读、搜索和提取工具（当前支持 PDF 与 EPUB）。
+//! 薄壳在 `src\main.rs`；本文件承载 CLI 定义、`run()` 分发与页/章范围解析。
 
+pub mod document;
+pub mod epub;
 pub mod pdf;
 pub mod search;
 
@@ -9,7 +11,11 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
-#[command(name = "reader", version, about = "PDF 文档文本搜索与提取工具")]
+#[command(
+    name = "reader",
+    version,
+    about = "Agent 原生文档阅读、搜索和提取工具（PDF / EPUB）"
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -17,9 +23,9 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// 按页搜索 PDF 文本（命中退出 0，无命中退出 1，出错退出 2）
+    /// 按页/章搜索文档文本（命中退出 0，无命中退出 1，出错退出 2）
     Search {
-        /// PDF 文件路径
+        /// 文档路径（.pdf / .epub）
         file: PathBuf,
         /// 关键词；`--regex` 时按正则解释
         pattern: String,
@@ -32,15 +38,15 @@ enum Commands {
         /// 命中行前后各带 N 行上下文
         #[arg(short = 'C', long, default_value_t = 0)]
         context: usize,
-        /// 限定页范围（1 起），如 1-3,5
+        /// 限定页/章范围（1 起），如 1-3,5
         #[arg(long)]
         pages: Option<String>,
     },
-    /// 按页提取 PDF 文本（默认输出到 stdout）
+    /// 按页/章提取文档文本（默认输出到 stdout）
     Extract {
-        /// PDF 文件路径
+        /// 文档路径（.pdf / .epub）
         file: PathBuf,
-        /// 限定页范围（1 起），如 1-3,5
+        /// 限定页/章范围（1 起），如 1-3,5
         #[arg(long)]
         pages: Option<String>,
         /// 写入文件（缺省输出到 stdout）
@@ -87,15 +93,15 @@ fn run_search(
 ) -> Result<bool, String> {
     let page_set = parse_optional_pages(pages)?;
     let matcher = search::Matcher::new(pattern, regex_mode, ignore_case)?;
-    let extracted = pdf::extract_pages(file, page_set.as_ref())?;
+    let extracted = document::extract(file, page_set.as_ref())?;
     let hits = search::search(&extracted, &matcher, context);
     for hit in &hits {
         for (line_no, text) in &hit.before {
-            println!("{}-{}-{}", hit.page, line_no, text);
+            println!("{}-{}-{}", hit.unit, line_no, text);
         }
-        println!("{}:{}:{}", hit.page, hit.line_no, hit.text);
+        println!("{}:{}:{}", hit.unit, hit.line_no, hit.text);
         for (line_no, text) in &hit.after {
-            println!("{}-{}-{}", hit.page, line_no, text);
+            println!("{}-{}-{}", hit.unit, line_no, text);
         }
     }
     Ok(!hits.is_empty())
@@ -103,11 +109,11 @@ fn run_search(
 
 fn run_extract(file: &Path, pages: Option<String>, out: Option<PathBuf>) -> Result<(), String> {
     let page_set = parse_optional_pages(pages)?;
-    let extracted = pdf::extract_pages(file, page_set.as_ref())?;
+    let extracted = document::extract(file, page_set.as_ref())?;
     let mut buf = String::new();
-    for page in &extracted {
-        buf.push_str(&format!("== page {} ==\n", page.page));
-        for line in &page.lines {
+    for unit in &extracted {
+        buf.push_str(&format!("== {} {} ==\n", unit.kind.label(), unit.no));
+        for line in &unit.lines {
             buf.push_str(line);
             buf.push('\n');
         }

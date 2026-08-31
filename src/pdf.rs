@@ -1,31 +1,27 @@
-//! 按页文本提取与行重建：包 pdf-inspector 的位置感知提取。
+//! PDF 页提取与行重建：包 pdf-inspector 的位置感知提取。
 
+use crate::document::{TextUnit, UnitKind};
 use pdf_inspector::{extract_text_with_positions_pages, TextItem};
 use std::collections::{BTreeMap, HashSet};
 use std::path::Path;
 
-/// 一页的重建文本行。`page` 为 1 起页码，`lines` 按页面从上往下排序。
-pub struct PageText {
-    pub page: u32,
-    pub lines: Vec<String>,
-}
-
-/// 提取指定页（`None` 为全部页，页码 1 起）并重建文本行。
-pub fn extract_pages(path: &Path, pages: Option<&HashSet<u32>>) -> Result<Vec<PageText>, String> {
+/// 提取指定页（`None` 为全部页，页码 1 起）并重建文本行，行按页面从上往下排序。
+pub fn extract_pages(path: &Path, pages: Option<&HashSet<u32>>) -> Result<Vec<TextUnit>, String> {
     let items = extract_text_with_positions_pages(path, pages)
         .map_err(|e| format!("无法读取 PDF {}: {e}", path.display()))?;
     Ok(group_into_pages(items))
 }
 
-fn group_into_pages(items: Vec<TextItem>) -> Vec<PageText> {
+fn group_into_pages(items: Vec<TextItem>) -> Vec<TextUnit> {
     let mut by_page: BTreeMap<u32, Vec<TextItem>> = BTreeMap::new();
     for item in items {
         by_page.entry(item.page).or_default().push(item);
     }
     by_page
         .into_iter()
-        .map(|(page, items)| PageText {
-            page,
+        .map(|(page, items)| TextUnit {
+            no: page,
+            kind: UnitKind::Page,
             lines: items_to_lines(items),
         })
         .collect()

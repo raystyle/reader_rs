@@ -27,8 +27,10 @@
 | `.tools\md-heading-scan.py` | 标题括号规范机检 |
 | `.tools\md-replace.py` | 中文与反斜杠路径安全的字面批量替换 |
 | `src\main.rs` | 薄壳入口（reader / rr 双 bin 共用） |
-| `src\lib.rs` | clap CLI 定义、`run()` 分发、页范围解析 |
-| `src\pdf.rs` | 按页提取与行重建（包 pdf-inspector） |
+| `src\lib.rs` | clap CLI 定义、`run()` 分发、页/章范围解析 |
+| `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/章） |
+| `src\pdf.rs` | PDF 页提取与行重建（包 pdf-inspector） |
+| `src\epub.rs` | EPUB 章提取（rbook spine 序）与 XHTML 文本化（quick-xml） |
 | `src\search.rs` | 匹配器（字面/正则/忽略大小写）与命中收集 |
 | `tests\cli.rs` | CLI 集成冒烟与正负例 |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
@@ -60,6 +62,7 @@ reader_rs/
 | --- | --- | --- |
 | P0001 | `P0001-PDF文本搜索与提取CLI最小闭环.md` | 首期切面（已完成 2026-08-31） |
 | P0002 | `P0002-项目重新定位-Agent原生文档阅读搜索和提取工具.md` | 现役定位（已完成 2026-08-31） |
+| P0003 | `P0003-EPUB支持与格式分派.md` | EPUB 支持（已完成 2026-08-31） |
 
 ## 四、项目日记
 
@@ -75,6 +78,7 @@ reader_rs/
 | --- | --- | --- |
 | S001 | `S001-PDF文本提取crate选型-pdf-inspector双通道核实.md` | 提取引擎选型（双通道） |
 | S002 | `S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md` | Agent 原生输出/帮助设计借鉴 |
+| S003 | `S003-EPUB解析crate选型-rbook双通道核实.md` | EPUB 解析选型（rbook 加 quick-xml） |
 
 ## 六、开发测试参考
 

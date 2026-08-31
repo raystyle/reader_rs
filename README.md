@@ -21,7 +21,8 @@ cargo build
 cargo run --bin reader -- search .\document.pdf "关键词"
 cargo run --bin reader -- search .\document.pdf "r.st" --regex -i -C 2
 cargo run --bin reader -- extract .\document.pdf --pages 1-3,5
-cargo run --bin rr -- extract .\document.pdf -o out.txt
+cargo run --bin reader -- search .\book.epub "Get-Process" -C 1
+cargo run --bin rr -- extract .\book.epub -o out.txt
 ```
 
 ## 目录结构
