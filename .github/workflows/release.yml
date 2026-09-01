@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-13
+            target: x86_64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+      - name: 校验 tag 与 Cargo.toml 版本一致
+        shell: bash
+        run: grep -q "^version = \"${GITHUB_REF_NAME#v}\"$" Cargo.toml
+      - run: cargo build --release --locked --target ${{ matrix.target }}
+      - name: 打包 zip（Windows）
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $stage = "reader-${env:GITHUB_REF_NAME}-${{ matrix.target }}"
+          New-Item -ItemType Directory $stage | Out-Null
+          Copy-Item "target\${{ matrix.target }}\release\reader.exe", "target\${{ matrix.target }}\release\rr.exe", README.md, LICENSE, SKILL.md $stage
+          Compress-Archive $stage "$stage.zip"
+          (Get-FileHash "$stage.zip" -Algorithm SHA256).Hash.ToLower() + "  $stage.zip" | Out-File -Encoding ascii "$stage.zip.sha256"
+      - name: 打包 tar.gz（macOS / Linux）
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          stage="reader-${GITHUB_REF_NAME}-${{ matrix.target }}"
+          mkdir "$stage"
+          cp "target/${{ matrix.target }}/release/reader" "target/${{ matrix.target }}/release/rr" README.md LICENSE SKILL.md "$stage"/
+          tar -czf "$stage.tar.gz" "$stage"
+          shasum -a 256 "$stage.tar.gz" > "$stage.tar.gz.sha256"
+      - name: 上传 release 资产
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --generate-notes || true
+          gh release upload "${GITHUB_REF_NAME}" "reader-${GITHUB_REF_NAME}-${{ matrix.target }}."* --clobber

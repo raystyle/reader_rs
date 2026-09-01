@@ -6,6 +6,15 @@ Agent 原生文档阅读、搜索和提取工具。Rust 单二进制 CLI，从�
 
 前置：Rust 工具链（1.88+，推荐 <https://rustup.rs>）。支持 Windows / macOS / Linux，CI 三系统门禁见 `.github\workflows\ci.yml`。
 
+预编译二进制（无 Rust 工具链时用）：[GitHub Releases](https://github.com/raystyle/reader_rs/releases) 页按平台取资产，解压即得 `reader` 与 `rr`（Windows 为 `.exe`），同附 README、LICENSE、SKILL.md 与 `.sha256` 校验文件：
+
+| 资产 | 平台 |
+| --- | --- |
+| `reader-v<版本>-x86_64-pc-windows-msvc.zip` | Windows x86_64 |
+| `reader-v<版本>-x86_64-unknown-linux-gnu.tar.gz` | Linux x86_64 |
+| `reader-v<版本>-aarch64-apple-darwin.tar.gz` | macOS Apple 芯片 |
+| `reader-v<版本>-x86_64-apple-darwin.tar.gz` | macOS Intel |
+
 从源码安装（`reader` 与 `rr` 两个命令一起装）：
 
 ```bash
