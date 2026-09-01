@@ -3,11 +3,12 @@
 
 pub mod document;
 pub mod epub;
+pub mod introspect;
 pub mod output;
 pub mod pdf;
 pub mod search;
 
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
 use serde_json::{json, Value};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -33,13 +34,21 @@ struct OutputOpts {
     about = "Agent 原生文档阅读、搜索和提取工具（PDF / EPUB）"
 )]
 struct Cli {
+    /// 输出紧凑命令索引（agent 发现用；skill 子命令给长形态 SKILL.md）
+    #[arg(long)]
+    llms: bool,
     #[command(subcommand)]
-    command: Commands,
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
 enum Commands {
     /// 按页/章搜索文档文本（命中退出 0，无命中退出 1，出错退出 2）
+    #[command(after_long_help = "\
+示例:
+  reader search ./doc.pdf \"error\" -i -C 1
+  reader search ./doc.pdf \"err(or|code)\" --regex --pages 2-10
+  reader search ./book.epub \"Get-Process\" --format json --filter 'hits[].unit'")]
     Search {
         /// 文档路径（.pdf / .epub）
         file: PathBuf,
@@ -65,6 +74,11 @@ enum Commands {
         filter: Option<String>,
     },
     /// 按页/章提取文档文本（默认输出到 stdout）
+    #[command(after_long_help = "\
+示例:
+  reader extract ./doc.pdf
+  reader extract ./doc.pdf --pages 1-3,5
+  reader extract ./book.epub --format json --offset 0 --limit 5")]
     Extract {
         /// 文档路径（.pdf / .epub）
         file: PathBuf,
@@ -87,12 +101,23 @@ enum Commands {
         #[arg(long)]
         limit: Option<usize>,
     },
+    /// 生成 SKILL.md（agent 发现与接入文档；--llms 给紧凑索引）
+    Skill,
 }
 
 /// CLI 入口：返回进程退出码。
 pub fn run() -> i32 {
-    match Cli::parse().command {
-        Commands::Search {
+    let cli = Cli::parse();
+    if cli.llms {
+        print!("{}", introspect::llms_text());
+        return 0;
+    }
+    match cli.command {
+        Some(Commands::Skill) => {
+            print!("{}", introspect::skill_md());
+            0
+        }
+        Some(Commands::Search {
             file,
             pattern,
             regex,
@@ -101,7 +126,7 @@ pub fn run() -> i32 {
             pages,
             format,
             filter,
-        } => {
+        }) => {
             let opts = OutputOpts { format, filter };
             match run_search(&file, &pattern, regex, ignore_case, context, pages, &opts) {
                 Ok(true) => 0,
@@ -109,7 +134,7 @@ pub fn run() -> i32 {
                 Err(err) => fail("search", opts.format, err),
             }
         }
-        Commands::Extract {
+        Some(Commands::Extract {
             file,
             pages,
             out,
@@ -117,12 +142,17 @@ pub fn run() -> i32 {
             filter,
             offset,
             limit,
-        } => {
+        }) => {
             let opts = OutputOpts { format, filter };
             match run_extract(&file, pages, out, &opts, offset, limit) {
                 Ok(()) => 0,
                 Err(err) => fail("extract", opts.format, err),
             }
+        }
+        // 裸 reader（无子命令无旗标）：帮助走 stderr，退出 2（保持 clap 必填子命令时的语义）
+        None => {
+            eprintln!("{}", Cli::command().render_help());
+            2
         }
     }
 }
@@ -134,6 +164,11 @@ fn fail(command: &'static str, format: Format, err: String) -> i32 {
     }
     eprintln!("reader: {err}");
     2
+}
+
+/// 暴露 clap 命令树（tests 的旗标漂移守卫用；P0007）。
+pub fn command_tree() -> clap::Command {
+    Cli::command()
 }
 
 fn run_search(

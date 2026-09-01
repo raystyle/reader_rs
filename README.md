@@ -29,9 +29,26 @@ reader --version
 reader --help
 ```
 
+## Agent 发现与 SKILL 安装
+
+面向编码 agent 的自省接口：
+
+```bash
+reader --llms     # 紧凑命令索引（省 token 形态）
+reader skill      # 输出 SKILL.md 全文（frontmatter + 命令 + 输出契约 + 退出码 + 示例）
+```
+
+把 SKILL 装给 agent（项目根目录放一份，多数编码 agent 会自动发现）：
+
+```bash
+reader skill > SKILL.md
+```
+
+仓根已提交一份 `SKILL.md`，与运行时输出逐字节一致（集成测试做漂移守卫）；升级版本后用上面命令刷新即可。
+
 ## 命令
 
-两个子命令：`search`（搜）与 `extract`（取）。输入文件按扩展名分派：`.pdf` 按页、`.epub` 按章（spine 阅读序）。
+两个文档子命令：`search`（搜）与 `extract`（取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）。输入文件按扩展名分派：`.pdf` 按页、`.epub` 按章（spine 阅读序）。
 
 ### search 搜索
 

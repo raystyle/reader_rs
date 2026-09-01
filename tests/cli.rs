@@ -658,3 +658,86 @@ fn dies_unsupported_format() -> TestResult {
     let _ = std::fs::remove_file(&path);
     Ok(())
 }
+
+// ---------- Agent 自省与发现（P0007） ----------
+
+#[test]
+fn llms_outputs_compact_index() -> TestResult {
+    reader()?
+        .arg("--llms")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("reader search"))
+        .stdout(predicate::str::contains("reader extract"))
+        .stdout(predicate::str::contains("reader skill"))
+        .stdout(predicate::str::contains("退出码"));
+    Ok(())
+}
+
+#[test]
+fn skill_outputs_skill_md() -> TestResult {
+    reader()?
+        .arg("skill")
+        .assert()
+        .success()
+        .stdout(predicate::str::starts_with("---\nname: reader"))
+        .stdout(predicate::str::contains("## 命令"))
+        .stdout(predicate::str::contains("## 退出码"))
+        .stdout(predicate::str::contains("--offset"));
+    Ok(())
+}
+
+/// 漂移守卫一：clap 命令树的每个 long 旗标都必须出现在 --llms 与 skill 输出里
+///（期望值来自 clap 命令树本身，独立于 curated 文本；新增参数漏登记会当场红）。
+#[test]
+fn introspection_texts_cover_all_clap_flags() -> TestResult {
+    let cmd = reader_rs::command_tree();
+    let llms = reader_rs::introspect::llms_text();
+    let skill = reader_rs::introspect::skill_md();
+    let mut missing = Vec::new();
+    let mut check = |long: &str, scope: &str| {
+        if long == "help" || long == "version" {
+            return;
+        }
+        for (name, text) in [("--llms", &llms), ("skill", &skill)] {
+            if !text.contains(&format!("--{long}")) {
+                missing.push(format!("{scope} --{long} 未见于 {name}"));
+            }
+        }
+    };
+    for arg in cmd.get_arguments() {
+        if let Some(long) = arg.get_long() {
+            check(long, "顶层");
+        }
+    }
+    for sub in cmd.get_subcommands() {
+        for arg in sub.get_arguments() {
+            if let Some(long) = arg.get_long() {
+                check(long, sub.get_name());
+            }
+        }
+    }
+    assert!(missing.is_empty(), "旗标漂移:\n{}", missing.join("\n"));
+    Ok(())
+}
+
+/// 漂移守卫二：仓根 SKILL.md 与 `reader skill` 运行时输出逐字节一致。
+#[test]
+fn committed_skill_md_matches_runtime_output() -> TestResult {
+    let committed =
+        std::fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("SKILL.md"))?;
+    assert_eq!(committed, reader_rs::introspect::skill_md());
+    Ok(())
+}
+
+/// help 的 examples 节（S002 结论 7：examples 是 agent 读帮助的关键节）。
+#[test]
+fn search_help_contains_examples() -> TestResult {
+    reader()?
+        .args(["search", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("示例:"))
+        .stdout(predicate::str::contains("reader search ./doc.pdf"));
+    Ok(())
+}
