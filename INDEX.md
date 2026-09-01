@@ -30,7 +30,8 @@
 | `src\lib.rs` | clap CLI 定义、`run()` 分发、页/章范围解析 |
 | `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/节，含 needs_ocr 信号） |
 | `src\pdf.rs` | PDF 页提取（pdf-inspector markdown 布局管线：多栏阅读序、needs_ocr） |
-| `src\anydoc.rs` | anydoc 家族提取（Word/EPUB/ODT/RTF/Office/CSV 出 GFM，按顶层标题分节；P0009） |
+| `src\anydoc.rs` | anydoc 家族提取（Word/EPUB/ODT/RTF/Office/CSV 出 GFM，按顶层标题分节，超 200 行单元切 part；P0009-P0011） |
+| `src\batch.rs` | 批量目录搜索（递归走查加两形态聚合；P0012） |
 | `src\search.rs` | 匹配器（字面/正则/忽略大小写）与命中收集 |
 | `src\output.rs` | JSON 包膜（ok/data/error 加 meta）、filter 点路径裁剪、cta 生成 |
 | `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
@@ -73,9 +74,9 @@ reader_rs/
 | P0008 | `P0008-封版v0.1与三端二进制release.md` | 封版 v0.1.0 与 release 流水线（已完成 2026-08-31） |
 | P0009 | `P0009-anydoc统一文档引擎大重构.md` | anydoc 统一引擎与 14 格式（已完成 2026-09-01，v0.2.0 已发布） |
 | P0010 | `P0010-无标题长文档行分片.md` | 无标题文档 part 分片（已完成 2026-09-01） |
-| P0011 | `P0011-超长节再分片.md` | 超长节 part 再分片（进行中 2026-09-01） |
-| P0012 | `P0012-批量目录搜索.md` | 批量目录搜索（进行中 2026-09-01） |
-| P0013 | `P0013-musl静态Linux资产.md` | musl 静态资产（进行中 2026-09-01） |
+| P0011 | `P0011-超长节再分片.md` | 超长节 part 再分片（已完成 2026-09-01） |
+| P0012 | `P0012-批量目录搜索.md` | 批量目录搜索（已完成 2026-09-01） |
+| P0013 | `P0013-musl静态Linux资产.md` | musl 静态资产（进行中，验收挂 v0.2.1 tag） |
 
 ## 四、项目日记
 
