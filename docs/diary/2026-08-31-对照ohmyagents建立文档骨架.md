@@ -78,10 +78,11 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 ## 补记：mac 本地接管验收
 
 mac（arm64）本地门禁六件一次全绿 [实证]：fmt / clippy（冷缓存 13.6s）/ test --locked（34 测全过，单元 7 加集成 27，与 P0006 收官记录一致）加 rumdl 三件套（28 文件零告警、断链 0、括号标题 0）。开工首坑：接管时装的 rumdl 是 x86_64 资产，arm64 主机报 bad CPU type，换 aarch64-apple-darwin 后即通——记 M003（新分类 M103 开发环境安装错误），教训是换机装工具先验架构再进门禁。mac 侧接管由 CI 验证升级为本地实证。
+
 ## 补记：mac 与 Linux 实机验收通过
 
 用户在 lan-mac（macOS）与 lan-linux 实机完成接管验收 [实证: 2026-08-31 用户验收确认]。P0004 原定的验收边界是「以 CI 为验收面、不做实机实测」，本轮由用户实机验收补齐：CI 绿加三平台实机过，跨平台开发测试面全部实证可用。两份真实测试样本（PDF 与 EPUB）前已 scp 至两台实机 home 目录，接管面完整。
 
 ## 补记：P0007 立项与达成
 
-用户核对 S002 落地进度，点名补齐 incurs 自省发现侧并要求命令集成 SKILL。落地三件：`reader --llms` 紧凑索引、`reader skill` 生成 SKILL.md（仓根提交）、help examples 节，零新依赖。关键设计：curated 文本加双漂移守卫——clap 命令树遍历断言旗标全覆盖（新参数漏登记当场红）、仓根 SKILL.md 与运行时输出逐字节一致；替代 incurs 的命令树自动生成加哈希过期检测，省一层生成器复杂度。裸 reader 语义保持（帮助走 stderr 退出 2）。39 测全绿（单元 7 加集成 32）。README 加「Agent 发现（SKILL 安装）」节。mac/Linux 实机验收同日由用户确认通过，P0004 验收边界由 CI 补齐为实机实证。
+用户核对 S002 落地进度，点名补齐 incurs 自省发现侧并要求命令集成 SKILL。落地三件：`reader --llms` 紧凑索引、`reader skill` 生成 SKILL.md（仓根提交）、help examples 节，零新依赖。关键设计：curated 文本加双漂移守卫——clap 命令树遍历断言旗标全覆盖（新参数漏登记当场红）、仓根 SKILL.md 与运行时输出逐字节一致；替代 incurs 的命令树自动生成加哈希过期检测，省一层生成器复杂度。裸 reader 语义保持（帮助走 stderr 退出 2）。39 测全绿（单元 7 加集成 32）。README 加「Agent 发现与 SKILL 安装」节。mac/Linux 实机验收同日由用户确认通过，P0004 验收边界由 CI 补齐为实机实证。
