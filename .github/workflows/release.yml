@@ -18,6 +18,9 @@ jobs:
             target: x86_64-pc-windows-msvc
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+          # musl 静态资产（P0013）：Alpine / 容器 / 最小镜像场景；musl-tools 供 zstd-sys 等 C 编译
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
           - os: macos-latest
             target: aarch64-apple-darwin
           # Intel mac 在 ARM runner 上交叉编译（同 Xcode SDK 双架构）；macos-13 Intel runner 已退役无容量
@@ -29,6 +32,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
+      - name: 装 musl 工具链
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
       - uses: Swatinem/rust-cache@v2
       - name: 校验 tag 与 Cargo.toml 版本一致
         shell: bash
