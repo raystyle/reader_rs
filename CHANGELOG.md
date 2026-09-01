@@ -4,7 +4,9 @@
 
 ## [Unreleased]
 
-> anydoc 统一文档引擎大重构（P0009，2026-09-01）：格式面 2 种扩到 14 种。**破坏性变更**：EPUB 单元由 spine 章（`== chapter N ==`）改为标题节（`== section N ==`）。
+## [0.2.0] - 2026-09-01
+
+> anydoc 统一文档引擎大重构（P0009）：格式面 2 种扩到 14 种。**破坏性变更**：EPUB 单元由 spine 章（`== chapter N ==`）改为标题节（`== section N ==`）。
 
 - **统一文档引擎（破坏性变更）**：Word（含 legacy .doc 直读）/ EPUB / ODT / RTF / PowerPoint / Excel / ODF / CSV 统一走 anydoc 0.2.4（firecrawl，MIT）出 GFM markdown，按顶层标题分节；PDF 保持 pdf-inspector 直连（页契约、页级 needs_ocr 原样，与 anydoc 自身对 PDF 的架构一致）。选型双通道核实与保真实测记 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`（含决策变更记录），方案 `docs\proven\P0009-anydoc统一文档引擎大重构.md`。
 - **依赖树**：`rbook` 与 `quick-xml` 退出主依赖（rbook 转 dev-dependency 造 EPUB 夹具；`zip` 进 dev-dependency 造 docx 夹具）。
