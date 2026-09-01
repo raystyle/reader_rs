@@ -4,14 +4,13 @@
 
 ## 当前目标
 
-anydoc 统一文档引擎大重构（对应 `GOAL.md`，方案 P0009，登记日 2026-09-01）。**2026-09-01 达成并发布 v0.2.0**：格式面 2 到 14 种，37 集成加 9 单元测试全绿，真样本四路回归；CI 三系统绿、Release 四 job 绿 8 资产齐、本机 sha256 与三格式实测过（发布中 M005 跨平台路径坑，重切 tag 一次）。EPUB 单元由章改节（破坏性变更记 CHANGELOG）。下版候选（MCP、TOON、musl、包管理器分发、无标题长文档分节策略等）待立项。
+用户点名两项按序推进（登记日 2026-09-01）：其一 P0010 无标题长文档行分片（收窄 P0009 已知限制）；其二 TOON 输出形态前置研究 S005（S002 遗留假设：中文 token 收益未验证，测完再定是否立项 `--format toon`）。v0.2.0 已发布（2026-09-01，见 CHANGELOG）。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| S004 选型研究（docx 双路线） | 已完成 | 自解加 office_oxide 对照；anydoc 补测全绿；决策变更记录 | 2026-09-01 |
-| 立项 P0009 | 已完成 | 方案、三原语、INDEX 登记 | 2026-09-01 |
-| 引擎切换 | 已完成 | Cargo 依赖手术、`src\anydoc.rs`、`document.rs` 分派、删 `epub.rs`；feat 提交 e110e71 | 2026-09-01 |
-| 测试与夹具 | 已完成 | docx/csv 夹具用例、legacy.doc 仓内资产、EPUB 断言改 section（含章界坑修正） | 2026-09-01 |
-| 文案与收官 | 已完成 | lib/introspect/SKILL 再生成、门禁全绿、真样本回归、CHANGELOG/README/AGENTS/INDEX/ROADMAP/diary、P0009 回填 | 2026-09-01 |
+| 立项 P0010 | 进行中 | 方案、三原语、INDEX 登记 | 2026-09-01 |
+| 行分片实现 | 未开始 | `UnitKind::Part`、分节信号、`chunk_lines`、单元测试 | 2026-09-01 |
+| 集成测试与文案 | 未开始 | 300 行 CSV 夹具断言、introspect/SKILL/README/CHANGELOG | 2026-09-01 |
+| S005 TOON 收益实测 | 未开始 | toon-format 双通道核实加 Reader 真样本 JSON 对照（中英文） | 2026-09-01 |
