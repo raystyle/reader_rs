@@ -25,6 +25,11 @@ regex = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
+[target.'cfg(unix)'.dependencies]
+# SIGPIPE 恢复默认处置用（M007）：管道读者早退（`reader … | head`）按 Unix 惯例
+# 静默终止，不 panic；已是 anydoc 家族传递依赖，此处升为直接依赖
+libc = "0.2"
+
 [dev-dependencies]
 # assert_cmd 与 predicates 为 clap 官方生态标准 CLI 测试件（R002 选型：
 # crates.io 稳定主流、持续维护），只进测试构建。

@@ -1071,3 +1071,37 @@ fn search_help_contains_examples() -> TestResult {
         .stdout(predicate::str::contains("reader search ./doc.pdf"));
     Ok(())
 }
+
+/// M007：管道读者早退（`| head` 同型）时按 Unix 惯例死于 SIGPIPE（信号 13），
+/// 不 panic 不喷 stderr。大输出夹具必须超过管道缓冲（Linux 默认 64KB），
+/// 保证关闭管道前 writer 仍在写、死因确定是 SIGPIPE 而非自然写完。
+#[cfg(unix)]
+#[test]
+fn sigpipe_on_closed_stdout_kills_quietly() -> TestResult {
+    use std::io::Read;
+    use std::os::unix::process::ExitStatusExt;
+    use std::process::Stdio;
+
+    let path = pdf_path("sigpipe");
+    let filler = "filler ".repeat(40); // 约 280B/页 × 400 页 ≈ 110KB
+    let pages: Vec<Vec<TextLine>> = (0..400).map(|_| vec![line(&filler, 72, 720)]).collect();
+    make_pdf_with(&path, &pages)?;
+
+    let mut child = std::process::Command::new(env!("CARGO_BIN_EXE_reader"))
+        .args(["extract", path.to_str().expect("临时路径应可转 str")])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()?;
+    let mut stdout = child.stdout.take().expect("piped stdout");
+    let mut first = [0u8; 16];
+    stdout.read_exact(&mut first)?; // 读首块确认子进程已开写
+    drop(stdout); // 模拟 head 早退关闭管道
+    let status = child.wait()?;
+    let _ = std::fs::remove_file(&path);
+    assert_eq!(
+        status.signal(),
+        Some(13),
+        "应死于 SIGPIPE（信号 13），实际 {status:?}"
+    );
+    Ok(())
+}
