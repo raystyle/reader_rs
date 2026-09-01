@@ -13,7 +13,7 @@ reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] 
 reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
 reader --llms — 本索引
 退出码: 0 成功或命中 / 1 无命中（仅 search） / 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）
-输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N == 或 == section N ==
+输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（无标题长文按 200 行分片）
 输出 json: {{\"ok\":bool,\"data\":...,\"meta\":{{command,duration_ms[,next_offset,cta]}}}}；--filter 点路径裁剪 data（如 hits[].text）
 不可靠页: 扫描件或编码问题页以 needs_ocr 提示（extract 节头后提示行，search 走 stderr），不做 OCR
 "
@@ -78,8 +78,8 @@ reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] 
 
 text 形态（缺省）：
 
-- search 命中行 `单元:行号:文本`；上下文行 `单元-行号-文本`。PDF 单元是页，其余格式单元是标题节。
-- extract 按单元分节，节头 `== page N ==` 或 `== section N ==`；输出行为 markdown 形态（标题、链接、表格语法；anydoc 家族为 GFM）。
+- search 命中行 `单元:行号:文本`；上下文行 `单元-行号-文本`。PDF 单元是页，其余格式单元是标题节；无标题长文按 200 行分片为 part。
+- extract 按单元分节，节头 `== page N ==`、`== section N ==` 或 `== part N ==`；输出行为 markdown 形态（标题、链接、表格语法；anydoc 家族为 GFM）。
 - 文本层不可靠页（扫描件、编码问题，仅 PDF）：extract 在节头后出 `[needs_ocr: 原因]` 提示行；search 走 stderr 警示，stdout 不混入。
 
 json 形态（`--format json`，compact 单行）：

@@ -749,9 +749,9 @@ fn docx_pages_filter_selects_section() -> TestResult {
     Ok(())
 }
 
-/// CSV 无签名格式：靠扩展名命名，无标题整篇一单元。
+/// CSV 无签名格式：靠扩展名命名；无标题小文档整篇一个 part（P0010 起 section 只给有标题文档）。
 #[test]
-fn csv_extracts_single_section() -> TestResult {
+fn csv_extracts_single_part() -> TestResult {
     let path = std::env::temp_dir().join(format!("reader_rs_cli_{}_note.csv", std::process::id()));
     std::fs::write(&path, "name,note\nReader,rust 搜索\n")?;
     reader()?
@@ -759,8 +759,46 @@ fn csv_extracts_single_section() -> TestResult {
         .arg(&path)
         .assert()
         .success()
-        .stdout(predicate::str::contains("== section 1 =="))
+        .stdout(predicate::str::contains("== part 1 =="))
         .stdout(predicate::str::contains("Reader"));
+    let _ = std::fs::remove_file(&path);
+    Ok(())
+}
+
+/// 无标题长文档按 200 行预算分片为 part：分页与 --pages 恢复可用（P0010）。
+#[test]
+fn headingless_long_csv_chunks_into_parts() -> TestResult {
+    let path = std::env::temp_dir().join(format!("reader_rs_cli_{}_long.csv", std::process::id()));
+    let mut csv = String::from("idx,payload\n");
+    for i in 0..300 {
+        csv.push_str(&format!("{i},row-{i}-数据\n"));
+    }
+    std::fs::write(&path, csv)?;
+    let out = stdout_of(reader()?.args(["extract"]).arg(&path))?;
+    assert!(
+        out.contains("== part 1 ==") && out.contains("== part 2 =="),
+        "302 行应分 2 片:\n{out}"
+    );
+    assert!(!out.contains("== part 3 =="));
+    assert!(out.contains("row-299-数据"));
+    let p2 = stdout_of(
+        reader()?
+            .args(["extract"])
+            .arg(&path)
+            .args(["--pages", "2"]),
+    )?;
+    assert!(p2.contains("row-299-数据"));
+    assert!(
+        !p2.contains("row-0-数据"),
+        "--pages 2 不应含 part 1 行:\n{p2}"
+    );
+    let v = json_stdout(
+        reader()?
+            .args(["extract"])
+            .arg(&path)
+            .args(["--format", "json", "--limit", "1"]),
+    )?;
+    assert_eq!(v["data"]["units"][0]["kind"], serde_json::json!("part"));
     let _ = std::fs::remove_file(&path);
     Ok(())
 }

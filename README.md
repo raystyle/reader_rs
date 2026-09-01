@@ -109,7 +109,7 @@ reader extract <文件> [--pages 范围] [-o 输出文件]
 | `--offset N` | 跳过前 N 个单元（0 起；两形态同用），大文档分页读 |
 | `--limit M` | 最多输出 M 个单元；JSON 形态有剩余时 meta 带 `next_offset` 与 `cta` |
 
-输出格式：按单元分节，节头为 `== page N ==`（PDF）或 `== section N ==`（其余格式），随后为该页/节的文本行；输出行为 markdown 形态（PDF 走 pdf-inspector 布局管线，anydoc 家族为 GFM：标题、表格、列表、代码块）。文本层不可靠页（扫描件、编码问题、乱码、空提取，仅 PDF）在节头后第一行给 `[needs_ocr: 原因]` 提示。退出码：成功 0，出错 2。
+输出格式：按单元分节，节头为 `== page N ==`（PDF）、`== section N ==`（有标题文档）或 `== part N ==`（无标题长文按 200 行分片），随后为该单元的文本行；输出行为 markdown 形态（PDF 走 pdf-inspector 布局管线，anydoc 家族为 GFM：标题、表格、列表、代码块）。文本层不可靠页（扫描件、编码问题、乱码、空提取，仅 PDF）在节头后第一行给 `[needs_ocr: 原因]` 提示。退出码：成功 0，出错 2。
 
 示例：
 
@@ -150,11 +150,11 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 | PowerPoint（.ppt(x) 等） | 标题节 | anydoc（含备注） |
 | Excel（.xls / .xlsx / .xlsm / .xlsb） | 标题节 | anydoc（表格通道） |
 | ODF 表格与演示（.ods / .odp） | 标题节 | anydoc |
-| CSV（.csv） | 标题节（无标题则整篇一节） | anydoc；无签名格式按扩展名识别 |
+| CSV（.csv） | part 分片（200 行） | anydoc；无签名格式按扩展名识别；无标题格式天然走分片 |
 
 选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`，重构方案 `docs\proven\P0009-anydoc统一文档引擎大重构.md`。
 
-边界：只读、不渲染、不编辑、不做 OCR；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，不识别。文本质量承诺面向英文与中文内容。无标题长文档整篇一节，`--pages` 不可细分（已知限制，行式搜索不受影响）。
+边界：只读、不渲染、不编辑、不做 OCR；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，不识别。文本质量承诺面向英文与中文内容。分节口径：无标题长文档按 200 行分片为 part（P0010）；「有标题但单节超长」仍不细分（已知限制，行式搜索不受影响）。
 
 ## 文档导航
 

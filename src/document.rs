@@ -1,4 +1,4 @@
-//! 格式分派与统一文本单元：PDF 的页、其余格式的标题节，对上同为 `TextUnit`。
+//! 格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。
 
 use std::collections::HashSet;
 use std::path::Path;
@@ -12,11 +12,13 @@ pub struct TextUnit {
     pub needs_ocr: Option<String>,
 }
 
-/// 文本单元种类，决定输出分节标记（`== page N ==` / `== section N ==`）。
+/// 文本单元种类，决定输出分节标记（`== page N ==` / `== section N ==` / `== part N ==`）。
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum UnitKind {
     Page,
     Section,
+    /// 无标题长文档的固定行分片（P0010）。
+    Part,
 }
 
 impl UnitKind {
@@ -24,6 +26,7 @@ impl UnitKind {
         match self {
             UnitKind::Page => "page",
             UnitKind::Section => "section",
+            UnitKind::Part => "part",
         }
     }
 }
