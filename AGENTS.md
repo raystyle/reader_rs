@@ -85,6 +85,7 @@
 - **搜文本**：`reader search <文件> <关键词>`（.pdf / .epub；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/章；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪）
 - **提文本**：`reader extract <文件>`（`--pages` 限页/章、`-o` 写文件；按单元输出 `== page N ==` / `== chapter N ==` 分节；PDF 行为 markdown 形态，不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
 - **agent 发现**：`reader --llms`（紧凑命令索引）、`reader skill`（生成 SKILL.md；仓根 `SKILL.md` 与运行时输出逐字节一致，测试守卫）
+- **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`
