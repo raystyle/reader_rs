@@ -86,6 +86,7 @@ reader_rs/
 | S001 | `S001-PDF文本提取crate选型-pdf-inspector双通道核实.md` | 提取引擎选型（双通道） |
 | S002 | `S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md` | Agent 原生输出/帮助设计借鉴 |
 | S003 | `S003-EPUB解析crate选型-rbook双通道核实.md` | EPUB 解析选型（rbook 加 quick-xml） |
+| S004 | `S004-Word文档读取选型-docx自解与doc直读双路线实测.md` | Word 支持选型（docx 自解路线，doc 暂缓） |
 
 ## 六、开发测试参考
 
