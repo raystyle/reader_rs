@@ -766,9 +766,10 @@ fn csv_extracts_single_section() -> TestResult {
 }
 
 /// legacy .doc（Word 97-2003 二进制）：仓内资产（Word COM 现造），中文与 & 保真。
+/// 仓内路径用正斜杠分段（M005：反斜杠 join 在 CI linux/macOS 上不是分隔符）。
 #[test]
 fn legacy_doc_asset_extracts() -> TestResult {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests\\assets\\legacy.doc");
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/assets/legacy.doc");
     let out = stdout_of(reader()?.args(["extract"]).arg(&path))?;
     assert!(
         out.contains("alpha&beta") && out.contains("中文校验行"),
