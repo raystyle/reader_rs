@@ -52,7 +52,7 @@ cargo build --quiet
 # 3 无标题整篇与超长节分片
 ./target/debug/reader extract tests/assets/legacy.doc   # 节头 == part 1 ==，中英文与 & 保真
 # 4 批量目录
-./target/debug/reader search <某文档目录> <关键词> | head     # 命中行 路径:单元:行号:文本，exit 0
+./target/debug/reader search <某文档目录> <关键词> | head     # 命中行 路径:单元:行号:文本；Unix 侧被 head 截断按惯例死于 SIGPIPE（shell 报 141，无 panic 无 stderr，M007）
 ./target/debug/reader search <某文档目录> <关键词> --format json --filter 'hits[].file'
 # 5 负例
 ./target/debug/reader search <目录> zzz-no-such; echo $?       # 1
@@ -82,4 +82,4 @@ ldd target/x86_64-unknown-linux-musl/release/reader   # 预期 not a dynamic exe
 
 ## 验收记录
 
-- （待 Linux 侧回填：日期、机器、各节结果）
+- **2026-09-01，Linux/WSL2 接管机（Ubuntu，cargo 1.98.0 / uv 0.12.6 / rumdl 0.2.62），仓 566ca35**：前置三件齐（exit 0）。门禁三件：fmt 0 diff、clippy 0 告警、test **15 单元 + 44 集成**全绿（44 为本轮 M007 修复新增回归测；修复前基线 43 与 Windows 同数）。文档门禁三件：rumdl 0 告警、断链 0、标题括号 0（41 文件）。真样本五路：PDF 399 页头、docx 有标题 45 节/无标题 part 1、legacy.doc part 头与 `&`/中文保真、批量目录递归命中 pptx 与 json `hits[].file` 裁剪、负例 exit 1 与 2——全过。**第四节发现 M007**（`| head` broken pipe panic exit 101，Windows 不可复现），当轮修复（main 恢复 SIGPIPE 默认处置 + unix-only 回归测试）后复验 141 静默零 stderr；门禁三件随修复全量复跑。musl 预建：zstd-sys 在 musl-gcc 下编译通过（假设转实证），`file` 报 statically linked，`reader 0.2.0` 可跑，静态件管道截断同样 141。**结论：P0011 / P0012 跨平台对账闭环；P0013 本地去险完成，v0.2.1 tag 可发（含 M007 修复）** [实证: 2026-09-01 本机各节退出码]。
