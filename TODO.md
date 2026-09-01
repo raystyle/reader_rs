@@ -4,14 +4,14 @@
 
 ## 当前目标
 
-输出形态：json 包膜与分页裁剪（对应 `GOAL.md`，方案 P0006，登记日 2026-08-31）。**2026-08-31 达成**：34 测全绿。阶段 3 余下候选（agent 发现、MCP、批量、token 计数）待立项。
+Agent 自省与发现：llms 索引、SKILL 生成与 help 示例（对应 `GOAL.md`，方案 P0007，登记日 2026-08-31）。**2026-08-31 达成**：39 测全绿。阶段 3 余下候选（MCP、TOON、token 计数、pager、completions、批量目录）待立项。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 立项 P0006 | 已完成 | `docs\proven\P0006-输出形态-json包膜与分页裁剪.md`；三原语与 ROADMAP/INDEX 登记 | 2026-08-31 |
-| 输出层实现 | 已完成 | serde/serde_json 进依赖；`src\output.rs` 包膜、filter 点路径、cta；`OutputOpts` 收参；错误包膜走 `fail()` 出口 | 2026-08-31 |
-| 测试补强 | 已完成 | JSON 正例、无命中包膜、错误包膜、分页 next_offset/cta、filter 正负例、零 limit 负例；34 测全绿 | 2026-08-31 |
-| 真样本抽查 | 已完成 | 书 25 命中页号序列与 S001 一致；分页 next_offset/cta 正确；中文论文 JSON 中文原样 UTF-8 | 2026-08-31 |
-| 收官登记 | 已完成 | P0006 回填、README JSON 节与参数表、AGENTS 意图路由、CHANGELOG、diary、门禁与提交 | 2026-08-31 |
+| 立项 P0007 | 已完成 | `docs\proven\P0007-Agent自省与发现-llms索引SKILL生成与help示例.md`；三原语登记 | 2026-08-31 |
+| introspect 模块与 CLI 接线 | 已完成 | `src\introspect.rs` 的 `llms_text()`/`skill_md()`；顶层 `--llms` 旗标与 `skill` 子命令；help examples 节；裸 reader 语义保持 | 2026-08-31 |
+| 测试补强 | 已完成 | 正例 3 例加双漂移守卫（clap 树旗标覆盖、仓根 SKILL.md 逐字节一致）；39 测全绿 | 2026-08-31 |
+| 仓根 SKILL.md 生成提交 | 已完成 | `reader skill > SKILL.md`；与运行时输出逐字节一致 | 2026-08-31 |
+| 收官登记 | 已完成 | P0007 回填、README Agent 发现节、AGENTS 意图路由、INDEX、CHANGELOG、diary、门禁与提交 | 2026-08-31 |

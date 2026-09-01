@@ -33,17 +33,18 @@
 | `src\epub.rs` | EPUB 章提取（rbook spine 序）与 XHTML 文本化（quick-xml） |
 | `src\search.rs` | 匹配器（字面/正则/忽略大小写）与命中收集 |
 | `src\output.rs` | JSON 包膜（ok/data/error 加 meta）、filter 点路径裁剪、cta 生成 |
+| `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
 | `tests\cli.rs` | CLI 集成冒烟与正负例 |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
 
 ```text
 reader_rs/
   GOAL.md / PLAN.md / TODO.md / INDEX.md   三原语加总索引
-  AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md
+  AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md / SKILL.md
   Cargo.toml / LICENSE / .rumdl.toml
   .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-replace）
   src\
-    main.rs  lib.rs  document.rs  pdf.rs  epub.rs  search.rs  output.rs
+    main.rs  lib.rs  document.rs  pdf.rs  epub.rs  search.rs  output.rs  introspect.rs
   tests\
     cli.rs
   docs\
@@ -67,6 +68,7 @@ reader_rs/
 | P0004 | `P0004-mac与Linux接管开发与跨平台兼容.md` | CI 三系统门禁（已完成 2026-08-31） |
 | P0005 | `P0005-PDF提取质量-markdown管线与needs_ocr提示.md` | 阶段 2 提取质量（已完成 2026-08-31） |
 | P0006 | `P0006-输出形态-json包膜与分页裁剪.md` | 阶段 3 第一刀（已完成 2026-08-31） |
+| P0007 | `P0007-Agent自省与发现-llms索引SKILL生成与help示例.md` | 阶段 3 第二刀（已完成 2026-08-31） |
 
 ## 四、项目日记
 
