@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-08-31 | P0008 达成：v0.1.0 已发布，run 33461625241 四 job 全绿、8 资产齐出；本机实测 sha256 一致、`reader 0.1.0`、真样本 25 命中与 S001 基线一致；macos-13 退役坑记 M004（Intel 改交叉编译） |
 | 2026-08-31 | P0008 立项：tag v* 触发 release 流水线，四目标矩阵（win/linux x86_64、macos aarch64/x86_64），gh CLI 幂等上传，版本一致性闸；CHANGELOG 封版 0.1.0 |
 | 2026-08-31 | P0007 达成：39 测全绿（单元 7 加集成 32）；`--llms`/`skill`/help examples 落地；仓根 SKILL.md 提交加双漂移守卫；README 加 Agent 发现节 |
 | 2026-08-31 | P0007 立项：`--llms` 紧凑索引、`skill` 子命令生成 SKILL.md（仓根提交加漂移守卫）、help examples 节；curated 文本加双漂移测试，不做命令树全自动生成 |
@@ -40,7 +41,7 @@
 
 > 当前目标的进程：只记录当前这一个目标的进行状态。
 
-- 当前目标（进行中）：封版 v0.1.0——tag 触发的三端二进制 release 流水线（P0008）。
+- 当前目标（已达成）：封版 v0.1.0——tag 触发的三端二进制 release 流水线（P0008）。下版候选：阶段 3 余项（MCP、TOON、token 计数、pager、completions、批量目录）与发布面余项（musl 静态、crates.io/brew/scoop 分发），待用户点名立项。
 
 ## 历史
 
@@ -48,6 +49,7 @@
 
 | 日期 | 目标 | 结果 |
 | --- | --- | --- |
+| 2026-08-31 | 封版 v0.1.0 与三端二进制 release（P0008） | 达成：tag 触发四目标流水线；8 资产齐出；本机实测通过；M004 记 macos-13 退役 |
 | 2026-08-31 | Agent 自省与发现：llms 索引、SKILL 生成与 help 示例（P0007） | 达成：`--llms`、`skill`、help examples；仓根 SKILL.md 加双漂移守卫；39 测全绿 |
 | 2026-08-31 | 输出形态第一刀：json 包膜与分页裁剪（P0006） | 达成：`--format json` 包膜、extract 分页（next_offset 加 cta）、`--filter` 裁剪；34 测全绿 |
 | 2026-08-31 | PDF 提取质量：markdown 管线与 needs_ocr 提示（P0005） | 达成：多栏阅读序、needs_ocr 检出提示、S001 瑕疵修复；中英文真样本双验；22 测全绿 |

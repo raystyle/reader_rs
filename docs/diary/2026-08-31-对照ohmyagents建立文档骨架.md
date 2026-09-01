@@ -86,3 +86,7 @@ mac（arm64）本地门禁六件一次全绿 [实证]：fmt / clippy（冷缓存
 ## 补记：P0007 立项与达成
 
 用户核对 S002 落地进度，点名补齐 incurs 自省发现侧并要求命令集成 SKILL。落地三件：`reader --llms` 紧凑索引、`reader skill` 生成 SKILL.md（仓根提交）、help examples 节，零新依赖。关键设计：curated 文本加双漂移守卫——clap 命令树遍历断言旗标全覆盖（新参数漏登记当场红）、仓根 SKILL.md 与运行时输出逐字节一致；替代 incurs 的命令树自动生成加哈希过期检测，省一层生成器复杂度。裸 reader 语义保持（帮助走 stderr 退出 2）。39 测全绿（单元 7 加集成 32）。README 加「Agent 发现与 SKILL 安装」节。mac/Linux 实机验收同日由用户确认通过，P0004 验收边界由 CI 补齐为实机实证。
+
+## 补记：v0.1.0 封版发布
+
+封版日即踩坑日：首发 run 三 job 绿、Intel mac job 永久 queued——macos-13 runner 已被 GitHub 退役，症状是永久排队而非报错（记 M004，开新分类 M104 CI 与发布流水线错误）。删半成品 release 与 tag，Intel 资产改 macos-latest 交叉编译（rust-toolchain targets 加目标即够），重打 tag 重发，run 33461625241 四 job 全绿、8 资产齐出（4 平台包加 4 个 .sha256）。本机验收：sha256 一致、reader 0.1.0、《Command-Line Rust》assert_cmd 搜索 25 行命中与 S001 基线一致。另自查改掉两个未爆雷：四 job 同名 sha256sums 并发上传会互相 clobber、上传 glob 会误匹配暂存目录。合并 mac 侧验收登记时 GOAL/diary 冲突两处，手工并保留两侧记录。P0008 达成，v0.1.0 成为首个发布。
