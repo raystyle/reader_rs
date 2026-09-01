@@ -19,27 +19,41 @@ pub fn extract_sections(
     let markdown = ::anydoc::to_markdown_bytes(&bytes, format)
         .map_err(|e| format!("无法解析文档 {}: {e}", path.display()))?;
     let (sections, has_heading) = split_markdown(&markdown);
-    // 无标题文档整篇一节时按固定行预算分片为 part（P0010），分页与 --pages 恢复可用；
-    // 有标题文档保持标题分节不变。
-    let (bodies, kind) = if has_heading {
-        (sections, UnitKind::Section)
-    } else {
-        (
-            chunk_lines(sections.into_iter().next().unwrap_or_default()),
-            UnitKind::Part,
-        )
-    };
-    Ok(bodies
+    Ok(to_unit_bodies(sections, has_heading)
         .into_iter()
         .enumerate()
         .filter(|(i, _)| filter.map(|f| f.contains(&(*i as u32 + 1))).unwrap_or(true))
-        .map(|(i, lines)| TextUnit {
+        .map(|(i, (kind, lines))| TextUnit {
             no: i as u32 + 1,
             kind,
             lines,
             needs_ocr: None,
         })
         .collect())
+}
+
+/// 节体到单元体的判定：超预算的节切 part（P0011），短节保持 section；
+/// 无标题文档整篇走 part（P0010 行为不变）。
+fn to_unit_bodies(sections: Vec<Vec<String>>, has_heading: bool) -> Vec<(UnitKind, Vec<String>)> {
+    if !has_heading {
+        return chunk_lines(sections.into_iter().next().unwrap_or_default())
+            .into_iter()
+            .map(|lines| (UnitKind::Part, lines))
+            .collect();
+    }
+    sections
+        .into_iter()
+        .flat_map(|lines| {
+            if lines.len() > PART_LINE_BUDGET {
+                chunk_lines(lines)
+                    .into_iter()
+                    .map(|p| (UnitKind::Part, p))
+                    .collect::<Vec<_>>()
+            } else {
+                vec![(UnitKind::Section, lines)]
+            }
+        })
+        .collect()
 }
 
 // 简化注记：GFM markdown 按顶层 ATX 标题行分节，代码围栏（``` 开合）内的 # 行不分节；
@@ -70,7 +84,7 @@ fn split_markdown(markdown: &str) -> (Vec<Vec<String>>, bool) {
     (sections, has_heading)
 }
 
-/// 无标题文档的行分片预算：200 行一个 part（PDF 页约 40 到 60 行，量级相称；P0010）。
+/// 行分片预算：200 行一个 part（PDF 页约 40 到 60 行，量级相称；P0010 起，P0011 推广到超长节）。
 const PART_LINE_BUDGET: usize = 200;
 
 /// 整篇行按预算切 part；空文档不出单元。
@@ -175,5 +189,50 @@ mod tests {
         let (sections, has_heading) = split_markdown("");
         assert!(!has_heading && sections.is_empty());
         assert!(chunk_lines(sections.into_iter().next().unwrap_or_default()).is_empty());
+    }
+
+    #[test]
+    fn overlong_section_splits_into_parts_among_sections() {
+        let long: Vec<String> = (0..450).map(|i| format!("l{i}")).collect();
+        let sections = vec![
+            vec!["# A".to_string(), "x".to_string()],
+            {
+                let mut s = vec!["# B".to_string()];
+                s.extend(long);
+                s
+            },
+            vec!["# C".to_string(), "y".to_string()],
+        ];
+        let units = to_unit_bodies(sections, true);
+        assert_eq!(units.len(), 5, "短节1 + 长节切3 + 短节1");
+        assert_eq!(units[0].0, UnitKind::Section);
+        assert_eq!(
+            (units[1].0, units[2].0, units[3].0),
+            (UnitKind::Part, UnitKind::Part, UnitKind::Part)
+        );
+        assert_eq!(
+            (units[1].1.len(), units[2].1.len(), units[3].1.len()),
+            (200, 200, 51)
+        );
+        assert_eq!(units[4].0, UnitKind::Section);
+    }
+
+    #[test]
+    fn all_short_sections_stay_sections() {
+        let sections = vec![
+            vec!["# A".into(), "x".into()],
+            vec!["# B".into(), "y".into()],
+        ];
+        let units = to_unit_bodies(sections, true);
+        assert_eq!(units.len(), 2);
+        assert!(units.iter().all(|(k, _)| *k == UnitKind::Section));
+    }
+
+    #[test]
+    fn headingless_maps_whole_body_to_parts() {
+        let units = to_unit_bodies(vec![(0..3).map(|i| format!("l{i}")).collect()], false);
+        assert_eq!(units.len(), 1);
+        assert_eq!(units[0].0, UnitKind::Part);
+        assert_eq!(units[0].1.len(), 3);
     }
 }

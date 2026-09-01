@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+- **批量目录搜索（P0012）**：`reader search <目录> <关键词>` 递归批量搜支持格式（路径排序稳定）；text 命中行 `路径:单元:行号:文本`，json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped` 统计；坏文件 stderr 跳过后继续，目录无支持格式文件退出 2；`--pages` 目录下不可用。单文件模式输出与退出码零变化。
+- **超长节再分片（P0011）**：有标题文档中超过 200 行的节按同预算切为 `part` 单元，单元号跨 kind 全局连续；短节与无标题文档行为不变（P0010 口径）。
+- **musl 静态 Linux 资产（P0013）**：release 流水线新增 `x86_64-unknown-linux-musl` 目标（ubuntu runner 加 musl-tools 交叉构建），资产 `reader-v<版本>-x86_64-unknown-linux-musl.tar.gz`；随下版 tag 首发验证。
 - **无标题长文档行分片（P0010）**：全文无顶层标题的文档按 200 行预算分片为 `part` 单元（节头 `== part N ==`），`--pages` 与 `--offset/--limit` 分页恢复可用；有标题文档的 `section` 行为零变化。CSV 等无标题小文档的单元标签由 `section` 改为 `part`（行为变化，1 个既有用例随行为更新）。
 
 ## [0.2.0] - 2026-09-01

@@ -664,31 +664,38 @@ const DOCX_DOC_RELS: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="
 const DOCX_STYLES: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:pPr><w:outlineLvl w:val="0"/></w:pPr></w:style></w:styles>"#;
 
-const DOCX_DOCUMENT: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>Reader docx 夹具首节</w:t></w:r></w:p><w:p><w:r><w:t>Hello DOCX Reader</w:t></w:r></w:p><w:p><w:r><w:t>a &amp; b 中文</w:t></w:r></w:p><w:tbl><w:tr><w:tc><w:p><w:r><w:t>表头A</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>表头B</w:t></w:r></w:p></w:tc></w:tr></w:tbl><w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>第二节</w:t></w:r></w:p><w:p><w:r><w:t>Second section rust search</w:t></w:r></w:p></w:body></w:document>"#;
+const DOCX_BODY: &str = r#"<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>Reader docx 夹具首节</w:t></w:r></w:p><w:p><w:r><w:t>Hello DOCX Reader</w:t></w:r></w:p><w:p><w:r><w:t>a &amp; b 中文</w:t></w:r></w:p><w:tbl><w:tr><w:tc><w:p><w:r><w:t>表头A</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>表头B</w:t></w:r></w:p></w:tc></w:tr></w:tbl><w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>第二节</w:t></w:r></w:p><w:p><w:r><w:t>Second section rust search</w:t></w:r></w:p>"#;
 
 fn docx_path(name: &str) -> PathBuf {
     std::env::temp_dir().join(format!("reader_rs_cli_{}_{name}.docx", std::process::id()))
 }
 
-/// 造测试 docx：zip 现造最小 OOXML（两节标题、实体段、一行表格；styles.xml 定义 Heading1）。
-fn make_test_docx(path: &Path) -> TestResult {
+/// 造 docx：按给定 `w:body` 正文写入最小 OOXML（styles.xml 定义 Heading1）。
+fn make_docx_with_body(path: &Path, body: &str) -> TestResult {
     use std::io::Write as _;
+    let document = format!(
+        r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>{body}</w:body></w:document>"#
+    );
     let file = std::fs::File::create(path)?;
     let mut w = zip::ZipWriter::new(file);
     let opts = zip::write::SimpleFileOptions::default();
-    for (name, body) in [
+    for (name, content) in [
         ("[Content_Types].xml", DOCX_CONTENT_TYPES),
         ("_rels/.rels", DOCX_RELS),
         ("word/_rels/document.xml.rels", DOCX_DOC_RELS),
         ("word/styles.xml", DOCX_STYLES),
-        ("word/document.xml", DOCX_DOCUMENT),
+        ("word/document.xml", &document),
     ] {
         w.start_file(name, opts)?;
-        w.write_all(body.as_bytes())?;
+        w.write_all(content.as_bytes())?;
     }
     w.finish()?;
     Ok(())
+}
+
+/// 造测试 docx：两节标题、实体段、一行表格。
+fn make_test_docx(path: &Path) -> TestResult {
+    make_docx_with_body(path, DOCX_BODY)
 }
 
 struct TestDocx(PathBuf);
@@ -746,6 +753,51 @@ fn docx_pages_filter_selects_section() -> TestResult {
         .stdout(predicate::str::contains(DOCX_P2_TEXT))
         .stdout(predicate::str::contains("== section 1 ==").not())
         .stdout(predicate::str::contains(DOCX_P1_TEXT).not());
+    Ok(())
+}
+
+/// 超长节再分片（P0011）：短节 section、451 行节切 3 个 part，单元号全局连续。
+#[test]
+fn overlong_section_chunks_into_parts_between_sections() -> TestResult {
+    let path = docx_path("docx_mixed");
+    let heading = |t: &str| {
+        format!(
+            r#"<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>{t}</w:t></w:r></w:p>"#
+        )
+    };
+    let para = |t: &str| format!(r#"<w:p><w:r><w:t>{t}</w:t></w:r></w:p>"#);
+    let mut body = String::new();
+    body.push_str(&heading("首节"));
+    body.push_str(&para(DOCX_P1_TEXT));
+    body.push_str(&heading("长节"));
+    for i in 0..450 {
+        body.push_str(&para(&format!("bulk-{i:03}-载荷")));
+    }
+    body.push_str(&heading("尾节"));
+    body.push_str(&para(DOCX_P2_TEXT));
+    make_docx_with_body(&path, &body)?;
+    let out = stdout_of(reader()?.args(["extract"]).arg(&path))?;
+    for want in [
+        "== section 1 ==",
+        "== part 2 ==",
+        "== part 3 ==",
+        "== part 4 ==",
+        "== section 5 ==",
+    ] {
+        assert!(out.contains(want), "缺 {want}:\n{out}");
+    }
+    assert!(out.contains("bulk-449-载荷"));
+    let p2 = stdout_of(
+        reader()?
+            .args(["extract"])
+            .arg(&path)
+            .args(["--pages", "2"]),
+    )?;
+    assert!(
+        p2.contains("bulk-000-载荷") && !p2.contains("首节"),
+        "--pages 2 应只出长节首个 part:\n{p2}"
+    );
+    std::fs::remove_file(&path)?;
     Ok(())
 }
 
@@ -812,6 +864,112 @@ fn legacy_doc_asset_extracts() -> TestResult {
     assert!(
         out.contains("alpha&beta") && out.contains("中文校验行"),
         "legacy .doc 应保真提出 authored 文本:\n{out}"
+    );
+    Ok(())
+}
+
+// ---------- 批量目录搜索（P0012） ----------
+
+/// 临时目录夹具：好 pdf、好 docx、坏 pdf 各一；Drop 清理整目录。
+struct TestDir(PathBuf);
+
+impl TestDir {
+    fn make(name: &str) -> TestResult<Self> {
+        let dir = std::env::temp_dir().join(format!("reader_rs_cli_{}_{name}", std::process::id()));
+        std::fs::create_dir_all(&dir)?;
+        make_test_pdf(&dir.join("a.pdf"))?;
+        make_test_docx(&dir.join("b.docx"))?;
+        std::fs::write(dir.join("broken.pdf"), "not a pdf")?;
+        Ok(Self(dir))
+    }
+}
+
+impl Drop for TestDir {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+
+#[test]
+fn batch_search_hits_carry_file_paths_and_skip_broken() -> TestResult {
+    let dir = TestDir::make("batch_hit")?;
+    let out = reader()?
+        .args(["search"])
+        .arg(&dir.0)
+        .arg("DOCX")
+        .assert()
+        .success()
+        .get_output()
+        .clone();
+    let stdout = String::from_utf8(out.stdout.clone())?;
+    assert!(
+        stdout.contains("b.docx:1:2:"),
+        "目录模式命中行应带路径前缀:\n{stdout}"
+    );
+    assert!(!stdout.contains("a.pdf:"), "不含关键词的文件不应出命中行");
+    let stderr = String::from_utf8(out.stderr.clone())?;
+    assert!(
+        stderr.contains("跳过") && stderr.contains("broken.pdf"),
+        "坏文件应 stderr 跳过后继续:\n{stderr}"
+    );
+    Ok(())
+}
+
+#[test]
+fn batch_search_no_match_exits_1() -> TestResult {
+    let dir = TestDir::make("batch_miss")?;
+    reader()?
+        .args(["search"])
+        .arg(&dir.0)
+        .arg("zzz-no-such-word")
+        .assert()
+        .code(1);
+    Ok(())
+}
+
+#[test]
+fn dies_pages_on_directory() -> TestResult {
+    let dir = TestDir::make("batch_pages")?;
+    reader()?
+        .args(["search"])
+        .arg(&dir.0)
+        .args(["DOCX", "--pages", "1"])
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("--pages 不适用于目录"));
+    Ok(())
+}
+
+/// json 形态：hits 带 file 字段，files 统计扫描与跳过；--filter 可裁出文件清单。
+#[test]
+fn batch_search_json_carries_file_and_counts() -> TestResult {
+    let dir = TestDir::make("batch_json")?;
+    let v = json_stdout(
+        reader()?
+            .args(["search"])
+            .arg(&dir.0)
+            .args(["DOCX", "--format", "json"]),
+    )?;
+    assert!(
+        v["data"]["hits"][0]["file"]
+            .as_str()
+            .is_some_and(|f| f.ends_with("b.docx")),
+        "hits[0].file 应为命中文件路径: {v}"
+    );
+    assert_eq!(v["data"]["files"]["scanned"], serde_json::json!(3));
+    assert_eq!(v["data"]["files"]["skipped"], serde_json::json!(1));
+    let files = json_stdout(reader()?.args(["search"]).arg(&dir.0).args([
+        "DOCX",
+        "--format",
+        "json",
+        "--filter",
+        "hits[].file",
+    ]))?;
+    let list = files["data"].as_array().cloned().unwrap_or_default();
+    assert!(
+        list.iter()
+            .any(|f| f.as_str().is_some_and(|s| s.ends_with("b.docx"))),
+        "filter hits[].file 应给文件清单: {files}"
     );
     Ok(())
 }

@@ -11,7 +11,8 @@ Agent 原生文档阅读、搜索和提取工具。Rust 单二进制 CLI，从�
 | 资产 | 平台 |
 | --- | --- |
 | `reader-v<版本>-x86_64-pc-windows-msvc.zip` | Windows x86_64 |
-| `reader-v<版本>-x86_64-unknown-linux-gnu.tar.gz` | Linux x86_64 |
+| `reader-v<版本>-x86_64-unknown-linux-gnu.tar.gz` | Linux x86_64（glibc） |
+| `reader-v<版本>-x86_64-unknown-linux-musl.tar.gz` | Linux x86_64 静态（Alpine / 容器 / 最小镜像；v0.2.1 起） |
 | `reader-v<版本>-aarch64-apple-darwin.tar.gz` | macOS Apple 芯片 |
 | `reader-v<版本>-x86_64-apple-darwin.tar.gz` | macOS Intel |
 
@@ -57,22 +58,23 @@ reader skill > SKILL.md
 
 ## 命令
 
-两个文档子命令：`search`（搜）与 `extract`（取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）。输入文件按扩展名分派：`.pdf` 按页，anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节。
+两个文档子命令：`search`（搜）与 `extract`（取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）。输入文件按扩展名分派：`.pdf` 按页，anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
 
 ### search 搜索
 
 ```text
-reader search <文件> <关键词> [--regex] [-i] [-C N] [--pages 范围]
+reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 ```
 
 | 参数 | 说明 |
 | --- | --- |
 | `<文件>` | 文档路径（.pdf 及 anydoc 家族，见「支持格式」） |
+| `<目录>` | 递归批量搜支持格式：text 命中行 `路径:单元:行号:文本`；json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped`；坏文件 stderr 跳过后继续；`--pages` 不可用 |
 | `<关键词>` | 字面匹配串；`--regex` 时按正则解释 |
 | `--regex` | 按正则匹配（regex crate 语法） |
 | `-i`, `--ignore-case` | 忽略大小写 |
 | `-C N`, `--context N` | 命中行前后各带 N 行上下文 |
-| `--pages 范围` | 限定页/节（1 起），写法 `1-3,5` |
+| `--pages 范围` | 限定页/节（1 起），写法 `1-3,5`；仅单文件模式 |
 | `--format 形态` | `text`（行式，缺省）或 `json`（包膜） |
 | `--filter 路径` | 裁剪 JSON `data` 的点路径（如 `hits[].text`）；仅 `--format json` 下可用 |
 
@@ -81,9 +83,10 @@ reader search <文件> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 ```text
 单元:行号:命中行文本        命中行（PDF 单元为页，其余格式为节）
 单元-行号-上下文文本        上下文行（-C 时）
+路径:单元:行号:命中行文本   目录批量模式（路径前缀；Windows 盘符冒号从右取三段解析）
 ```
 
-文档含文本层不可靠页（扫描件、编码问题，仅 PDF）时，stderr 额外出一条 `needs_ocr` 警示并列出页码；stdout 不混入提示。退出码：命中 0；无命中 1；出错（缺文件、坏参数、不支持的格式）2。
+文档含文本层不可靠页（扫描件、编码问题，仅 PDF）时，stderr 额外出一条 `needs_ocr` 警示并列出页码；stdout 不混入提示。退出码：命中 0；无命中 1；出错（缺文件、坏参数、不支持的格式、目录无支持格式文件）2。
 
 示例（bash 与 pwsh 同形，Windows 路径换成反斜杠形态即可）：
 
@@ -91,6 +94,7 @@ reader search <文件> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 reader search ./doc.pdf "error" -i -C 1
 reader search ./doc.pdf "err(or|code)" --regex --pages 2-10
 rr search ./report.docx "配置"
+rr search ./材料 "代理" --format json --filter 'hits[].file'
 ```
 
 ### extract 提取
@@ -109,7 +113,7 @@ reader extract <文件> [--pages 范围] [-o 输出文件]
 | `--offset N` | 跳过前 N 个单元（0 起；两形态同用），大文档分页读 |
 | `--limit M` | 最多输出 M 个单元；JSON 形态有剩余时 meta 带 `next_offset` 与 `cta` |
 
-输出格式：按单元分节，节头为 `== page N ==`（PDF）、`== section N ==`（有标题文档）或 `== part N ==`（无标题长文按 200 行分片），随后为该单元的文本行；输出行为 markdown 形态（PDF 走 pdf-inspector 布局管线，anydoc 家族为 GFM：标题、表格、列表、代码块）。文本层不可靠页（扫描件、编码问题、乱码、空提取，仅 PDF）在节头后第一行给 `[needs_ocr: 原因]` 提示。退出码：成功 0，出错 2。
+输出格式：按单元分节，节头为 `== page N ==`（PDF）、`== section N ==`（标题节）或 `== part N ==`（超过 200 行的单元按行分片：无标题整篇或超长节；P0010/P0011），随后为该单元的文本行；输出行为 markdown 形态（PDF 走 pdf-inspector 布局管线，anydoc 家族为 GFM：标题、表格、列表、代码块）。文本层不可靠页（扫描件、编码问题、乱码、空提取，仅 PDF）在节头后第一行给 `[needs_ocr: 原因]` 提示。退出码：成功 0，出错 2。
 
 示例：
 
@@ -154,7 +158,7 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 
 选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`，重构方案 `docs\proven\P0009-anydoc统一文档引擎大重构.md`。
 
-边界：只读、不渲染、不编辑、不做 OCR；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，不识别。文本质量承诺面向英文与中文内容。分节口径：无标题长文档按 200 行分片为 part（P0010）；「有标题但单节超长」仍不细分（已知限制，行式搜索不受影响）。
+边界：只读、不渲染、不编辑、不做 OCR；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，不识别。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
 
 ## 文档导航
 

@@ -17,7 +17,7 @@ pub struct TextUnit {
 pub enum UnitKind {
     Page,
     Section,
-    /// 无标题长文档的固定行分片（P0010）。
+    /// 无标题文档与超长节的固定行分片（P0010、P0011）。
     Part,
 }
 
@@ -35,11 +35,7 @@ impl UnitKind {
 /// PDF 直连 pdf-inspector 保页契约；anydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）
 /// 走统一引擎按标题分节（P0009）。
 pub fn extract(path: &Path, filter: Option<&HashSet<u32>>) -> Result<Vec<TextUnit>, String> {
-    let ext = path
-        .extension()
-        .and_then(|e| e.to_str())
-        .map(str::to_lowercase)
-        .unwrap_or_default();
+    let ext = ext_of(path);
     if ext == "pdf" {
         return crate::pdf::extract_pages(path, filter);
     }
@@ -55,4 +51,17 @@ pub fn extract(path: &Path, filter: Option<&HashSet<u32>>) -> Result<Vec<TextUni
         },
         path.display()
     ))
+}
+
+/// 扩展名是否命中支持面（分派与批量目录遍历共用同一真源；P0012）。
+pub fn is_supported(path: &Path) -> bool {
+    let ext = ext_of(path);
+    ext == "pdf" || ::anydoc::Format::from_extension(&ext).is_some()
+}
+
+fn ext_of(path: &Path) -> String {
+    path.extension()
+        .and_then(|e| e.to_str())
+        .map(str::to_lowercase)
+        .unwrap_or_default()
 }

@@ -8,12 +8,12 @@ pub fn llms_text() -> String {
     format!(
         "\
 reader v{v} — Agent 原生文档阅读、搜索和提取工具（PDF 按页；Word/EPUB/ODT/RTF/Office/CSV 按标题节，只读文本层；缩写 rr 同入口）
-reader search <文件> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径]
+reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径]
 reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M]
 reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
 reader --llms — 本索引
 退出码: 0 成功或命中 / 1 无命中（仅 search） / 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）
-输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（无标题长文按 200 行分片）
+输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（超 200 行单元按行分片）；目录批量模式命中行前缀 路径:
 输出 json: {{\"ok\":bool,\"data\":...,\"meta\":{{command,duration_ms[,next_offset,cta]}}}}；--filter 点路径裁剪 data（如 hits[].text）
 不可靠页: 扫描件或编码问题页以 needs_ocr 提示（extract 节头后提示行，search 走 stderr），不做 OCR
 "
@@ -37,6 +37,7 @@ Rust 单二进制 CLI（v{v}；命令 `reader`，缩写 `rr` 同入口）。只�
 ## 何时使用
 
 - 在本地文档中定位关键词或正则命中（行式 `单元:行号:文本`，直接可解析）。
+- 在目录里找哪些文档提到某词：`search` 直接给目录，递归批量搜，命中行带路径前缀。
 - 把文档文本层喂给 LLM 上下文：大文档用 `--offset` / `--limit` 分页，按 meta 的 `next_offset` 与 `cta` 链式推进。
 - 要结构化结果：`--format json` 包膜，`--filter` 点路径裁剪只取所需字段。
 
@@ -47,15 +48,16 @@ Rust 单二进制 CLI（v{v}；命令 `reader`，缩写 `rr` 同入口）。只�
 ### search 搜索
 
 ```text
-reader search <文件> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径]
+reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径]
 ```
 
+- 文件或目录：目录递归批量搜支持格式（顺序遍历，路径排序稳定）；text 命中行 `路径:单元:行号:文本`，json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped` 统计；坏文件 stderr 跳过后继续；`--pages` 目录下不可用。
 - `--regex`：关键词按正则解释（regex crate 语法）。
 - `-i`, `--ignore-case`：忽略大小写。
 - `-C N`, `--context N`：命中行前后各带 N 行上下文（`单元-行号-文本` 形态）。
-- `--pages 范围`：限定页或节（1 起），写法 `1-3,5`。
-- `--format json`：data 为 `hits[]`（unit / line / text / before / after）加 `needs_ocr_units[]`。无命中是 `ok:true` 加空 hits，退出码仍 1。
-- `--filter 路径`：裁剪 json 的 data，如 `hits[].text`；仅 json 形态可用。
+- `--pages 范围`：限定页或节（1 起），写法 `1-3,5`；仅单文件模式。
+- `--format json`：data 为 `hits[]`（unit / line / text / before / after；批量另有 file）加 `needs_ocr_units[]`（仅单文件）。无命中是 `ok:true` 加空 hits，退出码仍 1。
+- `--filter 路径`：裁剪 json 的 data，如 `hits[].text`、批量 `hits[].file`；仅 json 形态可用。
 
 ### extract 提取
 
@@ -78,7 +80,7 @@ reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] 
 
 text 形态（缺省）：
 
-- search 命中行 `单元:行号:文本`；上下文行 `单元-行号-文本`。PDF 单元是页，其余格式单元是标题节；无标题长文按 200 行分片为 part。
+- search 命中行 `单元:行号:文本`；上下文行 `单元-行号-文本`。PDF 单元是页，其余格式单元是标题节；超过 200 行的单元（无标题整篇或超长节）按行分片为 part。
 - extract 按单元分节，节头 `== page N ==`、`== section N ==` 或 `== part N ==`；输出行为 markdown 形态（标题、链接、表格语法；anydoc 家族为 GFM）。
 - 文本层不可靠页（扫描件、编码问题，仅 PDF）：extract 在节头后出 `[needs_ocr: 原因]` 提示行；search 走 stderr 警示，stdout 不混入。
 
@@ -104,6 +106,7 @@ reader search ./doc.pdf \"error\" -i -C 1
 reader search ./doc.pdf \"err(or|code)\" --regex --pages 2-10
 reader search ./report.docx \"配置\" --format json --filter 'hits[].unit'
 reader extract ./doc.pdf --pages 1-3
+reader search ./docs \"配置\" --format json --filter 'hits[].file'
 reader extract ./report.docx --format json --offset 0 --limit 5
 ```
 "

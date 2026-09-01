@@ -2,6 +2,7 @@
 //! 薄壳在 `src\main.rs`；本文件承载 CLI 定义、`run()` 分发与页/节范围解析。
 
 pub mod anydoc;
+pub mod batch;
 pub mod document;
 pub mod introspect;
 pub mod output;
@@ -16,7 +17,7 @@ use std::time::Instant;
 
 /// 输出形态：text 行式（缺省）或 json 包膜（P0006）。
 #[derive(Clone, Copy, PartialEq, Eq, ValueEnum)]
-enum Format {
+pub(crate) enum Format {
     Text,
     Json,
 }
@@ -43,14 +44,14 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// 按页/节搜索文档文本（命中退出 0，无命中退出 1，出错退出 2）
+    /// 按页/节搜索文档文本（命中退出 0，无命中退出 1，出错退出 2）；目录输入递归批量搜
     #[command(after_long_help = "\
 示例:
   reader search ./doc.pdf \"error\" -i -C 1
   reader search ./doc.pdf \"err(or|code)\" --regex --pages 2-10
-  reader search ./report.docx \"配置\" --format json --filter 'hits[].unit'")]
+  reader search ./docs \"配置\" --format json --filter 'hits[].file'")]
     Search {
-        /// 文档路径（.pdf 及 Word / EPUB / ODT / RTF / Office / CSV 家族）
+        /// 文档或目录路径（.pdf 及 Word / EPUB / ODT / RTF / Office / CSV 家族；目录递归批量搜）
         file: PathBuf,
         /// 关键词；`--regex` 时按正则解释
         pattern: String,
@@ -182,6 +183,21 @@ fn run_search(
 ) -> Result<bool, String> {
     let started = Instant::now();
     let page_set = parse_optional_pages(pages)?;
+    if file.is_dir() {
+        if page_set.is_some() {
+            return Err("--pages 不适用于目录搜索".to_string());
+        }
+        check_filter(opts)?;
+        let matcher = search::Matcher::new(pattern, regex_mode, ignore_case)?;
+        return batch::run(
+            file,
+            &matcher,
+            context,
+            opts.format,
+            opts.filter.as_deref(),
+            started,
+        );
+    }
     let matcher = search::Matcher::new(pattern, regex_mode, ignore_case)?;
     let extracted = document::extract(file, page_set.as_ref())?;
     warn_unreliable(&extracted);
@@ -314,7 +330,7 @@ fn unit_value(unit: &document::TextUnit) -> Value {
 }
 
 /// 文本层不可靠的单元给一条 stderr 警示（stdout 保持纯命中输出；退出码语义不变）。
-fn warn_unreliable(units: &[document::TextUnit]) {
+pub(crate) fn warn_unreliable(units: &[document::TextUnit]) {
     let bad: Vec<&document::TextUnit> = units.iter().filter(|u| u.needs_ocr.is_some()).collect();
     if bad.is_empty() {
         return;
