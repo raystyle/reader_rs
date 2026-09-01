@@ -16,7 +16,7 @@
 | --- | --- | --- |
 | 文档 | `docs\`（proven/diary/research/guide/references/mistakes）+ 根目录 GOAL/PLAN/TODO/INDEX/AGENTS/README/CHANGELOG/ROADMAP | 见上节职能 |
 | 代码 | `src\` | Rust CLI `reader`（`rr` 同入口双 bin） |
-| 测试 | `tests\` | assert_cmd 集成测试；测试 PDF 由 lopdf 现造 |
+| 测试 | `tests\` | assert_cmd 集成测试；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造；legacy .doc 用仓内资产 |
 
 **代码文件位置**：
 
@@ -28,13 +28,14 @@
 | `.tools\md-replace.py` | 中文与反斜杠路径安全的字面批量替换 |
 | `src\main.rs` | 薄壳入口（reader / rr 双 bin 共用） |
 | `src\lib.rs` | clap CLI 定义、`run()` 分发、页/章范围解析 |
-| `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/章，含 needs_ocr 信号） |
+| `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/节，含 needs_ocr 信号） |
 | `src\pdf.rs` | PDF 页提取（pdf-inspector markdown 布局管线：多栏阅读序、needs_ocr） |
-| `src\epub.rs` | EPUB 章提取（rbook spine 序）与 XHTML 文本化（quick-xml） |
+| `src\anydoc.rs` | anydoc 家族提取（Word/EPUB/ODT/RTF/Office/CSV 出 GFM，按顶层标题分节；P0009） |
 | `src\search.rs` | 匹配器（字面/正则/忽略大小写）与命中收集 |
 | `src\output.rs` | JSON 包膜（ok/data/error 加 meta）、filter 点路径裁剪、cta 生成 |
 | `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
-| `tests\cli.rs` | CLI 集成冒烟与正负例 |
+| `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
+| `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
 
 ```text
@@ -44,9 +45,9 @@ reader_rs/
   Cargo.toml / LICENSE / .rumdl.toml
   .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-replace）
   src\
-    main.rs  lib.rs  document.rs  pdf.rs  epub.rs  search.rs  output.rs  introspect.rs
+    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs
   tests\
-    cli.rs
+    cli.rs  assets\legacy.doc
   docs\
     proven\      P 编号，已完成 plan 归档
     diary\       一天一篇总结自省
@@ -77,6 +78,7 @@ reader_rs/
 > 位置 `docs\diary\`；一天一篇总结自省。
 
 - `2026-08-31-对照ohmyagents建立文档骨架.md`
+- `2026-09-01-S004选型反复与P0009-anydoc大重构.md`
 
 ## 五、研究文档
 

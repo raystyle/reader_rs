@@ -2,7 +2,7 @@
 
 > 本方案文档照 `docs\guide\template.md` 写。进行中与否以 `TODO.md` 为准。
 
-- 状态：进行中
+- 状态：已完成
 - 日期：2026-09-01
 - 关联：TODO.md / 研究 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`（含 anydoc 补测与决策变更记录）/ 参考 `docs\references\R001-项目定位-Agent原生文档阅读搜索和提取工具.md`
 
@@ -69,11 +69,20 @@ EPUB 单元语义变化：spine 章（`== chapter N ==`）改为标题分节（`
 
 ## 实施过程与经验
 
-> 完成时补全，不是留空。
+- 实际怎么做：按步骤走完。分派谓词直接用 `anydoc::Format::from_extension`（格式真源单一，不手工维护清单）；`UnitKind::Chapter` 随 EPUB 章语义退役，只剩 `Page` / `Section`；`markdown_to_units` 以代码围栏状态机加空节丢弃实现，5 个单元测试锁定边界。
+- 踩了什么坑 + 怎么解决：
+  - EPUB 章界首测即丢：rbook `EpubChapter::new` 的章标题落在 `head/title`（旧 `epub.rs` 的 `is_block` 含 `title` 才读得出），anydoc 只认正文标题并把书名元数据渲染成首个标题节。夹具改为章正文显式 `<h1>` 加省略书名元数据，贴近真实书形态。[实证: 2026-09-01 集成测试首跑暴露，展开 epub 核实]
+  - 真实中文工程文档常用手动加粗伪标题（`**1.1 xxx**`），anydoc 忠实输出 bold 不伪造成标题，整篇一节——已知限制非缺陷，记 README 与 CHANGELOG。[实证: 2026-09-01 渗透智能体系统方案-v1.0.docx，180 行 1 节，搜索 36 命中正常]
+  - `SKILL.md` 再生成必须 bash 原始重定向：pwsh `>` 会按平台换行写 CRLF，破坏 P0007 逐字节守卫。[实证: 2026-09-01]
+  - Cargo.lock 净增约 25 个传递依赖（anydoc 的 zip 编解码族含 zstd-sys 的 C 编译）；CI 三平台 runner 均带工具链，若 CI 红再记 M。[推断: 待下次 CI 跑验证]
+- 沉淀的经验：
+  - 引擎大换血的接缝仍是 `TextUnit`：第二套引擎进来，`search.rs` / `output.rs` 零改动——P0003 押的抽象第二次兑付。
+  - 「夹具现造 + 真实样本回归」再次双抓：EPUB 章界丢失是集成测试抓的，加粗伪标题单节是真样本暴露的。
+  - 引擎选型先问统一意图再推最小自解：S004 初判自解被用户推翻，根因是研究只对「docx 读取」局部优化，没对「要不要统一引擎」的全局问题提问。
 
 ## 验收标准
 
-- 门禁三件加 rumdl 三件套全绿。
-- 新格式用例绿：docx（搜索/提取/分节/过滤）、legacy .doc（提取含中英文与 `&`）、csv；EPUB 用例改 section 后绿；PDF 用例零改动绿。
-- 真样本回归：Desktop 测试V2.docx（27 行基线）、Word COM 造 .doc、既有 PDF 样本。
-- S004 回填 anydoc 实测与决策变更；CHANGELOG/README/AGENTS/INDEX/ROADMAP/diary 收口。
+- 门禁三件加 rumdl 三件套全绿。[实证: 2026-09-01 fmt/clippy/-D warnings/test --locked 5 套 ok；rumdl 34 文件零告警、断链 0、标题括号 0]
+- 新格式用例绿：docx（搜索/提取/分节/过滤/实体/表格）、legacy .doc（仓内资产，中英文与 `&` 保真）、csv（单节）；EPUB 用例改 section 后绿；PDF 用例零改动绿。37 集成加 9 单元测试全绿。[实证: 2026-09-01 cargo test]
+- 真样本回归：测试V2.docx 按 14 个 h6 分 15 节、内容与重构前 27 行基线一致；渗透智能体系统方案-v1.0.docx 180 行提取、`智能体` 36 命中；legacy .doc 直读；PDF（model_comparison）8 页页契约与行式命中原样。[实证: 2026-09-01 本机]
+- S004 回填 anydoc 实测与决策变更；CHANGELOG/README/AGENTS/INDEX/ROADMAP/diary 收口。[实证: 2026-09-01]

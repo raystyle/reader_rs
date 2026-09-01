@@ -11,7 +11,7 @@
 
 2. **边界**
    - 服务对象先 Agent 后人：输出稳定可解析（行式标记、grep 语义退出码 0/1/2）、单调用完成一件事、无交互无守护进程、错误走 stderr；机器可读优先于人类美观。
-   - 当前只读支持 PDF 与 EPUB，不做渲染、编辑、OCR（扫描件检出后提示，不识别）；其它格式按需另立项。
+   - 当前只读支持 PDF 与 anydoc 家族（Word 含 legacy .doc、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV），不做渲染、编辑、OCR（扫描件检出后提示，不识别）；其它格式按需另立项。
    - 文本质量只承诺英文与中文；其它语言不做质量承诺，不可靠页以 needs_ocr 提示兜底。
    - CLI 是唯一交互面；纯 Rust 单二进制，不外挂 pdfium 等二进制运行时。
    - Windows 优先验证；依赖均跨平台，不主动破坏其它平台。
@@ -24,6 +24,7 @@
    - 定位：`docs\references\R001-项目定位-Agent原生文档阅读搜索和提取工具.md`
    - 定位变更：`docs\proven\P0002-项目重新定位-Agent原生文档阅读搜索和提取工具.md`；首期切面 `docs\proven\P0001-PDF文本搜索与提取CLI最小闭环.md`
    - 选型研究：`docs\research\S001-PDF文本提取crate选型-pdf-inspector双通道核实.md`
+   - 统一引擎：anydoc 重构方案 `docs\proven\P0009-anydoc统一文档引擎大重构.md`；选型 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`（含决策变更）
    - 研究：`docs\research\`（文件名即标题，按关键词搜）
 
 ## 二、操作规则
@@ -82,8 +83,8 @@
 
 > 需求意图与操作方法的映射。显示名 Reader；仓库 `reader_rs`；CLI 二进制 `reader`（缩写 `rr`）。
 
-- **搜文本**：`reader search <文件> <关键词>`（.pdf / .epub；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/章；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪）
-- **提文本**：`reader extract <文件>`（`--pages` 限页/章、`-o` 写文件；按单元输出 `== page N ==` / `== chapter N ==` 分节；PDF 行为 markdown 形态，不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
+- **搜文本**：`reader search <文件> <关键词>`（.pdf 及 anydoc 家族 .doc/.docx/.epub/.odt/.rtf/.ppt(x)/.xls(x)/.ods/.odp/.csv；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/节；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪）
+- **提文本**：`reader extract <文件>`（`--pages` 限页/节、`-o` 写文件；按单元输出 `== page N ==`（PDF）/ `== section N ==`（其余，标题分节）分节；输出 markdown 形态（PDF 布局管线 / anydoc GFM），不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
 - **agent 发现**：`reader --llms`（紧凑命令索引）、`reader skill`（生成 SKILL.md；仓根 `SKILL.md` 与运行时输出逐字节一致，测试守卫）
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`

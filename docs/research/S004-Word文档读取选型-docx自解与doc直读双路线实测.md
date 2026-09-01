@@ -71,9 +71,9 @@ Reader 现支持 .pdf / .epub，要评估 Word 文档读取。问题分两层：
 | office_oxide 实体与文本框丢字 | 其 docx 文本管线未解实体、未处理 mc 回退标记 | 引入前必须带保真 fixture 对照，不自采信营销口径（「100% pass rate」） |
 | AlternateContent 同文双份 | Choice 与 Fallback 是新旧两套等价标记 | skip `mc:Fallback` 子树（注意所有输出位点都要挂 skip 守卫，含 tab / tc 补位符） |
 
-## 决策变更与 anydoc 补测（2026-09-01 同日）
+## 决策变更与 anydoc 补测
 
-用户裁定**大重构选 anydoc**，本文「关键结论 1（docx 自解）」与「结论 5（anydoc 不采用）」据此作废；结论 2（office_oxide 保真硬伤）与结论 4（cfb 只到容器层）维持。补测证据：
+> 2026-09-01 同日。用户裁定**大重构选 anydoc**，本文「关键结论 1（docx 自解）」与「结论 5（anydoc 不采用）」据此作废；结论 2（office_oxide 保真硬伤）与结论 4（cfb 只到容器层）维持。补测证据：
 
 - **保真**：同一 fixture 上 anydoc 实体全对（`a & b 中文`）、AlternateContent 取一份、表格出 GFM 管道表（`| 表头1 | 表头2 |` 加 `| --- |`）、`w:br` 出 `\` 硬换行——office_oxide 丢实体的题它全对。[实证: 2026-09-01 target\poc-docx 路线 C]
 - **legacy .doc 直读**：Word COM 现造真二进制，中英文与 `&` 全对，进块级模型（1 Paragraph）。[实证: 同上]
