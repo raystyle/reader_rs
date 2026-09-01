@@ -15,13 +15,11 @@ name = "rr"
 path = "src/main.rs"
 
 [dependencies]
+anydoc = "0.2.4"
 clap = { version = "4", features = ["derive"] }
-# 选型见 docs\research\S001：firecrawl/pdf-inspector，纯 Rust 默认构建（lopdf 解析），MIT，活跃维护
+# PDF 提取引擎：firecrawl/pdf-inspector，纯 Rust 默认构建（lopdf 解析），MIT（S001）。
+# PDF 保持直连保页契约（页级单元与 needs_ocr）；anydoc 对 PDF 也直连它，架构同构（P0009）
 pdf-inspector = "1"
-# XHTML 文本化（EPUB 章正文），事件流最小解；0.42 起实体报为 GeneralRef 事件
-quick-xml = "0.42.0"
-# 选型见 docs\research\S003：rbook 读 EPUB 容器与 spine 序（Apache-2.0；epub crate 为 GPL 出局）
-rbook = "0.7.10"
 regex = "1"
 # JSON 包膜与 filter 点路径（P0006）：序列化事实标准，选型记 P0006 方案 1 条
 serde = { version = "1", features = ["derive"] }
@@ -34,3 +32,7 @@ assert_cmd = "2"
 predicates = "3"
 # 测试用 PDF 由 lopdf 现造（已是 pdf-inspector 传递依赖，锁定同族版本）
 lopdf = "0.44"
+# 测试用 EPUB 由 rbook builder 现造（P0009 起 rbook 退出主依赖，转测试侧造夹具；选型记 S003）
+rbook = "0.7.10"
+# 测试用 docx 由 zip 现造最小 OOXML（P0009；anydoc 家族夹具）
+zip = "8.6"

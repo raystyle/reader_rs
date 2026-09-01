@@ -1,6 +1,8 @@
 //! CLI 集成测试：assert_cmd 整跑 `reader` 二进制。
-//! 测试 PDF 由 lopdf 现造（已知文本与坐标），期望值来自写入的内容本身，独立于被测实现；
-//! 行级断言锚稳定字段（`页:行:` 前缀加同行文本），不锚定 markdown 装饰前缀。
+//! 测试 PDF 由 lopdf 现造、EPUB 由 rbook builder 现造、docx 由 zip 现造最小 OOXML（P0009），
+//! legacy .doc 用仓内二进制资产（Word COM 现造，CI 无 Word 不能现造）；
+//! 期望值来自写入的内容本身，独立于被测实现；
+//! 行级断言锚稳定字段（`单元:行:` 前缀加同行文本），不锚定 markdown 装饰前缀。
 
 use assert_cmd::Command;
 use lopdf::content::{Content, Operation};
@@ -126,16 +128,16 @@ fn epub_path(name: &str) -> PathBuf {
     std::env::temp_dir().join(format!("reader_rs_cli_{}_{name}.epub", std::process::id()))
 }
 
-/// 造两章测试 EPUB：章 1 为 EPUB_CH1_TEXT，章 2 为 EPUB_CH2_TEXT。
+/// 造两章测试 EPUB：章正文自带 h1 标题（anydoc 通道按正文标题分节，head/title 元数据不进正文；
+/// 书名元数据省略，避免 anydoc 渲染成首个标题节挤占单元序号）。章 1 为 EPUB_CH1_TEXT，章 2 为 EPUB_CH2_TEXT。
 fn make_test_epub(path: &Path) -> TestResult {
     use rbook::epub::{Epub, EpubChapter};
     Epub::builder()
         .identifier("urn:reader-rs-test")
-        .title("Reader RS Test Book")
         .language("en")
         .chapter([
-            EpubChapter::new("One").xhtml_body(format!("<p>{EPUB_CH1_TEXT}</p>")),
-            EpubChapter::new("Two").xhtml_body(format!("<p>{EPUB_CH2_TEXT}</p>")),
+            EpubChapter::new("One").xhtml_body(format!("<h1>One</h1><p>{EPUB_CH1_TEXT}</p>")),
+            EpubChapter::new("Two").xhtml_body(format!("<h1>Two</h1><p>{EPUB_CH2_TEXT}</p>")),
         ])
         .write()
         .save(path)?;
@@ -601,7 +603,7 @@ fn dies_no_args() -> TestResult {
 }
 
 #[test]
-fn epub_search_finds_keyword_with_chapter() -> TestResult {
+fn epub_search_finds_keyword_with_section() -> TestResult {
     let epub = TestEpub::make("epub_search")?;
     reader()?
         .args(["search"])
@@ -613,23 +615,24 @@ fn epub_search_finds_keyword_with_chapter() -> TestResult {
     Ok(())
 }
 
+/// EPUB 章标题成为 GFM 标题行，anydoc 通道按标题分节（P0009；原章单元改节单元）。
 #[test]
-fn epub_extract_outputs_chapter_sections() -> TestResult {
+fn epub_extract_outputs_heading_sections() -> TestResult {
     let epub = TestEpub::make("epub_extract")?;
     reader()?
         .args(["extract"])
         .arg(&epub.0)
         .assert()
         .success()
-        .stdout(predicate::str::contains("== chapter 1 =="))
-        .stdout(predicate::str::contains("== chapter 2 =="))
+        .stdout(predicate::str::contains("== section 1 =="))
+        .stdout(predicate::str::contains("== section 2 =="))
         .stdout(predicate::str::contains(EPUB_CH1_TEXT))
         .stdout(predicate::str::contains(EPUB_CH2_TEXT));
     Ok(())
 }
 
 #[test]
-fn epub_pages_filter_selects_chapter() -> TestResult {
+fn epub_pages_filter_selects_section() -> TestResult {
     let epub = TestEpub::make("epub_pages")?;
     reader()?
         .args(["extract"])
@@ -637,10 +640,140 @@ fn epub_pages_filter_selects_chapter() -> TestResult {
         .args(["--pages", "2"])
         .assert()
         .success()
-        .stdout(predicate::str::contains("== chapter 2 =="))
+        .stdout(predicate::str::contains("== section 2 =="))
         .stdout(predicate::str::contains(EPUB_CH2_TEXT))
-        .stdout(predicate::str::contains("== chapter 1 ==").not())
+        .stdout(predicate::str::contains("== section 1 ==").not())
         .stdout(predicate::str::contains(EPUB_CH1_TEXT).not());
+    Ok(())
+}
+
+// ---------- anydoc 家族：docx / csv / legacy doc（P0009） ----------
+
+const DOCX_P1_TEXT: &str = "Hello DOCX Reader";
+const DOCX_P2_TEXT: &str = "Second section rust search";
+
+const DOCX_CONTENT_TYPES: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>"#;
+
+const DOCX_RELS: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>"#;
+
+const DOCX_DOC_RELS: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>"#;
+
+const DOCX_STYLES: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:pPr><w:outlineLvl w:val="0"/></w:pPr></w:style></w:styles>"#;
+
+const DOCX_DOCUMENT: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>Reader docx 夹具首节</w:t></w:r></w:p><w:p><w:r><w:t>Hello DOCX Reader</w:t></w:r></w:p><w:p><w:r><w:t>a &amp; b 中文</w:t></w:r></w:p><w:tbl><w:tr><w:tc><w:p><w:r><w:t>表头A</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>表头B</w:t></w:r></w:p></w:tc></w:tr></w:tbl><w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>第二节</w:t></w:r></w:p><w:p><w:r><w:t>Second section rust search</w:t></w:r></w:p></w:body></w:document>"#;
+
+fn docx_path(name: &str) -> PathBuf {
+    std::env::temp_dir().join(format!("reader_rs_cli_{}_{name}.docx", std::process::id()))
+}
+
+/// 造测试 docx：zip 现造最小 OOXML（两节标题、实体段、一行表格；styles.xml 定义 Heading1）。
+fn make_test_docx(path: &Path) -> TestResult {
+    use std::io::Write as _;
+    let file = std::fs::File::create(path)?;
+    let mut w = zip::ZipWriter::new(file);
+    let opts = zip::write::SimpleFileOptions::default();
+    for (name, body) in [
+        ("[Content_Types].xml", DOCX_CONTENT_TYPES),
+        ("_rels/.rels", DOCX_RELS),
+        ("word/_rels/document.xml.rels", DOCX_DOC_RELS),
+        ("word/styles.xml", DOCX_STYLES),
+        ("word/document.xml", DOCX_DOCUMENT),
+    ] {
+        w.start_file(name, opts)?;
+        w.write_all(body.as_bytes())?;
+    }
+    w.finish()?;
+    Ok(())
+}
+
+struct TestDocx(PathBuf);
+
+impl TestDocx {
+    fn make(name: &str) -> TestResult<Self> {
+        let path = docx_path(name);
+        make_test_docx(&path)?;
+        Ok(Self(path))
+    }
+}
+
+impl Drop for TestDocx {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.0);
+    }
+}
+
+#[test]
+fn docx_search_finds_keyword_with_section() -> TestResult {
+    let docx = TestDocx::make("docx_search")?;
+    let out = stdout_of(reader()?.args(["search"]).arg(&docx.0).arg("DOCX"))?;
+    assert_hit_line(&out, "1:2:", DOCX_P1_TEXT);
+    Ok(())
+}
+
+/// 实体保真回归（S004：office_oxide 同题丢实体）加 GFM 表格形态。
+#[test]
+fn docx_extract_sections_with_entity_and_table() -> TestResult {
+    let docx = TestDocx::make("docx_extract")?;
+    reader()?
+        .args(["extract"])
+        .arg(&docx.0)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("== section 1 =="))
+        .stdout(predicate::str::contains("== section 2 =="))
+        .stdout(predicate::str::contains("a & b 中文"))
+        .stdout(predicate::str::contains("| 表头A |"))
+        .stdout(predicate::str::contains(DOCX_P1_TEXT))
+        .stdout(predicate::str::contains(DOCX_P2_TEXT));
+    Ok(())
+}
+
+#[test]
+fn docx_pages_filter_selects_section() -> TestResult {
+    let docx = TestDocx::make("docx_pages")?;
+    reader()?
+        .args(["extract"])
+        .arg(&docx.0)
+        .args(["--pages", "2"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("== section 2 =="))
+        .stdout(predicate::str::contains(DOCX_P2_TEXT))
+        .stdout(predicate::str::contains("== section 1 ==").not())
+        .stdout(predicate::str::contains(DOCX_P1_TEXT).not());
+    Ok(())
+}
+
+/// CSV 无签名格式：靠扩展名命名，无标题整篇一单元。
+#[test]
+fn csv_extracts_single_section() -> TestResult {
+    let path = std::env::temp_dir().join(format!("reader_rs_cli_{}_note.csv", std::process::id()));
+    std::fs::write(&path, "name,note\nReader,rust 搜索\n")?;
+    reader()?
+        .args(["extract"])
+        .arg(&path)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("== section 1 =="))
+        .stdout(predicate::str::contains("Reader"));
+    let _ = std::fs::remove_file(&path);
+    Ok(())
+}
+
+/// legacy .doc（Word 97-2003 二进制）：仓内资产（Word COM 现造），中文与 & 保真。
+#[test]
+fn legacy_doc_asset_extracts() -> TestResult {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests\\assets\\legacy.doc");
+    let out = stdout_of(reader()?.args(["extract"]).arg(&path))?;
+    assert!(
+        out.contains("alpha&beta") && out.contains("中文校验行"),
+        "legacy .doc 应保真提出 authored 文本:\n{out}"
+    );
     Ok(())
 }
 
