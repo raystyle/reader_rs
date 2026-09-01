@@ -2,7 +2,7 @@
 
 > 本方案文档照 `docs\guide\template.md` 写。进行中与否以 `TODO.md` 为准。
 
-- 状态：进行中
+- 状态：已完成
 - 日期：2026-09-01
 - 关联：TODO.md / 前序方案 `docs\proven\P0008-封版v0.1与三端二进制release.md`（流水线）与 `docs\proven\P0009-anydoc统一文档引擎大重构.md`（引入 zstd-sys C 编译，musl 链路首验）
 
@@ -42,9 +42,13 @@
 
 ## 实施过程与经验
 
-> 完成时补全，不是留空。
+- 实际怎么做：按方案两处改动（matrix 一项加 musl-tools 条件步）。验证分两级：Linux 接管机本地预建先行（R004 第五节，zstd-sys 在 musl-gcc 编译通过、statically linked、可跑），v0.2.1 tag 首跑收口（CI musl job 一次绿）。
+- 与计划偏差：方案验收标准写「9 资产」为笔误，实为 10 件（5 目标 × 二进制加 sha256）。
+- 沉淀的经验：**先本地预建去险、再 tag 首跑收口**的两级验证让 musl 这类新工具链目标零返工；P0013 与 P0011/P0012 同版合发，三项一个 tag 全验。
 
 ## 验收标准
 
-- release run 五 job 全绿（四存量加 musl），9 资产齐（8 加 musl 双件）。
-- CHANGELOG 记 musl 资产。
+- release run 五 job 全绿（musl 首跑一次过）。[实证: 2026-09-01 v0.2.1 run，musl/x86_64-unknown-linux-musl job success]
+- 10 资产齐（5 目标 × tar.gz 或 zip 加 sha256；musl 双件在内）。[实证: 2026-09-01 gh release view v0.2.1]
+- 本机下载验收：windows zip 与 musl tar.gz sha256 双一致，`reader 0.2.1` 可跑，批量 json 与 legacy.doc part 分片冒烟过。[实证: 2026-09-01 本机]
+- CHANGELOG 记 musl 资产（[0.2.1] 节）。[实证: 同上]
