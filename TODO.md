@@ -4,14 +4,14 @@
 
 ## 当前目标
 
-封版 v0.1.0：tag 触发的三端二进制 release 流水线（对应 `GOAL.md`，方案 P0008，登记日 2026-08-31）。**2026-08-31 达成**：四 job 全绿、8 资产齐出、本机实测通过。下版候选（MCP、TOON、musl、包管理器分发、Word 文档支持等）待立项；Word 支持选型已研究（`docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`：docx 走 zip 加 quick-xml 自解，legacy .doc 首版缓）。
+anydoc 统一文档引擎大重构（对应 `GOAL.md`，方案 P0009，登记日 2026-09-01）：PDF 保留 pdf-inspector 直连页契约，其余十三格式统一 anydoc 按标题分节。选型与补测见 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`（含决策变更记录：用户裁定推翻 docx 自解初判）。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 立项 P0008 | 已完成 | `docs\proven\P0008-封版v0.1与三端二进制release.md`；三原语登记 | 2026-08-31 |
-| release 流水线 | 已完成 | tag v* 触发、四目标矩阵、gh CLI 幂等上传、版本一致性闸；Intel 资产交叉编译（M004） | 2026-08-31 |
-| CHANGELOG 封版与 README 下载节 | 已完成 | `[0.1.0] - 2026-08-31`；安装节资产命名表 | 2026-08-31 |
-| 发布与验收 | 已完成 | run 33461625241 四 job 全绿、8 资产齐出；本机下载实测（sha256 一致、--version 0.1.0、真样本 25 命中同 S001 基线） | 2026-08-31 |
-| 收官登记 | 已完成 | P0008 回填、INDEX/AGENTS/diary、M104 新分类、门禁与提交 | 2026-08-31 |
+| S004 选型研究（docx 双路线） | 已完成 | 自解加 office_oxide 对照；anydoc 补测全绿；决策变更记录 | 2026-09-01 |
+| 立项 P0009 | 已完成 | 方案、三原语、INDEX 登记 | 2026-09-01 |
+| 引擎切换 | 进行中 | Cargo 依赖手术、`src\anydoc.rs`、`document.rs` 分派、删 `epub.rs` | 2026-09-01 |
+| 测试与夹具 | 未开始 | docx/csv 夹具用例、legacy.doc 资产、EPUB 断言改 section | 2026-09-01 |
+| 文案与收官 | 未开始 | lib/introspect/SKILL 再生成、门禁、真样本回归、CHANGELOG/README/AGENTS/INDEX/ROADMAP/diary | 2026-09-01 |

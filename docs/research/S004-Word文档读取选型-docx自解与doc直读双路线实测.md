@@ -71,8 +71,19 @@ Reader 现支持 .pdf / .epub，要评估 Word 文档读取。问题分两层：
 | office_oxide 实体与文本框丢字 | 其 docx 文本管线未解实体、未处理 mc 回退标记 | 引入前必须带保真 fixture 对照，不自采信营销口径（「100% pass rate」） |
 | AlternateContent 同文双份 | Choice 与 Fallback 是新旧两套等价标记 | skip `mc:Fallback` 子树（注意所有输出位点都要挂 skip 守卫，含 tab / tc 补位符） |
 
+## 决策变更与 anydoc 补测（2026-09-01 同日）
+
+用户裁定**大重构选 anydoc**，本文「关键结论 1（docx 自解）」与「结论 5（anydoc 不采用）」据此作废；结论 2（office_oxide 保真硬伤）与结论 4（cfb 只到容器层）维持。补测证据：
+
+- **保真**：同一 fixture 上 anydoc 实体全对（`a & b 中文`）、AlternateContent 取一份、表格出 GFM 管道表（`| 表头1 | 表头2 |` 加 `| --- |`）、`w:br` 出 `\` 硬换行——office_oxide 丢实体的题它全对。[实证: 2026-09-01 target\poc-docx 路线 C]
+- **legacy .doc 直读**：Word COM 现造真二进制，中英文与 `&` 全对，进块级模型（1 Paragraph）。[实证: 同上]
+- **真样本 docx**：27 行与自解、office_oxide 三方一致；块级模型另给 14 标题、42 段落、29 资产的结构信息。[实证: 同上，Desktop 测试V2.docx]
+- **API 形态**：`to_markdown(path) -> String` 整篇 GFM；`to_document(bytes, format)` 块级模型（`Block::Heading/Paragraph/List/Table/BlockQuote/CodeBlock/Math` 加 notes/assets），**PDF 不支持 to_document**，其 PDF 路径直连 pdf-inspector 出整篇串、无页界、扫描页整篇报 `NeedsOcr`。[实证: 2026-09-01 源码 gh api src\lib.rs 与 src\formats\pdf.rs 加本机 PDF 实测]
+- **架构含义**：PDF 保留 pdf-inspector 直连（页契约）加其余格式走 anydoc，与 anydoc 自身对 PDF 的处理一致。落地见 `docs\proven\P0009-anydoc统一文档引擎大重构.md`。
+
 ## 待办
 
-1. 立项 P0009 时定夺：`UnitKind` 对 docx 无页概念，整篇一单元（新增 `Body` 类标签）还是按 `w:sectPr` 分节；表格行拼接（B 形态）需要在表格内抑制按 `w:p` 断行。纯方案问题，无选型风险。
-2. `word/footnotes.xml` / `endnotes.xml` / 页眉页脚暂不读（主正文优先），真实需求出现再评。[假设: 阅读场景正文为主]
-3. office_oxide 若日后引入（.doc 直读），复测其 0.2+ 版本实体保真。[假设: 届时已修]
+1. ~~立项 P0009 时定夺 `UnitKind` 分节~~（已被 anydoc 重构吸收：标题分节，见 P0009）。
+2. `word/footnotes.xml` / `endnotes.xml` / 页眉页脚：anydoc 模型含 notes（脚注/尾注），随 P0009 一并进 markdown 输出。[实证: 模型 `Document.notes` 字段]
+3. ~~office_oxide 复测~~（不再引入）。
+4. anydoc 0.2.4 年轻（2026-08 建仓），主版本锁 `^0.2`，升级时跑真样本回归。[推断: 快迭代期 API 可能动]
