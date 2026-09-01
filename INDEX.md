@@ -72,7 +72,7 @@ reader_rs/
 | P0007 | `P0007-Agent自省与发现-llms索引SKILL生成与help示例.md` | 阶段 3 第二刀（已完成 2026-08-31） |
 | P0008 | `P0008-封版v0.1与三端二进制release.md` | 封版 v0.1.0 与 release 流水线（已完成 2026-08-31） |
 | P0009 | `P0009-anydoc统一文档引擎大重构.md` | anydoc 统一引擎与 14 格式（已完成 2026-09-01，v0.2.0 已发布） |
-| P0010 | `P0010-无标题长文档行分片.md` | 无标题文档 part 分片（进行中 2026-09-01） |
+| P0010 | `P0010-无标题长文档行分片.md` | 无标题文档 part 分片（已完成 2026-09-01） |
 
 ## 四、项目日记
 
@@ -90,7 +90,8 @@ reader_rs/
 | S001 | `S001-PDF文本提取crate选型-pdf-inspector双通道核实.md` | 提取引擎选型（双通道） |
 | S002 | `S002-incurs模块经验研究-Agent原生CLI的命令输出与帮助设计.md` | Agent 原生输出/帮助设计借鉴 |
 | S003 | `S003-EPUB解析crate选型-rbook双通道核实.md` | EPUB 解析选型（rbook 加 quick-xml） |
-| S004 | `S004-Word文档读取选型-docx自解与doc直读双路线实测.md` | Word 支持选型（docx 自解路线，doc 暂缓） |
+| S004 | `S004-Word文档读取选型-docx自解与doc直读双路线实测.md` | Word 支持选型（anydoc 统一引擎，决策变更记录在内） |
+| S005 | `S005-TOON输出形态收益实测-Reader真实样本上不成立.md` | TOON 收益实测（不引入，销候选） |
 
 ## 六、开发测试参考
 

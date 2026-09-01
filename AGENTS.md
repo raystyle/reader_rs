@@ -91,7 +91,7 @@
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`
 
-已落地：`search`、`extract`、`skill`、`--llms`。其余能力（OCR、MCP、TOON、批量目录）仍是候选方向，禁止假装已经可跑。
+已落地：`search`、`extract`、`skill`、`--llms`。其余能力（OCR、MCP、批量目录）仍是候选方向，禁止假装已经可跑；TOON 已经 S005 实测裁定不引入（中文样本反而费 token 且 0.5.0 往返破损）。
 
 ## 四、资源索引
 
