@@ -5,7 +5,7 @@ description: Agent 原生文档阅读、搜索和提取工具。从本地 PDF �
 
 # Reader
 
-Rust 单二进制 CLI（v0.2.0；命令 `reader`，缩写 `rr` 同入口）。只读本地文档文本层：PDF 按页；Word（.doc / .docx）、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV 按标题节。无交互、无守护进程；机器可读优先，错误走 stderr。
+Rust 单二进制 CLI（v0.2.1；命令 `reader`，缩写 `rr` 同入口）。只读本地文档文本层：PDF 按页；Word（.doc / .docx）、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV 按标题节。无交互、无守护进程；机器可读优先，错误走 stderr。
 
 ## 何时使用
 

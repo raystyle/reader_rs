@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-01
+
+> 三平台实机验收轮（R004 Linux、R005 mac）：分片与批量搜索落地、SIGPIPE 修复、musl 静态资产首发。
+
 - **Unix 管道截断行为修复（M007）**：Linux/macOS 上输出接 `| head` 等早退管道时由 panic（exit 101 + stderr 栈）改为按 Unix 惯例死于 SIGPIPE（shell 报 141、零输出噪音，同 grep/rg）；Windows 行为零变化。Linux 实机验收（R004）发现并当轮修复，回归测试入集成面。
 - **批量目录搜索（P0012）**：`reader search <目录> <关键词>` 递归批量搜支持格式（路径排序稳定）；text 命中行 `路径:单元:行号:文本`，json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped` 统计；坏文件 stderr 跳过后继续，目录无支持格式文件退出 2；`--pages` 目录下不可用。单文件模式输出与退出码零变化。
 - **超长节再分片（P0011）**：有标题文档中超过 200 行的节按同预算切为 `part` 单元，单元号跨 kind 全局连续；短节与无标题文档行为不变（P0010 口径）。

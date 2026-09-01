@@ -16,6 +16,13 @@
 - 根因：`Path::join("tests\\assets\\legacy.doc")` 用了 Windows 反斜杠；Linux/macOS 上反斜杠是文件名的一部分，路径不存在。在 Windows 上开发、测试全绿，跨平台问题只有 CI 能暴露。
 - 正确处理：仓内相对路径拼接一律 `join("tests/assets/legacy.doc")` 正斜杠分段（Windows 同样接受）；新增测试路径断言前想一步「这条在 CI 三系统上等价吗」。
 
+## M008 Git Bash 里用 cmd 风格 2>nul，仓里落出保留名文件
+
+- 日期：2026-09-01
+- 现象：Git Bash 冒烟命令写 `... 2>nul`，以为同 cmd 丢 stderr；实际 MSYS 把 `nul` 当普通文件名，仓根生成名为 `nul` 的真实文件（Windows 保留设备名），`git add -A` 报 `invalid path 'nul'` 阻断提交。
+- 根因：cmd 的 `nul` 设备语义不跨 shell；bash 里写 `nul` 就是文件。
+- 正确处理：bash 侧一律 `2>/dev/null`；已落出的保留名文件用 MSYS 的 `rm ./nul` 删（绕过 Win32 保留名限制），或 PowerShell `Remove-Item '\\?\D:\...\nul'`。
+
 ## M007 Rust 默认忽略 SIGPIPE，Linux 管道早退 panic exit 101
 
 - 日期：2026-09-01（Linux 实机验收 R004 第四节发现）
