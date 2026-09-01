@@ -33,6 +33,6 @@ Agent 原生优先，设计依据 `docs\research\S002-incurs模块经验研究-A
 
 macOS / Linux 接管开发与测试：GitHub Actions 三系统矩阵跑门禁三件（`.github\workflows\ci.yml`）；`.gitattributes` 钉 LF；文档命令双形态。方案 P0004。验收以 CI 首跑三系统绿为准。
 
-## 阶段 5：格式扩展（anydoc 统一引擎）
+## 阶段 5：格式扩展
 
 用户裁定大重构：Word（含 legacy .doc）/ EPUB / ODT / RTF / PowerPoint / Excel / ODF / CSV 统一走 anydoc 0.2.4 出 GFM markdown 按标题分节；PDF 保持 pdf-inspector 直连（页契约）。破坏性变更：EPUB 单元由章改节。**2026-09-01 达成**（P0009）：37 集成加 9 单元测试全绿，真样本四路回归。选型反复与保真实测记 S004。
