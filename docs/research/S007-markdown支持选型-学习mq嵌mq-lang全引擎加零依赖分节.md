@@ -1,6 +1,6 @@
 # S007-markdown支持选型-学习mq嵌mq-lang全引擎加零依赖分节
 
-> 2026-09-03。触发点：用户点名「学习 https://github.com/harehare/mq 加入 markdown 文档的搜索和结构化提取能力」。流程按 R002；六态标准见 G002。PoC 工程 `target\poc-mq\`（gitignored，证据以本文记录为准）。
+> 2026-09-03。触发点：用户点名「学习 <https://github.com/harehare/mq> 加入 markdown 文档的搜索和结构化提取能力」。流程按 R002；六态标准见 G002。PoC 工程 `target\poc-mq\`（gitignored，证据以本文记录为准）。
 
 ## 背景
 

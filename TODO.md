@@ -4,14 +4,15 @@
 
 ## 当前目标
 
-P0016 markdown 支持落地（登记日 2026-09-03；依据 `docs\research\S007`）。.md 进 search/extract 格式面（零新依赖复用 split_markdown）；`query` 子命令嵌 mq-lang 全引擎做结构化提取（支持全部已支持格式：md 原文、anydoc 家族 GFM、PDF markdown 管线）。
+P0016 markdown 支持落地（登记日 2026-09-03；依据 `docs\research\S007`）。**2026-09-03 已达成**：`.md`/`.markdown` 进 search/extract 格式面（零新依赖复用 split_markdown）；`query` 子命令嵌 mq-lang 全引擎；23 单元加 52 集成全绿、真样本回归过。过程与经验回填 `docs\proven\P0016-markdown支持与mq结构化提取.md`。下一目标待用户点名。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
 | S007 研究与裁决 | 已完成 | 双通道核实加 PoC 实测；研究文档落盘 | 2026-09-03 |
-| .md 进格式面 | 进行中 | document.rs 分派加 is_supported；anydoc.rs 出 md 直读路径；错误文案与帮助面扩格式清单 | 2026-09-03 |
-| query 子命令 | 未开始 | src\query.rs：格式到 markdown 文本、mq-lang eval、空渲染过滤；text/json 两形态、退出码 0/1/2 同 search 语义 | 2026-09-03 |
-| 测试 | 未开始 | md 夹具分节/分片/搜索；query 正例（.h2/.code/select）、无命中退出 1、坏表达式退出 2、json 形态 | 2026-09-03 |
-| 文案与门禁 | 未开始 | introspect 双文本、SKILL 再生成、AGENTS/INDEX/README/CHANGELOG/diary/P0016 归档；门禁三件加 rumdl 三件 | 2026-09-03 |
+| .md 进格式面 | 已完成 | document.rs 分派加 is_supported；anydoc.rs 出 extract_markdown 直读路径 | 2026-09-03 |
+| query 子命令 | 已完成 | src\query.rs 加 lib.rs 接线；text/json 两形态、退出码 0/1/2 同 search | 2026-09-03 |
+| 测试 | 已完成 | md 夹具三件加 query 正负例加 json 加目录拒绝；23 单元加 52 集成全绿 | 2026-09-03 |
+| 真样本回归 | 已完成 | 仓内 README/P0015 方案/SKILL 搜加 extract 加 query 五项过；docs 目录批量搜覆盖 .md | 2026-09-03 |
+| 文案与门禁 | 已完成 | introspect/SKILL/AGENTS/INDEX/README/CHANGELOG/diary/P0016 归档；门禁三件加 rumdl 三件 | 2026-09-03 |

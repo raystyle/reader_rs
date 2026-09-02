@@ -37,6 +37,7 @@
 | `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
 | `src\ocr.rs` | OCR 兜底（P0014）：hayro 渲染 needs_ocr 页加 tract 推理 PP-OCRv5 mobile；模型三件 ModelScope 下载加 SHA-256 钉死、进程内 strip value_info；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
 | `src\selfupdate.rs` | self update（P0015）：latest 元数据（GH_TOKEN 加 gh api 兜底）、版本判新、资产 digest 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
+| `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤 |
 | `vendor\pure-onnx-ocr\` | vendored pure-onnx-ocr 0.1.0（rec max_width 320 硬编码改 2560，S006 踩坑 2；`[patch.crates-io]` 接入） |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
@@ -49,7 +50,7 @@ reader_rs/
   Cargo.toml / LICENSE / .rumdl.toml
   .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-replace）
   src\
-    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  selfupdate.rs
+    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  selfupdate.rs  query.rs
   vendor\
     pure-onnx-ocr\   vendored OCR 引擎（patch 接入，P0014）
   tests\
@@ -84,6 +85,7 @@ reader_rs/
 | P0013 | `P0013-musl静态Linux资产.md` | musl 静态资产（已完成 2026-09-01，v0.2.1 首发实测） |
 | P0014 | `P0014-OCR兜底落地.md` | `--ocr` 兜底与模型管理（已完成 2026-09-03） |
 | P0015 | `P0015-self-update.md` | self update（已完成 2026-09-03） |
+| P0016 | `P0016-markdown支持与mq结构化提取.md` | .md 进格式面加 mq query（已完成 2026-09-03） |
 
 ## 四、项目日记
 
@@ -106,6 +108,7 @@ reader_rs/
 | S004 | `S004-Word文档读取选型-docx自解与doc直读双路线实测.md` | Word 支持选型（anydoc 统一引擎，决策变更记录在内） |
 | S005 | `S005-TOON输出形态收益实测-Reader真实样本上不成立.md` | TOON 收益实测（不引入，销候选） |
 | S006 | `S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` | 内嵌 OCR 选型（纯 Rust 管线实测可行，已落地 P0014） |
+| S007 | `S007-markdown支持选型-学习mq嵌mq-lang全引擎加零依赖分节.md` | markdown 支持选型（学习 mq，已落地 P0016） |
 
 ## 六、开发测试参考
 
