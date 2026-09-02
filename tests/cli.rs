@@ -1174,3 +1174,18 @@ fn sigpipe_on_closed_stdout_kills_quietly() -> TestResult {
     );
     Ok(())
 }
+
+// ---------- self update（P0015） ----------
+
+/// self update 帮助面：`--help` 出 --force；裸 `self` 缺子命令按 clap 惯例退出 2。
+/// 真更新路径不进集成测试（下载加替换自身不可在 CI 跑），端到端实测记 P0015 验收。
+#[test]
+fn self_update_help_surface() -> TestResult {
+    reader()?
+        .args(["self", "update", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("--force"));
+    reader()?.args(["self"]).assert().code(2);
+    Ok(())
+}

@@ -11,6 +11,7 @@ reader v{v} — Agent 原生文档阅读、搜索和提取工具（PDF 按页；
 reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径] [--ocr] [--offline]
 reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M] [--ocr] [--offline]
 reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
+reader self update [--force] — 自升级（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 reader --llms — 本索引
 退出码: 0 成功或命中 / 1 无命中（仅 search） / 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）
 输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（超 200 行单元按行分片）；目录批量模式命中行前缀 路径:
@@ -77,6 +78,18 @@ reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] 
 
 - `reader skill`：输出本文件（重定向可写回仓根 SKILL.md）。
 - `reader --llms`：紧凑命令索引（本文件的省 token 形态）。
+
+### self update 自升级
+
+```text
+reader self update [--force]
+```
+
+- 从 GitHub Releases 最新正式版下载本平台资产，sha256 digest 校验后替换当前运行的二进制与同目录兄弟（reader / rr 双名）；已最新时输出 `self_update: current <版本>`。
+- `--force`：版本相同也强制重装。
+- 环境变量 `GH_TOKEN` 注入 GitHub 认证（匿名限流 403 时自动回退 `gh api`）。
+- 输出行：`self_update: updated <旧> -> <新>` 加每条 `path: <替换路径>`；出错退出 2，stderr 出人读原因。
+- 只走 stable 正式版通道；不做自动更新，仅显式执行。
 
 ## 输出契约
 

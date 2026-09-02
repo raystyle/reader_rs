@@ -46,6 +46,15 @@ pure-onnx-ocr = { path = "vendor/pure-onnx-ocr" }
 # 静默终止，不 panic；已是 anydoc 家族传递依赖，此处升为直接依赖
 libc = "0.2"
 
+[target.'cfg(windows)'.dependencies]
+# self update 解 zip 资产（P0015；release.yml Windows 打包形态）
+zip = "8.6"
+
+[target.'cfg(not(windows))'.dependencies]
+# self update 解 tar.gz 资产（P0015；flate2 1.x 默认 rust_backend 走 miniz_oxide，纯 Rust 不破边界）
+tar = "0.4"
+flate2 = "1"
+
 [dev-dependencies]
 # assert_cmd 与 predicates 为 clap 官方生态标准 CLI 测试件（R002 选型：
 # crates.io 稳定主流、持续维护），只进测试构建。

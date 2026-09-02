@@ -51,6 +51,18 @@ reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] 
 - `reader skill`：输出本文件（重定向可写回仓根 SKILL.md）。
 - `reader --llms`：紧凑命令索引（本文件的省 token 形态）。
 
+### self update 自升级
+
+```text
+reader self update [--force]
+```
+
+- 从 GitHub Releases 最新正式版下载本平台资产，sha256 digest 校验后替换当前运行的二进制与同目录兄弟（reader / rr 双名）；已最新时输出 `self_update: current <版本>`。
+- `--force`：版本相同也强制重装。
+- 环境变量 `GH_TOKEN` 注入 GitHub 认证（匿名限流 403 时自动回退 `gh api`）。
+- 输出行：`self_update: updated <旧> -> <新>` 加每条 `path: <替换路径>`；出错退出 2，stderr 出人读原因。
+- 只走 stable 正式版通道；不做自动更新，仅显式执行。
+
 ## 输出契约
 
 text 形态（缺省）：

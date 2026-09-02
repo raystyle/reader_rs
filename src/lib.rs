@@ -9,6 +9,7 @@ pub mod ocr;
 pub mod output;
 pub mod pdf;
 pub mod search;
+pub mod selfupdate;
 
 use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
 use document::OcrOpts;
@@ -126,6 +127,22 @@ enum Commands {
     },
     /// 生成 SKILL.md（agent 发现与接入文档；--llms 给紧凑索引）
     Skill,
+    /// 自升级（GitHub Releases 最新正式版，下载校验后替换自身与兄弟二进制）
+    #[command(name = "self")]
+    SelfCmd {
+        #[command(subcommand)]
+        command: SelfCommands,
+    },
+}
+
+#[derive(Subcommand)]
+enum SelfCommands {
+    /// 升级到最新正式版（已最新时明示；--force 同版本重装）
+    Update {
+        /// 版本相同也强制重装
+        #[arg(long)]
+        force: bool,
+    },
 }
 
 /// CLI 入口：返回进程退出码。
@@ -140,6 +157,29 @@ pub fn run() -> i32 {
             print!("{}", introspect::skill_md());
             0
         }
+        Some(Commands::SelfCmd {
+            command: SelfCommands::Update { force },
+        }) => match selfupdate::self_update(force) {
+            Ok(outcome) => {
+                match outcome.action {
+                    "current" => println!(
+                        "self_update: current {}（latest {}，已是最新）",
+                        outcome.current, outcome.latest
+                    ),
+                    _ => {
+                        println!(
+                            "self_update: updated {} -> {}",
+                            outcome.current, outcome.latest
+                        );
+                        for path in &outcome.replaced {
+                            println!("path: {}", path.display());
+                        }
+                    }
+                }
+                0
+            }
+            Err(err) => fail("self update", Format::Text, err),
+        },
         Some(Commands::Search {
             file,
             pattern,
