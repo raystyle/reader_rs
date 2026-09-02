@@ -19,7 +19,32 @@ pub fn extract_sections(
     let markdown = ::anydoc::to_markdown_bytes(&bytes, format)
         .map_err(|e| format!("无法解析文档 {}: {e}", path.display()))?;
     let (sections, has_heading) = split_markdown(&markdown);
-    Ok(to_unit_bodies(sections, has_heading)
+    Ok(sections_to_units(sections, has_heading, filter))
+}
+
+/// 提取 markdown 原文文档（.md，P0016）：读 UTF-8 文本直接进同一条分节管线，
+/// 节语义与 anydoc 家族完全一致（section/part、`--pages`、分页全继承）。
+pub fn extract_markdown(
+    path: &Path,
+    filter: Option<&HashSet<u32>>,
+) -> Result<Vec<TextUnit>, String> {
+    let text = std::fs::read_to_string(path).map_err(|e| {
+        format!(
+            "无法读取 markdown 文档 {}（须为 UTF-8）: {e}",
+            path.display()
+        )
+    })?;
+    let (sections, has_heading) = split_markdown(&text);
+    Ok(sections_to_units(sections, has_heading, filter))
+}
+
+/// 节体映射 TextUnit：part 分片（P0010/P0011）后按 1 起序号过滤。
+fn sections_to_units(
+    sections: Vec<Vec<String>>,
+    has_heading: bool,
+    filter: Option<&HashSet<u32>>,
+) -> Vec<TextUnit> {
+    to_unit_bodies(sections, has_heading)
         .into_iter()
         .enumerate()
         .filter(|(i, _)| filter.map(|f| f.contains(&(*i as u32 + 1))).unwrap_or(true))
@@ -29,7 +54,7 @@ pub fn extract_sections(
             lines,
             needs_ocr: None,
         })
-        .collect())
+        .collect()
 }
 
 /// 节体到单元体的判定：超预算的节切 part（P0011），短节保持 section；

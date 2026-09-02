@@ -1189,3 +1189,147 @@ fn self_update_help_surface() -> TestResult {
     reader()?.args(["self"]).assert().code(2);
     Ok(())
 }
+
+// ---------- markdown 支持与 mq 结构化提取（P0016） ----------
+
+const MD_DOC: &str = "\
+# 指南标题
+
+前言段落含 keyword-alpha。
+
+## 第一节 工具
+
+- item one
+- item keyword-beta
+
+```rust
+fn main() {}
+```
+
+## 第二节 流程
+
+表格行 | 列
+";
+
+fn md_path(name: &str) -> PathBuf {
+    std::env::temp_dir().join(format!("reader_rs_cli_{}_{name}.md", std::process::id()))
+}
+
+struct TestMd(PathBuf);
+
+impl TestMd {
+    fn make(name: &str) -> TestResult<Self> {
+        let path = md_path(name);
+        std::fs::write(&path, MD_DOC)?;
+        Ok(Self(path))
+    }
+}
+
+impl Drop for TestMd {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.0);
+    }
+}
+
+/// .md 进格式面：按标题分节（3 节），搜索命中带节号与行号。
+#[test]
+fn markdown_extract_sections_and_search() -> TestResult {
+    let md = TestMd::make("basic")?;
+    let out = stdout_of(reader()?.args(["extract"]).arg(&md.0))?;
+    assert!(
+        out.contains("== section 1 ==") && out.contains("== section 3 =="),
+        "md 应按顶层标题分 3 节:\n{out}"
+    );
+    reader()?
+        .args(["search"])
+        .arg(&md.0)
+        .arg("keyword-beta")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("2:3:"));
+    Ok(())
+}
+
+/// 无标题长 md 按 200 行预算切 part（与无标题 anydoc 文档同口径，P0010 继承）。
+#[test]
+fn markdown_headingless_chunks_into_parts() -> TestResult {
+    let path = md_path("parts");
+    let body = (0..250)
+        .map(|i| format!("row-{i:03}"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    std::fs::write(&path, body)?;
+    let out = stdout_of(reader()?.args(["extract"]).arg(&path))?;
+    assert!(
+        out.contains("== part 1 ==") && out.contains("== part 2 =="),
+        "250 行无标题 md 应切 2 个 part:\n{}",
+        &out[..out.len().min(200)]
+    );
+    std::fs::remove_file(&path)?;
+    Ok(())
+}
+
+/// query：mq 表达式结构化提取——`.h2` 出二级标题，select 管道筛内容。
+#[test]
+fn query_extracts_structures() -> TestResult {
+    let md = TestMd::make("query")?;
+    let out = stdout_of(reader()?.args(["query"]).arg(&md.0).arg(".h2"))?;
+    assert!(
+        out.contains("## 第一节 工具") && out.contains("## 第二节 流程"),
+        ".h2 应出两个二级标题:\n{out}"
+    );
+    reader()?
+        .args(["query"])
+        .arg(&md.0)
+        .arg(".[] | select(contains(\"keyword-beta\"))")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("keyword-beta"));
+    Ok(())
+}
+
+/// query 无命中退出 1；坏表达式退出 2；json 形态 results 加 count。
+#[test]
+fn query_exit_codes_and_json() -> TestResult {
+    let md = TestMd::make("query2")?;
+    reader()?
+        .args(["query"])
+        .arg(&md.0)
+        .arg(".h5")
+        .assert()
+        .code(1);
+    reader()?
+        .args(["query"])
+        .arg(&md.0)
+        .arg("bad syntax here")
+        .assert()
+        .code(2);
+    let v = json_stdout(
+        reader()?
+            .args(["query"])
+            .arg(&md.0)
+            .args([".h2", "--format", "json"]),
+    )?;
+    assert_eq!(v["data"]["count"], serde_json::json!(2));
+    assert!(
+        v["data"]["results"][0]
+            .as_str()
+            .is_some_and(|s| s.contains("第一节")),
+        "results[0] 应为首个二级标题: {v}"
+    );
+    Ok(())
+}
+
+/// query 拒绝目录输入。
+#[test]
+fn dies_query_on_directory() -> TestResult {
+    let dir = TestDir::make("query_dir")?;
+    reader()?
+        .args(["query"])
+        .arg(&dir.0)
+        .arg(".h")
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("query 不支持目录"));
+    Ok(())
+}

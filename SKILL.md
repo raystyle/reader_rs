@@ -1,11 +1,11 @@
 ---
 name: reader
-description: Agent 原生文档阅读、搜索和提取工具。从本地 PDF 与 Word / EPUB / ODT / RTF / Office / CSV 文档读文本层——按页或节读、按词或正则搜、按单元取。输出稳定可解析，grep 语义退出码。
+description: Agent 原生文档阅读、搜索和提取工具。从本地 PDF、markdown 与 Word / EPUB / ODT / RTF / Office / CSV 文档读文本层——按页或节读、按词或正则搜、按单元取。输出稳定可解析，grep 语义退出码。
 ---
 
 # Reader
 
-Rust 单二进制 CLI（v0.2.1；命令 `reader`，缩写 `rr` 同入口）。只读本地文档文本层：PDF 按页；Word（.doc / .docx）、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV 按标题节。无交互、无守护进程；机器可读优先，错误走 stderr。
+Rust 单二进制 CLI（v0.2.1；命令 `reader`，缩写 `rr` 同入口）。只读本地文档文本层：PDF 按页；markdown（.md / .markdown）与 Word（.doc / .docx）、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV 按标题节。无交互、无守护进程；机器可读优先，错误走 stderr。
 
 ## 何时使用
 
@@ -13,6 +13,7 @@ Rust 单二进制 CLI（v0.2.1；命令 `reader`，缩写 `rr` 同入口）。�
 - 在目录里找哪些文档提到某词：`search` 直接给目录，递归批量搜，命中行带路径前缀。
 - 把文档文本层喂给 LLM 上下文：大文档用 `--offset` / `--limit` 分页，按 meta 的 `next_offset` 与 `cta` 链式推进。
 - 要结构化结果：`--format json` 包膜，`--filter` 点路径裁剪只取所需字段。
+- 结构化提取文档元素：`query` 跑 mq 表达式（jq 风格——`.h2` 二级标题、`.code` 代码块、`.link` 链接、`.table` 表格、`select(contains(...))` 过滤）。
 
 不适用：渲染、编辑、支持列表以外格式。扫描件与乱码层 PDF 以 needs_ocr 检出提示；PDF 单文件可加 `--ocr` 兜底识别（mobile 模型有系统性掉字，仍标 needs_ocr）。
 
@@ -45,6 +46,17 @@ reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] 
 - `--ocr` / `--offline`：同 search，对 needs_ocr 页 OCR 兜底回填正文（仅 PDF）。
 - `--format json`：data 为 `units[]`（kind / no / needs_ocr / lines）。
 - `--filter 路径`：裁剪 json 的 data，如 `units[].no`；仅 json 形态可用。
+
+### query 结构化提取
+
+```text
+reader query <文件> <mq表达式> [--format text|json] [--filter 路径]
+```
+
+- mq 表达式（jq 风格，完整语法见 mqlang.org）：`.h` / `.h1`..`.h6` 标题、`.code` 代码块、`.link` 链接、`.table` 表格、`.list` 列表，管道组合如 `.[] | select(contains("关键词"))`。
+- 输入面：.md/.markdown 原文直查；.pdf 与 anydoc 家族先转 markdown 再查。不支持目录。
+- text 形态逐命中输出 markdown 片段原文；json 形态 data 为 `results[]` 加 `count`。
+- 退出码同 search：有命中 0、无命中 1、出错 2（表达式语法错误走 stderr 结构化报错）。
 
 ### skill 与 --llms
 
@@ -95,4 +107,6 @@ reader search ./report.docx "配置" --format json --filter 'hits[].unit'
 reader extract ./doc.pdf --pages 1-3
 reader search ./docs "配置" --format json --filter 'hits[].file'
 reader extract ./report.docx --format json --offset 0 --limit 5
+reader query ./README.md ".h2"
+reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json
 ```

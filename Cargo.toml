@@ -37,6 +37,8 @@ ureq = "3"
 sha2 = "0.10"
 # hayro 位图到引擎的内存传递（与 pure-onnx-ocr 同族 0.25）
 image = "0.25"
+# mq 结构化提取引擎（P0016，选型 S007）：jq 风格 markdown 查询，MIT 纯 Rust
+mq-lang = "0.8"
 
 [patch.crates-io]
 pure-onnx-ocr = { path = "vendor/pure-onnx-ocr" }

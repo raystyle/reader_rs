@@ -50,11 +50,14 @@ pub fn extract(
     if ext == "pdf" {
         return crate::pdf::extract_pages(path, filter, ocr);
     }
+    if ext == "md" || ext == "markdown" {
+        return crate::anydoc::extract_markdown(path, filter);
+    }
     if ::anydoc::Format::from_extension(&ext).is_some() {
         return crate::anydoc::extract_sections(path, filter);
     }
     Err(format!(
-        "不支持的格式 {}（{}）；当前支持 .pdf 与 anydoc 家族（.doc / .docx / .epub / .odt / .rtf / .ppt(x) / .xls(x) / .ods / .odp / .csv）",
+        "不支持的格式 {}（{}）；当前支持 .pdf、markdown（.md/.markdown）与 anydoc 家族（.doc / .docx / .epub / .odt / .rtf / .ppt(x) / .xls(x) / .ods / .odp / .csv）",
         if ext.is_empty() {
             "<无扩展名>"
         } else {
@@ -67,7 +70,10 @@ pub fn extract(
 /// 扩展名是否命中支持面（分派与批量目录遍历共用同一真源；P0012）。
 pub fn is_supported(path: &Path) -> bool {
     let ext = ext_of(path);
-    ext == "pdf" || ::anydoc::Format::from_extension(&ext).is_some()
+    ext == "pdf"
+        || ext == "md"
+        || ext == "markdown"
+        || ::anydoc::Format::from_extension(&ext).is_some()
 }
 
 fn ext_of(path: &Path) -> String {

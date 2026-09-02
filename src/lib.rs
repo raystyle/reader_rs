@@ -1,4 +1,4 @@
-//! Reader：Agent 原生文档阅读、搜索和提取工具（PDF 按页；Word / EPUB / ODT / RTF / Office / CSV 按标题节）。
+//! Reader：Agent 原生文档阅读、搜索和提取工具（PDF 按页；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 按标题节）。
 //! 薄壳在 `src\main.rs`；本文件承载 CLI 定义、`run()` 分发与页/节范围解析。
 
 pub mod anydoc;
@@ -8,6 +8,7 @@ pub mod introspect;
 pub mod ocr;
 pub mod output;
 pub mod pdf;
+pub mod query;
 pub mod search;
 pub mod selfupdate;
 
@@ -42,7 +43,7 @@ struct SearchOpts {
 #[command(
     name = "reader",
     version,
-    about = "Agent 原生文档阅读、搜索和提取工具（PDF 按页；Word / EPUB / ODT / RTF / Office / CSV 按节）"
+    about = "Agent 原生文档阅读、搜索和提取工具（PDF 按页；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 按节）"
 )]
 struct Cli {
     /// 输出紧凑命令索引（agent 发现用；skill 子命令给长形态 SKILL.md）
@@ -61,7 +62,7 @@ enum Commands {
   reader search ./doc.pdf \"err(or|code)\" --regex --pages 2-10
   reader search ./docs \"配置\" --format json --filter 'hits[].file'")]
     Search {
-        /// 文档或目录路径（.pdf 及 Word / EPUB / ODT / RTF / Office / CSV 家族；目录递归批量搜）
+        /// 文档或目录路径（.pdf、.md/.markdown 及 Word / EPUB / ODT / RTF / Office / CSV 家族；目录递归批量搜）
         file: PathBuf,
         /// 关键词；`--regex` 时按正则解释
         pattern: String,
@@ -98,7 +99,7 @@ enum Commands {
   reader extract ./scan.pdf --ocr
   reader extract ./report.docx --format json --offset 0 --limit 5")]
     Extract {
-        /// 文档路径（.pdf 及 Word / EPUB / ODT / RTF / Office / CSV 家族）
+        /// 文档路径（.pdf、.md/.markdown 及 Word / EPUB / ODT / RTF / Office / CSV 家族）
         file: PathBuf,
         /// 限定页/节范围（1 起），如 1-3,5
         #[arg(long)]
@@ -127,6 +128,24 @@ enum Commands {
     },
     /// 生成 SKILL.md（agent 发现与接入文档；--llms 给紧凑索引）
     Skill,
+    /// 用 mq 表达式结构化提取文档（jq 风格：.h2 标题、.code 代码块、.link 链接、select 管道；命中退出 0，无命中退出 1，出错退出 2）
+    #[command(after_long_help = "\
+示例:
+  reader query ./README.md \".h2\"
+  reader query ./doc.pdf \".code\" --format json
+  reader query ./notes.md \".[] | select(contains(\\\"关键词\\\"))\" --filter 'results[]'")]
+    Query {
+        /// 文档路径（.md/.markdown 原文、.pdf 及 anydoc 家族转 markdown 后查询）
+        file: PathBuf,
+        /// mq 表达式（完整语法见 mqlang.org）
+        expression: String,
+        /// 输出形态：text（markdown 片段，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+        /// 裁剪 JSON data 的点路径（如 results[]）；仅 --format json 下可用
+        #[arg(long)]
+        filter: Option<String>,
+    },
     /// 自升级（GitHub Releases 最新正式版，下载校验后替换自身与兄弟二进制）
     #[command(name = "self")]
     SelfCmd {
@@ -156,6 +175,19 @@ pub fn run() -> i32 {
         Some(Commands::Skill) => {
             print!("{}", introspect::skill_md());
             0
+        }
+        Some(Commands::Query {
+            file,
+            expression,
+            format,
+            filter,
+        }) => {
+            let opts = OutputOpts { format, filter };
+            match run_query(&file, &expression, &opts) {
+                Ok(true) => 0,
+                Ok(false) => 1,
+                Err(err) => fail("query", opts.format, err),
+            }
         }
         Some(Commands::SelfCmd {
             command: SelfCommands::Update { force },
@@ -378,6 +410,32 @@ fn check_filter(opts: &OutputOpts) -> Result<(), String> {
         return Err("--filter 仅在 --format json 下可用".to_string());
     }
     Ok(())
+}
+
+/// query 子命令：格式转 markdown 后跑 mq 表达式；命中与否映射退出码 0/1（P0016）。
+fn run_query(file: &Path, expression: &str, opts: &OutputOpts) -> Result<bool, String> {
+    let started = Instant::now();
+    check_filter(opts)?;
+    if file.is_dir() {
+        return Err("query 不支持目录（请对单个文件使用；批量找内容用 search <目录>）".to_string());
+    }
+    let markdown = query::to_markdown(file)?;
+    let results = query::run_query(&markdown, expression)?;
+    match opts.format {
+        Format::Text => {
+            for r in &results {
+                println!("{r}");
+            }
+        }
+        Format::Json => {
+            let mut data = json!({ "results": results, "count": results.len() });
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
+            println!("{}", output::ok_json("query", started, data)?);
+        }
+    }
+    Ok(!results.is_empty())
 }
 
 /// search 的 data 树：hits 加 needs_ocr_units（不可靠页序号）。
