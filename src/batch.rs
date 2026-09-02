@@ -27,7 +27,7 @@ pub(crate) fn run(
     let mut skipped = 0u32;
     let mut json_hits: Vec<Value> = Vec::new();
     for file in &files {
-        let units = match document::extract(file, None) {
+        let units = match document::extract(file, None, document::OcrOpts::default()) {
             Ok(units) => units,
             Err(err) => {
                 eprintln!("reader: 跳过 {}: {err}", file.display());
@@ -35,7 +35,7 @@ pub(crate) fn run(
                 continue;
             }
         };
-        crate::warn_unreliable(&units);
+        crate::warn_unreliable(&units, false);
         let hits = search::search(&units, matcher, context);
         if hits.is_empty() {
             continue;

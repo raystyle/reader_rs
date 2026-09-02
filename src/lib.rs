@@ -5,11 +5,13 @@ pub mod anydoc;
 pub mod batch;
 pub mod document;
 pub mod introspect;
+pub mod ocr;
 pub mod output;
 pub mod pdf;
 pub mod search;
 
 use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
+use document::OcrOpts;
 use serde_json::{json, Value};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -26,6 +28,13 @@ pub(crate) enum Format {
 struct OutputOpts {
     format: Format,
     filter: Option<String>,
+}
+
+/// 匹配选项：正则开关、大小写、上下文行数（search 专用）。
+struct SearchOpts {
+    regex_mode: bool,
+    ignore_case: bool,
+    context: usize,
 }
 
 #[derive(Parser)]
@@ -73,12 +82,19 @@ enum Commands {
         /// 裁剪 JSON data 的点路径（如 hits[].text）；仅 --format json 下可用
         #[arg(long)]
         filter: Option<String>,
+        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF 单文件；首用下载约 20.5MB 模型，约 19-42 秒/页）
+        #[arg(long)]
+        ocr: bool,
+        /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）
+        #[arg(long)]
+        offline: bool,
     },
     /// 按页/节提取文档文本（默认输出到 stdout）
     #[command(after_long_help = "\
 示例:
   reader extract ./doc.pdf
   reader extract ./doc.pdf --pages 1-3,5
+  reader extract ./scan.pdf --ocr
   reader extract ./report.docx --format json --offset 0 --limit 5")]
     Extract {
         /// 文档路径（.pdf 及 Word / EPUB / ODT / RTF / Office / CSV 家族）
@@ -101,6 +117,12 @@ enum Commands {
         /// 最多输出 M 个单元
         #[arg(long)]
         limit: Option<usize>,
+        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF；首用下载约 20.5MB 模型，约 19-42 秒/页）
+        #[arg(long)]
+        ocr: bool,
+        /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）
+        #[arg(long)]
+        offline: bool,
     },
     /// 生成 SKILL.md（agent 发现与接入文档；--llms 给紧凑索引）
     Skill,
@@ -127,9 +149,17 @@ pub fn run() -> i32 {
             pages,
             format,
             filter,
+            ocr,
+            offline,
         }) => {
             let opts = OutputOpts { format, filter };
-            match run_search(&file, &pattern, regex, ignore_case, context, pages, &opts) {
+            let ocr = OcrOpts { ocr, offline };
+            let search_opts = SearchOpts {
+                regex_mode: regex,
+                ignore_case,
+                context,
+            };
+            match run_search(&file, &pattern, &search_opts, pages, &opts, ocr) {
                 Ok(true) => 0,
                 Ok(false) => 1,
                 Err(err) => fail("search", opts.format, err),
@@ -143,9 +173,12 @@ pub fn run() -> i32 {
             filter,
             offset,
             limit,
+            ocr,
+            offline,
         }) => {
             let opts = OutputOpts { format, filter };
-            match run_extract(&file, pages, out, &opts, offset, limit) {
+            let ocr = OcrOpts { ocr, offline };
+            match run_extract(&file, pages, out, &opts, offset, limit, ocr) {
                 Ok(()) => 0,
                 Err(err) => fail("extract", opts.format, err),
             }
@@ -175,33 +208,37 @@ pub fn command_tree() -> clap::Command {
 fn run_search(
     file: &Path,
     pattern: &str,
-    regex_mode: bool,
-    ignore_case: bool,
-    context: usize,
+    search_opts: &SearchOpts,
     pages: Option<String>,
     opts: &OutputOpts,
+    ocr: OcrOpts,
 ) -> Result<bool, String> {
     let started = Instant::now();
     let page_set = parse_optional_pages(pages)?;
+    check_ocr_opts(ocr)?;
     if file.is_dir() {
         if page_set.is_some() {
             return Err("--pages 不适用于目录搜索".to_string());
         }
+        if ocr.ocr {
+            return Err("--ocr 不适用于目录搜索（请对单个 PDF 文件使用）".to_string());
+        }
         check_filter(opts)?;
-        let matcher = search::Matcher::new(pattern, regex_mode, ignore_case)?;
+        let matcher =
+            search::Matcher::new(pattern, search_opts.regex_mode, search_opts.ignore_case)?;
         return batch::run(
             file,
             &matcher,
-            context,
+            search_opts.context,
             opts.format,
             opts.filter.as_deref(),
             started,
         );
     }
-    let matcher = search::Matcher::new(pattern, regex_mode, ignore_case)?;
-    let extracted = document::extract(file, page_set.as_ref())?;
-    warn_unreliable(&extracted);
-    let hits = search::search(&extracted, &matcher, context);
+    let matcher = search::Matcher::new(pattern, search_opts.regex_mode, search_opts.ignore_case)?;
+    let extracted = document::extract(file, page_set.as_ref(), ocr)?;
+    warn_unreliable(&extracted, ocr.ocr);
+    let hits = search::search(&extracted, &matcher, search_opts.context);
     check_filter(opts)?;
     match opts.format {
         Format::Text => {
@@ -233,14 +270,16 @@ fn run_extract(
     opts: &OutputOpts,
     offset: usize,
     limit: Option<usize>,
+    ocr: OcrOpts,
 ) -> Result<(), String> {
     let started = Instant::now();
     let page_set = parse_optional_pages(pages)?;
     check_filter(opts)?;
+    check_ocr_opts(ocr)?;
     if limit == Some(0) {
         return Err("无效 --limit: 须为正整数".to_string());
     }
-    let extracted = document::extract(file, page_set.as_ref())?;
+    let extracted = document::extract(file, page_set.as_ref(), ocr)?;
     let total = extracted.len();
     let visible: Vec<&document::TextUnit> = extracted
         .iter()
@@ -329,8 +368,17 @@ fn unit_value(unit: &document::TextUnit) -> Value {
     })
 }
 
+/// `--offline` 须与 `--ocr` 同用（单挂无意义，属于旗标误用）。
+fn check_ocr_opts(ocr: OcrOpts) -> Result<(), String> {
+    if ocr.offline && !ocr.ocr {
+        return Err("--offline 须与 --ocr 同用".to_string());
+    }
+    Ok(())
+}
+
 /// 文本层不可靠的单元给一条 stderr 警示（stdout 保持纯命中输出；退出码语义不变）。
-pub(crate) fn warn_unreliable(units: &[document::TextUnit]) {
+/// `ocr` 为真时这些页已经 OCR 兜底（`needs_ocr` 标记保留，mobile 模型有掉字）。
+pub(crate) fn warn_unreliable(units: &[document::TextUnit], ocr: bool) {
     let bad: Vec<&document::TextUnit> = units.iter().filter(|u| u.needs_ocr.is_some()).collect();
     if bad.is_empty() {
         return;
@@ -341,9 +389,15 @@ pub(crate) fn warn_unreliable(units: &[document::TextUnit]) {
         .map(|u| u.no.to_string())
         .collect::<Vec<_>>()
         .join(",");
-    eprintln!(
-        "reader: 提示: {label} {list} 文本层不可靠（needs_ocr，疑似扫描件或编码问题），命中可能失真；Reader 不做 OCR"
-    );
+    if ocr {
+        eprintln!(
+            "reader: 提示: {label} {list} 已经 OCR 兜底（needs_ocr 标记保留，mobile 模型有系统性掉字，命中可能失真）"
+        );
+    } else {
+        eprintln!(
+            "reader: 提示: {label} {list} 文本层不可靠（needs_ocr，疑似扫描件或编码问题），命中可能失真；可加 --ocr 兜底识别（仅 PDF 单文件，慢）"
+        );
+    }
 }
 
 fn parse_optional_pages(pages: Option<String>) -> Result<Option<HashSet<u32>>, String> {

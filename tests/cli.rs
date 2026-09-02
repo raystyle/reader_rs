@@ -319,7 +319,76 @@ fn needs_ocr_page_hinted_in_extract_and_search() -> TestResult {
     Ok(())
 }
 
-// ---------- JSON 包膜与分页裁剪（P0006） ----------
+// ---------- OCR 兜底（P0014） ----------
+
+/// 目录搜索加 --ocr 报错退出 2（边界：不做批量目录加 OCR 组合）。
+#[test]
+fn dies_ocr_on_directory() -> TestResult {
+    let dir = TestDir::make("ocr_dir")?;
+    reader()?
+        .args(["search"])
+        .arg(&dir.0)
+        .args(["DOCX", "--ocr"])
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("--ocr 不适用于目录搜索"));
+    Ok(())
+}
+
+/// --offline 单挂（无 --ocr）属旗标误用，两个子命令都报错退出 2。
+#[test]
+fn dies_offline_without_ocr() -> TestResult {
+    let pdf = TestPdf::make("offline_alone")?;
+    reader()?
+        .args(["extract"])
+        .arg(&pdf.0)
+        .arg("--offline")
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("--offline 须与 --ocr 同用"));
+    reader()?
+        .args(["search"])
+        .arg(&pdf.0)
+        .args(["Reader", "--offline"])
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("--offline 须与 --ocr 同用"));
+    Ok(())
+}
+
+/// --ocr 端到端冒烟：仅当 READER_OCR_CACHE_DIR 指向三件齐备的模型缓存时跑（CI 无模型自动跳过）。
+/// 无文本页 OCR 后单元结构不变（节头与 needs_ocr 标记保留），管线全链路跑通即验收。
+#[test]
+fn ocr_fallback_runs_when_models_cached() -> TestResult {
+    let Some(cache) = std::env::var_os("READER_OCR_CACHE_DIR").map(PathBuf::from) else {
+        eprintln!("skip: READER_OCR_CACHE_DIR 未设（无本地模型缓存）");
+        return Ok(());
+    };
+    for name in ["det-dyn.onnx", "rec-dyn.onnx", "ppocrv5_dict.txt"] {
+        if !cache.join(name).is_file() {
+            eprintln!("skip: 模型缓存 {} 缺 {name}", cache.display());
+            return Ok(());
+        }
+    }
+    let path = pdf_path("ocr_smoke");
+    make_pdf_with(&path, &[vec![line(PAGE1_TEXT, 72, 720)], vec![]])?;
+    let out = stdout_of(
+        reader()?
+            .args(["extract", "--ocr", "--offline"])
+            .arg(&path)
+            .env("READER_OCR_CACHE_DIR", &cache),
+    )?;
+    assert!(
+        out.contains("== page 2 ==") && out.contains("[needs_ocr"),
+        "OCR 兜底后页 2 节头与 needs_ocr 标记应保留:\n{out}"
+    );
+    assert!(
+        out.contains("== page 1 ==") && out.contains(PAGE1_TEXT),
+        "OCR 兜底不应影响正常页文本:\n{out}"
+    );
+    std::fs::remove_file(&path)?;
+    Ok(())
+}
 
 /// JSON stdout 解析为 Value（断言可解析本身就是验收点）。
 fn json_stdout(cmd: &mut Command) -> TestResult<serde_json::Value> {

@@ -14,33 +14,35 @@ Rust 单二进制 CLI（v0.2.1；命令 `reader`，缩写 `rr` 同入口）。�
 - 把文档文本层喂给 LLM 上下文：大文档用 `--offset` / `--limit` 分页，按 meta 的 `next_offset` 与 `cta` 链式推进。
 - 要结构化结果：`--format json` 包膜，`--filter` 点路径裁剪只取所需字段。
 
-不适用：扫描件 OCR（只检出并以 needs_ocr 提示，不识别）、渲染、编辑、支持列表以外格式。
+不适用：渲染、编辑、支持列表以外格式。扫描件与乱码层 PDF 以 needs_ocr 检出提示；PDF 单文件可加 `--ocr` 兜底识别（mobile 模型有系统性掉字，仍标 needs_ocr）。
 
 ## 命令
 
 ### search 搜索
 
 ```text
-reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径]
+reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径] [--ocr] [--offline]
 ```
 
-- 文件或目录：目录递归批量搜支持格式（顺序遍历，路径排序稳定）；text 命中行 `路径:单元:行号:文本`，json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped` 统计；坏文件 stderr 跳过后继续；`--pages` 目录下不可用。
+- 文件或目录：目录递归批量搜支持格式（顺序遍历，路径排序稳定）；text 命中行 `路径:单元:行号:文本`，json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped` 统计；坏文件 stderr 跳过后继续；`--pages` 与 `--ocr` 目录下不可用。
 - `--regex`：关键词按正则解释（regex crate 语法）。
 - `-i`, `--ignore-case`：忽略大小写。
 - `-C N`, `--context N`：命中行前后各带 N 行上下文（`单元-行号-文本` 形态）。
 - `--pages 范围`：限定页或节（1 起），写法 `1-3,5`；仅单文件模式。
+- `--ocr`：对 needs_ocr 页走 OCR 兜底（仅 PDF 单文件；首用从 ModelScope 下载约 20.5MB 模型进缓存目录，SHA-256 钉死校验；约 19-42 秒/页；`needs_ocr` 标记保留）。`--offline` 禁下载（模型未就位时报错）。
 - `--format json`：data 为 `hits[]`（unit / line / text / before / after；批量另有 file）加 `needs_ocr_units[]`（仅单文件）。无命中是 `ok:true` 加空 hits，退出码仍 1。
 - `--filter 路径`：裁剪 json 的 data，如 `hits[].text`、批量 `hits[].file`；仅 json 形态可用。
 
 ### extract 提取
 
 ```text
-reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M]
+reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M] [--ocr] [--offline]
 ```
 
 - `--pages 范围`：限定页或节（1 起）；缺省全部。
 - `-o`, `--out 文件`：写入文件；缺省 stdout。
 - `--offset N` / `--limit M`：按单元分页（0 起）；json 形态有剩余时 meta 带 `next_offset` 与 `cta`（下一条可直接执行的命令）。
+- `--ocr` / `--offline`：同 search，对 needs_ocr 页 OCR 兜底回填正文（仅 PDF）。
 - `--format json`：data 为 `units[]`（kind / no / needs_ocr / lines）。
 - `--filter 路径`：裁剪 json 的 data，如 `units[].no`；仅 json 形态可用。
 

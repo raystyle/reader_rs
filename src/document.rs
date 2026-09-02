@@ -31,13 +31,24 @@ impl UnitKind {
     }
 }
 
+/// OCR 兜底选项（P0014）：`ocr` 开兜底、`offline` 禁模型下载；仅对 PDF 的 needs_ocr 页生效。
+#[derive(Clone, Copy, Default)]
+pub struct OcrOpts {
+    pub ocr: bool,
+    pub offline: bool,
+}
+
 /// 按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。
 /// PDF 直连 pdf-inspector 保页契约；anydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）
 /// 走统一引擎按标题分节（P0009）。
-pub fn extract(path: &Path, filter: Option<&HashSet<u32>>) -> Result<Vec<TextUnit>, String> {
+pub fn extract(
+    path: &Path,
+    filter: Option<&HashSet<u32>>,
+    ocr: OcrOpts,
+) -> Result<Vec<TextUnit>, String> {
     let ext = ext_of(path);
     if ext == "pdf" {
-        return crate::pdf::extract_pages(path, filter);
+        return crate::pdf::extract_pages(path, filter, ocr);
     }
     if ::anydoc::Format::from_extension(&ext).is_some() {
         return crate::anydoc::extract_sections(path, filter);
