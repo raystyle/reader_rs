@@ -1075,13 +1075,15 @@ fn llms_outputs_compact_index() -> TestResult {
 
 #[test]
 fn skill_outputs_skill_md() -> TestResult {
+    // 结构锚定 2026-09-03 重构后的三节式（常用例子加输出契约加渐进引导）
     reader()?
         .arg("skill")
         .assert()
         .success()
         .stdout(predicate::str::starts_with("---\nname: reader"))
-        .stdout(predicate::str::contains("## 命令"))
-        .stdout(predicate::str::contains("## 退出码"))
+        .stdout(predicate::str::contains("## 常用例子"))
+        .stdout(predicate::str::contains("## 输出契约"))
+        .stdout(predicate::str::contains("## 渐进深入"))
         .stdout(predicate::str::contains("--offset"));
     Ok(())
 }
