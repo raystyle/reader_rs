@@ -14,7 +14,7 @@
 
 > 当前锚定的目标 + 推进时间线。
 
-- **锚定的目标**：P0015 self update（已达成：`reader self update [--force]` 落地，临时目录端到端实测通过，归档 `docs\proven\P0015-self-update.md`）；下版候选为阶段 3 余项（MCP、token 计数、pager、completions）与分发面（crates.io/brew/scoop）、OCR 质量升级（S006 待办 2），待用户点名。
+- **锚定的目标**：P0016 markdown 支持落地（进行中：S007 裁决——.md 零新依赖复用 split_markdown 进格式面，结构化提取嵌 mq-lang 全引擎出 `query` 子命令）；其余候选（阶段 3 余项、分发面、OCR 质量）待用户点名。
 
 ### 推进时间线
 
@@ -22,6 +22,8 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **S007 达成**：mq 双通道核实加 PoC 实测（`.h`/`.code`/select 组合中文样本全对，miette 结构化报错）；裁决——.md 零新依赖复用 split_markdown，query 嵌 mq-lang；mq-markdown 不直用（拍平序列无增量）；踩坑 docs.rs 示例过时（RuntimeValue 改名） |
+| 2026-09-03 | S007 立项：用户点名学习 mq 加 markdown 搜索与结构化提取；双通道核实 mq（MIT、1023 星、活跃），mq-markdown 0.8.4 轻量纯 Rust、mq-lang 0.8.4 约 30 依赖全引擎；anydoc.rs 的 split_markdown 可零新依赖复用给 .md 分节 |
 | 2026-09-03 | **P0015 达成**：self update 落地（19 单元加 47 集成全绿）；临时目录 `--force` 端到端实测——下载加 digest 校验加解包加双名替换，换上件 sha256 与官方 v0.2.1 资产逐一一致；M012 沉淀（flate2 0.2 无 rust_backend，钉 1.x） |
 | 2026-09-03 | **P0014 达成**：`--ocr` 兜底落地（16 单元加 46 集成全绿）；真样本两页出正文、首用下载全流程实测；三坑沉淀 M009-M011（ureq 10MB 上限、vendor println 污染 stdout、OcrEngine 非 Send/Sync）；stripped 哈希改钉 prost 输出；二进制 7.3MB 到 32.9MB |
 | 2026-09-02 | **S006 达成**：内嵌 OCR 双通道普查九候选，纯 Rust 管线（hayro 0.7 渲染加 pure-onnx-ocr 0.1 跑 PP-OCRv5 mobile 20.5MB）真样本端到端实证；ocrs 拉丁限定出局、RapidOCR 系全绑 ort 破边界；两坑沉淀（tract value_info 剥离、rec max_width 硬编码 320） |
@@ -54,7 +56,7 @@
 
 > 当前目标的进程：只记录当前这一个目标的进行状态。
 
-- 当前目标（已达成）：P0015 self update——`reader self update [--force]` stable 通道落地；临时目录端到端实测通过；过程与经验回填 `docs\proven\P0015-self-update.md`。
+- 当前目标（进行中）：P0016 markdown 支持落地——.md 进 search/extract 格式面加 `query` 子命令；实施计划见 `PLAN.md`。
 
 ## 历史
 
@@ -62,6 +64,8 @@
 
 | 日期 | 目标 | 结果 |
 | --- | --- | --- |
+| 2026-09-03 | S007 markdown 支持选型（学习 mq） | 达成：嵌 mq-lang 全引擎加零依赖分节裁决；转 P0016 落地 |
+| 2026-09-03 | P0015 self update | 达成：stable 通道版本判新加 `--force` 重装、资产 digest 钉死、staged 加 rename 原子替换自身与兄弟；临时目录实测通过；M012 沉淀 |
 | 2026-09-03 | P0015 self update | 达成：stable 通道版本判新加 `--force` 重装、资产 digest 钉死、staged 加 rename 原子替换自身与兄弟；临时目录实测通过；M012 沉淀 |
 | 2026-09-03 | P0014 OCR 兜底落地 | 达成：`--ocr`/`--offline` 进 extract 加 search（仅 PDF 单文件）；模型三件 ModelScope 下载加双套 SHA-256 钉死、进程内 prost strip；16 单元加 46 集成全绿、真样本回归过；M009-M011 沉淀；二进制 7.3MB 到 32.9MB |
 | 2026-09-02 | S006 内嵌 OCR 选型研究 | 达成：纯 Rust 管线（hayro 加 pure-onnx-ocr 跑 PP-OCRv5 mobile）真样本端到端实证可行；九候选裁决与四坑沉淀；OCR 落地转 P0014 |
