@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **v0.3.0 发布**：封版 tag 触发 release 五 job 全绿（musl 首验 mq-lang/tract/hayro 过）、10 资产齐；windows 资产 .sha256 官方校验 OK、解包 `reader 0.3.0` 冒烟过、发行件 self update 报已最新；本机与 CI 二进制 sha 不同（构建机差异，P0013 时的一致性不可复现） |
 | 2026-09-03 | 全平台收口：推送至 8cf02e3，CI 双 run 三系统全绿；lan-mac（arm64）与 lan-linux（12 核）实机门禁加 OCR 真样本双过（mac 5.2s/2 页、linux 9.7s/2 页，全进 5-10s 档）；lan-linux 修两坑（1.97 工具链 ICE 换 stable 1.98、registry 损坏缓存清除） |
 | 2026-09-03 | **P0017 达成**：rec 动态宽度加桶化加宽度分组分批加组间并行（每 worker 独立会话）；batch 按核数自适应；质量持平且部分掉字修复；SKILL 重构（用户裁定常用例子加渐进引导） |
 | 2026-09-03 | P0017 立项：OCR 性能剖析——det 仅 0.73s、rec infer 19.6s 占绝对大头；引擎 run_with_metrics 拆三段计时 |
