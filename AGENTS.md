@@ -64,7 +64,7 @@
    - 禁止：在现成库已能稳定完成的前提下从零实现；为风格引入冷门或实验 crate；一次拉一堆用不上的依赖。
 
 8. **写文档时**
-   - 可以：遵守 `docs\guide\G001-文档标准细则-命名写作规范与rumdl检查.md`（树形、标题干净、无 emoji 与箭头等装饰符号、文件名即标题、rumdl）。
+   - 可以：遵守 `docs\guide\G001-文档标准细则-命名写作规范与rumdl检查.md`（树形、标题干净、文件名即标题、rumdl）与 `docs\guide\G004-写作规范细则-禁用字符与机械判定.md`（四类禁用字符：破折号、箭头、emoji、非法全角；新写与改动文档须过 md-char-scan，存量走豁免基线渐进清理）。
    - 禁止：标题带括号、口号或破折号（解释放标题下一行引用 `>`）；整段混杂不成树。
 
 9. **写研究与测试文档时**
@@ -91,7 +91,7 @@
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
-- **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`
+- **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`、`uv run --script .tools\md-char-scan.py`（G004 禁用字符）
 
 已落地：`search`（含目录批量）、`extract`、`query`（mq 结构化提取，P0016）、`skill`、`--llms`、超长单元 part 分片、`--ocr` OCR 兜底（仅 PDF 单文件 needs_ocr 页，P0014）、`self update`（P0015）。其余能力（MCP 等）仍是候选方向，禁止假装已经可跑；TOON 已经 S005 实测裁定不引入（中文样本反而费 token 且 0.5.0 往返破损）。
 

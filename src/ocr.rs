@@ -59,25 +59,11 @@ pub fn ocr_pages(
     offline: bool,
 ) -> Result<Vec<(u32, Vec<String>)>, String> {
     let models = ensure_models(offline)?;
-    // OcrEngine 内含 RefCell 计划缓存、非 Send/Sync，不进静态；构建仅约 29ms（S006 实测），
-    // 相对推理可忽略，每次调用现建。
-    // rec_batch_size 按核数自适应（P0017）：rec 组间并行封顶物理核数，核多则小组高并行——
-    // 32 核实测 batch 2 达约 3 秒/页；8 核档 batch 4 平衡每会话计划编译开销。
-    let cores = std::thread::available_parallelism()
-        .map(|n| n.get())
-        .unwrap_or(1);
-    let rec_batch = if cores >= 16 {
-        2
-    } else if cores >= 8 {
-        4
-    } else {
-        8
-    };
     let engine = pure_onnx_ocr::OcrEngineBuilder::new()
         .det_model_path(&models.det)
         .rec_model_path(&models.rec)
         .dictionary_path(&models.dict)
-        .rec_batch_size(rec_batch)
+        .rec_batch_size(rec_batch_strategy())
         .build()
         .map_err(|e| format!("OCR 引擎构建失败: {e}"))?;
     let file = std::fs::read(path).map_err(|e| format!("无法读取 PDF {}: {e}", path.display()))?;
@@ -166,6 +152,34 @@ fn ensure_models(offline: bool) -> Result<ModelPaths, String> {
     })
 }
 
+/// rec 分批策略按核数自适应（P0017；2026-09-03 用户裁定两档原则：核多极限、核少平衡）。
+/// rec 组间并行封顶物理核数，批越小组越多并行越高、但每会话计划编译开销占比越大：
+///
+/// - 极限（≥16 核）：batch 2，32 核实测约 3 秒/页；
+/// - 平衡（8-15 核）：batch 4，并行度与开销对半；
+/// - 保守（<8 核）：batch 8，核少时并行见顶，大批省计划编译。
+///
+/// 注：std 无跨平台「空闲核数」接口，以物理核数为代理（不引 sysinfo 类依赖）。
+/// OcrEngine 内含 RefCell 计划缓存、非 Send/Sync，不进静态；构建仅约 29ms（S006 实测），
+/// 相对推理可忽略，每次调用现建。
+fn rec_batch_strategy() -> usize {
+    let cores = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1);
+    strategy_tier(cores)
+}
+
+/// 核数到批大小的映射（纯函数，可测）。
+fn strategy_tier(cores: usize) -> usize {
+    if cores >= 16 {
+        2
+    } else if cores >= 8 {
+        4
+    } else {
+        8
+    }
+}
+
 /// 缓存目录：`READER_OCR_CACHE_DIR` 环境变量优先（测试门控用），否则平台缓存目录下 `reader\models`。
 fn cache_dir() -> Result<PathBuf, String> {
     if let Some(dir) = std::env::var_os("READER_OCR_CACHE_DIR") {
@@ -246,6 +260,16 @@ fn sha256_file(path: &Path) -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn strategy_tier_by_cores() {
+        assert_eq!(strategy_tier(32), 2);
+        assert_eq!(strategy_tier(16), 2);
+        assert_eq!(strategy_tier(15), 4);
+        assert_eq!(strategy_tier(8), 4);
+        assert_eq!(strategy_tier(7), 8);
+        assert_eq!(strategy_tier(1), 8);
+    }
 
     #[test]
     fn strip_value_info_clears_intermediate_shapes() {

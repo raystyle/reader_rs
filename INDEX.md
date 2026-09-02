@@ -25,6 +25,7 @@
 | `.tools\` | 项目自定义脚本工具归档（`README.md` 含清单与规则；`uv run --script` 载体） |
 | `.tools\md-ref-scan.py` | markdown 仓内引用断链扫描（文档大改后回归门禁；豁免清单 `md-ref-allow.txt`） |
 | `.tools\md-heading-scan.py` | 标题括号规范机检 |
+| `.tools\md-char-scan.py` | G004 禁用字符机检（基线 `md-char-baseline.txt` 存量豁免） |
 | `.tools\md-replace.py` | 中文与反斜杠路径安全的字面批量替换 |
 | `src\main.rs` | 薄壳入口（reader / rr 双 bin 共用） |
 | `src\lib.rs` | clap CLI 定义、`run()` 分发、页/章范围解析 |
@@ -132,6 +133,7 @@ reader_rs/
 | G001 | `G001-文档标准细则-命名写作规范与rumdl检查.md` | 命名与编号、写作、rumdl |
 | G002 | `G002-研究标准细则-结构与六态标记.md` | 研究结构与六态 |
 | G003 | `G003-工作流标准细则-从登记到归档五步.md` | 五步工作流与优先级 |
+| G004 | `G004-写作规范细则-禁用字符与机械判定.md` | 四类禁用字符、豁免区、md-char-scan 门禁与存量基线 |
 | — | `template.md` | 方案模板（不编号） |
 
 ## 八、错误速查
