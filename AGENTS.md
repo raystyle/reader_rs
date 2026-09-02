@@ -11,7 +11,7 @@
 
 2. **边界**
    - 服务对象先 Agent 后人：输出稳定可解析（行式标记、grep 语义退出码 0/1/2）、单调用完成一件事、无交互无守护进程、错误走 stderr；机器可读优先于人类美观。
-   - 当前只读支持 PDF、markdown（.md/.markdown）与 anydoc 家族（Word 含 legacy .doc、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV），不做渲染、编辑；OCR 仅以 `--ocr` 兜底形式支持（仅 PDF 单文件 needs_ocr 页，hayro 渲染加 tract 推理 PP-OCRv5 mobile，P0014；默认不识别只提示）；结构化提取以 `query` 子命令嵌 mq-lang（mq 表达式，P0016）；其它格式按需另立项。
+   - 当前只读支持 PDF、markdown（.md/.markdown）与 anydoc 家族（Word 含 legacy .doc、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV），不做渲染、编辑；OCR 仅以 `--ocr` 兜底形式支持（仅 PDF 单文件 needs_ocr 页，hayro 渲染加 ppocr-rs 原生 CPU 内核跑 PP-OCRv6 tiny，P0014/P0018；默认不识别只提示）；结构化提取以 `query` 子命令嵌 mq-lang（mq 表达式，P0016）；其它格式按需另立项。
    - 文本质量只承诺英文与中文；其它语言不做质量承诺，不可靠页以 needs_ocr 提示兜底。
    - CLI 是唯一交互面；纯 Rust 单二进制，不外挂 pdfium 等二进制运行时。
    - Windows 优先验证；依赖均跨平台，不主动破坏其它平台。

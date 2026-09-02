@@ -77,7 +77,7 @@ reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 | `--pages 范围` | 限定页/节（1 起），写法 `1-3,5`；仅单文件模式 |
 | `--format 形态` | `text`（行式，缺省）或 `json`（包膜） |
 | `--filter 路径` | 裁剪 JSON `data` 的点路径（如 `hits[].text`）；仅 `--format json` 下可用 |
-| `--ocr` | PDF 单文件 needs_ocr 页走 OCR 兜底（首用下载约 20.5MB 模型进缓存目录；多核并行约 3-10 秒/页（P0017）；目录模式不可用） |
+| `--ocr` | PDF 单文件 needs_ocr 页走 OCR 兜底（PP-OCRv6 tiny 首用下载约 6.2MB 模型进缓存目录；多核并行约 1-5 秒/页；目录模式不可用） |
 | `--offline` | 禁模型下载（须与 `--ocr` 同用；模型未就位时报错） |
 
 输出格式（仿 grep，稳定可解析）：
@@ -184,7 +184,7 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 
 选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`，重构方案 `docs\proven\P0009-anydoc统一文档引擎大重构.md`。
 
-边界：只读、不渲染、不编辑；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 单文件可加 `--ocr` 兜底识别（mobile 模型有系统性掉字，仍标 needs_ocr；P0014）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
+边界：只读、不渲染、不编辑；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 单文件可加 `--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2MB 模型，多核约 1-5 秒/页，仍标 needs_ocr；P0014/P0018）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
 
 ## 文档导航
 

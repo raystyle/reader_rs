@@ -84,7 +84,7 @@ enum Commands {
         /// 裁剪 JSON data 的点路径（如 hits[].text）；仅 --format json 下可用
         #[arg(long)]
         filter: Option<String>,
-        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF 单文件；首用下载约 20.5MB 模型，多核并行约 3-10 秒/页）
+        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF 单文件；首用下载约 6.2MB 模型，多核并行约 1-5 秒/页）
         #[arg(long)]
         ocr: bool,
         /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）
@@ -119,7 +119,7 @@ enum Commands {
         /// 最多输出 M 个单元
         #[arg(long)]
         limit: Option<usize>,
-        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF；首用下载约 20.5MB 模型，多核并行约 3-10 秒/页）
+        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF；首用下载约 6.2MB 模型，多核并行约 1-5 秒/页）
         #[arg(long)]
         ocr: bool,
         /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）
@@ -475,7 +475,7 @@ fn check_ocr_opts(ocr: OcrOpts) -> Result<(), String> {
 }
 
 /// 文本层不可靠的单元给一条 stderr 警示（stdout 保持纯命中输出；退出码语义不变）。
-/// `ocr` 为真时这些页已经 OCR 兜底（`needs_ocr` 标记保留，mobile 模型有掉字）。
+/// `ocr` 为真时这些页已经 OCR 兜底（`needs_ocr` 标记保留）。
 pub(crate) fn warn_unreliable(units: &[document::TextUnit], ocr: bool) {
     let bad: Vec<&document::TextUnit> = units.iter().filter(|u| u.needs_ocr.is_some()).collect();
     if bad.is_empty() {
@@ -489,11 +489,11 @@ pub(crate) fn warn_unreliable(units: &[document::TextUnit], ocr: bool) {
         .join(",");
     if ocr {
         eprintln!(
-            "reader: 提示: {label} {list} 已经 OCR 兜底（needs_ocr 标记保留，mobile 模型有系统性掉字，命中可能失真）"
+            "reader: 提示: {label} {list} 已经 OCR 兜底（needs_ocr 标记保留，OCR 文本仍可能有误，命中可能失真）"
         );
     } else {
         eprintln!(
-            "reader: 提示: {label} {list} 文本层不可靠（needs_ocr，疑似扫描件或编码问题），命中可能失真；可加 --ocr 兜底识别（仅 PDF 单文件，慢）"
+            "reader: 提示: {label} {list} 文本层不可靠（needs_ocr，疑似扫描件或编码问题），命中可能失真；可加 --ocr 兜底识别（仅 PDF 单文件）"
         );
     }
 }

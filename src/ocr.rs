@@ -1,71 +1,58 @@
-//! OCR 兜底管线（P0014；选型与实证见 S006）：needs_ocr 页经 hayro 渲染为位图，
-//! vendored pure-onnx-ocr（tract 跑 PP-OCRv5 mobile）出行级文本。
-//! 模型三件首用从 ModelScope RapidAI/RapidOCR 下载进缓存目录，SHA-256 钉死校验；
-//! 原件经进程内 strip value_info（tract 符号维度冲突规避，S006 踩坑 1）后落 stripped 件。
+//! OCR 兜底管线（P0014 落地、P0018 换引擎）：needs_ocr 页经 hayro 渲染为位图，
+//! ppocr-rs 原生 CPU 内核跑 PP-OCRv6 tiny（S008 裁决：质量与速度双优；0.8 秒/页量级、
+//! S006 掉字点全修）。模型由 ppocr ModelStore 管理（HuggingFace 钉 rev 加 sha256、
+//! 缓存目录、offline 语义与 P0014 一致）。
 
 use hayro::hayro_syntax::Pdf;
 use hayro::{render, RenderCache, RenderSettings};
-use prost::Message;
-use sha2::{Digest, Sha256};
+use ppocr_rs::{ModelAccess, ModelSize, ModelStore, OcrEngine, OcrOptions, RgbImage};
 use std::path::{Path, PathBuf};
 
-const BASE: &str = "https://modelscope.cn/models/RapidAI/RapidOCR/resolve/master";
-
-/// 模型件登记：缓存文件名、源 URL 路径、SHA-256。原件哈希钉 ModelScope 官方件；
-/// stripped 件哈希钉本进程 strip_value_info 的确定性输出（prost 编码与 Python onnx
-/// 序列化字节不同，故与 S006 PoC 件哈希不同；功能等价以 tract 加载加真样本 OCR 验证）。
-const DET: ModelFile = ModelFile {
-    name: "det-dyn.onnx",
-    url_path: "/onnx/PP-OCRv5/det/ch_PP-OCRv5_det_mobile.onnx",
-    source_sha: "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
-    cached_sha: "a4a307dbf6d7a18f3b021abdfecea6bf8a0b4124e707380b6f2918425fa5a30c",
-    strip: true,
-};
-const REC: ModelFile = ModelFile {
-    name: "rec-dyn.onnx",
-    url_path: "/onnx/PP-OCRv5/rec/ch_PP-OCRv5_rec_mobile.onnx",
-    source_sha: "5825fc7ebf84ae7a412be049820b4d86d77620f204a041697b0494669b1742c5",
-    cached_sha: "0b5e82dc8cb0e28e66c541848f4392d5da73e5b0d0afb0b559dce872ee656f3c",
-    strip: true,
-};
-const DICT: ModelFile = ModelFile {
-    name: "ppocrv5_dict.txt",
-    url_path: "/paddle/PP-OCRv5/rec/ch_PP-OCRv5_rec_mobile/ppocrv5_dict.txt",
-    source_sha: "d1979e9f794c464c0d2e0b70a7fe14dd978e9dc644c0e71f14158cdf8342af1b",
-    cached_sha: "d1979e9f794c464c0d2e0b70a7fe14dd978e9dc644c0e71f14158cdf8342af1b",
-    strip: false,
-};
-
-struct ModelFile {
-    name: &'static str,
-    url_path: &'static str,
-    source_sha: &'static str,
-    cached_sha: &'static str,
-    strip: bool,
-}
-
-/// 三件模型在缓存目录中的就位路径。
-pub struct ModelPaths {
-    det: PathBuf,
-    rec: PathBuf,
-    dict: PathBuf,
-}
-
-/// 对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本。
+/// 对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。
 /// 模型缺失且 `offline` 为真时报错不下载。
 pub fn ocr_pages(
     path: &Path,
     page_nos: &[u32],
     offline: bool,
 ) -> Result<Vec<(u32, Vec<String>)>, String> {
-    let models = ensure_models(offline)?;
-    let engine = pure_onnx_ocr::OcrEngineBuilder::new()
-        .det_model_path(&models.det)
-        .rec_model_path(&models.rec)
-        .dictionary_path(&models.dict)
-        .rec_batch_size(rec_batch_strategy())
-        .build()
-        .map_err(|e| format!("OCR 引擎构建失败: {e}"))?;
+    let dir = cache_dir()?;
+    let store = ModelStore::new(&dir);
+    // 线程自适应（用户裁定核数自适应，P0017）：ppocr CPU 内核 rayon 并行，全核数交给引擎。
+    let options = OcrOptions {
+        threads: std::thread::available_parallelism()
+            .map(|n| n.get())
+            .unwrap_or(1),
+        ..OcrOptions::default()
+    };
+    let engine = if offline {
+        let paths = store
+            .resolve_pair(ModelSize::Tiny, ModelSize::Tiny, ModelAccess::Offline)
+            .map_err(|e| {
+                format!(
+                    "OCR 模型未就位且 --offline 禁下载；去掉 --offline 让 reader 下载 PP-OCRv6 tiny（约 6.2MB）进 {}: {e}",
+                    dir.display()
+                )
+            })?;
+        OcrEngine::load(
+            &paths.detector.weights,
+            &paths.recognizer.weights,
+            &paths.recognizer.inference,
+            options,
+        )
+    } else {
+        if store
+            .paths(ppocr_rs::ModelKind::Detector, ModelSize::Tiny)
+            .is_ok_and(|p| !p.weights.is_file())
+        {
+            eprintln!(
+                "reader: 首用下载 OCR 模型（PP-OCRv6 tiny 约 6.2MB）进 {} …",
+                dir.display()
+            );
+        }
+        OcrEngine::load_from_store(&store, options)
+    }
+    .map_err(|e| format!("OCR 引擎构建失败: {e}"))?;
+
     let file = std::fs::read(path).map_err(|e| format!("无法读取 PDF {}: {e}", path.display()))?;
     let pdf = Pdf::new(file).map_err(|e| format!("无法解析 PDF {}: {e:?}", path.display()))?;
     let pages = pdf.pages();
@@ -81,103 +68,29 @@ pub fn ocr_pages(
         let Some(page) = pages.get((no - 1) as usize) else {
             continue;
         };
-        eprintln!(
-            "reader: OCR 兜底第 {no} 页（mobile 模型有掉字；P0017 并行优化后多核约 3-10 秒/页）…"
-        );
+        eprintln!("reader: OCR 兜底第 {no} 页（PP-OCRv6 tiny，多核并行约 1-5 秒/页）…");
         let pixmap = render(page, &RenderCache::new(), &Default::default(), &settings);
         let png = pixmap
             .into_png()
             .map_err(|e| format!("页 {no} 渲染编码失败: {e:?}"))?;
-        let image =
-            image::load_from_memory(&png).map_err(|e| format!("页 {no} 位图解码失败: {e}"))?;
-        let results = engine
-            .run_from_image(&image)
+        let rgb = image::load_from_memory(&png)
+            .map_err(|e| format!("页 {no} 位图解码失败: {e}"))?
+            .to_rgb8();
+        let (w, h) = rgb.dimensions();
+        let image = RgbImage::new(w, h, rgb.into_raw())
+            .map_err(|e| format!("页 {no} 位图转换失败: {e}"))?;
+        let result = engine
+            .recognize(&image)
             .map_err(|e| format!("页 {no} OCR 失败: {e}"))?;
-        out.push((no, results.into_iter().map(|r| r.text).collect::<Vec<_>>()));
+        let lines = result
+            .lines
+            .into_iter()
+            .map(|l| l.text)
+            .filter(|t| !t.trim().is_empty())
+            .collect::<Vec<_>>();
+        out.push((no, lines));
     }
     Ok(out)
-}
-
-/// 确保三件模型在缓存目录就位（哈希错或缺失时按 `offline` 决定下载或报错）。
-fn ensure_models(offline: bool) -> Result<ModelPaths, String> {
-    let dir = cache_dir()?;
-    for file in [&DET, &REC, &DICT] {
-        let path = dir.join(file.name);
-        if path.metadata().is_ok_and(|m| m.is_file())
-            && sha256_file(&path).is_ok_and(|sha| sha == file.cached_sha)
-        {
-            continue;
-        }
-        if offline {
-            return Err(format!(
-                "OCR 模型未就位（{} 缺失或校验不符）且 --offline 禁下载；去掉 --offline 让 reader 从 ModelScope 下载约 20.5MB 模型进 {}",
-                file.name,
-                dir.display()
-            ));
-        }
-        eprintln!(
-            "reader: 首用下载 OCR 模型 {} 进 {} …",
-            file.name,
-            dir.display()
-        );
-        let raw = fetch(&format!("{BASE}{}", file.url_path))?;
-        let sha = sha256_hex(&raw);
-        if sha != file.source_sha {
-            return Err(format!(
-                "OCR 模型源件校验失败 {}: 期望 {} 实得 {sha}",
-                file.url_path, file.source_sha
-            ));
-        }
-        let cooked = if file.strip {
-            strip_value_info(&raw)?
-        } else {
-            raw
-        };
-        let sha = sha256_hex(&cooked);
-        if sha != file.cached_sha {
-            return Err(format!(
-                "OCR 模型处理后校验失败 {}: 期望 {} 实得 {sha}",
-                file.name, file.cached_sha
-            ));
-        }
-        std::fs::create_dir_all(&dir)
-            .map_err(|e| format!("无法创建模型缓存目录 {}: {e}", dir.display()))?;
-        std::fs::write(&path, &cooked)
-            .map_err(|e| format!("无法写入模型缓存 {}: {e}", path.display()))?;
-    }
-    Ok(ModelPaths {
-        det: dir.join(DET.name),
-        rec: dir.join(REC.name),
-        dict: dir.join(DICT.name),
-    })
-}
-
-/// rec 分批策略按核数自适应（P0017；2026-09-03 用户裁定两档原则：核多极限、核少平衡）。
-/// rec 组间并行封顶物理核数，批越小组越多并行越高、但每会话计划编译开销占比越大：
-///
-/// - 极限（≥16 核）：batch 2，32 核实测约 3 秒/页；
-/// - 平衡（8-15 核）：batch 4，并行度与开销对半；
-/// - 保守（<8 核）：batch 8，核少时并行见顶，大批省计划编译。
-///
-/// 注：std 无跨平台「空闲核数」接口，以物理核数为代理（不引 sysinfo 类依赖）。
-/// OcrEngine 内含 RefCell 计划缓存、非 Send/Sync，不进静态；构建仅约 29ms（S006 实测），
-/// 相对推理可忽略，每次调用现建。
-fn rec_batch_strategy() -> usize {
-    let cores = std::thread::available_parallelism()
-        .map(|n| n.get())
-        .unwrap_or(1);
-    strategy_tier(cores)
-}
-
-/// 核数到批大小的映射（纯函数，可测）。
-fn strategy_tier(cores: usize) -> usize {
-    if cores >= 16 {
-        2
-    } else if cores >= 8 {
-        4
-    } else {
-        8
-    }
 }
 
 /// 缓存目录：`READER_OCR_CACHE_DIR` 环境变量优先（测试门控用），否则平台缓存目录下 `reader\models`。
@@ -207,115 +120,4 @@ fn platform_cache_dir() -> Option<PathBuf> {
     std::env::var_os("XDG_CACHE_HOME")
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".cache")))
-}
-
-/// 下载为内存字节（模型最大 16MB；ureq 默认响应上限 10MB，显式放宽到 64MB）。
-fn fetch(url: &str) -> Result<Vec<u8>, String> {
-    let mut resp = ureq::get(url)
-        .call()
-        .map_err(|e| format!("下载 OCR 模型失败 {url}: {e}"))?;
-    resp.body_mut()
-        .with_config()
-        .limit(64 * 1024 * 1024)
-        .read_to_vec()
-        .map_err(|e| format!("读取 OCR 模型响应失败 {url}: {e}"))
-}
-
-/// 剥离 ONNX 中间 value_info 静态形状并把输出 shape 清为动态
-/// （tract 符号维度推断与静态元数据冲突，S006 踩坑 1；对齐 PoC strip_value_info.py）。
-fn strip_value_info(model: &[u8]) -> Result<Vec<u8>, String> {
-    use tract_onnx::pb;
-    let mut m = pb::ModelProto::decode(model).map_err(|e| format!("ONNX 解析失败: {e}"))?;
-    let graph = m.graph.as_mut().ok_or("ONNX 无 graph")?;
-    graph.value_info.clear();
-    for out in &mut graph.output {
-        let Some(shape) =
-            out.r#type
-                .as_mut()
-                .and_then(|t| t.value.as_mut())
-                .and_then(|v| match v {
-                    pb::type_proto::Value::TensorType(t) => t.shape.as_mut(),
-                })
-        else {
-            continue;
-        };
-        for dim in &mut shape.dim {
-            dim.value = Some(pb::tensor_shape_proto::dimension::Value::DimParam(
-                "dyn".to_string(),
-            ));
-        }
-    }
-    Ok(m.encode_to_vec())
-}
-
-fn sha256_hex(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
-}
-
-fn sha256_file(path: &Path) -> Result<String, String> {
-    let bytes = std::fs::read(path).map_err(|e| format!("无法读取 {}: {e}", path.display()))?;
-    Ok(sha256_hex(&bytes))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn strategy_tier_by_cores() {
-        assert_eq!(strategy_tier(32), 2);
-        assert_eq!(strategy_tier(16), 2);
-        assert_eq!(strategy_tier(15), 4);
-        assert_eq!(strategy_tier(8), 4);
-        assert_eq!(strategy_tier(7), 8);
-        assert_eq!(strategy_tier(1), 8);
-    }
-
-    #[test]
-    fn strip_value_info_clears_intermediate_shapes() {
-        // 最小 ONNX：graph 带一条 value_info 与一个静态输出 shape
-        use tract_onnx::pb;
-        let dim = pb::tensor_shape_proto::Dimension {
-            value: Some(pb::tensor_shape_proto::dimension::Value::DimValue(960)),
-            denotation: String::new(),
-        };
-        let shape = pb::TensorShapeProto { dim: vec![dim] };
-        let tensor = pb::type_proto::Tensor {
-            elem_type: 1,
-            shape: Some(shape),
-        };
-        let vi = pb::ValueInfoProto {
-            name: "x".to_string(),
-            r#type: Some(pb::TypeProto {
-                value: Some(pb::type_proto::Value::TensorType(tensor)),
-                denotation: String::new(),
-            }),
-            ..Default::default()
-        };
-        let model = pb::ModelProto {
-            graph: Some(pb::GraphProto {
-                value_info: vec![vi.clone()],
-                output: vec![vi],
-                ..Default::default()
-            }),
-            ..Default::default()
-        };
-        let stripped = strip_value_info(&model.encode_to_vec()).unwrap();
-        let back = pb::ModelProto::decode(stripped.as_slice()).unwrap();
-        let graph = back.graph.unwrap();
-        assert!(graph.value_info.is_empty());
-        let out_dim = &graph.output[0]
-            .r#type
-            .as_ref()
-            .unwrap()
-            .value
-            .as_ref()
-            .unwrap();
-        let pb::type_proto::Value::TensorType(t) = out_dim;
-        let dims = &t.shape.as_ref().unwrap().dim;
-        assert!(matches!(
-            dims[0].value,
-            Some(pb::tensor_shape_proto::dimension::Value::DimParam(_))
-        ));
-    }
 }

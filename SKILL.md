@@ -19,7 +19,7 @@ reader extract ./report.docx --format json --offset 0 --limit 5
 # 结构化提取：mq 表达式（jq 风格，语法见 mqlang.org）
 reader query ./README.md ".h2"
 reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json
-# 扫描件/乱码层 PDF：OCR 兜底（仅 PDF 单文件；首用下载约 20.5MB 模型，慢）
+# 扫描件/乱码层 PDF：OCR 兜底（仅 PDF 单文件；首用下载约 6.2MB 模型）
 reader extract ./scan.pdf --ocr
 # 自升级（GitHub Releases 最新正式版，校验后替换自身）
 reader self update
@@ -30,7 +30,7 @@ reader self update
 - 退出码：0 成功或命中；1 无命中（search/query）；2 出错（stderr 人读行，json 形态 stdout 另出错误包膜）。
 - text 形态：search 命中行 `单元:行号:文本`（上下文 `单元-行号-文本`，目录模式前缀 `路径:`）；extract 节头 `== page N ==` / `== section N ==` / `== part N ==`（超 200 行单元按行分片），不可靠页节头后 `[needs_ocr: 原因]` 提示行；query 逐命中输出 markdown 片段原文。
 - json 形态（`--format json`，compact 单行）：`{"ok":bool,"data":...,"meta":{command,duration_ms[,next_offset,cta]}}`；`--filter` 点路径裁剪 data（如 `hits[].text`、`results[]`）。
-- needs_ocr 页（扫描件/乱码，仅 PDF）OCR 后仍保留标记：mobile 模型有系统性掉字。
+- needs_ocr 页（扫描件/乱码，仅 PDF）OCR 后仍保留标记：OCR 文本仍可能有误。
 
 ## 渐进深入
 

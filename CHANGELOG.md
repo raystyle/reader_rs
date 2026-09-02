@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- **OCR 换引擎（P0018）**：`--ocr` 由 pure-onnx-ocr/tract（PP-OCRv5 mobile）换为 ppocr-rs 原生 CPU 内核（PP-OCRv6 tiny，S008 实测质量与速度双优：0.8 秒/页量级、mobile 掉字点全修）；模型套件 20.5MB 降到 6.2MB（HuggingFace 钉 rev 加 sha256、缓存目录与 `--offline` 语义不变）；依赖树出 tract，release 二进制 32.9MB 回落 28.3MB。已知：水印区噪声行增多、封面大字标题读散（needs_ocr 域内）。
+
 ## [0.3.0] - 2026-09-03
 
 > 能力面三连加性能翻身：OCR 兜底（P0014）、self update（P0015）、markdown 与 mq query（P0016）、OCR 提速进 5-10 秒/页档（P0017）。三平台 CI 加 lan-mac/lan-linux 实机双路回归全绿。

@@ -364,7 +364,7 @@ fn ocr_fallback_runs_when_models_cached() -> TestResult {
         eprintln!("skip: READER_OCR_CACHE_DIR 未设（无本地模型缓存）");
         return Ok(());
     };
-    for name in ["det-dyn.onnx", "rec-dyn.onnx", "ppocrv5_dict.txt"] {
+    for name in ["tiny-det/model.safetensors", "tiny-rec/model.safetensors"] {
         if !cache.join(name).is_file() {
             eprintln!("skip: 模型缓存 {} 缺 {name}", cache.display());
             return Ok(());

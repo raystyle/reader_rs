@@ -24,24 +24,18 @@ regex = "1"
 # JSON 包膜与 filter 点路径（P0006）：序列化事实标准，选型记 P0006 方案 1 条
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-# OCR 兜底管线（P0014，选型 S006）：hayro 渲染 needs_ocr 页为位图，
-# pure-onnx-ocr（vendor 修 max_width 320 硬编码，S006 踩坑 2）跑 PP-OCRv5 mobile
+# OCR 兜底管线（P0014，P0018 换引擎）：hayro 渲染 needs_ocr 页为位图，
+# ppocr-rs 原生 CPU 内核跑 PP-OCRv6 tiny（S008 裁决双优；git rev 钉死，未上 crates.io）
 hayro = "0.7"
-pure-onnx-ocr = "0.1"
-# 运行时 strip ONNX value_info（S006 踩坑 1）：用 tract-onnx 的 prost 生成类型改写 pb
-tract-onnx = "0.20"
-prost = "0.11"
-# 模型首用下载（S006 关键结论 5）：纯 Rust 加 rustls 默认，守纯 Rust 与 musl 静态边界
+ppocr-rs = { git = "https://github.com/weidix/ppocr-rs", rev = "d07857c35457f90bb8df92e245f614cdc3d5e236" }
+# 模型首用下载与 self update（P0015）：纯 Rust 加 rustls 默认，守纯 Rust 与 musl 静态边界
 ureq = "3"
-# 模型件 SHA-256 钉死校验（S006 关键结论 5）
+# self update 资产 SHA-256 钉死校验（P0015）
 sha2 = "0.10"
-# hayro 位图到引擎的内存传递（与 pure-onnx-ocr 同族 0.25）
+# hayro 位图到引擎的内存传递
 image = "0.25"
 # mq 结构化提取引擎（P0016，选型 S007）：jq 风格 markdown 查询，MIT 纯 Rust
 mq-lang = "0.8"
-
-[patch.crates-io]
-pure-onnx-ocr = { path = "vendor/pure-onnx-ocr" }
 
 [target.'cfg(unix)'.dependencies]
 # SIGPIPE 恢复默认处置用（M007）：管道读者早退（`reader … | head`）按 Unix 惯例

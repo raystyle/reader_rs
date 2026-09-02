@@ -39,7 +39,6 @@
 | `src\ocr.rs` | OCR 兜底（P0014）：hayro 渲染 needs_ocr 页加 tract 推理 PP-OCRv5 mobile；模型三件 ModelScope 下载加 SHA-256 钉死、进程内 strip value_info；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
 | `src\selfupdate.rs` | self update（P0015）：latest 元数据（GH_TOKEN 加 gh api 兜底）、版本判新、资产 digest 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
 | `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤 |
-| `vendor\pure-onnx-ocr\` | vendored pure-onnx-ocr 0.1.0（补丁：max_width 320 改 2560、println 转 eprintln、rec 动态宽度加宽度分组分批加组间并行，P0014/P0017；`[patch.crates-io]` 接入） |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
@@ -87,7 +86,8 @@ reader_rs/
 | P0014 | `P0014-OCR兜底落地.md` | `--ocr` 兜底与模型管理（已完成 2026-09-03） |
 | P0015 | `P0015-self-update.md` | self update（已完成 2026-09-03） |
 | P0016 | `P0016-markdown支持与mq结构化提取.md` | .md 进格式面加 mq query（已完成 2026-09-03） |
-| P0017 | `P0017-OCR性能优化-宽度分组分批加组间并行.md` | OCR 提速 20.5s 到 3-5.5s/页（已完成 2026-09-03） |
+| P0017 | `P0017-OCR性能优化-宽度分组分批加组间并行.md` | OCR 提速 20.5s 到 3-5.5s/页（已完成 2026-09-03；P0018 换引擎后代码面退役） |
+| P0018 | `P0018-OCR换引擎ppocr-rs.md` | OCR 换 ppocr-rs PP-OCRv6 tiny（已完成 2026-09-03） |
 
 ## 四、项目日记
 
@@ -111,6 +111,7 @@ reader_rs/
 | S005 | `S005-TOON输出形态收益实测-Reader真实样本上不成立.md` | TOON 收益实测（不引入，销候选） |
 | S006 | `S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` | 内嵌 OCR 选型（纯 Rust 管线实测可行，已落地 P0014） |
 | S007 | `S007-markdown支持选型-学习mq嵌mq-lang全引擎加零依赖分节.md` | markdown 支持选型（学习 mq，已落地 P0016） |
+| S008 | `S008-OCR质量升级-ppocr-rs的PP-OCRv6原生内核双优胜出现管线换引擎.md` | OCR 质量升级（v6 tiny 双优，已落地 P0018） |
 
 ## 六、开发测试参考
 
