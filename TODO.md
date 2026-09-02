@@ -4,18 +4,14 @@
 
 ## 当前目标
 
-用户点名三项按序推进（登记日 2026-09-01）。**2026-09-01 全部达成并发布 v0.2.1**：P0011/P0012 经 Linux（R004）与 mac（R005）实机验收三平台对账闭环；M007（SIGPIPE）验收中发现当轮修复（mac 现场验 141 静默）；P0013 musl 首跑五 job 全绿、10 资产齐、本机双 sha256 实测过。下版候选（MCP、token 计数、pager、completions、crates.io/brew/scoop 分发等）待立项。
+S006 内嵌 OCR 选型研究（登记日 2026-09-02，触发：安全牛扫描 PDF 81 页全 needs_ocr）。**2026-09-02 已达成**：纯 Rust 管线（hayro 加 pure-onnx-ocr 跑 PP-OCRv5 mobile）真样本端到端实证可行；研究文档 `docs\research\S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` 落盘。OCR 落地实现（`--ocr` 兜底、模型下载缓存）待立项。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 立项 P0011-P0013 | 已完成 | 三方案、三原语、INDEX 登记 | 2026-09-01 |
-| P0011 超长节再分片 | 已完成 | `to_unit_bodies` 逐节判定；混排夹具绿；feat 提交 23ba52b | 2026-09-01 |
-| P0012 批量目录搜索 | 已完成 | `src\batch.rs`、`is_supported`、批量四态用例；真样本目录冒烟过 | 2026-09-01 |
-| P0013 musl 资产 | 已完成 | v0.2.1 首跑五 job 绿（musl 一次过）、10 资产齐、本机双 sha256 与冒烟过 | 2026-09-01 |
-| Linux 实机验收（R004） | 已完成 | 门禁与文档门禁全绿、真样本五路过；发现并修 M007；验收记录已回填 R004 | 2026-09-01 |
-| M007 SIGPIPE 修复 | 已完成 | main 恢复 SIGPIPE 默认处置（unix）、libc 直接依赖、回归测试；141 静默双验（debug/musl） | 2026-09-01 |
-| mac 接管移交与验收（R005） | 已完成 | 三平台对账闭环；x86_64-apple-darwin 交叉预建 file 判形过（无 Rosetta 2） | 2026-09-01 |
-| v0.2.1 发布 | 已完成 | CI 绿后打 tag（M005 流程）；windows 与 musl 资产 sha256 一致、`reader 0.2.1` 冒烟过；M008 记 nul 文件坑 | 2026-09-01 |
-| 收官登记 | 已完成 | CHANGELOG、introspect/SKILL 再生成、README、diary、GOAL/INDEX、门禁全绿 | 2026-09-01 |
+| 双通道候选普查 | 已完成 | crates.io 加 gh 核实九候选（ocrs、oar-ocr、paddle-ocr-rs、rapidocr-core、rusto-rs、franken_ocr、leptess、pure-onnx-ocr、hayro） | 2026-09-02 |
+| 边界裁决 | 已完成 | ocrs 拉丁限定出局；RapidOCR 系全绑 ort 或 MNN 破纯 Rust 边界 | 2026-09-02 |
+| PoC 实证 | 已完成 | hayro 渲染（588ms/页）加 tract 推理 PP-OCRv5 mobile（19 到 42s/页）；中文正文置信 0.9 以上 | 2026-09-02 |
+| 坑位沉淀 | 已完成 | tract value_info 剥离、rec max_width 320 硬编码、hayro 默认透明底、ppocr-rs 同名撞车 | 2026-09-02 |
+| S006 落盘与登记 | 已完成 | research 落文档；INDEX/GOAL/TODO/diary 同步；文档门禁待跑 | 2026-09-02 |

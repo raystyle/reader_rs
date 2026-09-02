@@ -84,6 +84,7 @@ reader_rs/
 
 - `2026-08-31-对照ohmyagents建立文档骨架.md`
 - `2026-09-01-S004选型反复与P0009-anydoc大重构.md`
+- `2026-09-02-S006内嵌OCR选型研究与PoC实证.md`
 
 ## 五、研究文档
 
@@ -96,6 +97,7 @@ reader_rs/
 | S003 | `S003-EPUB解析crate选型-rbook双通道核实.md` | EPUB 解析选型（rbook 加 quick-xml） |
 | S004 | `S004-Word文档读取选型-docx自解与doc直读双路线实测.md` | Word 支持选型（anydoc 统一引擎，决策变更记录在内） |
 | S005 | `S005-TOON输出形态收益实测-Reader真实样本上不成立.md` | TOON 收益实测（不引入，销候选） |
+| S006 | `S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` | 内嵌 OCR 选型（纯 Rust 管线实测可行，落地待立项） |
 
 ## 六、开发测试参考
 

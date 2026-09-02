@@ -14,7 +14,7 @@
 
 > 当前锚定的目标 + 推进时间线。
 
-- **锚定的目标**：P0010 无标题分节加 S005 TOON 验证（已达成），等下一目标点名立项。
+- **锚定的目标**：S006 内嵌 OCR 选型研究（已达成：纯 Rust 管线 hayro 加 pure-onnx-ocr 实测可行，裁决与坑位见研究文档）；OCR 落地实现与其它候选待用户点名立项。
 
 ### 推进时间线
 
@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-02 | **S006 达成**：内嵌 OCR 双通道普查九候选，纯 Rust 管线（hayro 0.7 渲染加 pure-onnx-ocr 0.1 跑 PP-OCRv5 mobile 20.5MB）真样本端到端实证；ocrs 拉丁限定出局、RapidOCR 系全绑 ort 破边界；两坑沉淀（tract value_info 剥离、rec max_width 硬编码 320） |
 | 2026-09-01 | **v0.2.1 发布**：CI 绿后打 tag（M005 流程修正版）；Release 五 job 首跑全绿（musl 一次过）、10 资产齐；windows 与 musl 双 sha256 一致、`reader 0.2.1` 冒烟过；P0013 收官，三项目标全闭环（封版中记 M008：Git Bash 落出 nul 保留名文件） |
 | 2026-09-01 | mac 接管验收（R005）闭环：门禁三件与文档门禁全绿（15 单元 + 44 集成、rumdl 43 文件零告警）、真样本五路过（M007 现场验 141 静默）、x86_64 交叉预建 file 判形过（本机无 Rosetta 2）；三平台对账闭环，mac 接管开发就位 |
 | 2026-09-01 | mac 接管移交（R005）：仓已 pull 到 154df2b、样本 docx 已 SCP 就位、工具面实测齐（arm64 macOS 26.5.2、rumdl 可跑 M003 已解）；推送后 CI 三系统绿（M007 测试在 ubuntu/macos job 均过） |
@@ -51,7 +52,7 @@
 
 > 当前目标的进程：只记录当前这一个目标的进行状态。
 
-- 当前目标（已达成）：P0011 加 P0012 达成并经 Linux（R004）与 mac（R005）实机验收对账闭环；P0013 musl 本地去险完成，验收挂 v0.2.1 tag 首跑（五 job 绿 9 资产齐）；M007（SIGPIPE）修复经三平台验证（Windows 开发、Linux 与 mac 实机 141 静默）；mac 接管开发就位。**v0.2.1 tag 可发**，待用户确认。下版候选：阶段 3 余项（MCP、token 计数、pager、completions）与发布面余项（crates.io/brew/scoop 分发），待用户点名立项。
+- 当前目标（已达成）：S006 内嵌 OCR 选型研究——双通道普查九候选并 PoC 实证纯 Rust 管线（hayro 0.7 渲染加 pure-onnx-ocr 0.1 跑 PP-OCRv5 mobile，模型 20.5MB）在真实乱码层 PDF 上端到端跑通；裁决与性能质量代价、四坑沉淀见 `docs\research\S006`。OCR 落地实现（`--ocr` 兜底、模型首用下载）待用户点名立项；下版候选另有阶段 3 余项（MCP、token 计数、pager、completions）与分发面（crates.io/brew/scoop）。
 
 ## 历史
 
