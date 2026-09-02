@@ -14,7 +14,7 @@
 
 > 当前锚定的目标 + 推进时间线。
 
-- **锚定的目标**：P0014 OCR 落地（已达成：`--ocr` 兜底加模型管理落地，门禁与真样本回归全绿，归档 `docs\proven\P0014-OCR兜底落地.md`）；下版候选为阶段 3 余项（MCP、token 计数、pager、completions）与分发面（crates.io/brew/scoop），待用户点名。
+- **锚定的目标**：P0015 self update（已达成：`reader self update [--force]` 落地，临时目录端到端实测通过，归档 `docs\proven\P0015-self-update.md`）；下版候选为阶段 3 余项（MCP、token 计数、pager、completions）与分发面（crates.io/brew/scoop）、OCR 质量升级（S006 待办 2），待用户点名。
 
 ### 推进时间线
 
@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **P0015 达成**：self update 落地（19 单元加 47 集成全绿）；临时目录 `--force` 端到端实测——下载加 digest 校验加解包加双名替换，换上件 sha256 与官方 v0.2.1 资产逐一一致；M012 沉淀（flate2 0.2 无 rust_backend，钉 1.x） |
 | 2026-09-03 | **P0014 达成**：`--ocr` 兜底落地（16 单元加 46 集成全绿）；真样本两页出正文、首用下载全流程实测；三坑沉淀 M009-M011（ureq 10MB 上限、vendor println 污染 stdout、OcrEngine 非 Send/Sync）；stripped 哈希改钉 prost 输出；二进制 7.3MB 到 32.9MB |
 | 2026-09-02 | **S006 达成**：内嵌 OCR 双通道普查九候选，纯 Rust 管线（hayro 0.7 渲染加 pure-onnx-ocr 0.1 跑 PP-OCRv5 mobile 20.5MB）真样本端到端实证；ocrs 拉丁限定出局、RapidOCR 系全绑 ort 破边界；两坑沉淀（tract value_info 剥离、rec max_width 硬编码 320） |
 | 2026-09-01 | **v0.2.1 发布**：CI 绿后打 tag（M005 流程修正版）；Release 五 job 首跑全绿（musl 一次过）、10 资产齐；windows 与 musl 双 sha256 一致、`reader 0.2.1` 冒烟过；P0013 收官，三项目标全闭环（封版中记 M008：Git Bash 落出 nul 保留名文件） |
@@ -53,7 +54,7 @@
 
 > 当前目标的进程：只记录当前这一个目标的进行状态。
 
-- 当前目标（已达成）：P0014 OCR 落地——`--ocr` 兜底与模型管理落地，门禁与真样本回归全绿；过程与经验回填 `docs\proven\P0014-OCR兜底落地.md`。
+- 当前目标（已达成）：P0015 self update——`reader self update [--force]` stable 通道落地；临时目录端到端实测通过；过程与经验回填 `docs\proven\P0015-self-update.md`。
 
 ## 历史
 
@@ -61,6 +62,7 @@
 
 | 日期 | 目标 | 结果 |
 | --- | --- | --- |
+| 2026-09-03 | P0015 self update | 达成：stable 通道版本判新加 `--force` 重装、资产 digest 钉死、staged 加 rename 原子替换自身与兄弟；临时目录实测通过；M012 沉淀 |
 | 2026-09-03 | P0014 OCR 兜底落地 | 达成：`--ocr`/`--offline` 进 extract 加 search（仅 PDF 单文件）；模型三件 ModelScope 下载加双套 SHA-256 钉死、进程内 prost strip；16 单元加 46 集成全绿、真样本回归过；M009-M011 沉淀；二进制 7.3MB 到 32.9MB |
 | 2026-09-02 | S006 内嵌 OCR 选型研究 | 达成：纯 Rust 管线（hayro 加 pure-onnx-ocr 跑 PP-OCRv5 mobile）真样本端到端实证可行；九候选裁决与四坑沉淀；OCR 落地转 P0014 |
 | 2026-09-01 | 无标题长文档行分片加 TOON 验证（P0010、S005） | 达成：part 分片落地（12 单元加 38 集成全绿）；TOON 实测不引入（中文更费 token、往返破损）销候选 |

@@ -4,16 +4,15 @@
 
 ## 当前目标
 
-P0014 OCR 落地（登记日 2026-09-03）。**2026-09-03 已达成**：`--ocr`/`--offline` 进 extract 与 search（仅 PDF 单文件 needs_ocr 页）；模型三件 ModelScope 下载加双套 SHA-256 钉死、进程内 prost strip；门禁与真样本回归全绿。过程与经验回填 `docs\proven\P0014-OCR兜底落地.md`。下一目标待用户点名（候选：阶段 3 余项 MCP/token 计数/pager/completions、分发面 crates.io/brew/scoop、OCR 质量升级 S006 待办 2）。
+P0015 self update（登记日 2026-09-03，触发：用户点名参考 ohmyenv-rs 与 ohmyagents-rs 加入 self update，要求判断自身路径）。**2026-09-03 已达成**：`reader self update [--force]` 落地；临时目录 `--force` 端到端实测通过（换上件 sha256 与官方 v0.2.1 资产一致）。过程与经验回填 `docs\proven\P0015-self-update.md`。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 立项登记 | 已完成 | GOAL/TODO/PLAN 三原语；模型 URL 与双套 SHA-256 钉死 | 2026-09-03 |
-| vendor pure-onnx-ocr | 已完成 | `vendor\pure-onnx-ocr\`（max_width 2560 加 println 转 eprintln 补丁）；patch 接入 | 2026-09-03 |
-| src\ocr.rs | 已完成 | 缓存目录加环境覆盖、三件下载校验、prost strip、hayro 渲染、引擎现建 | 2026-09-03 |
-| --ocr 接线 | 已完成 | extract 与 search 加 `--ocr`/`--offline`；目录加 `--ocr` 报错；OcrOpts 穿参 | 2026-09-03 |
-| 测试 | 已完成 | dies_ 负例两件加模型缓存门控冒烟；16 单元加 46 集成全绿 | 2026-09-03 |
-| 真样本回归 | 已完成 | 安全牛 PDF：无 `--ocr` 行为不变；`--ocr` 两页出正文；首用下载全流程实测 | 2026-09-03 |
-| 门禁与回填 | 已完成 | fmt/clippy/test 加 rumdl 三件全绿；AGENTS/INDEX/SKILL/diary/P0014/M009-M011/CHANGELOG 收口 | 2026-09-03 |
+| 参考实现研读 | 已完成 | ohmyenv-rs selfupdate.rs（digest 对比加改名替换）与 ohmyagents-rs update.rs（staged 原子替换、gh api 兜底） | 2026-09-03 |
+| 立项登记 | 已完成 | GOAL/TODO/PLAN 三原语 | 2026-09-03 |
+| src\selfupdate.rs | 已完成 | 平台资产名映射、latest 元数据（GH_TOKEN 加 gh api 兜底）、digest 校验下载、zip/tar.gz 解包、current_exe 加兄弟二进制替换 | 2026-09-03 |
+| CLI 接线与文案 | 已完成 | `reader self update [--force]`；introspect 双文本加 SKILL 再生成 | 2026-09-03 |
+| 测试 | 已完成 | 单元（资产名映射、版本比较）；临时目录复制二进制 force 实跑端到端 | 2026-09-03 |
+| 门禁与回填 | 已完成 | 门禁三件加 rumdl 三件；AGENTS/INDEX/CHANGELOG/diary/P0015 归档 | 2026-09-03 |

@@ -86,12 +86,13 @@
 - **搜文本**：`reader search <文件|目录> <关键词>`（.pdf 及 anydoc 家族 .doc/.docx/.epub/.odt/.rtf/.ppt(x)/.xls(x)/.ods/.odp/.csv；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/节；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪；`--ocr` 对 PDF 单文件 needs_ocr 页兜底识别（首用下载约 20.5MB 模型进缓存目录，`--offline` 禁下载）；目录输入递归批量搜，命中行带路径前缀，`--pages` 与 `--ocr` 不可用）
 - **提文本**：`reader extract <文件>`（`--pages` 限页/节、`-o` 写文件；按单元输出 `== page N ==`（PDF）/ `== section N ==`（其余，标题分节）分节；输出 markdown 形态（PDF 布局管线 / anydoc GFM），不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--ocr`/`--offline` 同上对 PDF needs_ocr 页兜底；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
 - **agent 发现**：`reader --llms`（紧凑命令索引）、`reader skill`（生成 SKILL.md；仓根 `SKILL.md` 与运行时输出逐字节一致，测试守卫）
+- **自升级**：`reader self update [--force]`（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`
 
-已落地：`search`（含目录批量）、`extract`、`skill`、`--llms`、超长单元 part 分片、`--ocr` OCR 兜底（仅 PDF 单文件 needs_ocr 页，P0014）。其余能力（MCP 等）仍是候选方向，禁止假装已经可跑；TOON 已经 S005 实测裁定不引入（中文样本反而费 token 且 0.5.0 往返破损）。
+已落地：`search`（含目录批量）、`extract`、`skill`、`--llms`、超长单元 part 分片、`--ocr` OCR 兜底（仅 PDF 单文件 needs_ocr 页，P0014）、`self update`（P0015）。其余能力（MCP 等）仍是候选方向，禁止假装已经可跑；TOON 已经 S005 实测裁定不引入（中文样本反而费 token 且 0.5.0 往返破损）。
 
 ## 四、资源索引
 

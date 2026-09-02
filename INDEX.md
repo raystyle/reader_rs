@@ -36,6 +36,7 @@
 | `src\output.rs` | JSON 包膜（ok/data/error 加 meta）、filter 点路径裁剪、cta 生成 |
 | `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
 | `src\ocr.rs` | OCR 兜底（P0014）：hayro 渲染 needs_ocr 页加 tract 推理 PP-OCRv5 mobile；模型三件 ModelScope 下载加 SHA-256 钉死、进程内 strip value_info；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
+| `src\selfupdate.rs` | self update（P0015）：latest 元数据（GH_TOKEN 加 gh api 兜底）、版本判新、资产 digest 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
 | `vendor\pure-onnx-ocr\` | vendored pure-onnx-ocr 0.1.0（rec max_width 320 硬编码改 2560，S006 踩坑 2；`[patch.crates-io]` 接入） |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
@@ -48,7 +49,7 @@ reader_rs/
   Cargo.toml / LICENSE / .rumdl.toml
   .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-replace）
   src\
-    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs
+    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  selfupdate.rs
   vendor\
     pure-onnx-ocr\   vendored OCR 引擎（patch 接入，P0014）
   tests\
@@ -82,6 +83,7 @@ reader_rs/
 | P0012 | `P0012-批量目录搜索.md` | 批量目录搜索（已完成 2026-09-01） |
 | P0013 | `P0013-musl静态Linux资产.md` | musl 静态资产（已完成 2026-09-01，v0.2.1 首发实测） |
 | P0014 | `P0014-OCR兜底落地.md` | `--ocr` 兜底与模型管理（已完成 2026-09-03） |
+| P0015 | `P0015-self-update.md` | self update（已完成 2026-09-03） |
 
 ## 四、项目日记
 
@@ -138,7 +140,7 @@ reader_rs/
 | M102 | `M102-Windows路径与shell错误.md` | MSYS 路径、os error 3、引号、原生二进制、跨平台路径拼接、SIGPIPE 管道早退、cmd 风格重定向 | M002 M005 M007 M008 |
 | M103 | `M103-开发环境安装错误.md` | 架构不配、bad CPU type、接管机装工具 | M003 |
 | M104 | `M104-CI与发布流水线错误.md` | runner 退役、上传竞态、资产命名 | M004 |
-| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync | M009 M010 M011 |
+| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端 | M009 M010 M011 M012 |
 
 迭代规则：踩坑按当前最大号接编 MNNN 进对应分类文件；一行一事；同根因或同型坑可合并聚合进已有条目（保留最早编号与首踩日期）；反复踩落 `docs\research\`；新分类文件登记本节。
 

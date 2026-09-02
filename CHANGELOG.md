@@ -4,6 +4,7 @@
 
 ## [Unreleased]
 
+- **self update（P0015）**：`reader self update [--force]` 从 GitHub Releases 最新正式版自升级——版本判新（`--force` 同版本重装）、资产 sha256 digest 钉死校验（缺失拒升）、staged 加 rename 原子替换当前运行二进制与同目录兄弟（reader/rr 双名）；`GH_TOKEN` 注入认证、403 限流回退 gh api。只 stable 通道，不自动更新。
 - **OCR 兜底（P0014）**：`extract` 与 `search` 对 PDF 单文件的 needs_ocr 页加 `--ocr` 兜底识别（hayro 渲染加 tract 推理 PP-OCRv5 mobile，vendored pure-onnx-ocr 修 max_width）；OCR 文本回填 lines、`needs_ocr` 标记保留（mobile 模型有系统性掉字）；模型三件约 20.5MB 首用从 ModelScope 下载进平台缓存目录、SHA-256 钉死校验，`--offline` 禁下载，`READER_OCR_CACHE_DIR` 覆盖缓存目录；目录批量搜索加 `--ocr` 报错。默认行为零变化；二进制体积 7.3MB 涨到 32.9MB（release）。
 
 ## [0.2.1] - 2026-09-01

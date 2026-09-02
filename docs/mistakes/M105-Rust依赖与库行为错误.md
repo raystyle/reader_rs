@@ -22,3 +22,10 @@
 - 现象：`OnceLock` / `Mutex` 静态持有 OcrEngine 均编译失败（内含 `RefCell<HashMap<…Arc<SimplePlan…>>>` 计划缓存）。
 - 根因：tract 的 SimplePlan 不满足 Sync 约束，pure-onnx-ocr 引擎随之为 !Send/!Sync。
 - 正确处理：不进静态，每次调用现建——引擎构建实测约 29ms，相对 19 到 42 秒/页的推理可忽略；先量再优化，不为省 29ms 上 unsafe。
+
+## M012 flate2 0.2 无纯 Rust 后端 feature，miniz-sys C 库混进依赖树
+
+- 首踩：2026-09-03（P0015 self update 解 tar.gz）
+- 现象：`flate2 = "0.2"` 默认拉 miniz-sys（C 编译）；写 `default-features = false, features = ["rust_backend"]` 报 feature 不存在。
+- 根因：flate2 0.2.x 的后端 feature 只有 miniz-sys / libz-sys / zlib（全 C）；纯 Rust 的 rust_backend（miniz_oxide）从 1.x 起才是默认。
+- 正确处理：解 gzip 用 `flate2 = "1"` 默认 feature；写完依赖先 `grep miniz-sys Cargo.lock` 之类确认没有 C 后端混进来（纯 Rust 边界仓的例行检查）。
