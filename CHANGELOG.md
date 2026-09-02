@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- **OCR 性能优化（P0017）**：`--ocr` 单页 20.5s 提速到约 3-5.5s（多核）——rec 张量动态宽度加 320 桶化、按行宽分组分批、组间并行（每 worker 独立推理会话），rec_batch_size 按核数自适应；正文识别质量持平，水印碎片行由空串变为少量噪声短行（needs_ocr 域内）。
+- **SKILL 重构**：SKILL.md 改为常用例子加输出契约加渐进引导（`--llms` / `<子命令> --help`）三节式；全量参数面由 `--help` 与 README 承载。
 - **markdown 支持与 mq 结构化提取（P0016）**：`.md` / `.markdown` 进 search/extract 格式面（原文直读进分节管线，节语义与 anydoc 家族一致，批量目录搜索自动覆盖）；新子命令 `reader query <文件> <mq表达式>` 嵌 mq-lang 全引擎（学习 harehare/mq），全格式面转 markdown 后结构化提取（`.h2` / `.code` / `.link` / `.table` / select 管道），退出码 0/1/2 同 search，json 形态 `results[]` 加 `count`。
 - **self update（P0015）**：`reader self update [--force]` 从 GitHub Releases 最新正式版自升级——版本判新（`--force` 同版本重装）、资产 sha256 digest 钉死校验（缺失拒升）、staged 加 rename 原子替换当前运行二进制与同目录兄弟（reader/rr 双名）；`GH_TOKEN` 注入认证、403 限流回退 gh api。只 stable 通道，不自动更新。
 - **OCR 兜底（P0014）**：`extract` 与 `search` 对 PDF 单文件的 needs_ocr 页加 `--ocr` 兜底识别（hayro 渲染加 tract 推理 PP-OCRv5 mobile，vendored pure-onnx-ocr 修 max_width）；OCR 文本回填 lines、`needs_ocr` 标记保留（mobile 模型有系统性掉字）；模型三件约 20.5MB 首用从 ModelScope 下载进平台缓存目录、SHA-256 钉死校验，`--offline` 禁下载，`READER_OCR_CACHE_DIR` 覆盖缓存目录；目录批量搜索加 `--ocr` 报错。默认行为零变化；二进制体积 7.3MB 涨到 32.9MB（release）。

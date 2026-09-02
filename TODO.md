@@ -4,15 +4,15 @@
 
 ## 当前目标
 
-P0016 markdown 支持落地（登记日 2026-09-03；依据 `docs\research\S007`）。**2026-09-03 已达成**：`.md`/`.markdown` 进 search/extract 格式面（零新依赖复用 split_markdown）；`query` 子命令嵌 mq-lang 全引擎；23 单元加 52 集成全绿、真样本回归过。过程与经验回填 `docs\proven\P0016-markdown支持与mq结构化提取.md`。下一目标待用户点名。
+P0017 OCR 性能优化（登记日 2026-09-03，触发：用户裁定 19-42 秒/页不可接受，目标 5-10 秒/页）。**2026-09-03 已达成**：rec 动态宽度加桶化加宽度分组分批加组间并行，第 10 页 20.5s 到 3.0s（32 核）、真样本约 5.5 秒/页；质量持平。过程与经验回填 `docs\proven\P0017-OCR性能优化-宽度分组分批加组间并行.md`。下一目标待用户点名。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| S007 研究与裁决 | 已完成 | 双通道核实加 PoC 实测；研究文档落盘 | 2026-09-03 |
-| .md 进格式面 | 已完成 | document.rs 分派加 is_supported；anydoc.rs 出 extract_markdown 直读路径 | 2026-09-03 |
-| query 子命令 | 已完成 | src\query.rs 加 lib.rs 接线；text/json 两形态、退出码 0/1/2 同 search | 2026-09-03 |
-| 测试 | 已完成 | md 夹具三件加 query 正负例加 json 加目录拒绝；23 单元加 52 集成全绿 | 2026-09-03 |
-| 真样本回归 | 已完成 | 仓内 README/P0015 方案/SKILL 搜加 extract 加 query 五项过；docs 目录批量搜覆盖 .md | 2026-09-03 |
-| 文案与门禁 | 已完成 | introspect/SKILL/AGENTS/INDEX/README/CHANGELOG/diary/P0016 归档；门禁三件加 rumdl 三件 | 2026-09-03 |
+| 剖析定位 | 已完成 | run_with_metrics：rec infer 19.6s 占 96%、det 仅 0.73s | 2026-09-03 |
+| 动态宽度加桶化 | 已完成 | vendor preprocessing：定长 2560 padding 改批内最长行加 320 桶 | 2026-09-03 |
+| 宽度分组分批加并行 | 已完成 | vendor engine：排序分批、scoped worker 各载独立会话、mpsc 还原原序 | 2026-09-03 |
+| batch 自适应 | 已完成 | src\ocr.rs：16 核档取 2、8 核档取 4、否则 8 | 2026-09-03 |
+| 实测与质量对照 | 已完成 | 桶宽加 batch 扫描；两页端到端 11.1s；diff 对照质量持平 | 2026-09-03 |
+| 门禁与回填 | 已完成 | clippy/test 加 rumdl 全绿；P0017 归档、diary、三原语收口 | 2026-09-03 |

@@ -77,7 +77,7 @@ reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 | `--pages 范围` | 限定页/节（1 起），写法 `1-3,5`；仅单文件模式 |
 | `--format 形态` | `text`（行式，缺省）或 `json`（包膜） |
 | `--filter 路径` | 裁剪 JSON `data` 的点路径（如 `hits[].text`）；仅 `--format json` 下可用 |
-| `--ocr` | PDF 单文件 needs_ocr 页走 OCR 兜底（首用下载约 20.5MB 模型进缓存目录；约 19-42 秒/页；目录模式不可用） |
+| `--ocr` | PDF 单文件 needs_ocr 页走 OCR 兜底（首用下载约 20.5MB 模型进缓存目录；多核并行约 3-10 秒/页（P0017）；目录模式不可用） |
 | `--offline` | 禁模型下载（须与 `--ocr` 同用；模型未就位时报错） |
 
 输出格式（仿 grep，稳定可解析）：
