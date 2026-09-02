@@ -52,6 +52,8 @@ pub enum OcrError {
     RecognitionInference { source: TractError },
     /// Recognition post-processing failed.
     RecognitionPostProcess { source: RecPostProcessorError },
+    /// Parallel recognition worker failed (P0017; 错误跨线程转字符串回传).
+    RecognitionParallel { message: String },
     /// The number of recognition results did not match detected regions.
     PipelineMismatch {
         detection_regions: usize,
@@ -94,6 +96,7 @@ impl fmt::Display for OcrError {
             OcrError::RecognitionPostProcess { source } => {
                 write!(f, "recognition post-processing failed: {}", source)
             }
+            OcrError::RecognitionParallel { message } => write!(f, "{}", message),
             OcrError::PipelineMismatch {
                 detection_regions,
                 recognition_results,
@@ -238,6 +241,7 @@ impl Error for OcrError {
             OcrError::RecognitionPreprocess { source } => Some(source),
             OcrError::RecognitionInference { .. } => None,
             OcrError::RecognitionPostProcess { source } => Some(source),
+            OcrError::RecognitionParallel { .. } => None,
             OcrError::PipelineMismatch { .. } => None,
         }
     }
@@ -371,6 +375,7 @@ impl OcrEngine {
             Arc::clone(&dictionary),
             config.rec_preprocessor.clone(),
             config.rec_postprocessor.clone(),
+            assets.rec_model_path().to_path_buf(),
         );
 
         Self {
@@ -466,7 +471,8 @@ impl OcrEngine {
 
         let regions = polygons_to_text_regions(&polygons, image_dims);
         let (sequences, recognition_timings) =
-            self.recognition.run_with_timings(image, &regions)?;
+            self.recognition
+                .run_with_timings(image, &regions, self.config.rec_batch_size)?;
         timings.recognition = recognition_timings;
 
         if sequences.len() != polygons.len() {
@@ -723,6 +729,8 @@ struct RecognitionPipeline {
     preprocessor: RecPreProcessor,
     session: Arc<RecInferenceSession>,
     postprocessor: RecPostProcessor,
+    /// rec 模型路径：并行组处理时每 worker 现载独立会话（tract 会话非 Send/Sync，M011）。
+    model_path: PathBuf,
 }
 
 impl RecognitionPipeline {
@@ -731,6 +739,7 @@ impl RecognitionPipeline {
         dictionary: Arc<RecDictionary>,
         preprocessor: RecPreProcessorConfig,
         postprocessor: RecPostProcessorConfig,
+        model_path: PathBuf,
     ) -> Self {
         let postprocessor = RecPostProcessor::new(Arc::clone(&dictionary), postprocessor);
 
@@ -738,41 +747,136 @@ impl RecognitionPipeline {
             preprocessor: RecPreProcessor::new(preprocessor),
             session,
             postprocessor,
+            model_path,
         }
+    }
+
+    /// 单组处理（关联函数，显式传参以便并行路径只捕获 Sync 部件）。
+    fn run_chunk(
+        preprocessor: &RecPreProcessor,
+        session: &RecInferenceSession,
+        postprocessor: &RecPostProcessor,
+        image: &DynamicImage,
+        group: &[RecTextRegion],
+    ) -> Result<(Vec<DecodedSequence>, StageTimings), OcrError> {
+        let preprocess_start = Instant::now();
+        let batch = preprocessor
+            .process(image, group)
+            .map_err(OcrError::from)?;
+        let preprocess_elapsed = preprocess_start.elapsed();
+
+        let inference_start = Instant::now();
+        let inference = session
+            .run(&batch)
+            .map_err(|source| OcrError::RecognitionInference { source })?;
+        let inference_elapsed = inference_start.elapsed();
+
+        let post_start = Instant::now();
+        let sequences = postprocessor
+            .process(&inference)
+            .map_err(OcrError::from)?;
+        let post_elapsed = post_start.elapsed();
+
+        Ok((
+            sequences,
+            StageTimings {
+                preprocess: preprocess_elapsed,
+                inference: inference_elapsed,
+                postprocess: post_elapsed,
+            },
+        ))
     }
 
     fn run_with_timings(
         &self,
         image: &DynamicImage,
         regions: &[RecTextRegion],
+        batch_size: usize,
     ) -> Result<(Vec<DecodedSequence>, StageTimings), OcrError> {
-        let preprocess_start = Instant::now();
-        let batch = self
-            .preprocessor
-            .process(image, regions)
-            .map_err(OcrError::from)?;
-        let preprocess_elapsed = preprocess_start.elapsed();
+        // P0017 宽度分组分批：按目标宽度排序后定长分批，批内行宽相近、张量宽度取批内
+        // 桶宽，短行不再陪最长行跑全宽注意力（SVTR 对宽度近似平方级）；结果按原序还原。
+        let mut order: Vec<usize> = (0..regions.len()).collect();
+        order.sort_by_key(|&i| self.preprocessor.target_width_of(&regions[i]));
+        let chunks: Vec<&[usize]> = order.chunks(batch_size.max(1)).collect();
 
-        let inference_start = Instant::now();
-        let inference = self
-            .session
-            .run(&batch)
-            .map_err(|source| OcrError::RecognitionInference { source })?;
-        let inference_elapsed = inference_start.elapsed();
+        if chunks.len() <= 1 {
+            let group: Vec<RecTextRegion> = regions.to_vec();
+            let (seqs, timings) = Self::run_chunk(
+                &self.preprocessor,
+                &self.session,
+                &self.postprocessor,
+                image,
+                &group,
+            )?;
+            return Ok((seqs, timings));
+        }
 
-        let post_start = Instant::now();
-        let sequences = self
-            .postprocessor
-            .process(&inference)
-            .map_err(OcrError::from)?;
-        let post_elapsed = post_start.elapsed();
+        // P0017 组间并行：tract 单线程，一组一个 worker（各载独立会话），
+        // worker 数封顶物理并发数；错误转字符串跨线程回传。
+        // 只捕获 Sync 部件（preprocessor/postprocessor/model_path），self 整体因
+        // 含 !Sync 的会话句柄不可跨线程共享。
+        let preprocessor = &self.preprocessor;
+        let postprocessor = &self.postprocessor;
+        let model_path = &self.model_path;
+        let workers = std::thread::available_parallelism()
+            .map(|n| n.get())
+            .unwrap_or(1)
+            .min(chunks.len());
+        let next = std::sync::atomic::AtomicUsize::new(0);
+        let (tx, rx) = std::sync::mpsc::channel::<
+            Result<(Vec<usize>, Vec<DecodedSequence>, StageTimings), String>,
+        >();
+        std::thread::scope(|s| {
+            let chunks = &chunks;
+            for _ in 0..workers {
+                let tx = tx.clone();
+                let next = &next;
+                let chunks = chunks;
+                s.spawn(move || {
+                    let session = match RecInferenceSession::load(model_path) {
+                        Ok(session) => session,
+                        Err(e) => {
+                            let _ = tx.send(Err(format!("rec 会话加载失败: {e}")));
+                            return;
+                        }
+                    };
+                    loop {
+                        let idx = next.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                        if idx >= chunks.len() {
+                            return;
+                        }
+                        let chunk = chunks[idx];
+                        let group: Vec<RecTextRegion> =
+                            chunk.iter().map(|&i| regions[i]).collect();
+                        let result =
+                            Self::run_chunk(preprocessor, &session, postprocessor, image, &group)
+                                .map(|(seqs, t)| (chunk.to_vec(), seqs, t))
+                                .map_err(|e| format!("{e}"));
+                        if tx.send(result).is_err() {
+                            return;
+                        }
+                    }
+                });
+            }
+            drop(tx);
+        });
 
-        let timings = StageTimings {
-            preprocess: preprocess_elapsed,
-            inference: inference_elapsed,
-            postprocess: post_elapsed,
-        };
-
+        let mut sequences: Vec<Option<DecodedSequence>> = vec![None; regions.len()];
+        let mut timings = StageTimings::zero();
+        for item in rx {
+            let (indices, seqs, t) =
+                item.map_err(|message| OcrError::RecognitionParallel { message })?;
+            timings.preprocess += t.preprocess;
+            timings.inference += t.inference;
+            timings.postprocess += t.postprocess;
+            for (i, seq) in indices.into_iter().zip(seqs.into_iter()) {
+                sequences[i] = Some(seq);
+            }
+        }
+        let sequences = sequences
+            .into_iter()
+            .map(|s| s.expect("分组分批后每行都应有结果"))
+            .collect();
         Ok((sequences, timings))
     }
 }

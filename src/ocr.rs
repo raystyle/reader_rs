@@ -60,11 +60,24 @@ pub fn ocr_pages(
 ) -> Result<Vec<(u32, Vec<String>)>, String> {
     let models = ensure_models(offline)?;
     // OcrEngine 内含 RefCell 计划缓存、非 Send/Sync，不进静态；构建仅约 29ms（S006 实测），
-    // 相对 19-42 秒/页的推理可忽略，每次调用现建。
+    // 相对推理可忽略，每次调用现建。
+    // rec_batch_size 按核数自适应（P0017）：rec 组间并行封顶物理核数，核多则小组高并行——
+    // 32 核实测 batch 2 达约 3 秒/页；8 核档 batch 4 平衡每会话计划编译开销。
+    let cores = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1);
+    let rec_batch = if cores >= 16 {
+        2
+    } else if cores >= 8 {
+        4
+    } else {
+        8
+    };
     let engine = pure_onnx_ocr::OcrEngineBuilder::new()
         .det_model_path(&models.det)
         .rec_model_path(&models.rec)
         .dictionary_path(&models.dict)
+        .rec_batch_size(rec_batch)
         .build()
         .map_err(|e| format!("OCR 引擎构建失败: {e}"))?;
     let file = std::fs::read(path).map_err(|e| format!("无法读取 PDF {}: {e}", path.display()))?;
@@ -82,7 +95,9 @@ pub fn ocr_pages(
         let Some(page) = pages.get((no - 1) as usize) else {
             continue;
         };
-        eprintln!("reader: OCR 兜底第 {no} 页（mobile 模型约 19-42 秒/页，掉字率见 S006）…");
+        eprintln!(
+            "reader: OCR 兜底第 {no} 页（mobile 模型有掉字；P0017 并行优化后多核约 3-10 秒/页）…"
+        );
         let pixmap = render(page, &RenderCache::new(), &Default::default(), &settings);
         let png = pixmap
             .into_png()

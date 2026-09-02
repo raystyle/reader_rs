@@ -84,7 +84,7 @@ enum Commands {
         /// 裁剪 JSON data 的点路径（如 hits[].text）；仅 --format json 下可用
         #[arg(long)]
         filter: Option<String>,
-        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF 单文件；首用下载约 20.5MB 模型，约 19-42 秒/页）
+        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF 单文件；首用下载约 20.5MB 模型，多核并行约 3-10 秒/页）
         #[arg(long)]
         ocr: bool,
         /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）
@@ -119,7 +119,7 @@ enum Commands {
         /// 最多输出 M 个单元
         #[arg(long)]
         limit: Option<usize>,
-        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF；首用下载约 20.5MB 模型，约 19-42 秒/页）
+        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF；首用下载约 20.5MB 模型，多核并行约 3-10 秒/页）
         #[arg(long)]
         ocr: bool,
         /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）

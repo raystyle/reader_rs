@@ -241,6 +241,18 @@ impl RecPreProcessor {
         Self { config }
     }
 
+    /// 单区域的目标宽度（纵横比乘目标高度，clamp 到 [1, max_width]）。
+    /// P0017 宽度分组分批用（engine 按此排序分组）。
+    pub fn target_width_of(&self, region: &RecTextRegion) -> u32 {
+        let aspect_ratio = region.width as f32 / region.height.max(1) as f32;
+        (aspect_ratio * self.config.target_height as f32)
+            .round()
+            .clamp(1.0, self.config.max_width as f32) as u32
+    }
+
+    /// 宽度桶化粒度（tract 按 (batch, width) 缓存可运行计划，桶化限形状数量）。
+    pub const WIDTH_BUCKET: u32 = 320;
+
     pub fn process(
         &self,
         image: &DynamicImage,
@@ -263,8 +275,24 @@ impl RecPreProcessor {
         let max_width = self.config.max_width;
         let batch_size = regions.len();
 
+        // P0017 性能：张量宽度按批内最长行动态取（上游原为定长 max_width，短行全量 padding
+        // 浪费数倍 rec 算力——SVTR 注意力对宽度近似平方级）。宽度向上取整到 WIDTH_BUCKET
+        // 桶（tract 按 (batch, width) 缓存可运行计划，桶化限制形状爆炸），再 clamp 上限。
+        // 调用方（engine RecognitionPipeline）已按目标宽度排序分组，批内行宽相近。
+        let mut target_widths = Vec::with_capacity(batch_size);
+        for region in regions {
+            target_widths.push(self.target_width_of(region));
+        }
+        let batch_width = target_widths
+            .iter()
+            .max()
+            .copied()
+            .unwrap_or(1)
+            .next_multiple_of(Self::WIDTH_BUCKET)
+            .clamp(Self::WIDTH_BUCKET, max_width);
+
         let mut batch =
-            Array4::<f32>::zeros((batch_size, 3, target_height as usize, max_width as usize));
+            Array4::<f32>::zeros((batch_size, 3, target_height as usize, batch_width as usize));
 
         for sample in 0..batch_size {
             for channel in 0..3 {
@@ -277,9 +305,10 @@ impl RecPreProcessor {
             }
         }
 
-        let mut valid_widths = Vec::with_capacity(batch_size);
 
-        for (index, region) in regions.iter().copied().enumerate() {
+        for (index, (region, &target_width)) in
+            regions.iter().copied().zip(target_widths.iter()).enumerate()
+        {
             if region.width == 0 || region.height == 0 {
                 return Err(RecPreProcessorError::ZeroArea { index });
             }
@@ -297,14 +326,6 @@ impl RecPreProcessor {
             }
 
             let cropped = image.crop_imm(region.x, region.y, region.width, region.height);
-            let aspect_ratio = region.width as f32 / region.height as f32;
-            let mut target_width = (aspect_ratio * target_height as f32)
-                .round()
-                .clamp(1.0, max_width as f32) as u32;
-            if target_width == 0 {
-                target_width = 1;
-            }
-
             let resized = cropped.resize_exact(target_width, target_height, FilterType::Lanczos3);
             let rgb_image = resized.to_rgb8();
 
@@ -323,14 +344,13 @@ impl RecPreProcessor {
                 }
             }
 
-            valid_widths.push(target_width);
         }
 
         let tensor: Tensor = batch.into_dyn().into();
         Ok(PreprocessedRecBatch {
             tensor,
-            valid_widths,
-            max_width,
+            valid_widths: target_widths,
+            max_width: batch_width,
         })
     }
 }

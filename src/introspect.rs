@@ -17,7 +17,7 @@ reader --llms — 本索引
 退出码: 0 成功或命中 / 1 无命中（仅 search） / 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）
 输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（超 200 行单元按行分片）；目录批量模式命中行前缀 路径:
 输出 json: {{\"ok\":bool,\"data\":...,\"meta\":{{command,duration_ms[,next_offset,cta]}}}}；--filter 点路径裁剪 data（如 hits[].text）
-不可靠页: 扫描件或编码问题页以 needs_ocr 提示（extract 节头后提示行，search 走 stderr）；--ocr 对 PDF 单文件兜底识别（首用下载约 20.5MB 模型，19-42 秒/页，mobile 模型有掉字；--offline 禁下载）
+不可靠页: 扫描件或编码问题页以 needs_ocr 提示（extract 节头后提示行，search 走 stderr）；--ocr 对 PDF 单文件兜底识别（首用下载约 20.5MB 模型，多核并行约 3-10 秒/页（P0017），mobile 模型有掉字；--offline 禁下载）
 "
     )
 }
