@@ -11,11 +11,11 @@ Reader 定位 Agent 原生（P0002），当前输出是行式标记文本。incu
 1. **不引为依赖，吸收设计**。incurs 本体信号弱：GitHub 1 star、2026-03 创建、0.5.x 早期版本；其设计源头 wevm/incur（TypeScript）有 605 stars 且活跃。按 R002 稳度四信号，0.5.x 加极低采用度不宜进生产依赖；设计模式自实现最小子集即可。[实证: 2026-08-31 gh repo view 两仓 + cargo info]
 2. **输出包膜是最值得吸收的一条**：每条命令返回 `ExecuteResult`（`Ok{ok,data,cta}` / `Error{ok,error,cta,exit_code}`），外层 `OutputEnvelope{result, meta}`，meta 带 command、duration、cta、next_offset。错误也是结构化数据而不只是 stderr 文案。[实证: docs.rs output 模块 0.5.3]
 3. **cta 与 next_offset 是 Agent 原生的精髓**：cta（call-to-action）在输出里直接给出下一步建议命令，Agent 可读着链式推进；next_offset 支撑大结果集分页。Reader 的大文档 extract 正需要这对原语。[实证: OutputMeta/CtaBlock 字段，docs.rs 0.5.3；价值判断为 [推断]]
-4. **多格式输出的默认是 TOON 不是 JSON**：`Format` 七变体（Toon/Json/Yaml/Markdown/Jsonl/Table/Csv），formatter 把 serde_json::Value 串行化到目标格式，默认 TOON（Token-Oriented Object Notation，面向 LLM 的省 token JSON 替代，toon-format 0.5.0，MIT）。配套 tokens feature 默认开（tiktoken-rs 计 token）——Agent 场景把上下文预算当一等公民。[实证: docs.rs formatter/output 与 cargo info 两 crate]
+4. **多格式输出的默认是 TOON 不是 JSON**：`Format` 七变体（Toon/Json/Yaml/Markdown/Jsonl/Table/Csv），formatter 把 serde_json::Value 串行化到目标格式，默认 TOON（Token-Oriented Object Notation，面向 LLM 的省 token JSON 替代，toon-format 0.5.0，MIT）。配套 tokens feature 默认开（tiktoken-rs 计 token）：Agent 场景把上下文预算当一等公民。[实证: docs.rs formatter/output 与 cargo info 两 crate]
 5. **agent 发现机制可整套借鉴**：skill 模块从命令树生成 SKILL.md（供 AI 编码 agent 发现 CLI），`--llms` 紧凑命令索引，按深度拆分多文件，SHA-256 哈希做过期检测。[实证: docs.rs skill 模块]
 6. **MCP 是命令树的投影不是另写服务**：mcp 模块把 CLI 叶子命令经 stdio 暴露为 MCP 工具（rmcp 实现），带 include/exclude 过滤；sync_mcp 反向把远端 MCP server 投影为本地命令。Reader 将来 `reader` 命令可直接成 MCP 工具。[实证: docs.rs mcp 模块]
 7. **help 分 router 与 leaf 两型**，节齐全（header/synopsis/arguments/options/examples/hints/subcommands/global options/env vars），examples 与 hints 是 agent 读帮助时的关键节。[实证: docs.rs help 模块]
-8. **OutputPolicy 区分受众**（All / AgentOnly），pager 只管人类输出——「机器可读与人读分路」有现成的类型级表达。[实证: docs.rs output/pager 模块]
+8. **OutputPolicy 区分受众**（All / AgentOnly），pager 只管人类输出：「机器可读与人读分路」有现成的类型级表达。[实证: docs.rs output/pager 模块]
 
 ## 现状或实测
 

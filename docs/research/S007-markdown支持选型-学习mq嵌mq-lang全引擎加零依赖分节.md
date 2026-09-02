@@ -8,7 +8,7 @@ Reader 格式面缺 .md（PDF 与 anydoc 家族之外的纯 markdown 文档）�
 
 ## 关键结论
 
-1. **.md 基础支持零新依赖落地**：`anydoc.rs` 的 `split_markdown`（按顶层 ATX 标题分节、代码围栏内不分节）加 `to_unit_bodies`（超 200 行切 part）原样适用于 .md 原文——读文件进同一函数即可，行为与 anydoc 家族完全同构（section/part 语义、`--pages`、分页全继承）。[实证: 2026-09-03 读 src\anydoc.rs 确认函数与格式无关]
+1. **.md 基础支持零新依赖落地**：`anydoc.rs` 的 `split_markdown`（按顶层 ATX 标题分节、代码围栏内不分节）加 `to_unit_bodies`（超 200 行切 part）原样适用于 .md 原文：读文件进同一函数即可，行为与 anydoc 家族完全同构（section/part 语义、`--pages`、分页全继承）。[实证: 2026-09-03 读 src\anydoc.rs 确认函数与格式无关]
 2. **结构化提取嵌 mq-lang 全引擎**：`reader query <文件> '<mq 表达式>'`。mq-lang 0.8.4（MIT）API 直给：`DefaultEngine` 加 `load_builtin_module` 加 `parse_markdown_input` 加 `eval`；非匹配节点产出空渲染，过滤空串即得干净结果。[实证: 2026-09-03 target\poc-mq 中文样本实测：`.h`/`.h2`/`.code`/`.link`/`.[] | select(contains("nmap"))` 全出正确 markdown 片段；语法错误出结构化 Error（miette）]
 3. **mq-markdown 不单独引入**：其 `.nodes` 是拍平序列（段落拆成 Text/Link/Strong、表格拆成 TableCell/TableAlign），对分节无增量价值（split_markdown 已够用），只随 mq-lang 传递进入。[实证: 2026-09-03 poc-mq nodes 模式输出]
 4. **依赖代价认账**：mq-lang 约 30 个正常依赖（ammonia、nom、miette、csv、yaml-rust2 等），全 MIT 系纯 Rust；对已经 32.9MB 的二进制增量有限。[实证: 2026-09-03 docs.rs 依赖清单；推断: 体积增量未实测]
@@ -22,7 +22,7 @@ Reader 格式面缺 .md（PDF 与 anydoc 家族之外的纯 markdown 文档）�
 | --- | --- | --- | --- |
 | mq-lang | 0.8.4，MIT，1.17 万下载 | harehare/mq 主仓内 crates/mq-lang，1023 星活跃 | 选中：query 子命令引擎 |
 | mq-markdown | 0.8.4，MIT，17.5 万下载 | 同上 crates/mq-markdown | 随 mq-lang 传递，不直用 |
-| 自研 md 分节 | — | — | 不新写：split_markdown 复用 |
+| 自研 md 分节 | 无 | 无 | 不新写：split_markdown 复用 |
 
 [实证: 2026-09-03 cargo info 加 gh api 逐条]
 

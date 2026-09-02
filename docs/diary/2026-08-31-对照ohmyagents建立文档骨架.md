@@ -33,7 +33,7 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 
 ## 补记：incurs 模块经验研究
 
-用户指定研究 incurs（wevm/incur 的 Rust 移植）。结论：库本体信号弱（1 star、0.5.x）不引为依赖，设计全盘可学——输出包膜（ExecuteResult/OutputEnvelope）、cta 与 next_offset 分页原语、TOON 默认格式与 token 计数、SKILL.md/--llms agent 发现、MCP 命令树投影、OutputPolicy 受众分路。落 S002，五条映射全部列为阶段 3 候选待立项。方法论收获：R002 的「选依赖 vs 选学习对象」分流第一次真实用上。
+用户指定研究 incurs（wevm/incur 的 Rust 移植）。结论：库本体信号弱（1 star、0.5.x）不引为依赖，设计全盘可学：输出包膜（ExecuteResult/OutputEnvelope）、cta 与 next_offset 分页原语、TOON 默认格式与 token 计数、SKILL.md/--llms agent 发现、MCP 命令树投影、OutputPolicy 受众分路。落 S002，五条映射全部列为阶段 3 候选待立项。方法论收获：R002 的「选依赖 vs 选学习对象」分流第一次真实用上。
 
 ## 补记：EPUB 支持达成
 
@@ -57,11 +57,11 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 
 ## 补记：P0005 立项
 
-用户点名阶段 2 立项。核实 pdf-inspector 1.17.0 本地源码：`extract_pages_markdown` 逐页返回 markdown 加 `needs_ocr` 信号（覆盖 GID 编码、编码问题、乱码、空提取），多栏阅读序与扫描件/编码页检出是同一条管线。关键裁决（用户定）：PDF 通道整体切 markdown 管线，不做双管线——search/extract 共享同一文本层，阶段 3 Markdown 导出顺带半达成；v0.1 输出行为变，CHANGELOG 将记破坏性变更。追加裁决（用户定）：文本质量只承诺英文与中文，落 R001 与 AGENTS 边界。
+用户点名阶段 2 立项。核实 pdf-inspector 1.17.0 本地源码：`extract_pages_markdown` 逐页返回 markdown 加 `needs_ocr` 信号（覆盖 GID 编码、编码问题、乱码、空提取），多栏阅读序与扫描件/编码页检出是同一条管线。关键裁决（用户定）：PDF 通道整体切 markdown 管线，不做双管线：search/extract 共享同一文本层，阶段 3 Markdown 导出顺带半达成；v0.1 输出行为变，CHANGELOG 将记破坏性变更。追加裁决（用户定）：文本质量只承诺英文与中文，落 R001 与 AGENTS 边界。
 
 ## 补记：P0005 当日达成
 
-管线切换一次过，22 测全绿（单元 5 加集成 17）。两栏测试 fixture 两轮定形：等距短网格被管线判成表格，读 `split_side_by_side` 阈值（items 至少 40、沟至少 30pt）后改 22 行变宽散文才触发栏检测——阈值门控行为先读实现再设计 fixture。真样本双验：O'Reilly 书 399 页 0.92s（基线 0.57s），24 个图像页全被 needs_ocr 命中，S001 两处粘连瑕疵修复，assert_cmd 25 行命中与旧记录一致；意外收获是 x-quake 论文为中文文档，标题摘要正文提取通顺、中文搜索命中正确，中文质量承诺当场实证。EPUB 37 章 0.083s 无回归。CHANGELOG 记破坏性变更（PDF 行带 markdown 语法）。
+管线切换一次过，22 测全绿（单元 5 加集成 17）。两栏测试 fixture 两轮定形：等距短网格被管线判成表格，读 `split_side_by_side` 阈值（items 至少 40、沟至少 30pt）后改 22 行变宽散文才触发栏检测：阈值门控行为先读实现再设计 fixture。真样本双验：O'Reilly 书 399 页 0.92s（基线 0.57s），24 个图像页全被 needs_ocr 命中，S001 两处粘连瑕疵修复，assert_cmd 25 行命中与旧记录一致；意外收获是 x-quake 论文为中文文档，标题摘要正文提取通顺、中文搜索命中正确，中文质量承诺当场实证。EPUB 37 章 0.083s 无回归。CHANGELOG 记破坏性变更（PDF 行带 markdown 语法）。
 
 ## 补记：P0006 立项
 
@@ -73,11 +73,11 @@ P0001 当日收官：`reader search` / `reader extract` 落地，reader/rr 双 b
 
 ## 补记：推送与 mac 接管
 
-用户指示推送后开发测试交 mac 接管。WSL 侧首推遇凭据缺口（https 无凭据），`gh auth setup-git` 接上即通——gh 已登录但 git 凭据助手未接，是 WSL 新环境的典型一步。推送 5 笔提交（P0005 立项至 P0006 收官），CI run 33389883062 三系统全绿（ubuntu 46s、macos 37s、windows 1m37s），P0005/P0006 代码跨平台验证闭环。mac 侧开工面：clone 后 `cargo build --release`，本地门禁三件加 rumdl 三件套；真样本不随仓库走，集成测试自造样本全覆盖。
+用户指示推送后开发测试交 mac 接管。WSL 侧首推遇凭据缺口（https 无凭据），`gh auth setup-git` 接上即通：gh 已登录但 git 凭据助手未接，是 WSL 新环境的典型一步。推送 5 笔提交（P0005 立项至 P0006 收官），CI run 33389883062 三系统全绿（ubuntu 46s、macos 37s、windows 1m37s），P0005/P0006 代码跨平台验证闭环。mac 侧开工面：clone 后 `cargo build --release`，本地门禁三件加 rumdl 三件套；真样本不随仓库走，集成测试自造样本全覆盖。
 
 ## 补记：mac 本地接管验收
 
-mac（arm64）本地门禁六件一次全绿 [实证]：fmt / clippy（冷缓存 13.6s）/ test --locked（34 测全过，单元 7 加集成 27，与 P0006 收官记录一致）加 rumdl 三件套（28 文件零告警、断链 0、括号标题 0）。开工首坑：接管时装的 rumdl 是 x86_64 资产，arm64 主机报 bad CPU type，换 aarch64-apple-darwin 后即通——记 M003（新分类 M103 开发环境安装错误），教训是换机装工具先验架构再进门禁。mac 侧接管由 CI 验证升级为本地实证。
+mac（arm64）本地门禁六件一次全绿 [实证]：fmt / clippy（冷缓存 13.6s）/ test --locked（34 测全过，单元 7 加集成 27，与 P0006 收官记录一致）加 rumdl 三件套（28 文件零告警、断链 0、括号标题 0）。开工首坑：接管时装的 rumdl 是 x86_64 资产，arm64 主机报 bad CPU type，换 aarch64-apple-darwin 后即通：记 M003（新分类 M103 开发环境安装错误），教训是换机装工具先验架构再进门禁。mac 侧接管由 CI 验证升级为本地实证。
 
 ## 补记：mac 与 Linux 实机验收通过
 
@@ -85,8 +85,8 @@ mac（arm64）本地门禁六件一次全绿 [实证]：fmt / clippy（冷缓存
 
 ## 补记：P0007 立项与达成
 
-用户核对 S002 落地进度，点名补齐 incurs 自省发现侧并要求命令集成 SKILL。落地三件：`reader --llms` 紧凑索引、`reader skill` 生成 SKILL.md（仓根提交）、help examples 节，零新依赖。关键设计：curated 文本加双漂移守卫——clap 命令树遍历断言旗标全覆盖（新参数漏登记当场红）、仓根 SKILL.md 与运行时输出逐字节一致；替代 incurs 的命令树自动生成加哈希过期检测，省一层生成器复杂度。裸 reader 语义保持（帮助走 stderr 退出 2）。39 测全绿（单元 7 加集成 32）。README 加「Agent 发现与 SKILL 安装」节。mac/Linux 实机验收同日由用户确认通过，P0004 验收边界由 CI 补齐为实机实证。
+用户核对 S002 落地进度，点名补齐 incurs 自省发现侧并要求命令集成 SKILL。落地三件：`reader --llms` 紧凑索引、`reader skill` 生成 SKILL.md（仓根提交）、help examples 节，零新依赖。关键设计：curated 文本加双漂移守卫：clap 命令树遍历断言旗标全覆盖（新参数漏登记当场红）、仓根 SKILL.md 与运行时输出逐字节一致；替代 incurs 的命令树自动生成加哈希过期检测，省一层生成器复杂度。裸 reader 语义保持（帮助走 stderr 退出 2）。39 测全绿（单元 7 加集成 32）。README 加「Agent 发现与 SKILL 安装」节。mac/Linux 实机验收同日由用户确认通过，P0004 验收边界由 CI 补齐为实机实证。
 
 ## 补记：v0.1.0 封版发布
 
-封版日即踩坑日：首发 run 三 job 绿、Intel mac job 永久 queued——macos-13 runner 已被 GitHub 退役，症状是永久排队而非报错（记 M004，开新分类 M104 CI 与发布流水线错误）。删半成品 release 与 tag，Intel 资产改 macos-latest 交叉编译（rust-toolchain targets 加目标即够），重打 tag 重发，run 33461625241 四 job 全绿、8 资产齐出（4 平台包加 4 个 .sha256）。本机验收：sha256 一致、reader 0.1.0、《Command-Line Rust》assert_cmd 搜索 25 行命中与 S001 基线一致。另自查改掉两个未爆雷：四 job 同名 sha256sums 并发上传会互相 clobber、上传 glob 会误匹配暂存目录。合并 mac 侧验收登记时 GOAL/diary 冲突两处，手工并保留两侧记录。P0008 达成，v0.1.0 成为首个发布。
+封版日即踩坑日：首发 run 三 job 绿、Intel mac job 永久 queued：macos-13 runner 已被 GitHub 退役，症状是永久排队而非报错（记 M004，开新分类 M104 CI 与发布流水线错误）。删半成品 release 与 tag，Intel 资产改 macos-latest 交叉编译（rust-toolchain targets 加目标即够），重打 tag 重发，run 33461625241 四 job 全绿、8 资产齐出（4 平台包加 4 个 .sha256）。本机验收：sha256 一致、reader 0.1.0、《Command-Line Rust》assert_cmd 搜索 25 行命中与 S001 基线一致。另自查改掉两个未爆雷：四 job 同名 sha256sums 并发上传会互相 clobber、上传 glob 会误匹配暂存目录。合并 mac 侧验收登记时 GOAL/diary 冲突两处，手工并保留两侧记录。P0008 达成，v0.1.0 成为首个发布。

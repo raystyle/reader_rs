@@ -1,6 +1,6 @@
 ---
 name: reader
-description: Agent 原生文档阅读、搜索和提取工具。从本地 PDF、markdown 与 Word / EPUB / ODT / RTF / Office / CSV 文档读文本层——按页或节读、按词或正则搜、按单元取、按 mq 表达式结构化提取。输出稳定可解析，grep 语义退出码。
+description: Agent 原生文档阅读、搜索和提取工具。从本地 PDF、markdown 与 Word / EPUB / ODT / RTF / Office / CSV 文档读文本层：按页或节读、按词或正则搜、按单元取、按 mq 表达式结构化提取。输出稳定可解析，grep 语义退出码。
 ---
 
 # Reader

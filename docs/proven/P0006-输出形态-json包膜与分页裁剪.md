@@ -69,11 +69,11 @@
 - 实际怎么做（与计划偏差、关键决策点）：
   - 按方案四件走完，一次过。clippy `too_many_arguments` 拦下 8 参 `run_search`，顺势把 format 加 filter 收成 `OutputOpts` 结构体而非 `#[allow]` 打洞。
   - 错误包膜收敛在 `run()` 的 `fail()` 出口：stderr 人读行恒出，json 形态 stdout 补包膜；命令内部只返回 `Err(String)`。
-  - 无命中语义分轨定型：`ok:true`（执行成功）加空 `hits`，退出码仍 1（grep 语义）——README 明示。
+  - 无命中语义分轨定型：`ok:true`（执行成功）加空 `hits`，退出码仍 1（grep 语义），README 明示。
 - 踩了什么坑 + 怎么解决：无 mistakes 级坑。两个认知点：serde_json 默认 `Map` 为 BTreeMap，`json!` 宏构造的对象键按字母序（语义无差，见经验）；`Vec<&T>` 迭代出 `&&T`，函数引用作 map 参数会型不匹配，闭包解一层。
 - 沉淀的经验：
-  - 包膜顶层用 typed struct（字段按声明序，`ok/data/meta` 恒定）；`data` 内部经 `json!` 落字母序无妨——字段顺序契约只对顶层有意义。
-  - filter 在包膜前裁剪 `data`，包膜恒在——消费者解析面唯一，被裁剪的只是 data 子树。
+  - 包膜顶层用 typed struct（字段按声明序，`ok/data/meta` 恒定）；`data` 内部经 `json!` 落字母序无妨：字段顺序契约只对顶层有意义。
+  - filter 在包膜前裁剪 `data`，包膜恒在：消费者解析面唯一，被裁剪的只是 data 子树。
   - serde_json 默认原样输出 UTF-8（中文不转 `\uXXXX`），对 Agent 读输出省 token。
   - 包膜 compact 单行（非 pretty），同为 token 经济。
 

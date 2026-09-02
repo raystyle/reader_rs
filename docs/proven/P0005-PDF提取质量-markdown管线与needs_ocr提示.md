@@ -12,7 +12,7 @@ PDF 通道现用朴素几何法重建行（`src\pdf.rs`：y 降序扫描加容�
 
 1. 多栏排版无栏检测，跨栏同行串成一行，阅读序错。
 2. 旁注与正文同 y 时粘连（URL 粘连、图片占位符粘连）。
-3. 扫描件页与编码问题页（CJK、GID 字体）无任何信号——Agent 拿到空提取或乱码只能猜。
+3. 扫描件页与编码问题页（CJK、GID 字体）无任何信号：Agent 拿到空提取或乱码只能猜。
 
 ROADMAP 阶段 2 立三项：多栏阅读序、问题页检出提示、大文档性能观察。
 
@@ -37,7 +37,7 @@ ROADMAP 阶段 2 立三项：多栏阅读序、问题页检出提示、大文档
 3. `src\lib.rs`：`run_extract` 页节标记后若 `needs_ocr` 为 `Some` 输出 `[needs_ocr: {原因}]`；`run_search` 在有命中输出前，对 `needs_ocr` 页 stderr 一条汇总警示（列页号）。
 4. 测试：lopdf 造两栏 PDF（左栏上下两句、右栏上下两句）断言阅读序为左上左下右上右下（期望值来自写入文本与坐标，独立来源）；造无文本页 PDF 断言 extract 输出 `[needs_ocr`；既有 20 测回归。
 
-依据：pdf-inspector 1.17.0 源码核实 [实证: 2026-08-31 本地 registry 源码]——`PagesExtractionResult{ pages: Vec<PageMarkdown>, pages_with_columns, pages_needing_ocr, ocr_reasons_by_page, is_complex }`；`PageMarkdown{ page: 0 基, markdown, needs_ocr, ocr_reason }`，其 `needs_ocr` 文档明言覆盖 GID 编码字体、编码问题、乱码、空提取；`extract_pages_markdown_mem` 内部计算字体统计与布局复杂度，页过滤不影响阈值一致性。
+依据：pdf-inspector 1.17.0 源码核实 [实证: 2026-08-31 本地 registry 源码]：`PagesExtractionResult{ pages: Vec<PageMarkdown>, pages_with_columns, pages_needing_ocr, ocr_reasons_by_page, is_complex }`；`PageMarkdown{ page: 0 基, markdown, needs_ocr, ocr_reason }`，其 `needs_ocr` 文档明言覆盖 GID 编码字体、编码问题、乱码、空提取；`extract_pages_markdown_mem` 内部计算字体统计与布局复杂度，页过滤不影响阈值一致性。
 
 ## 备选方案
 
@@ -70,13 +70,13 @@ ROADMAP 阶段 2 立三项：多栏阅读序、问题页检出提示、大文档
 
 - 实际怎么做（与计划偏差、关键决策点）：
   - 管线切换一次过；既有三个行级断言按预案改锚稳定字段（`页:行:` 前缀加同行文本），语义未降级。
-  - 两栏测试 fixture 两轮才触发栏检测：第一版 3 乘 2 等距网格被管线判成 markdown 表格（等宽等距网格本就是表）；读 `split_side_by_side` 源码阈值后重设计——每栏 22 行变宽散文、栏间沟约 90pt、两栏 y 网格错开 5pt（阈值：items 至少 40、沟至少 30pt、两侧各至少 20% 项、无跨界项），一次命中。
+  - 两栏测试 fixture 两轮才触发栏检测：第一版 3 乘 2 等距网格被管线判成 markdown 表格（等宽等距网格本就是表）；读 `split_side_by_side` 源码阈值后重设计：每栏 22 行变宽散文、栏间沟约 90pt、两栏 y 网格错开 5pt（阈值：items 至少 40、沟至少 30pt、两侧各至少 20% 项、无跨界项），一次命中。
   - needs_ocr 两路径（extract 提示行、search stderr 警示）一次成形，真实样本即中。
 - 踩了什么坑 + 怎么解决：无新 mistakes 级坑（测试借用期 E0716/E0597 属常规修正）。fixture 被判表格不算坑，是对管线行为的认知更新，已写进测试注释。
 - 沉淀的经验：
   - 阈值门控行为的测试先读实现阈值再设计 fixture，比盲试快；「造两栏」不足以触发检测器，等距短网格反而进表格通道。
   - `needs_ocr` 真实有效：390 页书 24 个图像页（封面、章扉）全部命中；中文论文封面页 reason 为 scanned。Agent 拿到的是信号而非静默空页。
-  - 全页分节补齐：旧法只给有文本项的页建节（390 节），新管线逐页出节（399 节），扫描页不再从页码序列里缺席——对 Agent 的页定位是净改善。
+  - 全页分节补齐：旧法只给有文本项的页建节（390 节），新管线逐页出节（399 节），扫描页不再从页码序列里缺席，对 Agent 的页定位是净改善。
   - markdown 管线对整页单行会加 `##` 标题装饰；行级断言别锚装饰前缀，锚 `页:行:` 与内容本身。
   - 性能：布局分析有成本（399 页 0.92s 对 S001 基线 0.57s，约 1.6 倍），质量换时间，在验收带内。
 

@@ -75,7 +75,7 @@ Reader 现支持 .pdf / .epub，要评估 Word 文档读取。问题分两层：
 
 > 2026-09-01 同日。用户裁定**大重构选 anydoc**，本文「关键结论 1（docx 自解）」与「结论 5（anydoc 不采用）」据此作废；结论 2（office_oxide 保真硬伤）与结论 4（cfb 只到容器层）维持。补测证据：
 
-- **保真**：同一 fixture 上 anydoc 实体全对（`a & b 中文`）、AlternateContent 取一份、表格出 GFM 管道表（`| 表头1 | 表头2 |` 加 `| --- |`）、`w:br` 出 `\` 硬换行——office_oxide 丢实体的题它全对。[实证: 2026-09-01 target\poc-docx 路线 C]
+- **保真**：同一 fixture 上 anydoc 实体全对（`a & b 中文`）、AlternateContent 取一份、表格出 GFM 管道表（`| 表头1 | 表头2 |` 加 `| --- |`）、`w:br` 出 `\` 硬换行。office_oxide 丢实体的题它全对。[实证: 2026-09-01 target\poc-docx 路线 C]
 - **legacy .doc 直读**：Word COM 现造真二进制，中英文与 `&` 全对，进块级模型（1 Paragraph）。[实证: 同上]
 - **真样本 docx**：27 行与自解、office_oxide 三方一致；块级模型另给 14 标题、42 段落、29 资产的结构信息。[实证: 同上，Desktop 测试V2.docx]
 - **API 形态**：`to_markdown(path) -> String` 整篇 GFM；`to_document(bytes, format)` 块级模型（`Block::Heading/Paragraph/List/Table/BlockQuote/CodeBlock/Math` 加 notes/assets），**PDF 不支持 to_document**，其 PDF 路径直连 pdf-inspector 出整篇串、无页界、扫描页整篇报 `NeedsOcr`。[实证: 2026-09-01 源码 gh api src\lib.rs 与 src\formats\pdf.rs 加本机 PDF 实测]

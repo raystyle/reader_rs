@@ -21,7 +21,7 @@ reader 已有五目标 release 资产（v0.1.0 起），用户点名参考 ohmye
 
 ## 方案
 
-新模块 `src\selfupdate.rs`：`asset_target`（cfg 五目标映射 release.yml 命名）→ fetch latest（ureq 加 GH_TOKEN，403 回退 gh api）→ 版本三元组判新 → 下载加 digest 校验 → 解包（Windows zip crate、其余 tar 加 flate2 1.x rust_backend）取 reader/rr → staged 加 rename 替换自身与兄弟。`lib.rs` 挂 `self` 子命令组，stdout 稳定行 `self_update: current <v>` / `self_update: updated <旧> -> <新>` 加 `path:` 行，出错退出 2。
+新模块 `src\selfupdate.rs`：`asset_target`（cfg 五目标映射 release.yml 命名）再 fetch latest（ureq 加 GH_TOKEN，403 回退 gh api）再版本三元组判新，再下载加 digest 校验，再解包（Windows zip crate、其余 tar 加 flate2 1.x rust_backend）取 reader/rr，最后 staged 加 rename 替换自身与兄弟。`lib.rs` 挂 `self` 子命令组，stdout 稳定行 `self_update: current <v>` / `self_update: updated <旧> -> <新>` 加 `path:` 行，出错退出 2。
 
 ## 备选方案
 

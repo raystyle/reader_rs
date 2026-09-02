@@ -9,7 +9,7 @@
 
 - 机器：arm64，macOS 26.5.2；`~/reader_rs` 已 pull 到 154df2b。
 - 工具：cargo 1.97.0、uv、rumdl 0.2.62（rumdl 架构坑 M003 已解，可跑）。
-- 样本：`~/Pcap流量分析智能体功能参数和指标项.docx`（无标题参数表 → part 单元预期）已 SCP 就位。
+- 样本：`~/Pcap流量分析智能体功能参数和指标项.docx`（无标题参数表对应 part 单元预期）已 SCP 就位。
 
 mac 侧开工自查：
 
@@ -20,7 +20,7 @@ cargo --version && uv --version && rumdl --version   # rumdl 先跑通再进门�
 
 ## 二、门禁三件
 
-> 与 CI 同口径。预期 **5 套 result ok，15 单元 + 44 集成**（44 含 M007 回归测 `sigpipe_on_closed_stdout_kills_quietly`——`cfg(unix)` 在 macOS 生效，是 M007 修复面在本机的第一验点）[实证: Linux 与 CI 双侧同数，2026-09-01]。M006：命令不接 `| tail` 之类管道。
+> 与 CI 同口径。预期 **5 套 result ok，15 单元 + 44 集成**（44 含 M007 回归测 `sigpipe_on_closed_stdout_kills_quietly`：`cfg(unix)` 在 macOS 生效，是 M007 修复面在本机的第一验点）[实证: Linux 与 CI 双侧同数，2026-09-01]。M006：命令不接 `| tail` 之类管道。
 
 ```bash
 cargo fmt --all -- --check
@@ -79,4 +79,4 @@ file target/x86_64-apple-darwin/release/reader    # 预期 Mach-O 64-bit executa
 
 ## 验收记录
 
-- **2026-09-01，mac 接管机（arm64 macOS 26.5.2，cargo 1.97.0 / uv 0.12.6 / rumdl 0.2.62），仓 1ce7656**：前置三件齐（pull --ff-only 到位即 154df2b 加 R005 登记一笔，rumdl 可跑 M003 无扰）。门禁三件：fmt 0 diff、clippy 0 告警（仅 main.rs 双 bin 目标常规提示）、test **15 单元 + 44 集成**全绿——`sigpipe_on_closed_stdout_kills_quietly` 在 macOS 实跑 ok，M007 修复面第一验点过（`cfg(unix)` 生效）。文档门禁三件：rumdl 0 告警（43 文件）、断链 0、标题括号 0。真样本五路：O'Reilly PDF 399 页头（exit 0）、无标题参数表 docx `== part 1 ==`、legacy.doc part 头与中文 `&` 保真、批量目录递归命中加 json `hits[].file` 裁剪、负例 exit 1 与 2——全过。**M007 现场验**：`| head -3` 截断 **141 静默**，stderr 仅 209 字节 needs_ocr 设计提示（该 PDF 23 页扫描页触发），无 panicked 与 Broken pipe，与 Linux 侧行为对账一致。交叉预建：`x86_64-apple-darwin` release --locked exit 0，`file` 判形 Mach-O 64-bit executable x86_64；本机 Rosetta 2 缺席（oahd 无）不可直跑，按清单口径以 file 判形为准。**结论：mac 第三平台接管开发就位，P0011 / P0012 / M007 对账闭环（Windows 开发、Linux 与 mac 实机三面）；v0.2.1 tag 可发，待用户确认** [实证: 2026-09-01 本机各节退出码]。
+- **2026-09-01，mac 接管机（arm64 macOS 26.5.2，cargo 1.97.0 / uv 0.12.6 / rumdl 0.2.62），仓 1ce7656**：前置三件齐（pull --ff-only 到位即 154df2b 加 R005 登记一笔，rumdl 可跑 M003 无扰）。门禁三件：fmt 0 diff、clippy 0 告警（仅 main.rs 双 bin 目标常规提示）、test **15 单元 + 44 集成**全绿：`sigpipe_on_closed_stdout_kills_quietly` 在 macOS 实跑 ok，M007 修复面第一验点过（`cfg(unix)` 生效）。文档门禁三件：rumdl 0 告警（43 文件）、断链 0、标题括号 0。真样本五路：O'Reilly PDF 399 页头（exit 0）、无标题参数表 docx `== part 1 ==`、legacy.doc part 头与中文 `&` 保真、批量目录递归命中加 json `hits[].file` 裁剪、负例 exit 1 与 2：全过。**M007 现场验**：`| head -3` 截断 **141 静默**，stderr 仅 209 字节 needs_ocr 设计提示（该 PDF 23 页扫描页触发），无 panicked 与 Broken pipe，与 Linux 侧行为对账一致。交叉预建：`x86_64-apple-darwin` release --locked exit 0，`file` 判形 Mach-O 64-bit executable x86_64；本机 Rosetta 2 缺席（oahd 无）不可直跑，按清单口径以 file 判形为准。**结论：mac 第三平台接管开发就位，P0011 / P0012 / M007 对账闭环（Windows 开发、Linux 与 mac 实机三面）；v0.2.1 tag 可发，待用户确认** [实证: 2026-09-01 本机各节退出码]。

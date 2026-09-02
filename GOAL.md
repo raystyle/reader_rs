@@ -1,6 +1,6 @@
 # GOAL：任务目标管理
 
-> 角色：**工作任务管理**，四个部分——**起点**、**锚点**、**进程**、**历史**。随工作实时更新。
+> 角色：**工作任务管理**，四个部分：**起点**、**锚点**、**进程**、**历史**。随工作实时更新。
 > 与其它文档分工：`ROADMAP.md`=阶段路线；`CHANGELOG.md`=版本成果；`docs\diary\YYYY-MM-DD-*.md`=项目日记；`docs\proven\PNNNN-*.md`=方案与过程经验；`TODO.md`=进度清单；`PLAN.md`=实施指导。
 
 ## 起点
@@ -25,12 +25,12 @@
 | 2026-09-03 | **v0.3.0 发布**：封版 tag 触发 release 五 job 全绿（musl 首验 mq-lang/tract/hayro 过）、10 资产齐；windows 资产 .sha256 官方校验 OK、解包 `reader 0.3.0` 冒烟过、发行件 self update 报已最新；本机与 CI 二进制 sha 不同（构建机差异，P0013 时的一致性不可复现） |
 | 2026-09-03 | 全平台收口：推送至 8cf02e3，CI 双 run 三系统全绿；lan-mac（arm64）与 lan-linux（12 核）实机门禁加 OCR 真样本双过（mac 5.2s/2 页、linux 9.7s/2 页，全进 5-10s 档）；lan-linux 修两坑（1.97 工具链 ICE 换 stable 1.98、registry 损坏缓存清除） |
 | 2026-09-03 | **P0017 达成**：rec 动态宽度加桶化加宽度分组分批加组间并行（每 worker 独立会话）；batch 按核数自适应；质量持平且部分掉字修复；SKILL 重构（用户裁定常用例子加渐进引导） |
-| 2026-09-03 | P0017 立项：OCR 性能剖析——det 仅 0.73s、rec infer 19.6s 占绝对大头；引擎 run_with_metrics 拆三段计时 |
+| 2026-09-03 | P0017 立项：OCR 性能剖析：det 仅 0.73s、rec infer 19.6s 占绝对大头；引擎 run_with_metrics 拆三段计时 |
 | 2026-09-03 | CI 三系统全绿：P0014-P0016 推送后 run 33623776472 windows/ubuntu/macos 全过（全平台回归闭环）；SKILL 重构为常用例子加渐进引导（用户裁定） |
 | 2026-09-03 | **P0016 达成**：.md/.markdown 进 search/extract 格式面（零新依赖复用 split_markdown）；`query` 子命令嵌 mq-lang 全引擎全格式面；批量目录搜索自动覆盖 .md；README/AGENTS/INDEX/CHANGELOG 同步 |
-| 2026-09-03 | **S007 达成**：mq 双通道核实加 PoC 实测（`.h`/`.code`/select 组合中文样本全对，miette 结构化报错）；裁决——.md 零新依赖复用 split_markdown，query 嵌 mq-lang；mq-markdown 不直用（拍平序列无增量）；踩坑 docs.rs 示例过时（RuntimeValue 改名） |
+| 2026-09-03 | **S007 达成**：mq 双通道核实加 PoC 实测（`.h`/`.code`/select 组合中文样本全对，miette 结构化报错）；裁决：.md 零新依赖复用 split_markdown，query 嵌 mq-lang；mq-markdown 不直用（拍平序列无增量）；踩坑 docs.rs 示例过时（RuntimeValue 改名） |
 | 2026-09-03 | S007 立项：用户点名学习 mq 加 markdown 搜索与结构化提取；双通道核实 mq（MIT、1023 星、活跃），mq-markdown 0.8.4 轻量纯 Rust、mq-lang 0.8.4 约 30 依赖全引擎；anydoc.rs 的 split_markdown 可零新依赖复用给 .md 分节 |
-| 2026-09-03 | **P0015 达成**：self update 落地（19 单元加 47 集成全绿）；临时目录 `--force` 端到端实测——下载加 digest 校验加解包加双名替换，换上件 sha256 与官方 v0.2.1 资产逐一一致；M012 沉淀（flate2 0.2 无 rust_backend，钉 1.x） |
+| 2026-09-03 | **P0015 达成**：self update 落地（19 单元加 47 集成全绿）；临时目录 `--force` 端到端实测：下载加 digest 校验加解包加双名替换，换上件 sha256 与官方 v0.2.1 资产逐一一致；M012 沉淀（flate2 0.2 无 rust_backend，钉 1.x） |
 | 2026-09-03 | **P0014 达成**：`--ocr` 兜底落地（16 单元加 46 集成全绿）；真样本两页出正文、首用下载全流程实测；三坑沉淀 M009-M011（ureq 10MB 上限、vendor println 污染 stdout、OcrEngine 非 Send/Sync）；stripped 哈希改钉 prost 输出；二进制 7.3MB 到 32.9MB |
 | 2026-09-02 | **S006 达成**：内嵌 OCR 双通道普查九候选，纯 Rust 管线（hayro 0.7 渲染加 pure-onnx-ocr 0.1 跑 PP-OCRv5 mobile 20.5MB）真样本端到端实证；ocrs 拉丁限定出局、RapidOCR 系全绑 ort 破边界；两坑沉淀（tract value_info 剥离、rec max_width 硬编码 320） |
 | 2026-09-01 | **v0.2.1 发布**：CI 绿后打 tag（M005 流程修正版）；Release 五 job 首跑全绿（musl 一次过）、10 资产齐；windows 与 musl 双 sha256 一致、`reader 0.2.1` 冒烟过；P0013 收官，三项目标全闭环（封版中记 M008：Git Bash 落出 nul 保留名文件） |
@@ -62,7 +62,7 @@
 
 > 当前目标的进程：只记录当前这一个目标的进行状态。
 
-- 当前目标（已达成）：P0017 OCR 性能优化——见锚点与 P0017 归档。
+- 当前目标（已达成）：P0017 OCR 性能优化，见锚点与 P0017 归档。
 
 ## 历史
 

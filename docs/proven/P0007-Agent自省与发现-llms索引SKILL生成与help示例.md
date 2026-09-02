@@ -8,7 +8,7 @@
 
 ## 背景与问题
 
-P0006 已吸收 incurs 输出契约侧（包膜、cta、分页、filter），但自省发现侧一条未做：Agent 拿到 `reader` 二进制后无法自助发现能力——`--llms` 紧凑索引、SKILL.md 生成、help 的 examples 节都缺。用户点名补齐，并要求命令集成 SKILL。
+P0006 已吸收 incurs 输出契约侧（包膜、cta、分页、filter），但自省发现侧一条未做：Agent 拿到 `reader` 二进制后无法自助发现能力：`--llms` 紧凑索引、SKILL.md 生成、help 的 examples 节都缺。用户点名补齐，并要求命令集成 SKILL。
 
 ## 目标与非目标
 
@@ -52,7 +52,7 @@ P0006 已吸收 incurs 输出契约侧（包膜、cta、分页、filter），但
 
 ## 实施过程与经验
 
-- 实际怎么做：按步骤走完，一处计划外改动——`command` 改 `Option<Commands>` 后裸 `reader` 不再由 clap 自动报错，补 None 分支手写「帮助走 stderr、退出 2」，保持原语义（`dies_no_args` 回归不破）。
+- 实际怎么做：按步骤走完，一处计划外改动：`command` 改 `Option<Commands>` 后裸 `reader` 不再由 clap 自动报错，补 None 分支手写「帮助走 stderr、退出 2」，保持原语义（`dies_no_args` 回归不破）。
 - 踩了什么坑 + 怎么解决：`Some(Commands::Search { ... })` 嵌套 struct 模式漏右括号，编译器报 mismatched delimiter，补上 `})` 即过；无新坑入 mistakes。
 - 沉淀的经验：
   - curated 文本加「clap 命令树遍历断言」是防文档漂移的便宜组合：文本可以写 clap 不知道的语义（退出码、输出契约），而旗标全覆盖由命令树反向兜底，新增参数漏登记当场红。
