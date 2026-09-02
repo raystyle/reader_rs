@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-03
+
+> 能力面三连加性能翻身：OCR 兜底（P0014）、self update（P0015）、markdown 与 mq query（P0016）、OCR 提速进 5-10 秒/页档（P0017）。三平台 CI 加 lan-mac/lan-linux 实机双路回归全绿。
+
 - **OCR 性能优化（P0017）**：`--ocr` 单页 20.5s 提速到约 3-5.5s（多核）——rec 张量动态宽度加 320 桶化、按行宽分组分批、组间并行（每 worker 独立推理会话），rec_batch_size 按核数自适应；正文识别质量持平，水印碎片行由空串变为少量噪声短行（needs_ocr 域内）。
 - **SKILL 重构**：SKILL.md 改为常用例子加输出契约加渐进引导（`--llms` / `<子命令> --help`）三节式；全量参数面由 `--help` 与 README 承载。
 - **markdown 支持与 mq 结构化提取（P0016）**：`.md` / `.markdown` 进 search/extract 格式面（原文直读进分节管线，节语义与 anydoc 家族一致，批量目录搜索自动覆盖）；新子命令 `reader query <文件> <mq表达式>` 嵌 mq-lang 全引擎（学习 harehare/mq），全格式面转 markdown 后结构化提取（`.h2` / `.code` / `.link` / `.table` / select 管道），退出码 0/1/2 同 search，json 形态 `results[]` 加 `count`。
