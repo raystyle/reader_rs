@@ -23,7 +23,7 @@ import os
 import re
 import sys
 
-SKIP_DIRS = ('.git', 'target', 'node_modules', '.tools')
+SKIP_DIRS = ('.git', 'target', 'node_modules', '.tools', 'vendor')
 HEADING = re.compile(r'^(#{1,6}) (.*)$')
 BRACKET = re.compile(r'[（）()]')
 FENCE = re.compile(r'^\s*(```|~~~)')

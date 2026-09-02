@@ -28,7 +28,7 @@ REF_PAT = re.compile(
     r'(?:docs[\\/][\w\\/\-一-鿿\.]+?\.md'
     r'|(?:INDEX|GOAL|PLAN|TODO|AGENTS|README|CHANGELOG|ROADMAP|CLAUDE|template)\.md)'
 )
-SKIP_DIRS = ('.git', 'target', 'node_modules', '.tools')
+SKIP_DIRS = ('.git', 'target', 'node_modules', '.tools', 'vendor')
 
 
 def load_allow(path):

@@ -11,7 +11,7 @@
 
 2. **边界**
    - 服务对象先 Agent 后人：输出稳定可解析（行式标记、grep 语义退出码 0/1/2）、单调用完成一件事、无交互无守护进程、错误走 stderr；机器可读优先于人类美观。
-   - 当前只读支持 PDF 与 anydoc 家族（Word 含 legacy .doc、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV），不做渲染、编辑、OCR（扫描件检出后提示，不识别）；其它格式按需另立项。
+   - 当前只读支持 PDF 与 anydoc 家族（Word 含 legacy .doc、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV），不做渲染、编辑；OCR 仅以 `--ocr` 兜底形式支持（仅 PDF 单文件 needs_ocr 页，hayro 渲染加 tract 推理 PP-OCRv5 mobile，P0014；默认不识别只提示）；其它格式按需另立项。
    - 文本质量只承诺英文与中文；其它语言不做质量承诺，不可靠页以 needs_ocr 提示兜底。
    - CLI 是唯一交互面；纯 Rust 单二进制，不外挂 pdfium 等二进制运行时。
    - Windows 优先验证；依赖均跨平台，不主动破坏其它平台。
@@ -83,15 +83,15 @@
 
 > 需求意图与操作方法的映射。显示名 Reader；仓库 `reader_rs`；CLI 二进制 `reader`（缩写 `rr`）。
 
-- **搜文本**：`reader search <文件|目录> <关键词>`（.pdf 及 anydoc 家族 .doc/.docx/.epub/.odt/.rtf/.ppt(x)/.xls(x)/.ods/.odp/.csv；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/节；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪；目录输入递归批量搜，命中行带路径前缀，`--pages` 不可用）
-- **提文本**：`reader extract <文件>`（`--pages` 限页/节、`-o` 写文件；按单元输出 `== page N ==`（PDF）/ `== section N ==`（其余，标题分节）分节；输出 markdown 形态（PDF 布局管线 / anydoc GFM），不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
+- **搜文本**：`reader search <文件|目录> <关键词>`（.pdf 及 anydoc 家族 .doc/.docx/.epub/.odt/.rtf/.ppt(x)/.xls(x)/.ods/.odp/.csv；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/节；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪；`--ocr` 对 PDF 单文件 needs_ocr 页兜底识别（首用下载约 20.5MB 模型进缓存目录，`--offline` 禁下载）；目录输入递归批量搜，命中行带路径前缀，`--pages` 与 `--ocr` 不可用）
+- **提文本**：`reader extract <文件>`（`--pages` 限页/节、`-o` 写文件；按单元输出 `== page N ==`（PDF）/ `== section N ==`（其余，标题分节）分节；输出 markdown 形态（PDF 布局管线 / anydoc GFM），不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--ocr`/`--offline` 同上对 PDF needs_ocr 页兜底；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
 - **agent 发现**：`reader --llms`（紧凑命令索引）、`reader skill`（生成 SKILL.md；仓根 `SKILL.md` 与运行时输出逐字节一致，测试守卫）
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`
 
-已落地：`search`（含目录批量）、`extract`、`skill`、`--llms`、超长单元 part 分片。其余能力（OCR、MCP）仍是候选方向，禁止假装已经可跑；TOON 已经 S005 实测裁定不引入（中文样本反而费 token 且 0.5.0 往返破损）。
+已落地：`search`（含目录批量）、`extract`、`skill`、`--llms`、超长单元 part 分片、`--ocr` OCR 兜底（仅 PDF 单文件 needs_ocr 页，P0014）。其余能力（MCP 等）仍是候选方向，禁止假装已经可跑；TOON 已经 S005 实测裁定不引入（中文样本反而费 token 且 0.5.0 往返破损）。
 
 ## 四、资源索引
 

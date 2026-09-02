@@ -4,14 +4,16 @@
 
 ## 当前目标
 
-S006 内嵌 OCR 选型研究（登记日 2026-09-02，触发：安全牛扫描 PDF 81 页全 needs_ocr）。**2026-09-02 已达成**：纯 Rust 管线（hayro 加 pure-onnx-ocr 跑 PP-OCRv5 mobile）真样本端到端实证可行；研究文档 `docs\research\S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` 落盘。OCR 落地实现（`--ocr` 兜底、模型下载缓存）待立项。
+P0014 OCR 落地（登记日 2026-09-03）。**2026-09-03 已达成**：`--ocr`/`--offline` 进 extract 与 search（仅 PDF 单文件 needs_ocr 页）；模型三件 ModelScope 下载加双套 SHA-256 钉死、进程内 prost strip；门禁与真样本回归全绿。过程与经验回填 `docs\proven\P0014-OCR兜底落地.md`。下一目标待用户点名（候选：阶段 3 余项 MCP/token 计数/pager/completions、分发面 crates.io/brew/scoop、OCR 质量升级 S006 待办 2）。
 
 ## 任务进度清单
 
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
-| 双通道候选普查 | 已完成 | crates.io 加 gh 核实九候选（ocrs、oar-ocr、paddle-ocr-rs、rapidocr-core、rusto-rs、franken_ocr、leptess、pure-onnx-ocr、hayro） | 2026-09-02 |
-| 边界裁决 | 已完成 | ocrs 拉丁限定出局；RapidOCR 系全绑 ort 或 MNN 破纯 Rust 边界 | 2026-09-02 |
-| PoC 实证 | 已完成 | hayro 渲染（588ms/页）加 tract 推理 PP-OCRv5 mobile（19 到 42s/页）；中文正文置信 0.9 以上 | 2026-09-02 |
-| 坑位沉淀 | 已完成 | tract value_info 剥离、rec max_width 320 硬编码、hayro 默认透明底、ppocr-rs 同名撞车 | 2026-09-02 |
-| S006 落盘与登记 | 已完成 | research 落文档；INDEX/GOAL/TODO/diary 同步；文档门禁待跑 | 2026-09-02 |
+| 立项登记 | 已完成 | GOAL/TODO/PLAN 三原语；模型 URL 与双套 SHA-256 钉死 | 2026-09-03 |
+| vendor pure-onnx-ocr | 已完成 | `vendor\pure-onnx-ocr\`（max_width 2560 加 println 转 eprintln 补丁）；patch 接入 | 2026-09-03 |
+| src\ocr.rs | 已完成 | 缓存目录加环境覆盖、三件下载校验、prost strip、hayro 渲染、引擎现建 | 2026-09-03 |
+| --ocr 接线 | 已完成 | extract 与 search 加 `--ocr`/`--offline`；目录加 `--ocr` 报错；OcrOpts 穿参 | 2026-09-03 |
+| 测试 | 已完成 | dies_ 负例两件加模型缓存门控冒烟；16 单元加 46 集成全绿 | 2026-09-03 |
+| 真样本回归 | 已完成 | 安全牛 PDF：无 `--ocr` 行为不变；`--ocr` 两页出正文；首用下载全流程实测 | 2026-09-03 |
+| 门禁与回填 | 已完成 | fmt/clippy/test 加 rumdl 三件全绿；AGENTS/INDEX/SKILL/diary/P0014/M009-M011/CHANGELOG 收口 | 2026-09-03 |
