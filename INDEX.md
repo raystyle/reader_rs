@@ -162,8 +162,8 @@ reader_rs/
 | M101 | `M101-文档门禁扫描错误.md` | rumdl、断链扫描、标题括号、豁免清单、门禁退出码被管道吞 | M001 M006 |
 | M102 | `M102-Windows路径与shell错误.md` | MSYS 路径、os error 3、引号、原生二进制、跨平台路径拼接、SIGPIPE 管道早退、cmd 风格重定向、重定向命中 target 旧产物与 CRLF | M002 M005 M007 M008 M014 |
 | M103 | `M103-开发环境安装错误.md` | 架构不配、bad CPU type、接管机装工具 | M003 |
-| M104 | `M104-CI与发布流水线错误.md` | runner 退役、上传竞态、资产命名 | M004 |
-| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端、Cargo.toml 节序吞键 | M009 M010 M011 M012 M013 |
+| M104 | `M104-CI与发布流水线错误.md` | runner 退役、上传竞态、资产命名、rclone 对 R2 单件 copyto 撞建桶 403 | M004 M015 |
+| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端、Cargo.toml 节序吞键、路径断言分隔符不跨平台 | M009 M010 M011 M012 M013 M016 |
 
 迭代规则：踩坑按当前最大号接编 MNNN 进对应分类文件；一行一事；同根因或同型坑可合并聚合进已有条目（保留最早编号与首踩日期）；反复踩落 `docs\research\`；新分类文件登记本节。
 

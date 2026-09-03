@@ -31,6 +31,7 @@ import datetime as dt
 import hashlib
 import json
 import re
+import shutil
 import sys
 import tempfile
 import time
@@ -179,6 +180,11 @@ def main() -> None:
 
     upload = work / "upload.sh"
     work_abs = work.resolve().as_posix()
+    # 单件上传不走 copyto:rclone 对 R2 的 copyto 会触发 HeadBucket 加 CreateBucket,
+    # 桶级 token 无建桶权即 403(实测);隔离目录加 copy 同效。
+    manifest_only = work / "r2" / "manifest-only"
+    manifest_only.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(r2_models / "models.manifest.json", manifest_only / "models.manifest.json")
     upload.write_text(
         "#!/usr/bin/env bash\n"
         "set -euo pipefail\n"
@@ -186,7 +192,7 @@ def main() -> None:
         f'rclone copy "{work_abs}/r2/models" R2:reader-dl/models \\\n'
         '  --exclude models.manifest.json \\\n'
         f'  --header-upload "{RCLONE_IMMUTABLE}"\n'
-        f'rclone copyto "{work_abs}/r2/models/models.manifest.json" R2:reader-dl/models/models.manifest.json \\\n'
+        f'rclone copy "{work_abs}/r2/manifest-only" R2:reader-dl/models \\\n'
         f'  --header-upload "{RCLONE_MANIFEST}"\n',
         encoding="utf-8",
     )

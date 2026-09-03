@@ -127,7 +127,10 @@ jobs:
           [ "${ok:-0}" = 1 ] || exit 1
       - name: latest.json 最后传(max-age=60)
         run: |
-          rclone copyto "$RUNNER_TEMP/latest.json" "R2:reader-dl/reader/latest.json" \
+          # 单件不走 copyto:rclone 对 R2 的 copyto 触发 HeadBucket 加 CreateBucket,桶级 token 403(实测)
+          mkdir "$RUNNER_TEMP/latest-only"
+          mv "$RUNNER_TEMP/latest.json" "$RUNNER_TEMP/latest-only/"
+          rclone copy "$RUNNER_TEMP/latest-only" "R2:reader-dl/reader" \
             --header-upload "Cache-Control: public, max-age=60"
       - name: 本 tag 钉回 latest(防遮蔽双保险)
         env:
