@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **v0.5.0 发布（D42 镜像分发）**：全平台门禁（Windows 七件、lan-mac / lan-linux 三件双绿、CI 三系统）后封版 7ae300b，tag 触发 release 六 job 绿、10 资产齐；镜像面全验（latest.json 广告 0.5.0 加 60s 头、资产 immutable、`releases/latest` 恒指 v\*、models-v6 恒 prerelease 18 资产）；**self update 镜像通道真升级 0.4.0 至 0.5.0 首验通过**；清单路径修订 `models/manifest.json` 落地（ISSUE 收口，旧路径对象已清）；M015 / M016 沉淀；待 ohmycloud 大陆侧验收回执后归档 P0019 |
 | 2026-09-03 | **D42 实现完成（待提交与 CI 演练）**：`src\mirror.rs` pin 表与三级回退、`ocr init / doctor / switch` 三子命令（档位三级，设置锚缓存兄弟位）、在线分支先 Offline 探测、selfupdate 镜像 latest.json 通道（真机验回退 GH 报 current）；CI 镜像腿（release.yml mirror job 加 mirror-models.yml，models-v6 恒 prerelease）；`.tools` 两脚本实测过；漂移守卫二层递归；门禁七件全绿；M014 沉淀；README / G006 / R008 / CHANGELOG / INDEX / AGENTS 对齐 |
 | 2026-09-03 | **D42 立项**：ISSUE #1 三问回执（预取入缓存目录、schema 照落地、minisign 首轮不上）获 ohmycloud 全采纳；方案经架构验证后批准开工（九项修正要点入 PLAN：models-v6 恒 prerelease 防 latest 遮蔽、doctor 只读不调 verify、switch 设置文件锚缓存兄弟位、在线分支先 Offline 探测、漂移守卫二层递归、HF 源仓无 LICENSE 从 apache.org 取、tree API 小件无比 sha256、dispatch 演练不 checkout tag、rclone 钉版本与 401 重试） |
 | 2026-09-03 | **v0.4.0 发布（D41 R008 首轮）**：三平台门禁加 OCR 端到端验收全绿后封版 8cdd52b，tag 触发 release 五 job 绿、10 资产齐；self update 0.3.0 至 0.4.0 真实升级路径首验通过；发现 D42（模型 HF 直连国内不可达，下版自维护分发）；README 第 4 轮（模型档位、来源与手动部署、致谢节） |
