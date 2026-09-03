@@ -5,6 +5,7 @@ pub mod anydoc;
 pub mod batch;
 pub mod document;
 pub mod introspect;
+pub mod mirror;
 pub mod ocr;
 pub mod output;
 pub mod pdf;
@@ -146,11 +147,16 @@ enum Commands {
         #[arg(long)]
         filter: Option<String>,
     },
-    /// 自升级（GitHub Releases 最新正式版，下载校验后替换自身与兄弟二进制）
+    /// 自升级（镜像 latest.json 优先，回退 GitHub Releases；校验后替换自身与兄弟二进制）
     #[command(name = "self")]
     SelfCmd {
         #[command(subcommand)]
         command: SelfCommands,
+    },
+    /// OCR 模型管理（init 下载、doctor 诊断、switch 切换档位；D42）
+    Ocr {
+        #[command(subcommand)]
+        command: OcrCommands,
     },
 }
 
@@ -161,6 +167,26 @@ enum SelfCommands {
         /// 版本相同也强制重装
         #[arg(long)]
         force: bool,
+    },
+}
+
+#[derive(Subcommand)]
+enum OcrCommands {
+    /// 下载/修复模型进缓存（镜像 到 HF 到 GitHub 三级回退；缺省档位取 env > switch 设置 > tiny）
+    Init {
+        /// 指定档位（tiny / small；缺省取当前档）
+        #[arg(long)]
+        size: Option<String>,
+        /// 只校验不下载（缓存件无效时报错，零网络）
+        #[arg(long)]
+        offline: bool,
+    },
+    /// 诊断本地 OCR 模型就位情况（只读；退出码 0 为当前档双包完整，1 为有缺损）
+    Doctor,
+    /// 切换模型档位并持久化（env READER_OCR_MODEL_SIZE 优先于本设置）
+    Switch {
+        /// 目标档位（tiny / small）
+        size: String,
     },
 }
 
@@ -211,6 +237,30 @@ pub fn run() -> i32 {
                 0
             }
             Err(err) => fail("self update", Format::Text, err),
+        },
+        Some(Commands::Ocr { command }) => match command {
+            OcrCommands::Init { size, offline } => {
+                let size_arg = match size.as_deref().map(ocr::parse_model_size) {
+                    Some(Ok(v)) => Some(v),
+                    Some(Err(e)) => return fail("ocr init", Format::Text, e),
+                    None => None,
+                };
+                match ocr::init_models(size_arg, offline) {
+                    Ok(out) => emit_ocr(out, 2),
+                    Err(err) => fail("ocr init", Format::Text, err),
+                }
+            }
+            OcrCommands::Doctor => match ocr::doctor_models() {
+                Ok(out) => emit_ocr(out, 1),
+                Err(err) => fail("ocr doctor", Format::Text, err),
+            },
+            OcrCommands::Switch { size } => match ocr::parse_model_size(&size) {
+                Ok(target) => match ocr::switch_model(target) {
+                    Ok(out) => emit_ocr(out, 2),
+                    Err(err) => fail("ocr switch", Format::Text, err),
+                },
+                Err(err) => fail("ocr switch", Format::Text, err),
+            },
         },
         Some(Commands::Search {
             file,
@@ -270,6 +320,19 @@ fn fail(command: &'static str, format: Format, err: String) -> i32 {
     }
     eprintln!("reader: {err}");
     2
+}
+
+/// ocr 三子命令输出出口：stdout 逐行打出稳定行；不健康按 `code_when_unhealthy`
+/// （init/switch 操作失败语义 2，doctor 诊断发现语义 1，D42 输出契约）。
+fn emit_ocr(out: ocr::OcrOutcome, code_when_unhealthy: i32) -> i32 {
+    for line in &out.lines {
+        println!("{line}");
+    }
+    if out.healthy {
+        0
+    } else {
+        code_when_unhealthy
+    }
 }
 
 /// 暴露 clap 命令树（tests 的旗标漂移守卫用；P0007）。

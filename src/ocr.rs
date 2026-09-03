@@ -1,12 +1,15 @@
-//! OCR 兜底管线（P0014 落地、P0018 换引擎）：needs_ocr 页经 hayro 渲染为位图，
+//! OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链）：needs_ocr 页经 hayro 渲染为位图，
 //! ppocr-rs 原生 CPU 内核跑 PP-OCRv6（S008 裁决 tiny 质量与速度双优；0.8 秒/页量级、
-//! S006 掉字点全修）。模型由 ppocr ModelStore 管理（HuggingFace 钉 rev 加 sha256、
-//! 缓存目录、offline 语义与 P0014 一致）。档位默认 tiny，`READER_OCR_MODEL_SIZE=small`
-//! 切 small（D29 A/B 对比与 D25 质量档评估用，未定 CLI 面）。
+//! S006 掉字点全修）。模型由 ppocr ModelStore 管理（缓存目录与 offline 语义与 P0014 一致）；
+//! D42 后首用下载走三级回退（镜像 到 HF 直连 到 GitHub Releases 模型 tag，`mirror` 模块），
+//! ppocr-rs 内嵌钉死值全量 sha256 校验是终检闸。档位 tiny / small：env
+//! `READER_OCR_MODEL_SIZE`（A/B 跑批器用，最高）> `ocr switch` 设置文件 > 默认 tiny；
+//! `ocr init` / `ocr doctor` / `ocr switch` 三子命令实现在本模块（D42 用户点名）。
 
+use crate::mirror::{self, FileState};
 use hayro::hayro_syntax::Pdf;
 use hayro::{render, RenderCache, RenderSettings};
-use ppocr_rs::{ModelAccess, ModelSize, ModelStore, OcrEngine, OcrOptions, RgbImage};
+use ppocr_rs::{ModelAccess, ModelKind, ModelSize, ModelStore, OcrEngine, OcrOptions, RgbImage};
 use std::path::{Path, PathBuf};
 
 /// 对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。
@@ -45,17 +48,42 @@ pub fn ocr_pages(
             options,
         )
     } else {
-        if store
-            .paths(ppocr_rs::ModelKind::Detector, size)
-            .is_ok_and(|p| !p.weights.is_file())
-        {
-            eprintln!(
-                "reader: 首用下载 OCR 模型（PP-OCRv6 {}）进 {} …",
-                size.as_str(),
-                dir.display()
-            );
+        // 缓存先零网络探测（Offline 解析：标记有效走快路径，标记缺走全量校验补标记）；
+        // 未就位才三级回退预取（镜像 到 HF 到 GitHub，D42），终检仍交回 Offline 解析；
+        // 链败回退 ppocr-rs 原生 HF 下载（自带 3 次重试，兜 pin 表漂移）。
+        match store.resolve_pair(size, size, ModelAccess::Offline) {
+            Ok(paths) => OcrEngine::load(
+                &paths.detector.weights,
+                &paths.recognizer.weights,
+                &paths.recognizer.inference,
+                options,
+            ),
+            Err(_) => {
+                eprintln!(
+                    "reader: 下载 OCR 模型（PP-OCRv6 {}，镜像优先）进 {} …",
+                    size.as_str(),
+                    dir.display()
+                );
+                let prefetched = prefetch_pair(&dir, size);
+                let resolved = if prefetched {
+                    store.resolve_pair(size, size, ModelAccess::Offline).ok()
+                } else {
+                    None
+                };
+                match resolved {
+                    Some(paths) => OcrEngine::load(
+                        &paths.detector.weights,
+                        &paths.recognizer.weights,
+                        &paths.recognizer.inference,
+                        options,
+                    ),
+                    None => {
+                        eprintln!("reader: 镜像链未凑齐模型，回退 HuggingFace 直连（ppocr-rs 原生）");
+                        OcrEngine::load_from_store(&store, options)
+                    }
+                }
+            }
         }
-        OcrEngine::load_from_store(&store, options)
     }
     .map_err(|e| format!("OCR 引擎构建失败: {e}"))?;
 
@@ -112,21 +140,270 @@ fn cache_dir() -> Result<PathBuf, String> {
     Ok(base.join("reader").join("models"))
 }
 
-/// 模型档位：`READER_OCR_MODEL_SIZE` 环境变量（tiny / small），默认 tiny（D29 A/B 用）。
-fn model_size() -> Result<ModelSize, String> {
-    match std::env::var("READER_OCR_MODEL_SIZE") {
-        Ok(v) => parse_model_size(&v),
-        Err(_) => Ok(ModelSize::Tiny),
+/// 档位设置文件：缓存目录的**兄弟位** `model-size`（缺省 `%LOCALAPPDATA%\reader\model-size`）。
+/// 锚在兄弟位是两个不变量：`READER_OCR_CACHE_DIR` 指临时目录的测试，设置文件也随临时
+/// 目录（不泄开发者真机档位，测试 hermetic）；`models\` 缓存可随时整删而档位偏好不丢。
+fn settings_path() -> Result<PathBuf, String> {
+    Ok(settings_path_for(&cache_dir()?))
+}
+
+/// `settings_path` 的纯函数核(单测用):缓存目录的兄弟位文件名。
+fn settings_path_for(cache: &Path) -> PathBuf {
+    cache.with_file_name("model-size")
+}
+
+/// 档位解析的三级合成（纯函数，单测用）：env（A/B 跑批器通道，最高）> 设置文件 > Tiny；
+/// 设置文件内容非法时回退 Tiny（读侧 caller 负责提示）。
+fn resolve_size(
+    env: Option<&str>,
+    file: Option<&str>,
+) -> Result<(ModelSize, &'static str), String> {
+    if let Some(v) = env {
+        return parse_model_size(v).map(|s| (s, "env"));
+    }
+    match file.map(str::trim).filter(|t| !t.is_empty()) {
+        Some(t) => match parse_model_size(t) {
+            Ok(s) => Ok((s, "设置")),
+            Err(_) => Ok((ModelSize::Tiny, "默认")),
+        },
+        None => Ok((ModelSize::Tiny, "默认")),
     }
 }
 
-fn parse_model_size(v: &str) -> Result<ModelSize, String> {
+/// 模型档位（带来源标签，doctor 报告用）。
+fn model_size_with_source() -> Result<(ModelSize, &'static str), String> {
+    let env = std::env::var("READER_OCR_MODEL_SIZE").ok();
+    let file = std::fs::read_to_string(settings_path()?)
+        .ok()
+        .filter(|_| env.is_none());
+    if env.is_none() {
+        if let Some(text) = &file {
+            if parse_model_size(text.trim()).is_err() {
+                eprintln!(
+                    "reader: 档位设置文件 {} 内容非法，本次按默认 tiny",
+                    settings_path()?.display()
+                );
+            }
+        }
+    }
+    resolve_size(env.as_deref(), file.as_deref())
+}
+
+/// 模型档位。
+fn model_size() -> Result<ModelSize, String> {
+    model_size_with_source().map(|(s, _)| s)
+}
+
+/// 设置文件状态（doctor 报告行）。
+fn settings_state() -> Result<(&'static str, PathBuf), String> {
+    let path = settings_path()?;
+    let state = match std::fs::read_to_string(&path) {
+        Ok(text) => match parse_model_size(text.trim()) {
+            Ok(ModelSize::Tiny) => "tiny",
+            Ok(ModelSize::Small) => "small",
+            Ok(ModelSize::Medium) => "invalid",
+            Err(_) => "invalid",
+        },
+        Err(_) => "absent",
+    };
+    Ok((state, path))
+}
+
+/// 三级回退预取双包（镜像 到 HF 到 GitHub）：逐件只补无效件（有效跳过），
+/// 全部就位返回真。下载细节与校验在 `mirror` 模块。
+fn prefetch_pair(dir: &Path, size: ModelSize) -> bool {
+    let mut all_ok = true;
+    for kind in [ModelKind::Detector, ModelKind::Recognizer] {
+        let Ok(pin) = mirror::package_pin(size, kind) else {
+            return false;
+        };
+        let pkg_dir = mirror::package_dir(dir, pin);
+        let _ = std::fs::create_dir_all(&pkg_dir);
+        for file in pin.files {
+            if matches!(mirror::assess_file(&pkg_dir, file), FileState::Ok) {
+                continue;
+            }
+            if mirror::download_file(pin, file, &pkg_dir.join(file.name)).is_err() {
+                all_ok = false;
+            }
+        }
+    }
+    all_ok
+}
+
+/// ocr 三子命令的输出结果：`lines` 是 stdout 稳定行（ASCII token 前置，lib.rs 逐行打出），
+/// `healthy` 决定退出码（doctor：当前档双包完整；init：全包就位；switch：恒真）。
+pub struct OcrOutcome {
+    pub lines: Vec<String>,
+    pub healthy: bool,
+}
+
+/// `ocr init`：显式下载 / 修复档位双包进缓存。逐件有效跳过、缺损重下（三级回退），
+/// 末尾交 ppocr-rs `verify()` 全量校验并补缓存标记（表漂移当场红）。
+/// `--offline` 只校验不下载（语义对齐 `--ocr --offline`，零网络可测）。
+pub fn init_models(size_arg: Option<ModelSize>, offline: bool) -> Result<OcrOutcome, String> {
+    let dir = cache_dir()?;
+    let store = ModelStore::new(&dir);
+    let size = match size_arg {
+        Some(s) => s,
+        None => model_size()?,
+    };
+    let mut lines = vec![format!("ocr_init: size {}", size.as_str())];
+    let mut ok = true;
+    for kind in [ModelKind::Detector, ModelKind::Recognizer] {
+        let pin = mirror::package_pin(size, kind)?;
+        let pkg_dir = mirror::package_dir(&dir, pin);
+        let mut pkg_ok = true;
+        for file in pin.files {
+            if matches!(mirror::assess_file(&pkg_dir, file), FileState::Ok) {
+                lines.push(format!("ocr_init: {} {} ok", pin.name, file.name));
+                continue;
+            }
+            if offline {
+                lines.push(format!(
+                    "ocr_init: {} {} failed（--offline 禁下载且缓存件无效）",
+                    pin.name, file.name
+                ));
+                pkg_ok = false;
+                continue;
+            }
+            match mirror::download_file(pin, file, &pkg_dir.join(file.name)) {
+                Ok(source) => lines.push(format!(
+                    "ocr_init: {} {} download {}",
+                    pin.name,
+                    file.name,
+                    source.as_str()
+                )),
+                Err(e) => {
+                    lines.push(format!(
+                        "ocr_init: {} {} failed（{e}）",
+                        pin.name, file.name
+                    ));
+                    pkg_ok = false;
+                }
+            }
+        }
+        if pkg_ok {
+            // 终检闸：ppocr-rs 按内嵌钉死值全量校验并补 .ppocr-rs.complete
+            if let Err(e) = store.verify(kind, size) {
+                lines.push(format!("ocr_init: {} failed（终检: {e}）", pin.name));
+                ok = false;
+            } else {
+                lines.push(format!("ocr_init: {} complete", pin.name));
+            }
+        } else {
+            lines.push(format!("ocr_init: {} incomplete", pin.name));
+            ok = false;
+        }
+    }
+    lines.push(format!(
+        "ocr_init: verdict {}",
+        if ok { "ok" } else { "failed" }
+    ));
+    Ok(OcrOutcome { lines, healthy: ok })
+}
+
+/// `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。两档四包逐包判定 +
+/// 设置文件与档位来源 + 镜像探活（信息行，不可达不影响判定：内网机离线可用即健康）。
+/// healthy = 当前档双包完整。
+pub fn doctor_models() -> Result<OcrOutcome, String> {
+    let dir = cache_dir()?;
+    let (size, source) = model_size_with_source()?;
+    let (settings, settings_file) = settings_state()?;
+    let mut lines = vec![
+        format!("ocr_doctor: cache {}", dir.display()),
+        format!(
+            "ocr_doctor: settings {} {}",
+            settings_file.display(),
+            settings
+        ),
+        format!("ocr_doctor: size {}（{}）", size.as_str(), source),
+    ];
+    let current_prefix = format!("{}-", size.as_str());
+    let mut healthy = true;
+    for pin in mirror::PACKAGES {
+        let line = match mirror::assess_package(&dir, pin) {
+            mirror::PackageVerdict::Ok => format!("ocr_doctor: {} ok", pin.name),
+            mirror::PackageVerdict::Missing(f) => {
+                format!("ocr_doctor: {} missing（缺 {f}）", pin.name)
+            }
+            mirror::PackageVerdict::Corrupt(f) => {
+                format!("ocr_doctor: {} corrupt（{f} 校验不符）", pin.name)
+            }
+        };
+        if pin.name.starts_with(&current_prefix) && !matches!(line.rsplit(' ').next(), Some("ok")) {
+            healthy = false;
+        }
+        lines.push(line);
+    }
+    // 镜像探活：顺手报 latest.json 广告的版本；仅信息，不改 healthy
+    match mirror::fetch_latest_manifest() {
+        Ok(m) => lines.push(format!(
+            "ocr_doctor: mirror ok {} latest {}",
+            mirror::latest_json_url(),
+            m.version
+        )),
+        Err(e) => lines.push(format!("ocr_doctor: mirror unreachable（{e}）")),
+    }
+    lines.push(format!(
+        "ocr_doctor: verdict {}",
+        if healthy { "ok" } else { "failed" }
+    ));
+    Ok(OcrOutcome { lines, healthy })
+}
+
+/// `ocr switch <tiny|small>`：写档位设置文件并提示。只切换不自动下载（单调用完成
+/// 一件事）；env `READER_OCR_MODEL_SIZE` 已导出时警告本设置不生效（env 优先）。
+pub fn switch_model(target: ModelSize) -> Result<OcrOutcome, String> {
+    let (current, _) = model_size_with_source()?;
+    let path = settings_path()?;
+    if std::env::var_os("READER_OCR_MODEL_SIZE").is_some() {
+        eprintln!(
+            "reader: READER_OCR_MODEL_SIZE 已导出，环境变量优先，本次 switch 对当前会话不生效"
+        );
+    }
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| format!("建设置目录失败: {e}"))?;
+    }
+    std::fs::write(&path, format!("{}\n", target.as_str()))
+        .map_err(|e| format!("写档位设置失败 {}: {e}", path.display()))?;
+    let mut lines = vec![format!(
+        "ocr_switch: {} -> {}（写入 {}）",
+        current.as_str(),
+        target.as_str(),
+        path.display()
+    )];
+    // 目标档未就位则提示 init（不改退出码）
+    let dir = cache_dir()?;
+    let ready = [ModelKind::Detector, ModelKind::Recognizer]
+        .iter()
+        .all(|&kind| {
+            mirror::package_pin(target, kind)
+                .map(|pin| {
+                    matches!(
+                        mirror::assess_package(&dir, pin),
+                        mirror::PackageVerdict::Ok
+                    )
+                })
+                .unwrap_or(false)
+        });
+    if !ready {
+        lines.push(format!(
+            "ocr_switch: {} 未就位，先跑 reader ocr init 下载",
+            target.as_str()
+        ));
+    }
+    Ok(OcrOutcome {
+        lines,
+        healthy: true,
+    })
+}
+
+pub(crate) fn parse_model_size(v: &str) -> Result<ModelSize, String> {
     match v.trim().to_ascii_lowercase().as_str() {
         "tiny" => Ok(ModelSize::Tiny),
         "small" => Ok(ModelSize::Small),
-        other => Err(format!(
-            "READER_OCR_MODEL_SIZE 只认 tiny / small，收到 `{other}`"
-        )),
+        other => Err(format!("模型档位只认 tiny / small，收到 `{other}`")),
     }
 }
 
@@ -163,5 +440,41 @@ mod tests {
     fn dies_parse_model_size_rejects_unknown() {
         let err = parse_model_size("medium").unwrap_err();
         assert!(err.contains("tiny / small"), "错误应提示合法档位: {err}");
+    }
+
+    /// D42 档位三级:env(A/B 跑批器通道)> 设置文件 > Tiny;设置非法回退默认;env 非法报错。
+    #[test]
+    fn resolve_size_env_over_settings_over_default() {
+        assert_eq!(
+            resolve_size(Some("small"), Some("tiny")).unwrap(),
+            (ModelSize::Small, "env")
+        );
+        assert_eq!(
+            resolve_size(Some("  Tiny "), None).unwrap(),
+            (ModelSize::Tiny, "env")
+        );
+        assert_eq!(
+            resolve_size(None, Some("small\n")).unwrap(),
+            (ModelSize::Small, "设置")
+        );
+        assert_eq!(
+            resolve_size(None, Some(" 垃圾 ")).unwrap(),
+            (ModelSize::Tiny, "默认")
+        );
+        assert_eq!(resolve_size(None, None).unwrap(), (ModelSize::Tiny, "默认"));
+        assert!(resolve_size(Some("medium"), None).is_err());
+    }
+
+    /// 设置文件恒在缓存目录兄弟位(hermetic 不变量:缓存指到哪,设置跟到哪的上级)。
+    #[test]
+    fn settings_path_is_sibling_of_cache_dir() {
+        assert_eq!(
+            settings_path_for(Path::new(r"C:\u\ray\AppData\Local\reader\models")),
+            PathBuf::from(r"C:\u\ray\AppData\Local\reader\model-size")
+        );
+        assert_eq!(
+            settings_path_for(Path::new("/tmp/reader-test-1/models")),
+            PathBuf::from("/tmp/reader-test-1/model-size")
+        );
     }
 }

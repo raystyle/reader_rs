@@ -8,7 +8,10 @@ reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--con
 reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M] [--ocr] [--offline]
 reader query <文件> <mq表达式> [--format text|json] [--filter 路径] — mq 结构化提取（.h2/.code/.link/select 管道；全格式面转 markdown 后查询）
 reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
-reader self update [--force] — 自升级（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
+reader self update [--force] — 自升级（镜像 latest.json 优先、回退 GitHub Releases；资产 sha256 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
+reader ocr init [--size tiny|small] [--offline] — 下载/修复 OCR 模型进缓存（镜像 到 HF 到 GitHub Releases 三级回退；--offline 只校验不下载）
+reader ocr doctor — 诊断本地 OCR 模型就位情况（只读；退出码 0 为当前档双包完整 / 1 为有缺损；镜像探活为信息行）
+reader ocr switch <tiny|small> — 切换模型档位并持久化（env READER_OCR_MODEL_SIZE 优先于本设置）
 reader --llms — 本索引
 退出码: 0 成功或命中 / 1 无命中（仅 search） / 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）
 输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（超 200 行单元按行分片）；目录批量模式命中行前缀 路径:

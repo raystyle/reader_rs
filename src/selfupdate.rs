@@ -1,9 +1,12 @@
-//! self update（P0015）：`reader self update` 从 GitHub Releases 最新正式版升级自身。
-//! 模式参考 ohmyenv-rs selfupdate.rs 与 ohmyagents-rs update.rs：
-//! 版本判新（stable 资产是压缩包，digest 与 exe 哈希不可比）、资产 sha256 digest 钉死校验、
-//! staged 加 rename 原子替换（Windows 运行中 exe 可改名不可删）、403 限流回退 gh api。
+//! self update（P0015；D42 加镜像通道）：`reader self update` 先读镜像
+//! `reader.ohmygh.com/reader/latest.json`（Tauri v2 形状加 sha256；signature 字段
+//! 解析不验，minisign 首轮不上），任何失败回退 GitHub Releases API（403 限流再回退
+//! gh api）。模式参考 ohmyenv-rs selfupdate.rs 与 ohmyagents-rs update.rs：
+//! 版本判新（stable 资产是压缩包，digest 与 exe 哈希不可比）、资产 sha256 钉死校验、
+//! staged 加 rename 原子替换（Windows 运行中 exe 可改名不可删）。
 //! 边界：只 stable 通道（无 dev/git）；只显式命令不自动更新。
 
+use crate::mirror;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::path::{Path, PathBuf};
@@ -53,24 +56,70 @@ fn asset_name(version: &str) -> Result<String, String> {
     Ok(format!("reader-v{version}-{}.{ext}", asset_target()?))
 }
 
-/// `reader self update` 主流程。`force` 为真时版本相同也重装。
-pub fn self_update(force: bool) -> Result<Outcome, String> {
-    let current = env!("CARGO_PKG_VERSION").to_string();
+/// 升级目标描述：镜像 latest.json 与 GitHub API 两条通道都归一到此，主流程只消费它。
+#[derive(Debug)]
+struct ReleaseInfo {
+    version: String,
+    asset_name: String,
+    sha256: String,
+    url: String,
+}
+
+/// 取最新版信息：镜像 latest.json 优先（D42），任何失败回退 GitHub API 通道。
+fn fetch_release_info() -> Result<ReleaseInfo, String> {
+    match fetch_latest_from_mirror() {
+        Ok(info) => Ok(info),
+        Err(e) => {
+            eprintln!("reader: 镜像升级清单不可用，回退 GitHub API（{e}）");
+            fetch_latest_from_github()
+        }
+    }
+}
+
+/// 镜像通道：latest.json 取本平台条目。
+fn fetch_latest_from_mirror() -> Result<ReleaseInfo, String> {
+    release_info_from_manifest(mirror::fetch_latest_manifest()?)
+}
+
+/// 清单到 ReleaseInfo 的纯映射（单测用）。版本或 sha256 形状不对按失败处理
+/// （回退 GH），免得坏清单把判新短路成「已是最新」。
+fn release_info_from_manifest(manifest: mirror::LatestManifest) -> Result<ReleaseInfo, String> {
+    let version = manifest.version;
+    if !version.starts_with(|c: char| c.is_ascii_digit()) {
+        return Err(format!("清单版本号不合法: {version}"));
+    }
+    let target = asset_target()?;
+    let platform = manifest
+        .platforms
+        .get(target)
+        .ok_or_else(|| format!("latest.json 无本平台 {target} 条目"))?;
+    let sha256 = platform.sha256.trim().to_lowercase();
+    if sha256.len() != 64 || !sha256.chars().all(|c| c.is_ascii_hexdigit()) {
+        return Err("latest.json sha256 形状不合法".to_string());
+    }
+    let asset_name = platform
+        .url
+        .rsplit('/')
+        .next()
+        .ok_or("latest.json url 无文件名")?
+        .to_string();
+    Ok(ReleaseInfo {
+        version,
+        asset_name,
+        sha256,
+        url: platform.url.clone(),
+    })
+}
+
+/// GitHub API 通道：原 P0015 逻辑（api.github.com 直连，403/限流回退 gh api）。
+fn fetch_latest_from_github() -> Result<ReleaseInfo, String> {
     let release = fetch_latest_release()?;
     let tag = release
         .get("tag_name")
         .and_then(Value::as_str)
         .ok_or_else(|| "release 无 tag_name".to_string())?;
-    let latest = tag.strip_prefix('v').unwrap_or(tag).to_string();
-    if !force && !version_newer(&latest, &current) {
-        return Ok(Outcome {
-            action: "current",
-            current,
-            latest,
-            replaced: Vec::new(),
-        });
-    }
-    let name = asset_name(&latest)?;
+    let version = tag.strip_prefix('v').unwrap_or(tag).to_string();
+    let name = asset_name(&version)?;
     let assets = release
         .get("assets")
         .and_then(Value::as_array)
@@ -79,7 +128,7 @@ pub fn self_update(force: bool) -> Result<Outcome, String> {
         .iter()
         .find(|a| a.get("name").and_then(Value::as_str) == Some(name.as_str()))
         .ok_or_else(|| format!("release 缺资产 {name}（CI 是否已跑完？）"))?;
-    let digest = asset
+    let sha256 = asset
         .get("digest")
         .and_then(Value::as_str)
         .and_then(|d| d.strip_prefix("sha256:"))
@@ -90,12 +139,46 @@ pub fn self_update(force: bool) -> Result<Outcome, String> {
         .and_then(Value::as_str)
         .ok_or_else(|| format!("资产 {name} 无下载地址"))?
         .to_string();
+    Ok(ReleaseInfo {
+        version,
+        asset_name: name,
+        sha256,
+        url,
+    })
+}
+
+/// `reader self update` 主流程。`force` 为真时版本相同也重装。
+pub fn self_update(force: bool) -> Result<Outcome, String> {
+    let current = env!("CARGO_PKG_VERSION").to_string();
+    let info = fetch_release_info()?;
+    let latest = info.version;
+    if !force && !version_newer(&latest, &current) {
+        return Ok(Outcome {
+            action: "current",
+            current,
+            latest,
+            replaced: Vec::new(),
+        });
+    }
+    // 资产名与命名约定核对（镜像清单也须同型，防 url 指到件名不符的东西）
+    let expected = asset_name(&latest)?;
+    if info.asset_name != expected {
+        return Err(format!(
+            "资产名 {actual} 与预期 {expected} 不符，拒绝无校验升级",
+            actual = info.asset_name
+        ));
+    }
+    let name = info.asset_name.clone();
+    let url = info.url.clone();
 
     eprintln!("reader: 下载 {name} …");
     let blob = fetch(&url)?;
     let sha = format!("{:x}", Sha256::digest(&blob));
-    if sha != digest {
-        return Err(format!("资产 {name} 校验失败: 期望 {digest} 实得 {sha}"));
+    if sha != info.sha256 {
+        return Err(format!(
+            "资产 {name} 校验失败: 期望 {} 实得 {sha}",
+            info.sha256
+        ));
     }
 
     let stage = std::env::temp_dir().join(format!("reader-selfupdate-{}", std::process::id()));
@@ -371,5 +454,51 @@ mod tests {
         assert!(!version_newer("0.2.1", "0.2.2"));
         assert!(version_newer("1.0.0", "0.9.9"));
         assert!(!version_newer("0.2.1-rc1", "0.2.1"));
+    }
+
+    fn fixture_manifest(sha256: &str, version: &str) -> mirror::LatestManifest {
+        let target = asset_target().expect("测试机在 release 矩阵内");
+        let ext = if cfg!(windows) { "zip" } else { "tar.gz" };
+        let raw = format!(
+            r#"{{
+                "version": "{version}",
+                "platforms": {{
+                    "{target}": {{
+                        "url": "https://reader.ohmygh.com/reader/{version}/reader-v{version}-{target}.{ext}",
+                        "sha256": "{sha256}"
+                    }}
+                }}
+            }}"#
+        );
+        serde_json::from_str(&raw).expect("fixture 应合法")
+    }
+
+    /// 镜像清单映射:本平台条目归一为 ReleaseInfo,sha256 归一小写。
+    #[test]
+    fn release_info_from_manifest_maps_current_platform() {
+        let target = asset_target().expect("测试机在 release 矩阵内");
+        let ext = if cfg!(windows) { "zip" } else { "tar.gz" };
+        let sha_up = format!("0E041FA38{}", "0".repeat(55));
+        let info = release_info_from_manifest(fixture_manifest(&sha_up, "0.4.1")).unwrap();
+        assert_eq!(info.version, "0.4.1");
+        assert_eq!(info.asset_name, format!("reader-v0.4.1-{target}.{ext}"));
+        assert_eq!(info.sha256, sha_up.to_lowercase());
+        assert!(info
+            .url
+            .starts_with("https://reader.ohmygh.com/reader/0.4.1/"));
+    }
+
+    /// 坏清单按失败处理(回退 GH 通道的前提):版本非数字、sha256 形状不对、缺本平台。
+    #[test]
+    fn dies_release_info_from_manifest_rejects_bad_shapes() {
+        let good_sha = "e".repeat(64);
+        let err = release_info_from_manifest(fixture_manifest(&good_sha, "beta")).unwrap_err();
+        assert!(err.contains("版本号不合法"), "{err}");
+        let err = release_info_from_manifest(fixture_manifest("abc123", "0.4.1")).unwrap_err();
+        assert!(err.contains("sha256 形状"), "{err}");
+        let mut no_platform = fixture_manifest(&good_sha, "0.4.1");
+        no_platform.platforms.clear();
+        let err = release_info_from_manifest(no_platform).unwrap_err();
+        assert!(err.contains("无本平台"), "{err}");
     }
 }

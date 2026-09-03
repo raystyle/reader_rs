@@ -12,7 +12,10 @@ reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--con
 reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M] [--ocr] [--offline]
 reader query <文件> <mq表达式> [--format text|json] [--filter 路径] — mq 结构化提取（.h2/.code/.link/select 管道；全格式面转 markdown 后查询）
 reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
-reader self update [--force] — 自升级（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
+reader self update [--force] — 自升级（镜像 latest.json 优先、回退 GitHub Releases；资产 sha256 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
+reader ocr init [--size tiny|small] [--offline] — 下载/修复 OCR 模型进缓存（镜像 到 HF 到 GitHub Releases 三级回退；--offline 只校验不下载）
+reader ocr doctor — 诊断本地 OCR 模型就位情况（只读；退出码 0 为当前档双包完整 / 1 为有缺损；镜像探活为信息行）
+reader ocr switch <tiny|small> — 切换模型档位并持久化（env READER_OCR_MODEL_SIZE 优先于本设置）
 reader --llms — 本索引
 退出码: 0 成功或命中 / 1 无命中（仅 search） / 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）
 输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（超 200 行单元按行分片）；目录批量模式命中行前缀 路径:
@@ -52,7 +55,11 @@ reader query ./README.md \".h2\"
 reader query ./notes.md \".[] | select(contains(\\\"配置\\\"))\" --format json
 # 扫描件/乱码层 PDF：OCR 兜底（仅 PDF 单文件；首用下载约 6.2MB 模型）
 reader extract ./scan.pdf --ocr
-# 自升级（GitHub Releases 最新正式版，校验后替换自身）
+# OCR 模型管理：显式下载（镜像优先）、诊断本地就位、切换档位 tiny / small
+reader ocr init
+reader ocr doctor
+reader ocr switch small
+# 自升级（镜像 latest.json 优先、回退 GitHub Releases，校验后替换自身）
 reader self update
 ```
 
@@ -62,12 +69,13 @@ reader self update
 - text 形态：search 命中行 `单元:行号:文本`（上下文 `单元-行号-文本`，目录模式前缀 `路径:`）；extract 节头 `== page N ==` / `== section N ==` / `== part N ==`（超 200 行单元按行分片），不可靠页节头后 `[needs_ocr: 原因]` 提示行；query 逐命中输出 markdown 片段原文。
 - json 形态（`--format json`，compact 单行）：`{{\"ok\":bool,\"data\":...,\"meta\":{{command,duration_ms[,next_offset,cta]}}}}`；`--filter` 点路径裁剪 data（如 `hits[].text`、`results[]`）。
 - needs_ocr 页（扫描件/乱码，仅 PDF）OCR 后仍保留标记：OCR 文本仍可能有误。
+- ocr 子命令输出行式：`ocr_init:` / `ocr_doctor:` / `ocr_switch:` 前缀、ASCII token 前置（ok / missing / corrupt / download mirror|huggingface|github / verdict）；doctor 退出码 0 为当前档双包完整、1 为有缺损；init / switch 失败为 2。
 
 ## 渐进深入
 
 - `reader --llms`：紧凑命令索引（省 token）。
 - `reader <子命令> --help`：该命令的全部参数与示例（如 `reader query --help`）。
-- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；self update `[--force]`。
+- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；self update `[--force]`；ocr init `[--size tiny|small] [--offline]`；ocr doctor 无参；ocr switch `<tiny|small>`。
 - 完整说明见 README.md。
 "
     )

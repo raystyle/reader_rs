@@ -1088,8 +1088,9 @@ fn skill_outputs_skill_md() -> TestResult {
     Ok(())
 }
 
-/// 漂移守卫一：clap 命令树的每个 long 旗标都必须出现在 --llms 与 skill 输出里
-///（期望值来自 clap 命令树本身，独立于 curated 文本；新增参数漏登记会当场红）。
+/// 漂移守卫一：clap 命令树的每个 long 旗标（含组子命令二层，如 ocr init --size、
+/// self update --force）都必须出现在 --llms 与 skill 输出里（期望值来自 clap 命令树
+/// 本身，独立于 curated 文本；新增参数漏登记会当场红）。
 #[test]
 fn introspection_texts_cover_all_clap_flags() -> TestResult {
     let cmd = reader_rs::command_tree();
@@ -1115,6 +1116,13 @@ fn introspection_texts_cover_all_clap_flags() -> TestResult {
         for arg in sub.get_arguments() {
             if let Some(long) = arg.get_long() {
                 check(long, sub.get_name());
+            }
+        }
+        for nested in sub.get_subcommands() {
+            for arg in nested.get_arguments() {
+                if let Some(long) = arg.get_long() {
+                    check(long, &format!("{} {}", sub.get_name(), nested.get_name()));
+                }
             }
         }
     }
@@ -1189,6 +1197,205 @@ fn self_update_help_surface() -> TestResult {
         .success()
         .stdout(predicate::str::contains("--force"));
     reader()?.args(["self"]).assert().code(2);
+    Ok(())
+}
+
+// ---------- ocr 子命令组（D42：init / doctor / switch） ----------
+
+/// 真下载路径不进集成测试（三通道出网不可在 CI 跑）：init 以 `--offline`
+/// 只校验形态作零网络代理；镜像真实下载的端到端验收记 D42 大陆侧回执。
+/// 各用例缓存目录一律 `<临时>/<用例名>/models`——档位设置文件落在兄弟位
+/// `<临时>/<用例名>/model-size`，与开发者真机设置互不污染（hermetic 不变量）。
+fn ocr_case_dir(case: &str) -> PathBuf {
+    let dir = std::env::temp_dir().join(format!("reader-ocr-{case}-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(dir.join("models")).expect("建用例目录");
+    dir
+}
+
+/// ocr 组帮助面：init 出 --size 与 --offline；裸 `ocr` 缺子命令按 clap 惯例退出 2。
+#[test]
+fn ocr_subcommands_help_surface() -> TestResult {
+    reader()?
+        .args(["ocr", "init", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("--size"))
+        .stdout(predicate::str::contains("--offline"));
+    reader()?
+        .args(["ocr", "doctor", "--help"])
+        .assert()
+        .success();
+    reader()?
+        .args(["ocr", "switch", "--help"])
+        .assert()
+        .success();
+    reader()?.args(["ocr"]).assert().code(2);
+    Ok(())
+}
+
+/// doctor 对空缓存目录：两档四包全 missing、镜像探活不可达（信息行）、退出 1；
+/// 全程零网络（镜像指向本机 discard 端口，连接拒绝即失败）。
+#[test]
+fn ocr_doctor_reports_missing_on_empty_cache() -> TestResult {
+    let case = ocr_case_dir("doctor-empty");
+    reader()?
+        .args(["ocr", "doctor"])
+        .env("READER_OCR_CACHE_DIR", case.join("models"))
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains("ocr_doctor: cache"))
+        .stdout(predicate::str::contains("ocr_doctor: settings"))
+        .stdout(predicate::str::contains("ocr_doctor: size tiny（默认）"))
+        .stdout(predicate::str::contains("ocr_doctor: tiny-det missing"))
+        .stdout(predicate::str::contains("ocr_doctor: small-rec missing"))
+        .stdout(predicate::str::contains("ocr_doctor: mirror unreachable"))
+        .stdout(predicate::str::contains("ocr_doctor: verdict failed"));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// doctor 对伪缓存（垃圾字节）报 corrupt 而非 missing：字节与钉死值不符即损件。
+#[test]
+fn ocr_doctor_flags_corrupt_files() -> TestResult {
+    let case = ocr_case_dir("doctor-corrupt");
+    let pkg = case.join("models").join("tiny-det");
+    std::fs::create_dir_all(&pkg).expect("建包目录");
+    for name in [
+        "model.safetensors",
+        "config.json",
+        "inference.yml",
+        "preprocessor_config.json",
+    ] {
+        std::fs::write(pkg.join(name), b"garbage bytes").expect("写伪件");
+    }
+    reader()?
+        .args(["ocr", "doctor"])
+        .env("READER_OCR_CACHE_DIR", case.join("models"))
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains(
+            "ocr_doctor: tiny-det corrupt（model.safetensors 校验不符）",
+        ))
+        .stdout(predicate::str::contains("ocr_doctor: verdict failed"));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// switch 写档位设置文件并即时生效（doctor 反映）；env 优先于设置且 switch 时告警；
+/// 非法档位按旗标误用退出 2。
+#[test]
+fn ocr_switch_persists_setting_and_env_wins() -> TestResult {
+    let case = ocr_case_dir("switch");
+    let cache = case.join("models");
+    let settings = case.join("model-size");
+    reader()?
+        .args(["ocr", "switch", "small"])
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("ocr_switch: tiny -> small"))
+        .stdout(predicate::str::contains("ocr_switch: small 未就位"));
+    let saved = std::fs::read_to_string(&settings).expect("设置文件应已写入");
+    assert!(saved.trim() == "small", "设置文件内容应为 small: {saved}");
+    // doctor 反映新档位：settings small、size 来源设置、small 未就位 verdict failed
+    reader()?
+        .args(["ocr", "doctor"])
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains("ocr_doctor: size small（设置）"))
+        .stdout(predicate::str::contains("ocr_doctor: verdict failed"));
+    // env 优先：READER_OCR_MODEL_SIZE 覆盖设置文件
+    reader()?
+        .args(["ocr", "doctor"])
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .env("READER_OCR_MODEL_SIZE", "tiny")
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .stdout(predicate::str::contains("ocr_doctor: size tiny（env）"));
+    // env 导出时 switch 走 stderr 告警（stdout 契约行照出）
+    reader()?
+        .args(["ocr", "switch", "tiny"])
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .env("READER_OCR_MODEL_SIZE", "small")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("ocr_switch: small -> tiny"))
+        .stderr(predicate::str::contains("环境变量优先"));
+    // 非法档位
+    reader()?
+        .args(["ocr", "switch", "medium"])
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("tiny / small"));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// `ocr init --offline` 空缓存：只校验不下载，件无效即失败退出 2（零网络可测形态）。
+#[test]
+fn dies_ocr_init_offline_with_empty_cache() -> TestResult {
+    let case = ocr_case_dir("init-offline");
+    reader()?
+        .args(["ocr", "init", "--offline"])
+        .env("READER_OCR_CACHE_DIR", case.join("models"))
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .code(2)
+        .stdout(predicate::str::contains("ocr_init: size tiny"))
+        .stdout(predicate::str::contains(
+            "ocr_init: tiny-det model.safetensors failed（--offline 禁下载且缓存件无效）",
+        ))
+        .stdout(predicate::str::contains("ocr_init: verdict failed"));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// `ocr init --size` 非法值按旗标误用退出 2。
+#[test]
+fn dies_ocr_init_rejects_unknown_size() -> TestResult {
+    let case = ocr_case_dir("init-bad-size");
+    reader()?
+        .args(["ocr", "init", "--size", "medium"])
+        .env("READER_OCR_CACHE_DIR", case.join("models"))
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("tiny / small"));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// doctor 对真缓存（门控：READER_OCR_CACHE_DIR 指向完整 tiny 缓存才跑，CI 自动跳过）
+/// 且镜像不可达：本地健康不依赖镜像（内网机离线可用即健康），verdict ok 退出 0。
+#[test]
+fn ocr_doctor_healthy_with_real_cache_and_dead_mirror() -> TestResult {
+    let Some(cache) = std::env::var_os("READER_OCR_CACHE_DIR").map(PathBuf::from) else {
+        eprintln!("skip: READER_OCR_CACHE_DIR 未设（无本地模型缓存）");
+        return Ok(());
+    };
+    for name in ["tiny-det/model.safetensors", "tiny-rec/model.safetensors"] {
+        if !cache.join(name).is_file() {
+            eprintln!("skip: 缓存缺 {name}");
+            return Ok(());
+        }
+    }
+    // 门控机不设 READER_OCR_MODEL_SIZE 时若本机档位非 tiny 会误判，显式钉 tiny
+    reader()?
+        .args(["ocr", "doctor"])
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .env("READER_OCR_MODEL_SIZE", "tiny")
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .code(0)
+        .stdout(predicate::str::contains("ocr_doctor: tiny-det ok"))
+        .stdout(predicate::str::contains("ocr_doctor: tiny-rec ok"))
+        .stdout(predicate::str::contains("ocr_doctor: mirror unreachable"))
+        .stdout(predicate::str::contains("ocr_doctor: verdict ok"));
     Ok(())
 }
 
