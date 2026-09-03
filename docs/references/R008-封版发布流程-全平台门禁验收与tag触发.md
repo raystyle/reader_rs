@@ -10,7 +10,7 @@
 - 版本号：能力新增或行为变化取 `0.x.0`，修复取 `0.x.y`；与 ROADMAP 阶段对照。
 - 发布通道只走 stable（self update 同口径，不做自动更新）。
 
-## 二、全平台门禁与验收（封版前，顺序固定）
+## 二、全平台门禁与验收
 
 > 三路全绿才进封版。本机交叉编译不可行（cc-rs 缺交叉 gcc，zstd-sys 需 C 工具链），全平台编译靠实机加 CI [实证: diary 2026-09-03 全平台回归节]。
 
@@ -24,7 +24,7 @@
 
 纪律：验收命令不接 `| tail` 之类管道（吞非零退出码，M006）；实机命令用阶段标记串（`&& echo STAGE-OK`）逐段确认。
 
-## 三、封版件（一次提交）
+## 三、封版件
 
 1. `Cargo.toml` `version` 改目标版本号（release.yml 有 tag 一致性闸，不一致 job 直接红）。
 2. `CHANGELOG.md` `[Unreleased]` 节改 `[<版本>] - <日期>`，正文只留版本级里程碑（本文件头规则）。
@@ -49,4 +49,4 @@ git push origin main v<版本>     # tag 推送即触发 release.yml
 
 ## 验收记录
 
-- 2026-09-03 v0.4.0 轮：三平台门禁与封版结果见本文回填（待跑）。
+- **2026-09-03，v0.4.0 首轮**：三平台全绿 [实证: 各路退出码与阶段标记]——Windows（fmt / clippy / test 8 target 全绿：27 单元、52 集成、smoke 3、regress 4、snapshot 3、accept；release 构建过）；lan-mac（门禁三件 53 集成、release 构建过；首次失败为 rsproxy 镜像拉新依赖网络坑，重试过，同 diary 上轮前科）；lan-linux（同 mac 全绿）；CI main 三系统绿（run 33715506021）。OCR 端到端（release 件加仓内 scan-cjk.pdf）：linux 0.24 秒每页、mac 0.12 秒，exit 0、`[needs_ocr]` 保留、中英正文正确；发现 D42（模型 HF 直连国内不可达，scp 手动放置后 `--offline` 全通，模型分发自维护入下版计划）。封版件：Cargo.toml 0.4.0、CHANGELOG 定版、SKILL 重生（仅版本行）、`--llms` 快照人工审后入库（仅版本行与断言行号）。

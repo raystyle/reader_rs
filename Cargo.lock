@@ -3178,7 +3178,7 @@ dependencies = [
 
 [[package]]
 name = "reader_rs"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anydoc",
  "assert_cmd",

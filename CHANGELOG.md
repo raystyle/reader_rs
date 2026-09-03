@@ -2,9 +2,13 @@
 
 本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
 
-## [Unreleased]
+## [0.4.0] - 2026-09-03
 
-- **OCR 换引擎（P0018）**：`--ocr` 由 pure-onnx-ocr/tract（PP-OCRv5 mobile）换为 ppocr-rs 原生 CPU 内核（PP-OCRv6 tiny，S008 实测质量与速度双优：0.8 秒/页量级、mobile 掉字点全修）；模型套件 20.5MB 降到 6.2MB（HuggingFace 钉 rev 加 sha256、缓存目录与 `--offline` 语义不变）；依赖树出 tract，release 二进制 32.9MB 回落 28.3MB。已知：水印区噪声行增多、封面大字标题读散（needs_ocr 域内）。
+> OCR 换引擎（P0018）：ppocr-rs 原生内核 PP-OCRv6 tiny，质量与速度双优；README 按规范重构（G008：部署安装、升级、配置与管理为首要内容）。
+
+- **OCR 换引擎（P0018）**：`--ocr` 由 pure-onnx-ocr/tract（PP-OCRv5 mobile）换为 ppocr-rs 原生 CPU 内核（PP-OCRv6 tiny，S008 实测质量与速度双优：0.8 秒/页量级、mobile 掉字点全修）；模型套件 20.5MB 降到 6.2MB（HuggingFace 钉 rev 加 sha256、缓存目录与 `--offline` 语义不变）；依赖树出 tract，release 二进制 32.9MB 回落 28.3MB。已知：水印区噪声行增多、封面大字标题读散（needs_ocr 域内）；模型首用下载依赖 HuggingFace 可达，不可达时可从可达机器拷贝缓存目录配 `--offline`（模型分发自维护已登记下版计划）。
+- **README 重构（G008，D40）**：定位速览（做什么表加要点行）、全平台安装、升级、配置与管理（环境变量、模型档位与缓存、卸载）提升为首要内容；License 段补齐置末；仓内引用相对链接化。
+- **流程与规范**：README 规范 G008 落定；封版发布流程 R008 落定（全平台门禁验收后 tag 触发，本轮 v0.4.0 首跑）；测试体系六层规范 G006 与验收 BDD、快照、属性测试（D28 至 D35 各件）。
 
 ## [0.3.0] - 2026-09-03
 
