@@ -77,3 +77,8 @@ zip = "8.6"
 name = "accept"
 path = "tests/accept.rs"
 harness = false
+
+# 发布体积（D35，G007 供稿裁定）：符号裁剪加 thin LTO；codegen-units = 1 不采纳（构建变慢收益小）
+[profile.release]
+strip = "symbols"
+lto = "thin"
