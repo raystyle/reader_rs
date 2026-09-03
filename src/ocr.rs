@@ -466,15 +466,17 @@ mod tests {
     }
 
     /// 设置文件恒在缓存目录兄弟位(hermetic 不变量:缓存指到哪,设置跟到哪的上级)。
+    /// 斜杠两平台都是合法分隔符,反斜杠字面量在 unix 不是分隔符会假失败(首踩 mac/linux 实机)。
     #[test]
     fn settings_path_is_sibling_of_cache_dir() {
         assert_eq!(
-            settings_path_for(Path::new(r"C:\u\ray\AppData\Local\reader\models")),
-            PathBuf::from(r"C:\u\ray\AppData\Local\reader\model-size")
-        );
-        assert_eq!(
             settings_path_for(Path::new("/tmp/reader-test-1/models")),
             PathBuf::from("/tmp/reader-test-1/model-size")
+        );
+        #[cfg(windows)]
+        assert_eq!(
+            settings_path_for(Path::new(r"C:\u\ray\AppData\Local\reader\models")),
+            PathBuf::from(r"C:\u\ray\AppData\Local\reader\model-size")
         );
     }
 }
