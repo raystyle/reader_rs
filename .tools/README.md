@@ -19,6 +19,8 @@
 | `md-heading-scan.py` | 标题括号规范扫描（G001 标题干净的机检项；代码围栏内的注释不计） | `uv run --script .tools/md-heading-scan.py [--root docs]`；退出码 0/1 |
 | `md-char-scan.py` | G004 禁用字符机械判定（破折号/箭头/emoji/非法全角；掩豁免区后逐字符扫） | `uv run --script .tools/md-char-scan.py [路径...]`；退出码 0/1 |
 | `md-replace.py` | 中文与反斜杠路径安全的字面批量替换（规避 sed 转义坑） | `uv run --script .tools/md-replace.py --glob 'docs/**/*.md' --map 映射.txt [--dry]` |
+| `make-scan-sample.py` | 生成 tests\ab 合成扫描件样本（无文本层 PDF 加独立来源检查点） | `uv run --script .tools/make-scan-sample.py`；幂等覆盖产物 |
+| `ab_run.py` | A/B 对比跑批（tests\ab 层）：双变体跑样本，出质量与性能 markdown 报告 | `uv run --script .tools/ab_run.py --a tiny --b small [--sample 名]`；退出码 0/2 |
 
 ## 历史注记
 

@@ -16,7 +16,7 @@
 | --- | --- | --- |
 | 文档 | `docs\`（proven/diary/research/guide/references/mistakes）+ 根目录 PRD/GOAL/PLAN/TODO/INDEX/AGENTS/README/CHANGELOG/ROADMAP | 见上节职能 |
 | 代码 | `src\` | Rust CLI `reader`（`rr` 同入口双 bin） |
-| 测试 | `tests\` | assert_cmd 集成测试；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造；legacy .doc 用仓内资产 |
+| 测试 | `tests\` | assert_cmd 集成测试（cli.rs；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造；legacy .doc 用仓内资产）；`tests\ab\` A/B 对比层（manifest 对象资源加 expectations 检查点加 reports 报告，R006） |
 
 **代码文件位置**：
 
@@ -27,6 +27,8 @@
 | `.tools\md-heading-scan.py` | 标题括号规范机检 |
 | `.tools\md-char-scan.py` | G004 禁用字符机检 |
 | `.tools\md-replace.py` | 中文与反斜杠路径安全的字面批量替换 |
+| `.tools\make-scan-sample.py` | tests\ab 合成扫描件样本生成（无文本层 PDF 加独立检查点） |
+| `.tools\ab_run.py` | A/B 对比跑批器（tests\ab 层，质量加性能报告） |
 | `src\main.rs` | 薄壳入口（reader / rr 双 bin 共用） |
 | `src\lib.rs` | clap CLI 定义、`run()` 分发、页/章范围解析 |
 | `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/节，含 needs_ocr 信号） |
@@ -48,11 +50,13 @@ reader_rs/
   PRD.md / GOAL.md / PLAN.md / TODO.md / INDEX.md   四原语加总索引
   AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md / SKILL.md
   Cargo.toml / LICENSE / .rumdl.toml
-  .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-char-scan / md-replace）
+  .tools\            自定义脚本工具（md 四件门禁加 make-scan-sample / ab_run）
+  poc\               研究原型产物（S 编号前缀子目录；产物与模型 gitignore）
   src\
     main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  selfupdate.rs  query.rs
   tests\
     cli.rs  assets\legacy.doc
+    ab\      A/B 对比层（manifest / expectations / assets / reports）
   docs\
     proven\      P 编号，已完成 plan 归档
     diary\       一天一篇总结自省
@@ -122,6 +126,7 @@ reader_rs/
 | R003 | `R003-测试标准细则-分层断言与门禁流程.md` | 测试分层、断言、门禁 |
 | R004 | `R004-Linux实机验收清单-门禁真样本与musl预建.md` | Linux 接管验收操作手册（P0011-P0013 轮，已回填全绿含 M007） |
 | R005 | `R005-mac接管开发验收清单-门禁真样本与交叉预建.md` | mac 接管开发验收操作手册（P0011-P0013 轮接续，已回填全绿含 M007 验点） |
+| R006 | `R006-测试体系细则-六层分层与各层标准.md` | 六层测试体系（单元/集成/冒烟/回归/验收/A/B）落点与口径；真样本基线登记（D28/D29） |
 
 ## 七、元规范
 

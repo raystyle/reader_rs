@@ -72,8 +72,8 @@
    - 禁止：把「没验证」写成「已验证」（实证滥用）；断言不标六态；用猜测冒充结论。
 
 10. **写测试时**
-    - 可以：遵守 `docs\references\R003-测试标准细则-分层断言与门禁流程.md`（三层分层、集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）。
-    - 禁止：重言式断言；公开 API 测试塞 `mod tests{}` 不进 `tests\`；默认 mock；计时进断言；只测 happy path。
+    - 可以：遵守 `docs\references\R003-测试标准细则-分层断言与门禁流程.md`（三层分层、集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\references\R006-测试体系细则-六层分层与各层标准.md`（单元/集成/冒烟/回归/验收/A/B 六层落点与口径）。
+    - 禁止：重言式断言；公开 API 测试塞 `mod tests{}` 不进 `tests\`；默认 mock；计时进断言；只测 happy path；A/B 检查点从被测输出反抄。
 
 11. **写临时脚本时**
     - 可以：按需自定义的 ps1 / py / Rust 工具，有复用价值即归档 `.tools\`（规则与清单见 `.tools\README.md`；Python 带 PEP 723 头，用 `uv run --script` 运行）；文档结构大改后跑 `uv run --script .tools\md-ref-scan.py` 做断链回归。
@@ -83,13 +83,14 @@
 
 > 需求意图与操作方法的映射。显示名 Reader；仓库 `reader_rs`；CLI 二进制 `reader`（缩写 `rr`）。
 
-- **搜文本**：`reader search <文件|目录> <关键词>`（.pdf、.md/.markdown 及 anydoc 家族 .doc/.docx/.epub/.odt/.rtf/.ppt(x)/.xls(x)/.ods/.odp/.csv；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/节；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪；`--ocr` 对 PDF 单文件 needs_ocr 页兜底识别（首用下载约 20.5MB 模型进缓存目录，`--offline` 禁下载）；目录输入递归批量搜，命中行带路径前缀，`--pages` 与 `--ocr` 不可用）
+- **搜文本**：`reader search <文件|目录> <关键词>`（.pdf、.md/.markdown 及 anydoc 家族 .doc/.docx/.epub/.odt/.rtf/.ppt(x)/.xls(x)/.ods/.odp/.csv；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/节；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪；`--ocr` 对 PDF 单文件 needs_ocr 页兜底识别（PP-OCRv6 默认 tiny 约 6.2MB，`READER_OCR_MODEL_SIZE=small` 切质量档；首用下载进缓存目录，`--offline` 禁下载）；目录输入递归批量搜，命中行带路径前缀，`--pages` 与 `--ocr` 不可用）
 - **结构化提取**：`reader query <文件> <mq表达式>`（jq 风格：`.h2`/`.code`/`.link`/`.table`/select 管道，完整语法见 mqlang.org；全格式面转 markdown 后查询；退出码 0/1/2 同 search；不支持目录）
 - **提文本**：`reader extract <文件>`（`--pages` 限页/节、`-o` 写文件；按单元输出 `== page N ==`（PDF）/ `== section N ==`（其余，标题分节）分节；输出 markdown 形态（PDF 布局管线 / anydoc GFM），不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--ocr`/`--offline` 同上对 PDF needs_ocr 页兜底；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
 - **agent 发现**：`reader --llms`（紧凑命令索引）、`reader skill`（生成 SKILL.md；仓根 `SKILL.md` 与运行时输出逐字节一致，测试守卫）
 - **自升级**：`reader self update [--force]`（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
+- **A/B 对比**：`uv run --script .tools\ab_run.py --a tiny --b small`（tests\ab\ 对象资源加检查点，OCR 模型档位质量与性能对比，报告落 tests\ab\reports\；标准见 R006）
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`、`uv run --script .tools\md-char-scan.py`（G004 禁用字符）
 
