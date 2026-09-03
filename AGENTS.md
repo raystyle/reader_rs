@@ -90,6 +90,7 @@
 - **自升级**：`reader self update [--force]`（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
+- **分层跑批**：`uv run --script tests\smoke.py`（冒烟）、`uv run --script tests\regress.py`（真样本回归）、`uv run --script tests\accept.py`（验收可机检项）；六层口径见 G006
 - **A/B 对比**：`uv run --script .tools\ab_run.py --a tiny --b small`（tests\ab\ 对象资源加检查点，OCR 模型档位质量与性能对比，报告落 tests\ab\reports\；标准见 G006）
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`、`uv run --script .tools\md-char-scan.py`（G004 禁用字符）
