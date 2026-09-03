@@ -58,6 +58,9 @@ assert_cmd = "2"
 predicates = "3"
 # 测试用 PDF 由 lopdf 现造（已是 pdf-inspector 传递依赖，锁定同族版本）
 lopdf = "0.44"
+# 验收层解析 JSON 包膜、回归层核 external 样本 sha256（D31 第 2 轮：三层归 cargo 体系）
+serde_json = "1"
+sha2 = "0.10"
 # 测试用 EPUB 由 rbook builder 现造（P0009 起 rbook 退出主依赖，转测试侧造夹具；选型记 S003）
 rbook = "0.7.10"
 # 测试用 docx 由 zip 现造最小 OOXML（P0009；anydoc 家族夹具）

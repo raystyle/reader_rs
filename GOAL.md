@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | D31 第 2 轮裁定落地：冒烟/回归/验收收拢归 cargo test 体系（tests\smoke.rs / regress.rs / accept.rs 独立 target，12 测全绿），uv Python 只留 A/B 跑批（对比非门禁）；py 三脚本删除；serde_json 与 sha2 进 dev-dependencies |
 | 2026-09-03 | **D32 达成**：AGENTS 自省调整（四原语职责入规则 1、测试载体规则入规则 10、四节目录职责总表、分析路径按流程/规范分工改写）；G006 采纳用户供稿框架修正：原生地基三层（单元/集成/文档测试，cargo 内建顺序门禁）对目的流程四层（冒烟/回归/验收/A/B，约定加脚本拼装），A/B 定位为离线筛选门，生态演进候选入表（insta/proptest/trybuild/cucumber） |
 | 2026-09-03 | **D31 达成**：测试程序统一 uv 运行时 Python 载体；冒烟 `tests\smoke.py`（5 项）、回归 `tests\regress.py`（4 项真样本基线）、验收 `tests\accept.py`（5 项可机检）三层脚本落地并全绿；G006 增载体规则并修正基线归因（25 命中属 CLR 书非安全牛；CLR extract 页标记实测 399） |
 | 2026-09-03 | 归类修正：用户裁定 references 是做事的流程、guide 是做事的规范；R003 改 G005、R006 改 G006、G003 改 R007 三件搬家，16 文件 56 处引用字面替换，退役编号注记入 INDEX |

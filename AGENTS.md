@@ -72,7 +72,7 @@
    - 禁止：把「没验证」写成「已验证」（实证滥用）；断言不标六态；用猜测冒充结论。
 
 10. **写测试时**
-    - 可以：遵守 `docs\guide\G005-测试标准细则-分层断言与门禁流程.md`（原生地基：单元/集成/文档测试，集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\guide\G006-测试体系细则-六层分层与各层标准.md`（目的流程四层：冒烟/回归/验收/A/B 落点与口径）；跑批程序（冒烟/回归/验收/A/B）一律 uv 运行时 Python 脚本（PEP 723 单文件，`uv run --script tests\smoke.py` 形态，D31）。
+    - 可以：遵守 `docs\guide\G005-测试标准细则-分层断言与门禁流程.md`（原生地基：单元/集成/文档测试，集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\guide\G006-测试体系细则-六层分层与各层标准.md`（目的流程四层：冒烟/回归/验收/A/B 落点与口径）；载体裁定（D31 第 2 轮）：冒烟/回归/验收归 cargo test 体系（`tests\smoke.rs` 等独立 target），只有 A/B 跑批用 uv 运行时 Python（`.tools\ab_run.py`）。
     - 禁止：重言式断言；公开 API 测试塞 `mod tests{}` 不进 `tests\`；默认 mock；计时进断言；只测 happy path；A/B 检查点从被测输出反抄。
 
 11. **写临时脚本时**
@@ -90,7 +90,7 @@
 - **自升级**：`reader self update [--force]`（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
-- **分层跑批**：`uv run --script tests\smoke.py`（冒烟）、`uv run --script tests\regress.py`（真样本回归）、`uv run --script tests\accept.py`（验收可机检项）；六层口径见 G006
+- **分层跑批**：`cargo test --test smoke`（冒烟）、`cargo test --test regress`（真样本回归）、`cargo test --test accept`（验收可机检项）；六层口径见 G006
 - **A/B 对比**：`uv run --script .tools\ab_run.py --a tiny --b small`（tests\ab\ 对象资源加检查点，OCR 模型档位质量与性能对比，报告落 tests\ab\reports\；标准见 G006）
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`、`uv run --script .tools\md-char-scan.py`（G004 禁用字符）

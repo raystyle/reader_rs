@@ -47,7 +47,7 @@
 | D28 | 测试体系定标准规范：单元、集成、冒烟、回归、验收、A/B 六层各定落点与口径 | 已交付 | 第 1 轮（用户点名六层） | G006 |
 | D29 | 补齐 A/B 测试目录，翻入可供测试验证的对象资源，跑质量与性能 A/B 对比 | 已交付 | 第 1 轮（用户点名） | tests\ab\；`.tools\ab_run.py`；首跑报告 tests\ab\reports\2026-09-03-tiny-vs-small.md |
 | D30 | 研究产物是 PoC 原型，对应 poc 目录：规范落点并迁移存量 PoC | 已交付 | 第 1 轮（用户点名） | `poc\`；G002 八节 |
-| D31 | 测试程序用 uv 运行时 Python 脚本（PEP 723 单文件）编写：冒烟、回归、验收、A/B 跑批器统一载体 | 已交付 | 第 1 轮（用户点名） | tests\smoke.py / regress.py / accept.py；G006 载体规则 |
+| D31 | 测试程序载体裁定：A/B 跑批用 uv 运行时 Python 脚本（PEP 723 单文件），冒烟/回归/验收归 cargo test 体系（独立 test target） | 已交付 | 第 2 轮（第 1 轮四层全 uv，用户裁定收拢为 A/B 独占 uv、其余归 cargo） | tests\smoke.rs / regress.rs / accept.rs；`.tools\ab_run.py`；G006 载体规则 |
 | D32 | AGENTS 自省调整各目录和文档职责、规范、规则和意图路由；采纳 Rust 测试框架供稿（原生三层单元/集成/文档测试为地基，冒烟/回归/验收/A/B 为目的流程层靠约定拼装） | 已交付 | 第 1 轮（用户供稿加点名） | AGENTS 一/二/四节；G006 一节框架修正 |
 
 ## 维护规则
