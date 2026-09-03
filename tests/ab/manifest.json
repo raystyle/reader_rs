@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "samples": [
+    {
+      "name": "scan-cjk",
+      "kind": "synthetic",
+      "path": "tests/ab/assets/scan-cjk.pdf",
+      "pages": [1],
+      "expectations": "tests/ab/expectations/scan-cjk.json",
+      "note": "合成无文本层样本（.tools/make-scan-sample.py 生成），检查点独立来源为渲染源文本"
+    },
+    {
+      "name": "anniu-p10",
+      "kind": "external",
+      "path": "D:/安全牛《新一代自动化渗透测试工具与应用实践指南》--水印.pdf",
+      "sha256": "edc1ea37c8e75489ffe91e3c8acd50ab139fd5eb9a65f502137649aedafd3dff",
+      "pages": [10],
+      "expectations": "tests/ab/expectations/anniu-p10.json",
+      "note": "版权真样本不入仓；检查点来自 S008 实证的掉字点与水印区观察"
+    }
+  ]
+}

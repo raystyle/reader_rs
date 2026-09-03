@@ -1,0 +1,13 @@
+{
+  "sample": "scan-cjk",
+  "source": "渲染源文本（.tools/make-scan-sample.py 的 SOURCE_LINES），独立期望非 OCR 反抄",
+  "must_contain": [
+    "新一代自动化渗透测试工具与应用实践指南",
+    "Automated Penetration Testing Guide 2026",
+    "第十章 漏洞扫描器与渗透测试框架",
+    "攻击者潜伏期高达 287 天，人工完成的排查占比低",
+    "采用自动化工具后，报告显示覆盖率显著提升"
+  ],
+  "discriminators": [],
+  "reference": {}
+}

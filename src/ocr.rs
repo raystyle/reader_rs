@@ -1,7 +1,8 @@
 //! OCR 兜底管线（P0014 落地、P0018 换引擎）：needs_ocr 页经 hayro 渲染为位图，
-//! ppocr-rs 原生 CPU 内核跑 PP-OCRv6 tiny（S008 裁决：质量与速度双优；0.8 秒/页量级、
+//! ppocr-rs 原生 CPU 内核跑 PP-OCRv6（S008 裁决 tiny 质量与速度双优；0.8 秒/页量级、
 //! S006 掉字点全修）。模型由 ppocr ModelStore 管理（HuggingFace 钉 rev 加 sha256、
-//! 缓存目录、offline 语义与 P0014 一致）。
+//! 缓存目录、offline 语义与 P0014 一致）。档位默认 tiny，`READER_OCR_MODEL_SIZE=small`
+//! 切 small（D29 A/B 对比与 D25 质量档评估用，未定 CLI 面）。
 
 use hayro::hayro_syntax::Pdf;
 use hayro::{render, RenderCache, RenderSettings};
@@ -17,19 +18,23 @@ pub fn ocr_pages(
 ) -> Result<Vec<(u32, Vec<String>)>, String> {
     let dir = cache_dir()?;
     let store = ModelStore::new(&dir);
+    let size = model_size()?;
     // 线程自适应（用户裁定核数自适应，P0017）：ppocr CPU 内核 rayon 并行，全核数交给引擎。
     let options = OcrOptions {
         threads: std::thread::available_parallelism()
             .map(|n| n.get())
             .unwrap_or(1),
+        detector_size: size,
+        recognizer_size: size,
         ..OcrOptions::default()
     };
     let engine = if offline {
         let paths = store
-            .resolve_pair(ModelSize::Tiny, ModelSize::Tiny, ModelAccess::Offline)
+            .resolve_pair(size, size, ModelAccess::Offline)
             .map_err(|e| {
                 format!(
-                    "OCR 模型未就位且 --offline 禁下载；去掉 --offline 让 reader 下载 PP-OCRv6 tiny（约 6.2MB）进 {}: {e}",
+                    "OCR 模型未就位且 --offline 禁下载；去掉 --offline 让 reader 下载 PP-OCRv6 {} 进 {}: {e}",
+                    size.as_str(),
                     dir.display()
                 )
             })?;
@@ -41,11 +46,12 @@ pub fn ocr_pages(
         )
     } else {
         if store
-            .paths(ppocr_rs::ModelKind::Detector, ModelSize::Tiny)
+            .paths(ppocr_rs::ModelKind::Detector, size)
             .is_ok_and(|p| !p.weights.is_file())
         {
             eprintln!(
-                "reader: 首用下载 OCR 模型（PP-OCRv6 tiny 约 6.2MB）进 {} …",
+                "reader: 首用下载 OCR 模型（PP-OCRv6 {}）进 {} …",
+                size.as_str(),
                 dir.display()
             );
         }
@@ -68,7 +74,10 @@ pub fn ocr_pages(
         let Some(page) = pages.get((no - 1) as usize) else {
             continue;
         };
-        eprintln!("reader: OCR 兜底第 {no} 页（PP-OCRv6 tiny，多核并行约 1-5 秒/页）…");
+        eprintln!(
+            "reader: OCR 兜底第 {no} 页（PP-OCRv6 {}，多核并行）…",
+            size.as_str()
+        );
         let pixmap = render(page, &RenderCache::new(), &Default::default(), &settings);
         let png = pixmap
             .into_png()
@@ -103,6 +112,24 @@ fn cache_dir() -> Result<PathBuf, String> {
     Ok(base.join("reader").join("models"))
 }
 
+/// 模型档位：`READER_OCR_MODEL_SIZE` 环境变量（tiny / small），默认 tiny（D29 A/B 用）。
+fn model_size() -> Result<ModelSize, String> {
+    match std::env::var("READER_OCR_MODEL_SIZE") {
+        Ok(v) => parse_model_size(&v),
+        Err(_) => Ok(ModelSize::Tiny),
+    }
+}
+
+fn parse_model_size(v: &str) -> Result<ModelSize, String> {
+    match v.trim().to_ascii_lowercase().as_str() {
+        "tiny" => Ok(ModelSize::Tiny),
+        "small" => Ok(ModelSize::Small),
+        other => Err(format!(
+            "READER_OCR_MODEL_SIZE 只认 tiny / small，收到 `{other}`"
+        )),
+    }
+}
+
 #[cfg(target_os = "windows")]
 fn platform_cache_dir() -> Option<PathBuf> {
     std::env::var_os("LOCALAPPDATA")
@@ -120,4 +147,21 @@ fn platform_cache_dir() -> Option<PathBuf> {
     std::env::var_os("XDG_CACHE_HOME")
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".cache")))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_model_size_accepts_tiny_and_small() {
+        assert!(matches!(parse_model_size("tiny"), Ok(ModelSize::Tiny)));
+        assert!(matches!(parse_model_size(" SMALL "), Ok(ModelSize::Small)));
+    }
+
+    #[test]
+    fn dies_parse_model_size_rejects_unknown() {
+        let err = parse_model_size("medium").unwrap_err();
+        assert!(err.contains("tiny / small"), "错误应提示合法档位: {err}");
+    }
 }

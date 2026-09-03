@@ -1,0 +1,19 @@
+{
+  "sample": "anniu-p10",
+  "source": "S008 同页四配置对比（2026-09-03 实证）：S006 已知掉字点修复清单加水印区观察",
+  "must_contain": [
+    "人工完成",
+    "采用",
+    "显示",
+    "高达 287 天",
+    "工作"
+  ],
+  "discriminators": [
+    "能力无法沉淀"
+  ],
+  "reference": {
+    "v5-mobile": { "lines": 30, "note": "掉字点全中" },
+    "v6-tiny": { "lines": 37, "wall_s": 0.8, "note": "掉字点全修，水印区少量噪声" },
+    "v6-small": { "lines": 51, "wall_s": 3.2, "note": "掉字点全修且水印区更干净" }
+  }
+}
