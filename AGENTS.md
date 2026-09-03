@@ -34,8 +34,8 @@
 ### 工作节奏
 
 1. **每轮对话**
-   - 可以：先核对三原语 `GOAL.md`、`TODO.md`、`PLAN.md`；实质推进当场更新 todo 与 plan。
-   - 禁止：不核对三原语就干活；偏离当前目标；推进了不更新 todo/plan。
+   - 可以：先核对四原语 `PRD.md`、`GOAL.md`、`TODO.md`、`PLAN.md`（需求驱动目标：新需求先入 PRD 走追问链，澄清后登记；GOAL 目标须回指 PRD 编号）；实质推进当场更新 todo 与 plan。
+   - 禁止：不核对四原语就干活；偏离当前目标；推进了不更新 todo/plan；替用户静默假设需求。
 
 2. **踩坑时**
    - 可以：当场按当前最大号接编 MNNN，落 `docs\mistakes\` 对应分类文件一行（文件名即错误主题，分类表见 `INDEX.md`）；同根因或同型坑合并聚合进已有条目（保留最早编号与首踩日期）；主题深挖落 `docs\research\`。
@@ -93,13 +93,13 @@
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`、`uv run --script .tools\md-char-scan.py`（G004 禁用字符）
 
-已落地：`search`（含目录批量）、`extract`、`query`（mq 结构化提取，P0016）、`skill`、`--llms`、超长单元 part 分片、`--ocr` OCR 兜底（仅 PDF 单文件 needs_ocr 页，P0014）、`self update`（P0015）。其余能力（MCP 等）仍是候选方向，禁止假装已经可跑；TOON 已经 S005 实测裁定不引入（中文样本反而费 token 且 0.5.0 往返破损）。
+已落地：`search`（含目录批量）、`extract`、`query`（mq 结构化提取，P0016）、`skill`、`--llms`、超长单元 part 分片、`--ocr` OCR 兜底（仅 PDF 单文件 needs_ocr 页，P0014）、`self update`（P0015）。候选方向与已拒绝项（MCP、TOON 等）登记在 `PRD.md` 需求清单，禁止假装未落地能力已经可跑。
 
 ## 四、资源索引
 
 > 定位看 `INDEX.md`（项目根目录，唯一索引：编号表、目录结构、代码文件位置）。本节是配合 INDEX 的搜索方法。
 
-**速记**：前缀定位 `P`（proven 归档）/ `S`（research 研究）/ `R`（references 开发测试参考）/ `G`（guide 元规范）/ `M`（mistakes 错误；文件 M1xx、行级 M0xx）；根目录三原语 `GOAL` / `PLAN` / `TODO`。
+**速记**：前缀定位 `P`（proven 归档）/ `S`（research 研究）/ `R`（references 开发测试参考）/ `G`（guide 元规范）/ `M`（mistakes 错误；文件 M1xx、行级 M0xx）；根目录四原语 `PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（规划）/ `TODO`（进度）。
 
 **搜索方法（文档）**：
 

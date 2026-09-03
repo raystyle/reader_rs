@@ -4,7 +4,7 @@
 
 ## 一、编号体系
 
-**前缀定位**：`P`（proven，已完成 plan 归档，4 位）；`S`（research，研究原型过程，3 位）；`R`（references，开发测试参考，3 位）；`G`（guide，元规范，3 位）；`M`（mistakes，分类文件 M1xx、行级错误 M0xx 全局递增不复用）。根目录三原语：`GOAL`（目标轨迹）/ `PLAN`（当前目标方案）/ `TODO`（进度清单）。
+**前缀定位**：`P`（proven，已完成 plan 归档，4 位）；`S`（research，研究原型过程，3 位）；`R`（references，开发测试参考，3 位）；`G`（guide，元规范，3 位）；`M`（mistakes，分类文件 M1xx、行级错误 M0xx 全局递增不复用）。根目录四原语：`PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（当前目标规划）/ `TODO`（进度清单）。
 
 **目录职能**：`proven` 已完成 plan 归档；`diary` 一天一篇总结与自省；`research` 研究原型过程（为什么，六态对齐，规范见 G002）；`references` 开发测试参考（要做什么怎么做，六态溯源）；`guide` 元规范（含 `template.md`）；`mistakes` 出错怎么纠（与 references 是经验教训的两面）。
 
@@ -14,7 +14,7 @@
 
 | 类别 | 目录 | 说明 |
 | --- | --- | --- |
-| 文档 | `docs\`（proven/diary/research/guide/references/mistakes）+ 根目录 GOAL/PLAN/TODO/INDEX/AGENTS/README/CHANGELOG/ROADMAP | 见上节职能 |
+| 文档 | `docs\`（proven/diary/research/guide/references/mistakes）+ 根目录 PRD/GOAL/PLAN/TODO/INDEX/AGENTS/README/CHANGELOG/ROADMAP | 见上节职能 |
 | 代码 | `src\` | Rust CLI `reader`（`rr` 同入口双 bin） |
 | 测试 | `tests\` | assert_cmd 集成测试；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造；legacy .doc 用仓内资产 |
 
@@ -45,14 +45,12 @@
 
 ```text
 reader_rs/
-  GOAL.md / PLAN.md / TODO.md / INDEX.md   三原语加总索引
+  PRD.md / GOAL.md / PLAN.md / TODO.md / INDEX.md   四原语加总索引
   AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md / SKILL.md
   Cargo.toml / LICENSE / .rumdl.toml
-  .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-replace）
+  .tools\            自定义脚本工具（md-ref-scan / md-heading-scan / md-char-scan / md-replace）
   src\
     main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  selfupdate.rs  query.rs
-  vendor\
-    pure-onnx-ocr\   vendored OCR 引擎（patch 接入，P0014）
   tests\
     cli.rs  assets\legacy.doc
   docs\
