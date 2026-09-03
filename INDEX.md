@@ -4,9 +4,9 @@
 
 ## 一、编号体系
 
-**前缀定位**：`P`（proven，已完成 plan 归档，4 位）；`S`（research，研究原型过程，3 位）；`R`（references，开发测试参考，3 位）；`G`（guide，元规范，3 位）；`M`（mistakes，分类文件 M1xx、行级错误 M0xx 全局递增不复用）。根目录四原语：`PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（当前目标规划）/ `TODO`（进度清单）。
+**前缀定位**：`P`（proven，已完成 plan 归档，4 位）；`S`（research，研究原型过程，3 位）；`R`（references，做事的流程，3 位）；`G`（guide，做事的规范，3 位）；`M`（mistakes，分类文件 M1xx、行级错误 M0xx 全局递增不复用）。根目录四原语：`PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（当前目标规划）/ `TODO`（进度清单）。
 
-**目录职能**：`proven` 已完成 plan 归档；`diary` 一天一篇总结与自省；`research` 研究原型过程（为什么，六态对齐，规范见 G002）；`references` 开发测试参考（要做什么怎么做，六态溯源）；`guide` 元规范（含 `template.md`）；`mistakes` 出错怎么纠（与 references 是经验教训的两面）。
+**目录职能**：`proven` 已完成 plan 归档；`diary` 一天一篇总结与自省；`research` 研究原型过程（为什么，六态对齐，规范见 G002；PoC 产物落 `poc\`）；`references` 做事的流程（要做什么怎么做，操作手册与流程细则）；`guide` 做事的规范（标准与禁令，含 `template.md`）；`mistakes` 出错怎么纠（与 references 是经验教训的两面）。
 
 新文档按类别落位，编号接当前最大号，登记进本索引对应节。
 
@@ -16,7 +16,7 @@
 | --- | --- | --- |
 | 文档 | `docs\`（proven/diary/research/guide/references/mistakes）+ 根目录 PRD/GOAL/PLAN/TODO/INDEX/AGENTS/README/CHANGELOG/ROADMAP | 见上节职能 |
 | 代码 | `src\` | Rust CLI `reader`（`rr` 同入口双 bin） |
-| 测试 | `tests\` | assert_cmd 集成测试（cli.rs；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造；legacy .doc 用仓内资产）；`tests\ab\` A/B 对比层（manifest 对象资源加 expectations 检查点加 reports 报告，R006） |
+| 测试 | `tests\` | assert_cmd 集成测试（cli.rs；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造；legacy .doc 用仓内资产）；`tests\ab\` A/B 对比层（manifest 对象资源加 expectations 检查点加 reports 报告，G006） |
 
 **代码文件位置**：
 
@@ -61,8 +61,8 @@ reader_rs/
     proven\      P 编号，已完成 plan 归档
     diary\       一天一篇总结自省
     research\    S 编号，研究原型过程（六态）
-    references\  R 编号，开发测试参考
-    guide\       G 编号，元规范；template.md
+    references\  R 编号，做事的流程
+    guide\       G 编号，做事的规范；template.md
     mistakes\    M1xx 分类文件，行级 M0xx
 ```
 
@@ -115,30 +115,32 @@ reader_rs/
 | S007 | `S007-markdown支持选型-学习mq嵌mq-lang全引擎加零依赖分节.md` | markdown 支持选型（学习 mq，已落地 P0016） |
 | S008 | `S008-OCR质量升级-ppocr-rs的PP-OCRv6原生内核双优胜出现管线换引擎.md` | OCR 质量升级（v6 tiny 双优，已落地 P0018） |
 
-## 六、开发测试参考
+## 六、references：做事的流程
 
-> 位置 `docs\references\`；R 编号。
+> 位置 `docs\references\`；R 编号。**做事的流程**：操作手册、流程细则。
 
 | 编号 | 文件 | 用途 |
 | --- | --- | --- |
 | R001 | `R001-项目定位-Agent原生文档阅读搜索和提取工具.md` | 现役定位展开（P0002 后） |
 | R002 | `R002-选型研究细则-cratesio与github双通道.md` | 选库检索双通道 |
-| R003 | `R003-测试标准细则-分层断言与门禁流程.md` | 测试分层、断言、门禁 |
 | R004 | `R004-Linux实机验收清单-门禁真样本与musl预建.md` | Linux 接管验收操作手册（P0011-P0013 轮，已回填全绿含 M007） |
 | R005 | `R005-mac接管开发验收清单-门禁真样本与交叉预建.md` | mac 接管开发验收操作手册（P0011-P0013 轮接续，已回填全绿含 M007 验点） |
-| R006 | `R006-测试体系细则-六层分层与各层标准.md` | 六层测试体系（单元/集成/冒烟/回归/验收/A/B）落点与口径；真样本基线登记（D28/D29） |
+| R007 | `R007-工作流标准细则-从登记到归档五步.md` | 五步工作流与优先级（2026-09-03 自 guide 迁入，原 G003） |
 
-## 七、元规范
+## 七、guide：做事的规范
 
-> 位置 `docs\guide\`；G 编号。
+> 位置 `docs\guide\`；G 编号。**做事的规范**：标准与禁令。
 
 | 编号 | 文件 | 用途 |
 | --- | --- | --- |
 | G001 | `G001-文档标准细则-命名写作规范与rumdl检查.md` | 命名与编号、写作、rumdl |
-| G002 | `G002-研究标准细则-结构与六态标记.md` | 研究结构与六态 |
-| G003 | `G003-工作流标准细则-从登记到归档五步.md` | 五步工作流与优先级 |
+| G002 | `G002-研究标准细则-结构与六态标记.md` | 研究结构与六态；PoC 产物约定（八节） |
 | G004 | `G004-写作规范细则-禁用字符与机械判定.md` | 四类禁用字符、豁免区、md-char-scan 门禁与存量基线 |
+| G005 | `G005-测试标准细则-分层断言与门禁流程.md` | 测试分层、断言、门禁（2026-09-03 自 references 迁入，原 R003） |
+| G006 | `G006-测试体系细则-六层分层与各层标准.md` | 六层测试体系（单元/集成/冒烟/回归/验收/A/B）落点与口径；真样本基线登记（D28/D29；2026-09-03 自 references 迁入，原 R006） |
 | - | `template.md` | 方案模板（不编号） |
+
+编号退役注记：2026-09-03 按「references 是做事的流程、guide 是做事的规范」归类修正，R003 改 G005、R006 改 G006、G003 改 R007；退役编号不复用。
 
 ## 八、错误速查
 

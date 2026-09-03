@@ -42,7 +42,7 @@
    - 禁止：只留在对话里反复试错。
 
 3. **发现问题时**
-   - 可以：走五步闭环（定位、归类、修正、验证、提交），细则见 `docs\guide\G003-工作流标准细则-从登记到归档五步.md`。
+   - 可以：走五步闭环（定位、归类、修正、验证、提交），细则见 `docs\references\R007-工作流标准细则-从登记到归档五步.md`。
    - 禁止：跳过定位直接改；只修表象不回写体系；问题只留在对话或记忆里；修完不跑验证；把临时补丁当最终方案不归档。
 
 4. **交付变更时**
@@ -72,7 +72,7 @@
    - 禁止：把「没验证」写成「已验证」（实证滥用）；断言不标六态；用猜测冒充结论。
 
 10. **写测试时**
-    - 可以：遵守 `docs\references\R003-测试标准细则-分层断言与门禁流程.md`（三层分层、集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\references\R006-测试体系细则-六层分层与各层标准.md`（单元/集成/冒烟/回归/验收/A/B 六层落点与口径）。
+    - 可以：遵守 `docs\guide\G005-测试标准细则-分层断言与门禁流程.md`（三层分层、集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\guide\G006-测试体系细则-六层分层与各层标准.md`（单元/集成/冒烟/回归/验收/A/B 六层落点与口径）。
     - 禁止：重言式断言；公开 API 测试塞 `mod tests{}` 不进 `tests\`；默认 mock；计时进断言；只测 happy path；A/B 检查点从被测输出反抄。
 
 11. **写临时脚本时**
@@ -90,7 +90,7 @@
 - **自升级**：`reader self update [--force]`（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 - **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
 - **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
-- **A/B 对比**：`uv run --script .tools\ab_run.py --a tiny --b small`（tests\ab\ 对象资源加检查点，OCR 模型档位质量与性能对比，报告落 tests\ab\reports\；标准见 R006）
+- **A/B 对比**：`uv run --script .tools\ab_run.py --a tiny --b small`（tests\ab\ 对象资源加检查点，OCR 模型档位质量与性能对比，报告落 tests\ab\reports\；标准见 G006）
 - **查文档**：先搜 `INDEX.md` 定位编号，再读文件
 - **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`、`uv run --script .tools\md-char-scan.py`（G004 禁用字符）
 
@@ -100,7 +100,7 @@
 
 > 定位看 `INDEX.md`（项目根目录，唯一索引：编号表、目录结构、代码文件位置）。本节是配合 INDEX 的搜索方法。
 
-**速记**：前缀定位 `P`（proven 归档）/ `S`（research 研究）/ `R`（references 开发测试参考）/ `G`（guide 元规范）/ `M`（mistakes 错误；文件 M1xx、行级 M0xx）；根目录四原语 `PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（规划）/ `TODO`（进度）。
+**速记**：前缀定位 `P`（proven 归档）/ `S`（research 研究）/ `R`（references 做事的流程）/ `G`（guide 做事的规范）/ `M`（mistakes 错误；文件 M1xx、行级 M0xx）；根目录四原语 `PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（规划）/ `TODO`（进度）。
 
 **搜索方法（文档）**：
 
@@ -111,4 +111,4 @@ rg -n "关键词" docs\research docs\references    # 3 全文搜研究参考
 rg -n "关键词" docs\mistakes\                   # 4 搜错误处理
 ```
 
-**分析路径**：改产品行为先读 `docs\references\`（怎么做）再回 `docs\research\`（为什么）；踩坑查 `docs\mistakes\`；写码选库走 R002；测试规范 R003；新想法走 G003 五步；定位代码先 INDEX 模块表。
+**分析路径**：改产品行为先读 `docs\references\`（怎么做）再回 `docs\research\`（为什么）；踩坑查 `docs\mistakes\`；写码选库走 R002；测试规范 G005；新想法走 R007 五步；定位代码先 INDEX 模块表。

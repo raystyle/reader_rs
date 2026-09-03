@@ -15,7 +15,7 @@
 
 ## 阶段 0：项目基础设施
 
-AGENTS 四段职责、GOAL/TODO/PLAN 三原语、guide 元规范 G001-G003、references 定位与细则、rumdl 与 `.tools` 门禁。
+AGENTS 四段职责、GOAL/TODO/PLAN 三原语、guide 元规范 G001-R007、references 定位与细则、rumdl 与 `.tools` 门禁。
 
 ## 阶段 1：最小闭环
 

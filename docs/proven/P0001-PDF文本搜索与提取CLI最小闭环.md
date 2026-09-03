@@ -4,7 +4,7 @@
 
 - 状态：已完成
 - 日期：2026-08-31
-- 关联：TODO.md / 研究 `docs\research\S001-PDF文本提取crate选型-pdf-inspector双通道核实.md` / 参考 `docs\references\R001-项目定位-Agent原生文档阅读搜索和提取工具.md`（定位现役版，P0002 后）、`docs\references\R003-测试标准细则-分层断言与门禁流程.md`
+- 关联：TODO.md / 研究 `docs\research\S001-PDF文本提取crate选型-pdf-inspector双通道核实.md` / 参考 `docs\references\R001-项目定位-Agent原生文档阅读搜索和提取工具.md`（定位现役版，P0002 后）、`docs\guide\G005-测试标准细则-分层断言与门禁流程.md`
 
 ## 背景与问题
 

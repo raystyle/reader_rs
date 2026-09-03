@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.10"
 # ///
-"""ab_run.py：A/B 对比跑批器（tests/ab 层，标准见 docs/references/R006）。
+"""ab_run.py：A/B 对比跑批器（tests/ab 层，标准见 docs/guide/G006）。
 
 用法：
   uv run --script .tools/ab_run.py                      # 全样本，tiny vs small
