@@ -66,12 +66,16 @@
    - 禁止：把「没验证」写成「已验证」（实证滥用）；断言不标六态；用猜测冒充结论。
 
 10. **写测试时**
-    - 可以：遵守 `docs\guide\G005-测试标准细则-分层断言与门禁流程.md`（原生地基：单元/集成/文档测试，集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\guide\G006-测试体系细则-六层分层与各层标准.md`（目的流程四层：冒烟/回归/验收/A/B 落点与口径）；载体裁定（D31 第 2 轮）：冒烟/回归/验收归 cargo test 体系（`tests\smoke.rs` 等独立 target），只有 A/B 跑批用 uv 运行时 Python（`.tools\ab_run.py`）。
-    - 禁止：重言式断言；公开 API 测试塞 `mod tests{}` 不进 `tests\`；默认 mock；计时进断言；只测 happy path；A/B 检查点从被测输出反抄。
+    - 可以：遵守 `docs\guide\G005-测试标准细则-分层断言与门禁流程.md`（原生地基：单元/集成/文档测试，集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\guide\G006-测试体系细则-六层分层与各层标准.md`（目的流程四层：冒烟/回归/验收/A/B 落点与口径）；载体裁定（D31 第 2 轮）：冒烟/回归/验收归 cargo test 体系（`tests\smoke.rs` 等独立 target），只有 A/B 跑批用 uv 运行时 Python（`.tools\ab_run.py`）。测试资源：夹具一律现造（lopdf/rbook/zip）落系统临时目录；入仓资产只放 `tests\assets\`（如 legacy.doc）与 `tests\ab\assets\`（合成样本）；外部真样本（CLR 书、安全牛 PDF）不入仓，钉 sha256 登记在 `tests\regress.rs` 与 `tests\ab\manifest.json`，缺失即跳过不算失败。
+    - 禁止：重言式断言；公开 API 测试塞 `mod tests{}` 不进 `tests\`；默认 mock；计时进断言；只测 happy path；A/B 检查点从被测输出反抄；外部版权样本进仓。
 
 11. **写临时脚本时**
     - 可以：按需自定义的 ps1 / py / Rust 工具，有复用价值即归档 `.tools\`（规则与清单见 `.tools\README.md`；Python 带 PEP 723 头，用 `uv run --script` 运行）；文档结构大改后跑 `uv run --script .tools\md-ref-scan.py` 做断链回归。
     - 禁止：可复用脚本散落仓库根或只留在对话里；归档不带自述与用法。
+
+12. **做研究出原型时**
+    - 可以：研究的产物是 PoC 原型（D30）：可运行验证落 `poc\<S编号-主题短名>\`（约定与登记表见 `poc\README.md`；源码、清单、脚本、自述入仓，构建产物与模型大件 gitignore）；实测结论回填对应 S 文档并标六态；上游 clone 实测类不搬源码，只在登记表记指针。
+    - 禁止：PoC 散落在 `target\` 或仓根临时工区；模型与大文件进 git；有 PoC 无 S 文档结论。
 
 ## 三、意图路由
 
