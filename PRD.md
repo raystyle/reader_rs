@@ -41,7 +41,7 @@
 | D22 | 中英文 Markdown 技术文档写作规范转为项目规范，存量渐进清理 | 已交付 | 第 0 轮 | G004；存量清零（be59688） |
 | D23 | MCP 服务能力 | 待澄清 | 未发起 | 候选方向 |
 | D24 | 分发面扩展：crates.io / brew / scoop | 待澄清 | 未发起 | 候选方向 |
-| D25 | OCR v6 small 质量档旗标（更干净输出，3.2s/页量级） | 待澄清 | 未发起 | S008 留档候选；A/B 首跑证据 tests\ab\reports\2026-09-03-tiny-vs-small.md（合成样本 small 4/5 对 tiny 1/5，真样本 51 对 37 行） |
+| D25 | OCR v6 small 质量档旗标（更干净输出，3.2s/页量级） | 待澄清 | 未发起 | S008 留档候选；A/B 首跑证据 tests\ab\reports\2026-09-03-tiny-vs-small.md（合成样本 small 4/5 对 tiny 1/5，真样本 51 对 37 行）；README 已说明 env 档位开关（2026-09-03） |
 | D26 | query 边界扩展（目录输入、更多输出形态） | 待澄清 | 未发起 | 候选方向 |
 | D27 | 学习 pve-harness PRD 做项目自省：需求层独立成第四原语，需求驱动目标 | 已交付 | 第 1 轮（用户逐条定四原语分工：PRD 需求清单、GOAL 目标与达成标准、PLAN 规划、TODO 进度） | 本文件；AGENTS / INDEX / R007 同步 |
 | D28 | 测试体系定标准规范：单元、集成、冒烟、回归、验收、A/B 六层各定落点与口径 | 已交付 | 第 1 轮（用户点名六层） | G006 |
@@ -56,7 +56,7 @@
 | D37 | 发布面扩展：aarch64-linux-musl 资产、cargo-dist 安装器（brew/winget/deb） | 待澄清 | 未发起 | G007 二节；触发：ARM Linux 用户或安装器需求 |
 | D38 | trycmd 跑帮助与文档示例测试 | 待澄清 | 未发起 | G007 三节；触发：README 示例数量上来后 |
 | D39 | 工程效率件：edition 2024 加 rust-toolchain.toml 钉死、nextest 运行器、llvm-cov 覆盖率、cargo deny/audit 供应链闸 | 待澄清 | 未发起 | G007 一/三节；触发：CI 门禁扩展轮 |
-| D40 | README 规范供稿消化：定 G008（结构顺序、About 一致性、写作增量、反模式、同步义务）并按此整改 README | 已交付 | 第 3 轮（About 裁定维持纯中文现状；README 首要内容裁定为全平台部署安装、升级、配置与管理；self update 默认匿名无需 GH_TOKEN；开头改定位速览符合人类阅读习惯） | G008；README 整改（部署集群提升、License 置末、速览化） |
+| D40 | README 规范供稿消化：定 G008（结构顺序、About 一致性、写作增量、反模式、同步义务）并按此整改 README | 已交付 | 第 4 轮（About 纯中文；部署首要；self update 匿名即可用；开头速览化；模型档位、来源与手动部署说清；致谢节补齐） | G008；README 整改（部署集群提升、License 置末、速览化、模型三问、致谢） |
 | D41 | 封版发布流程确定：先本地全平台编译、全平台测试验收，后封版触发 GitHub Action 发布 release | 已交付 | 第 0 轮（用户点名流程骨架） | R008；v0.4.0 首轮执行 |
 | D42 | OCR 模型分发自维护：不再依赖 HuggingFace 直连（国内机器首用下载不可达） | 已澄清 | 第 1 轮（用户裁定下一版本自维护模型分发；载体待立项澄清：候选 GitHub Releases 资产、ModelScope、自有镜像） | 证据：v0.4.0 封版验收 lan-linux 首用下载 tiny-rec 三连重试失败、scp 手动放置后 `--offline` 全通（2026-09-03）；P0014 时代 ModelScope 源无此问题；触发：v0.4.0 发布后立项 |
 

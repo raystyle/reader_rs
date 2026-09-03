@@ -81,15 +81,58 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 | --- | --- | --- |
 | `GH_TOKEN` | `self update` 查新版的认证令牌（提高 GitHub API 配额）；默认匿名即可用，撞限流自动回退 `gh api` | 匿名（有配额） |
 | `READER_OCR_CACHE_DIR` | 覆盖 OCR 模型缓存目录 | 平台缓存目录（见下表） |
-| `READER_OCR_MODEL_SIZE` | OCR 模型档位：`tiny`（快）或 `small`（输出更净，约 3 秒每页量级） | `tiny` |
+| `READER_OCR_MODEL_SIZE` | OCR 模型档位 `tiny` / `small`（差异见下表） | `tiny` |
 
-模型缓存三平台缺省位置（首用 `--ocr` 时下载约 6.2 MB，`--offline` 禁下载须模型已就位；目录可随时删除，下次 `--ocr` 按需重新下载）：
+**OCR 模型档位**（`READER_OCR_MODEL_SIZE`，缺省 `tiny`）：
+
+| 档位 | 速度 | 质量 |
+| --- | --- | --- |
+| `tiny` | 快（多核约 1-5 秒/页） | 缺省档；混排文本偶有掉字 |
+| `small` | 慢（约 3 秒/页量级） | 输出更净更全（实测行召回更高、掉字更少） |
+
+切换即用，两档模型独立缓存：
+
+```bash
+READER_OCR_MODEL_SIZE=small reader extract ./scan.pdf --ocr      # bash
+$env:READER_OCR_MODEL_SIZE = "small"; reader extract .\scan.pdf --ocr   # pwsh
+```
+
+### 模型来源与手动部署
+
+来源：HuggingFace [PaddlePaddle/PP-OCRv6_tiny_det_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_safetensors) 与 [PaddlePaddle/PP-OCRv6_tiny_rec_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_rec_safetensors)（small 档同系 `small_det` / `small_rec` 两仓），ppocr-rs 钉 revision 与逐件 sha256，首用 `--ocr` 时下载约 6.2 MB（small 档约 30 MB）。
+
+缓存结构（档位 × det / rec 两包，各 4 件加隐藏完成标记 `.ppocr-rs.complete`）：
+
+```text
+<缓存目录>/
+  tiny-det/   model.safetensors、config.json、inference.yml、preprocessor_config.json、.ppocr-rs.complete
+  tiny-rec/   同上五件
+```
+
+三平台缺省缓存目录：
 
 | 平台 | 缓存目录 |
 | --- | --- |
 | Windows | `%LOCALAPPDATA%\reader\models`（无则 `%APPDATA%` 下同路径） |
 | macOS | `~/Library/Caches/reader/models` |
 | Linux | `$XDG_CACHE_HOME/reader/models`（未设则 `~/.cache/reader/models`） |
+
+手动部署（网络不可达机器，如内网服务器；模型件字节跨平台一致）：
+
+1. 可达机器先跑一次 `reader extract ./任一.pdf --ocr --pages 1`，缓存自动落地；
+2. 整目录拷贝到目标机器同位置（必须含隐藏标记文件）：
+
+```bash
+scp -r <可达机>/reader/models/tiny-det <可达机>/reader/models/tiny-rec <用户>@<目标机>:~/.cache/reader/models/
+```
+
+3. 目标机以 `--offline` 验证（模型就位则零下载）：
+
+```bash
+reader extract ./scan.pdf --ocr --offline --pages 1
+```
+
+注意：`.ppocr-rs.complete` 内容是模型清单指纹而非空文件，手工从 HF 只拼 4 件数据缺标记会被判未完成；离线部署走「先落缓存再整目录拷贝」。缓存目录可随时删除，下次 `--ocr` 按需重新下载。
 
 卸载：预编译安装删除 `reader` 与 `rr` 两个二进制与缓存目录即可；cargo 安装用 `cargo uninstall reader_rs` 一并移除双名。
 
@@ -251,6 +294,16 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 - 提问、报错与功能建议：开 [GitHub Issue](https://github.com/raystyle/reader_rs/issues)。
 - 协作规则（四原语、工作规则、文档体系）：见 [AGENTS.md](AGENTS.md)。
 - 接受 PR：一次提交只做一件事；改动须过门禁（cargo 三件加文档四件，清单见 [AGENTS.md](AGENTS.md) 二节）。
+
+## 致谢
+
+核心能力站在这些项目上：
+
+- [pdf-inspector](https://github.com/firecrawl/pdf-inspector)（firecrawl，MIT）：PDF 布局管线，多栏阅读序与 needs_ocr 检出
+- [anydoc](https://crates.io/crates/anydoc)（firecrawl，MIT）：Word / EPUB / ODT / RTF / Office / CSV 家族统一文档引擎
+- [mq](https://github.com/harehare/mq)（harehare，MIT）：jq 风格 markdown 查询，`query` 子命令内核
+- [ppocr-rs](https://github.com/weidix/ppocr-rs) 与 [hayro](https://crates.io/crates/hayro)：OCR 兜底的原生 CPU 内核与 PDF 渲染；模型来自 [PaddlePaddle PP-OCRv6](https://huggingface.co/PaddlePaddle)
+- [clap](https://github.com/clap-rs/clap) / [serde](https://serde.rs) / [ureq](https://github.com/algesten/ureq)：CLI、序列化与下载基建
 
 ## License
 
