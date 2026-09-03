@@ -4,7 +4,7 @@
 
 ## 一、项目定位
 
-> 本项目的本质与边界。根为定位，下分本质、边界、交互对象、方案索引。
+> 本项目的本质与边界。根为定位，下分本质、边界、交互对象。
 
 1. **本质**
    - Reader 是 Agent 原生文档阅读、搜索和提取工具：为 Agent 管线设计的 Rust CLI，从本地文档读文本层：按页读、按词/正则搜、按页取。
@@ -19,13 +19,7 @@
 3. **交互对象**
    - 本地文档文件（只读交互：读文本层，不渲染不编辑；首版 PDF）。
    - 调用方（Agent 或人）经 CLI：`reader` 命令（等价缩写 `rr`，同一二进制两个名字）。
-
-4. **方案索引**
-   - 定位：`docs\references\R001-项目定位-Agent原生文档阅读搜索和提取工具.md`
-   - 定位变更：`docs\proven\P0002-项目重新定位-Agent原生文档阅读搜索和提取工具.md`；首期切面 `docs\proven\P0001-PDF文本搜索与提取CLI最小闭环.md`
-   - 选型研究：`docs\research\S001-PDF文本提取crate选型-pdf-inspector双通道核实.md`
-   - 统一引擎：anydoc 重构方案 `docs\proven\P0009-anydoc统一文档引擎大重构.md`；选型 `docs\research\S004-Word文档读取选型-docx自解与doc直读双路线实测.md`（含决策变更）
-   - 研究：`docs\research\`（文件名即标题，按关键词搜）
+   - 定位展开见 `docs\references\R001-项目定位-Agent原生文档阅读搜索和提取工具.md`；历史方案与研究一律查 `INDEX.md`，不在本节维护清单。
 
 ## 二、操作规则
 
@@ -103,7 +97,7 @@
 
 **速记**：前缀定位 `P`（proven 归档）/ `S`（research 研究）/ `R`（references 做事的流程）/ `G`（guide 做事的规范）/ `M`（mistakes 错误；文件 M1xx、行级 M0xx）；根目录四原语 `PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（规划）/ `TODO`（进度）。
 
-**目录职责**：`docs\proven\` 已完成方案归档；`docs\diary\` 一天一篇总结自省；`docs\research\` 研究（为什么，六态）；`docs\references\` 做事的流程（操作手册、流程细则）；`docs\guide\` 做事的规范（标准与禁令）；`docs\mistakes\` 出错怎么纠；`poc\` 研究原型产物（S 编号前缀子目录，产物与模型 gitignore）；`tests\` 集成测试加三层跑批脚本（smoke / regress / accept）加 `tests\ab\` A/B 层；`.tools\` 项目脚本工具（清单见 `.tools\README.md`）。
+**目录职责**：`docs\proven\` 已完成方案的**历史归档**（封存：做成了什么、当时的方案与依据，不再更新）；`docs\diary\` 一天一篇总结自省；`docs\research\` 研究（为什么，六态）；`docs\references\` **现役**做事的流程（操作手册与流程细则，下次照着做，持续更新）；`docs\guide\` 做事的规范（标准与禁令）；`docs\mistakes\` 出错怎么纠；`poc\` 研究原型产物（S 编号前缀子目录，产物与模型 gitignore）；`tests\` 集成测试加三层跑批 target（smoke / regress / accept）加快照（snapshot）加 `tests\ab\` A/B 层；`.tools\` 项目脚本工具（清单见 `.tools\README.md`）。分界：方案做成归档进 proven（历史）；可复用的流程提炼进 references（现役）；标准禁令进 guide。
 
 **搜索方法（文档）**：
 

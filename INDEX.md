@@ -6,7 +6,7 @@
 
 **前缀定位**：`P`（proven，已完成 plan 归档，4 位）；`S`（research，研究原型过程，3 位）；`R`（references，做事的流程，3 位）；`G`（guide，做事的规范，3 位）；`M`（mistakes，分类文件 M1xx、行级错误 M0xx 全局递增不复用）。根目录四原语：`PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（当前目标规划）/ `TODO`（进度清单）。
 
-**目录职能**：`proven` 已完成 plan 归档；`diary` 一天一篇总结与自省；`research` 研究原型过程（为什么，六态对齐，规范见 G002；PoC 产物落 `poc\`）；`references` 做事的流程（要做什么怎么做，操作手册与流程细则）；`guide` 做事的规范（标准与禁令，含 `template.md`）；`mistakes` 出错怎么纠（与 references 是经验教训的两面）。
+**目录职能**：`proven` 已完成方案的**历史归档**（封存：做成了什么、当时依据，不再更新）；`diary` 一天一篇总结与自省；`research` 研究原型过程（为什么，六态对齐，规范见 G002；PoC 产物落 `poc\`）；`references` **现役**做事的流程（操作手册与流程细则，持续更新）；`guide` 做事的规范（标准与禁令，含 `template.md`）；`mistakes` 出错怎么纠。分界：方案做成归档进 proven（历史）；可复用流程提炼进 references（现役）；标准禁令进 guide。
 
 新文档按类别落位，编号接当前最大号，登记进本索引对应节。
 
