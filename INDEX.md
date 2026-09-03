@@ -43,6 +43,7 @@
 | `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤 |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
 | `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；accept 为 cucumber BDD，场景 tests\features\，D33；G006 载体规则） |
+| `tests\snapshot.rs` | 回归层 insta 输出快照（extract 全量、search 命中格式、--llms；快照在 tests\snapshots\，D34） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
 
@@ -58,6 +59,7 @@ reader_rs/
   tests\
     cli.rs  assets\legacy.doc
     smoke.rs / regress.rs / accept.rs   冒烟/回归/验收独立 test target（accept 为 cucumber BDD）
+    snapshot.rs  snapshots\   回归层 insta 输出快照（D34）
     features\  验收 Gherkin 场景（cucumber，D33）
     ab\      A/B 对比层（manifest / expectations / assets / reports）
   docs\

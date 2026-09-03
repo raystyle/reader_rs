@@ -1,0 +1,9 @@
+---
+source: tests/snapshot.rs
+assertion_line: 77
+expression: stdout_of(&out)?
+---
+== page 1 ==
+## Hello Snapshot World
+== page 2 ==
+## Second page rust regress

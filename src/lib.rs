@@ -552,4 +552,29 @@ mod tests {
         assert!(parse_page_spec("a").is_err());
         assert!(parse_page_spec("").is_err());
     }
+
+    // D34：页范围解析属性测试（proptest；最小反例自动 shrink，失败即永久回归用例）
+    proptest::proptest! {
+        #[test]
+        fn page_spec_singles_roundtrip(
+            pages in proptest::collection::btree_set(1u32..=500u32, 1..20usize)
+        ) {
+            let spec = pages.iter().map(u32::to_string).collect::<Vec<_>>().join(",");
+            let got = parse_page_spec(&spec).unwrap();
+            proptest::prop_assert_eq!(got, pages.iter().copied().collect::<HashSet<_>>());
+        }
+
+        #[test]
+        fn page_spec_range_covers(lo in 1u32..=400u32, len in 0u32..=100u32) {
+            let hi = lo + len;
+            let got = parse_page_spec(&format!("{lo}-{hi}")).unwrap();
+            proptest::prop_assert_eq!(got, (lo..=hi).collect::<HashSet<_>>());
+        }
+
+        #[test]
+        fn page_spec_any_zero_rejected(n in 1u32..=20u32) {
+            let spec = format!("{n},0");
+            proptest::prop_assert!(parse_page_spec(&spec).is_err());
+        }
+    }
 }

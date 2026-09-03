@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **D34 达成**：回归层增强：insta 快照 3 枚（extract 全量、search 命中格式、--llms；首跑 .snap.new 人工审后入库）加 proptest 页范围解析 3 属性（singles 往返、range 覆盖、0 拒绝）；trybuild 裁定不适用（公开面是 CLI 非库 API）；坑：并行用例共用 pid 临时文件互删（改按用例分名） |
 | 2026-09-03 | **D33 达成**：验收层 BDD 化：cucumber 0.23 加 futures 进 dev-dependencies，tests\features\accept.feature 8 场景 21 步全绿，tests\accept.rs 改步骤绑定（harness=false）；testcontainers-rs 裁定不适用（纯 CLI 无可容器化依赖）；坑：TOML 节序把 [[test]] 插进 dev-dependencies 中间会吞后续键（M013） |
 | 2026-09-03 | D31 第 2 轮裁定落地：冒烟/回归/验收收拢归 cargo test 体系（tests\smoke.rs / regress.rs / accept.rs 独立 target，12 测全绿），uv Python 只留 A/B 跑批（对比非门禁）；py 三脚本删除；serde_json 与 sha2 进 dev-dependencies |
 | 2026-09-03 | **D32 达成**：AGENTS 自省调整（四原语职责入规则 1、测试载体规则入规则 10、四节目录职责总表、分析路径按流程/规范分工改写）；G006 采纳用户供稿框架修正：原生地基三层（单元/集成/文档测试，cargo 内建顺序门禁）对目的流程四层（冒烟/回归/验收/A/B，约定加脚本拼装），A/B 定位为离线筛选门，生态演进候选入表（insta/proptest/trybuild/cucumber） |

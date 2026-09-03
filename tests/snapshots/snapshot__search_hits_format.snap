@@ -1,0 +1,6 @@
+---
+source: tests/snapshot.rs
+assertion_line: 87
+expression: stdout_of(&out)?
+---
+2:1:## Second page rust regress

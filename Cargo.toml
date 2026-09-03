@@ -64,6 +64,9 @@ sha2 = "0.10"
 # 验收层 BDD（D33）：cucumber Gherkin 场景驱动；futures 提供 block_on 执行器
 cucumber = "0.23"
 futures = "0.3"
+# 回归层增强（D34）：insta 全量输出快照（禁静默 accept，diff 必人工审）加 proptest 页范围属性
+insta = "1"
+proptest = "1"
 # 测试用 EPUB 由 rbook builder 现造（P0009 起 rbook 退出主依赖，转测试侧造夹具；选型记 S003）
 rbook = "0.7.10"
 # 测试用 docx 由 zip 现造最小 OOXML（P0009；anydoc 家族夹具）
