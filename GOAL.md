@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **D35 达成**：Rust CLI 工程基线供稿逐项裁定落 G007（已符合 6 项、已落地 1 项、候选 4 项入 PRD D36-D39、不适用 3 项防复问）；release profile strip 加 thin LTO 即落 |
 | 2026-09-03 | **D34 达成**：回归层增强：insta 快照 3 枚（extract 全量、search 命中格式、--llms；首跑 .snap.new 人工审后入库）加 proptest 页范围解析 3 属性（singles 往返、range 覆盖、0 拒绝）；trybuild 裁定不适用（公开面是 CLI 非库 API）；坑：并行用例共用 pid 临时文件互删（改按用例分名） |
 | 2026-09-03 | **D33 达成**：验收层 BDD 化：cucumber 0.23 加 futures 进 dev-dependencies，tests\features\accept.feature 8 场景 21 步全绿，tests\accept.rs 改步骤绑定（harness=false）；testcontainers-rs 裁定不适用（纯 CLI 无可容器化依赖）；坑：TOML 节序把 [[test]] 插进 dev-dependencies 中间会吞后续键（M013） |
 | 2026-09-03 | D31 第 2 轮裁定落地：冒烟/回归/验收收拢归 cargo test 体系（tests\smoke.rs / regress.rs / accept.rs 独立 target，12 测全绿），uv Python 只留 A/B 跑批（对比非门禁）；py 三脚本删除；serde_json 与 sha2 进 dev-dependencies |

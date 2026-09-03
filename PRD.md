@@ -51,6 +51,11 @@
 | D32 | AGENTS 自省调整各目录和文档职责、规范、规则和意图路由；采纳 Rust 测试框架供稿（原生三层单元/集成/文档测试为地基，冒烟/回归/验收/A/B 为目的流程层靠约定拼装） | 已交付 | 第 1 轮（用户供稿加点名） | AGENTS 一/二/四节；G006 一节框架修正 |
 | D33 | 验收层 BDD 化：cucumber Gherkin 场景驱动（testcontainers-rs 裁定不适用：纯 CLI 无可容器化依赖） | 已交付 | 第 1 轮（用户供稿点名 cucumber） | tests\features\accept.feature 8 场景加 tests\accept.rs 步骤绑定 |
 | D34 | 回归层增强：insta 快照加 proptest 属性（trybuild 裁定不适用：公开面是 CLI 不是库 API，无编译期契约要守） | 已交付 | 第 1 轮（用户供稿点名） | tests\snapshot.rs 3 快照加 tests\snapshots\；src\lib.rs 页范围 3 属性 |
+| D35 | Rust CLI 工程基线供稿消化：逐项裁定（已符合/已落地/候选/不适用）落 G007；release profile strip 加 thin LTO 即落 | 已交付 | 第 1 轮（用户供稿） | G007；Cargo.toml profile.release |
+| D36 | 错误与诊断体系：库内 thiserror、边界 anyhow 加 cause chain、tracing 结构化诊断 | 待澄清 | 未发起 | G007 一节；触发：公开库 API 或错误分类需求 |
+| D37 | 发布面扩展：aarch64-linux-musl 资产、cargo-dist 安装器（brew/winget/deb） | 待澄清 | 未发起 | G007 二节；触发：ARM Linux 用户或安装器需求 |
+| D38 | trycmd 跑帮助与文档示例测试 | 待澄清 | 未发起 | G007 三节；触发：README 示例数量上来后 |
+| D39 | 工程效率件：edition 2024 加 rust-toolchain.toml 钉死、nextest 运行器、llvm-cov 覆盖率、cargo deny/audit 供应链闸 | 待澄清 | 未发起 | G007 一/三节；触发：CI 门禁扩展轮 |
 
 ## 维护规则
 
