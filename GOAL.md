@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **D40 达成**：README 规范供稿消化：G008 落盘（首屏优先结构 14 节裁定表、About 逐字一致规则、写作增量、反模式 7 条、同步义务）；README 整改（部署集群安装全平台加升级加配置与管理提升为一等内容、首句对齐 About、CI 加 MIT 徽章、特性、快速开始、贡献与 License 段补齐、仓内引用相对链接化）；About 裁定维持纯中文现状、self update 表述修正（默认匿名有配额） |
 | 2026-09-03 | **D35 达成**：Rust CLI 工程基线供稿逐项裁定落 G007（已符合 6 项、已落地 1 项、候选 4 项入 PRD D36-D39、不适用 3 项防复问）；release profile strip 加 thin LTO 即落 |
 | 2026-09-03 | **D34 达成**：回归层增强：insta 快照 3 枚（extract 全量、search 命中格式、--llms；首跑 .snap.new 人工审后入库）加 proptest 页范围解析 3 属性（singles 往返、range 覆盖、0 拒绝）；trybuild 裁定不适用（公开面是 CLI 非库 API）；坑：并行用例共用 pid 临时文件互删（改按用例分名） |
 | 2026-09-03 | **D33 达成**：验收层 BDD 化：cucumber 0.23 加 futures 进 dev-dependencies，tests\features\accept.feature 8 场景 21 步全绿，tests\accept.rs 改步骤绑定（harness=false）；testcontainers-rs 裁定不适用（纯 CLI 无可容器化依赖）；坑：TOML 节序把 [[test]] 插进 dev-dependencies 中间会吞后续键（M013） |

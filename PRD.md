@@ -56,6 +56,7 @@
 | D37 | 发布面扩展：aarch64-linux-musl 资产、cargo-dist 安装器（brew/winget/deb） | 待澄清 | 未发起 | G007 二节；触发：ARM Linux 用户或安装器需求 |
 | D38 | trycmd 跑帮助与文档示例测试 | 待澄清 | 未发起 | G007 三节；触发：README 示例数量上来后 |
 | D39 | 工程效率件：edition 2024 加 rust-toolchain.toml 钉死、nextest 运行器、llvm-cov 覆盖率、cargo deny/audit 供应链闸 | 待澄清 | 未发起 | G007 一/三节；触发：CI 门禁扩展轮 |
+| D40 | README 规范供稿消化：定 G008（结构顺序、About 一致性、写作增量、反模式、同步义务）并按此整改 README | 已交付 | 第 2 轮（About 裁定维持纯中文现状；README 首要内容裁定为全平台部署安装、升级、配置与管理；self update 默认匿名无需 GH_TOKEN） | G008；README 整改（部署集群提升、License 置末） |
 
 ## 维护规则
 
