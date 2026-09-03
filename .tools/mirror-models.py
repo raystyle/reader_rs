@@ -182,17 +182,18 @@ def main() -> None:
     work_abs = work.resolve().as_posix()
     # 单件上传不走 copyto:rclone 对 R2 的 copyto 会触发 HeadBucket 加 CreateBucket,
     # 桶级 token 无建桶权即 403(实测);隔离目录加 copy 同效。
+    # 树与清单分目录、两条命令同形(免 --exclude:与 --header-upload 并用时实测头不落对象)。
     manifest_only = work / "r2" / "manifest-only"
     manifest_only.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(r2_models / "models.manifest.json", manifest_only / "models.manifest.json")
+    shutil.move(str(r2_models / "models.manifest.json"), str(manifest_only / "models.manifest.json"))
     upload.write_text(
         "#!/usr/bin/env bash\n"
         "set -euo pipefail\n"
         "# 调用方供 RCLONE_CONFIG_R2_TYPE/_PROVIDER/_ENDPOINT/_ACCESS_KEY_ID/_SECRET_ACCESS_KEY env\n"
-        f'rclone copy "{work_abs}/r2/models" R2:reader-dl/models \\\n'
-        '  --exclude models.manifest.json \\\n'
+        # --ignore-times 强制重传:免得对象已存在被跳过,缓存头修复不到存量件
+        f'rclone copy -v --ignore-times "{work_abs}/r2/models" R2:reader-dl/models \\\n'
         f'  --header-upload "{RCLONE_IMMUTABLE}"\n'
-        f'rclone copy "{work_abs}/r2/manifest-only" R2:reader-dl/models \\\n'
+        f'rclone copy -v "{work_abs}/r2/manifest-only" R2:reader-dl/models \\\n'
         f'  --header-upload "{RCLONE_MANIFEST}"\n',
         encoding="utf-8",
     )
