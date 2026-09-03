@@ -5,15 +5,18 @@ Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB 
 [![CI](https://github.com/raystyle/reader_rs/actions/workflows/ci.yml/badge.svg)](https://github.com/raystyle/reader_rs/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-从本地 PDF、markdown 与 Word / EPUB / ODT / RTF / Office / CSV 文档读文本层：PDF 按页读、其余格式按标题节读，按词或正则搜、按单元取、按 mq 表达式结构化提取；PDF 扫描件可 `--ocr` 兜底识别。输出稳定可解析，单调用无交互。仓库 `reader_rs`，CLI `reader`（缩写 `rr`，同一二进制两个名字），远端 <https://github.com/raystyle/reader_rs>。
+从本地 PDF、markdown 与 Office 家族文档读文本层，给 Agent 稳定可解析的输出。Rust 单二进制、单调用无交互；命令 `reader`（缩写 `rr`）。
 
-## 特性
+| 做什么 | 命令示例 |
+| --- | --- |
+| 读：按页或标题节取正文 | `reader extract ./doc.pdf --pages 1-3` |
+| 搜：字面、正则、目录批量 | `rr search ./材料 "配置" -C 2` |
+| 结构化提取：mq 表达式（jq 风格） | `reader query ./notes.md ".h2"` |
 
-- **格式面**：PDF、markdown 与 Word / EPUB / Office / CSV 等 14 种格式，单引擎统一出 GFM 文本
-- **输出契约**：行式标记、grep 语义退出码 0/1/2、`--format json` 包膜、`--filter` 点路径裁剪、分页 `next_offset`
-- **Agent 自省**：`--llms` 紧凑命令索引；`reader skill` 生成 SKILL.md 供编码 agent 自动发现
-- **结构化提取**：`query` 子命令嵌 mq 表达式（jq 风格），取标题、表格、代码块与列表
-- **OCR 兜底**：PDF 扫描件 needs_ocr 页 `--ocr` 识别（PP-OCRv6 tiny，首用下载约 6.2 MB 模型）
+- PDF 按页读；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 等 14 种格式按标题节读
+- 扫描件以 `needs_ocr` 检出，`--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2 MB 模型）
+- 行式标记、grep 语义退出码 0/1/2；`--format json` 包膜加 `--filter` 点路径裁剪、分页 `next_offset`
+- `--llms` 紧凑命令索引；`reader skill` 生成 SKILL.md 给编码 agent 自动发现
 
 ## 全平台安装
 
