@@ -1,0 +1,60 @@
+# 模型镜像工作流(D42):按 Cargo.toml 钉的 ppocr-rs rev 从 models.json 取四仓清单,
+# HF 下载逐件 sha256 硬校验后上 R2 桶 models/ 路径(reader.ohmygh.com 镜像真身),
+# 同批件再传 GitHub Releases models-v6 tag 作客户端第三级兜底。
+# 限制与入口:schedule 只在默认分支生效;仓库 60 天无活动自动停用 schedule 型触发;
+# 手动补跑:gh workflow run mirror-models.yml(或 Actions 页 Run workflow)。
+# models-v6 恒 prerelease:正式 release 会遮蔽 /releases/latest,让 self update 永远
+# 判「已是最新」;同 version 禁重发(R2 侧 immutable 头,重发须换版本号或 CF purge)。
+name: Mirror models
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * 1' # 每周一 03:17 UTC,避整点
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    env:
+      RCLONE_CONFIG_R2_TYPE: s3
+      RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+      RCLONE_CONFIG_R2_ENDPOINT: https://f2291a7e3896188d96bdf27e40e1027b.r2.cloudflarestorage.com
+      RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: 装 rclone(钉 1.75.0)
+        run: |
+          curl -fsSL -o rclone.zip https://downloads.rclone.org/v1.75.0/rclone-v1.75.0-linux-amd64.zip
+          unzip -q rclone.zip
+          sudo install rclone-v1.75.0-linux-amd64/rclone /usr/local/bin/rclone
+          rclone version | head -1
+      - name: staging(HF 下载逐件 sha256 硬校验;源漂移只告警不自动跟)
+        run: |
+          uv run --script .tools/mirror-models.py --work "$RUNNER_TEMP/stage"
+      - name: 上桶(manifest 最后传 = 发布提交点;首跑凭据传播延迟 401 重试勿判死)
+        run: |
+          for i in 1 2 3; do
+            if rclone lsf R2:reader-dl --max-depth 1 >/dev/null; then ok=1; break; fi
+            echo "第 ${i} 次连桶失败(新 token 的 S3 凭据映射有 1 至 2 分钟传播延迟);60 秒后重试"
+            sleep 60
+          done
+          [ "${ok:-0}" = 1 ] || exit 1
+          bash "$RUNNER_TEMP/stage/upload.sh"
+      - name: 传 GitHub 兜底 release(models-v6 恒 prerelease)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create models-v6 --title models-v6 --prerelease \
+            --notes "PP-OCRv6 tiny/small 四仓模型兜底资产(D42 客户端第三级回退;镜像真身 reader.ohmygh.com/models)" || true
+          gh release upload models-v6 "$RUNNER_TEMP/stage/gh/"* --clobber
+      - name: 验收(镜像对象与缓存头)
+        run: |
+          sleep 5
+          url=$(jq -r '.[0] | "https://reader.ohmygh.com/models/\(.repo)/\(.rev)/\(.file)"' "$RUNNER_TEMP/stage/r2/models/models.manifest.json")
+          curl -fsSI "$url" | grep -i 'cache-control.*immutable'
+          curl -fsSI "https://reader.ohmygh.com/models/models.manifest.json" | grep -i 'cache-control.*max-age=60'

@@ -3,12 +3,20 @@ name: Release
 on:
   push:
     tags: ['v*']
+  # 手动演练镜像腿(D42):对历史 tag 补跑资产上桶(如 v0.4.0);build 矩阵只在 push 跑
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要镜像的 release tag(如 v0.4.0)'
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
   build:
+    if: github.event_name == 'push'
     name: ${{ matrix.target }}
     strategy:
       fail-fast: false
@@ -18,12 +26,12 @@ jobs:
             target: x86_64-pc-windows-msvc
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-          # musl 静态资产（P0013）：Alpine / 容器 / 最小镜像场景；musl-tools 供 zstd-sys 等 C 编译
+          # musl 静态资产(P0013):Alpine / 容器 / 最小镜像场景;musl-tools 供 zstd-sys 等 C 编译
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
           - os: macos-latest
             target: aarch64-apple-darwin
-          # Intel mac 在 ARM runner 上交叉编译（同 Xcode SDK 双架构）；macos-13 Intel runner 已退役无容量
+          # Intel mac 在 ARM runner 上交叉编译(同 Xcode SDK 双架构);macos-13 Intel runner 已退役无容量
           - os: macos-latest
             target: x86_64-apple-darwin
     runs-on: ${{ matrix.os }}
@@ -40,7 +48,7 @@ jobs:
         shell: bash
         run: grep -q "^version = \"${GITHUB_REF_NAME#v}\"$" Cargo.toml
       - run: cargo build --release --locked --target ${{ matrix.target }}
-      - name: 打包 zip（Windows）
+      - name: 打包 zip(Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
@@ -49,7 +57,7 @@ jobs:
           Copy-Item "target\${{ matrix.target }}\release\reader.exe", "target\${{ matrix.target }}\release\rr.exe", README.md, LICENSE, SKILL.md $stage
           Compress-Archive $stage "$stage.zip"
           (Get-FileHash "$stage.zip" -Algorithm SHA256).Hash.ToLower() + "  $stage.zip" | Out-File -Encoding ascii "$stage.zip.sha256"
-      - name: 打包 tar.gz（macOS / Linux）
+      - name: 打包 tar.gz(macOS / Linux)
         if: runner.os != 'Windows'
         shell: bash
         run: |
@@ -65,3 +73,63 @@ jobs:
         run: |
           gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --generate-notes || true
           gh release upload "${GITHUB_REF_NAME}" "reader-${GITHUB_REF_NAME}-${{ matrix.target }}."* --clobber
+
+  # 镜像腿(D42):release 资产与 .sha256 边车上 R2 桶 reader/<version>/(immutable 头),
+  # latest.json 最后传(max-age=60;清单即发布提交点);末尾把本 tag 钉回 /releases/latest
+  # 双保险(防其它正式 release 遮蔽 self update 判新)。checkout 保持默认语义:push 检出
+  # tag 树,dispatch 检出默认分支(演练历史 tag 时新脚本不在该 tag 树里,tag 只作参数)。
+  mirror:
+    needs: build
+    if: always() && (github.event_name == 'workflow_dispatch' || needs.build.result == 'success')
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+      RCLONE_CONFIG_R2_TYPE: s3
+      RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+      RCLONE_CONFIG_R2_ENDPOINT: https://f2291a7e3896188d96bdf27e40e1027b.r2.cloudflarestorage.com
+      RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: 装 rclone(钉 1.75.0)
+        run: |
+          curl -fsSL -o rclone.zip https://downloads.rclone.org/v1.75.0/rclone-v1.75.0-linux-amd64.zip
+          unzip -q rclone.zip
+          sudo install rclone-v1.75.0-linux-amd64/rclone /usr/local/bin/rclone
+          rclone version | head -1
+      - name: 取 release 元数据与资产
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}" > "$RUNNER_TEMP/release.json"
+          mkdir "$RUNNER_TEMP/dist"
+          gh release download "$TAG" --dir "$RUNNER_TEMP/dist" --pattern 'reader-*'
+          ls "$RUNNER_TEMP/dist"
+      - name: 生成 latest.json(边车 sha256 优先,五平台白名单校验)
+        run: |
+          uv run --script .tools/gen-latest-json.py \
+            --release "$RUNNER_TEMP/release.json" \
+            --assets-dir "$RUNNER_TEMP/dist" \
+            --out "$RUNNER_TEMP/latest.json"
+          cat "$RUNNER_TEMP/latest.json"
+      - name: 资产上桶(immutable;首跑凭据传播延迟 401 重试勿判死)
+        run: |
+          version="${TAG#v}"
+          for i in 1 2 3; do
+            if rclone copy "$RUNNER_TEMP/dist" "R2:reader-dl/reader/${version}" \
+                 --header-upload "Cache-Control: public, max-age=31536000, immutable"; then
+              ok=1; break
+            fi
+            echo "第 ${i} 次上桶失败(新 token 的 S3 凭据映射有 1 至 2 分钟传播延迟);60 秒后重试"
+            sleep 60
+          done
+          [ "${ok:-0}" = 1 ] || exit 1
+      - name: latest.json 最后传(max-age=60)
+        run: |
+          rclone copyto "$RUNNER_TEMP/latest.json" "R2:reader-dl/reader/latest.json" \
+            --header-upload "Cache-Control: public, max-age=60"
+      - name: 本 tag 钉回 latest(防遮蔽双保险)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$TAG" --latest
