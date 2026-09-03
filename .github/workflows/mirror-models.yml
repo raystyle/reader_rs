@@ -55,6 +55,6 @@ jobs:
       - name: 验收(镜像对象与缓存头)
         run: |
           sleep 5
-          url=$(jq -r '.[0] | "https://reader.ohmygh.com/models/\(.repo)/\(.rev)/\(.file)"' "$RUNNER_TEMP/stage/r2/models/models.manifest.json")
+          url=$(jq -r '.[0] | "https://reader.ohmygh.com/models/\(.repo)/\(.rev)/\(.file)"' "$RUNNER_TEMP/stage/r2/manifest-only/manifest.json")
           curl -fsSI "$url" | grep -i 'cache-control.*immutable'
-          curl -fsSI "https://reader.ohmygh.com/models/models.manifest.json" | grep -i 'cache-control.*max-age=60'
+          curl -fsSI "https://reader.ohmygh.com/models/manifest.json" | grep -i 'cache-control.*max-age=60'

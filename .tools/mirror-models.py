@@ -7,7 +7,7 @@
   uv run --script .tools/mirror-models.py [--work DIR] [--date ISO8601] [--dry-run]
 产出(--work 下,默认系统临时目录):
   r2/models/<repo>/<rev>/{四件 + LICENSE + NOTICE}   → rclone copy 到 R2 桶 models/ 路径
-  r2/models/models.manifest.json                     → 最后传(60s 缓存头)
+  r2/manifest-only/manifest.json                     → 最后传(60s 缓存头;镜像路径 models/manifest.json)
   gh/<包名>-<rev12>-<文件>  +  PP-OCRv6-LICENSE.txt / PP-OCRv6-NOTICE.txt
                                                      → gh release upload models-v6(恒 prerelease)
   upload.sh                                          → 上述 rclone 命令(调用方供 RCLONE_CONFIG_R2_* env)
@@ -128,7 +128,7 @@ def main() -> None:
     if args.dry_run:
         for model in models:
             print(f"plan r2/models/{model['repository']}/{model['revision']}/ ({len(model['files'])} 件 + LICENSE + NOTICE)")
-        print("plan r2/models/models.manifest.json(最后传,max-age=60)")
+        print("plan r2/manifest-only/manifest.json → 镜像 models/manifest.json(最后传,max-age=60)")
         print("plan gh/ 16 件 + PP-OCRv6-LICENSE.txt + PP-OCRv6-NOTICE.txt → release models-v6(prerelease)")
         return
 
@@ -170,11 +170,11 @@ def main() -> None:
     (gh_dir / "PP-OCRv6-LICENSE.txt").write_text(apache_text, encoding="utf-8")
     (gh_dir / "PP-OCRv6-NOTICE.txt").write_text(
         "PP-OCRv6 模型(dist/small 两档四仓)来自 HuggingFace PaddlePaddle,Apache-2.0;\n"
-        "各仓 revision 与逐件 sha256 见 models.manifest.json(镜像侧为真)。\n"
+        "各仓 revision 与逐件 sha256 见镜像 models/manifest.json(镜像侧为真)。\n"
         f"镜像分发:reader.ohmygh.com(D42),取回时间 {date}。\n",
         encoding="utf-8",
     )
-    (r2_models / "models.manifest.json").write_text(
+    (r2_models / "manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
 
@@ -185,7 +185,7 @@ def main() -> None:
     # 树与清单分目录、两条命令同形(免 --exclude:与 --header-upload 并用时实测头不落对象)。
     manifest_only = work / "r2" / "manifest-only"
     manifest_only.mkdir(parents=True, exist_ok=True)
-    shutil.move(str(r2_models / "models.manifest.json"), str(manifest_only / "models.manifest.json"))
+    shutil.move(str(r2_models / "manifest.json"), str(manifest_only / "manifest.json"))
     upload.write_text(
         "#!/usr/bin/env bash\n"
         "set -euo pipefail\n"
@@ -194,7 +194,9 @@ def main() -> None:
         f'rclone copy -v --ignore-times "{work_abs}/r2/models" R2:reader-dl/models \\\n'
         f'  --header-upload "{RCLONE_IMMUTABLE}"\n'
         f'rclone copy -v "{work_abs}/r2/manifest-only" R2:reader-dl/models \\\n'
-        f'  --header-upload "{RCLONE_MANIFEST}"\n',
+        f'  --header-upload "{RCLONE_MANIFEST}"\n'
+        # 旧清单路径残留清理(用户裁定改 models/manifest.json;旧对象删一次即幂等)
+        'rclone deletefile R2:reader-dl/models/models.manifest.json 2>/dev/null || true\n',
         encoding="utf-8",
     )
     print(f"mirror-models: staging 完成 {work_abs}")
