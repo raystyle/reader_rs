@@ -37,7 +37,7 @@
 - 根因：TOML 节序即语义：表头之后的键值对都归最近的表头，直到下一个表头。
 - 正确处理：新增 `[[bin]]` / `[[test]]` 等表一律放文件末尾；改 Cargo.toml 后留意 unused manifest key 警告。
 
-## M016 路径断言用反斜杠字面量在 unix 假失败（Path 分隔符语义不跨平台）
+## M016 路径断言用反斜杠字面量在 unix 假失败
 
 - 首踩：2026-09-03（D42 settings_path 兄弟位单测：Windows 绿、lan-mac / lan-linux 双红）
 - 现象：`Path::new(r"C:\a\b\models").with_file_name("x")` 在 unix 得 `x` 而非 `C:\a\b\x`，断言左边只剩文件名。

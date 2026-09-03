@@ -2,7 +2,7 @@
 
 本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
 
-## [Unreleased]
+## [0.5.0] - 2026-09-03
 
 > 镜像分发落地（D42）：模型与升级默认走自有镜像 `reader.ohmygh.com`，国内机器首用不再卡 HuggingFace；新增 `ocr init / doctor / switch` 三子命令。
 
