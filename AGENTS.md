@@ -1,6 +1,6 @@
 # AGENTS.md
 
-本文件是协作规则的**最高约束**，四段职责依次为：**项目定位**、**工作规则**、**意图路由**、**文档索引**。
+本文件是协作规则的**最高约束**，三段职责依次为：**项目定位**、**工作规则**、**文档索引**。
 
 ## 一、项目定位
 
@@ -45,7 +45,7 @@
 2. **执行命令与写文件时**
    - 可以：Windows 命令用 PowerShell 7（`pwsh`），Linux / macOS / WSL 用该平台常规 shell；Markdown / Rust 源码 UTF-8；Windows 上需兼容 5.1 的脚本用 UTF-8 BOM。
    - 禁止：Windows 上默认用 `powershell.exe` 5.1；无 BOM 的中文 ps1 给 5.1 读。
-   - 参考：`docs\mistakes\` M101 / M102（路径、编码、管道坑）。
+   - 参考：`docs\mistakes\` M101 / M102（路径、编码、管道坑）；门禁命令：cargo 三件见 G005 四节，文档四件见 G004 与 INDEX。
 
 3. **提交与 git 管理时**
    - 可以：`feat:` / `docs:` / `fix:` / `chore:` / `test:` 前缀加中文描述；一次提交只做一件事。
@@ -88,7 +88,7 @@
 | 追问链澄清（对话） | 澄清完成 | PRD 状态流转加澄清轮次与裁定 |
 | 目标立项（对话） | 开工前 | GOAL 起点与锚点、PLAN 方案、TODO 清单 |
 | 选型与调研（编码前置） | 研究完成 | S 文档（六态）加 PoC 登记（poc\）加 INDEX 研究节 |
-| 写改源码与配置（编码） | 改动完成 | README / SKILL / 意图路由同步；行为基线变化同步 G006 三节；版本级成果进 CHANGELOG |
+| 写改源码与配置（编码） | 改动完成 | README / SKILL 同步（命令面变化重生 SKILL）；行为基线变化同步 G006 三节；版本级成果进 CHANGELOG |
 | 写测试（编码） | 新层或新面 | G006 落点与基线表同步；INDEX 测试行 |
 | 写脚本（编码） | 归档时 | `.tools\README.md` 清单行 |
 | 出 PoC（编码） | 原型完成 | `poc\README.md` 登记表加 S 文档结论回填 |
@@ -103,25 +103,7 @@
 - 可以：遵守 `docs\guide\G001-文档标准细则-命名写作规范与rumdl检查.md`（树形、标题干净、文件名即标题、rumdl）与 `docs\guide\G004-写作规范细则-禁用字符与机械判定.md`（四类禁用字符：破折号、箭头、emoji、非法全角；全部文档须过 md-char-scan）；事实性断言标六态（标准见 G002）。
 - 禁止：标题带括号、口号或破折号（解释放标题下一行引用 `>`）；整段混杂不成树；把「没验证」写成「已验证」；断言不标六态。
 
-## 三、意图路由
-
-> 需求意图与操作方法的映射。显示名 Reader；仓库 `reader_rs`；CLI 二进制 `reader`（缩写 `rr`）。
-
-- **搜文本**：`reader search <文件|目录> <关键词>`（.pdf、.md/.markdown 及 anydoc 家族 .doc/.docx/.epub/.odt/.rtf/.ppt(x)/.xls(x)/.ods/.odp/.csv；`--regex` 正则、`-i` 忽略大小写、`-C N` 上下文、`--pages 1-3,5` 限页/节；命中退出 0、无命中退出 1、出错退出 2；`--format json` 包膜、`--filter` 点路径裁剪；`--ocr` 对 PDF 单文件 needs_ocr 页兜底识别（PP-OCRv6 默认 tiny 约 6.2MB，`READER_OCR_MODEL_SIZE=small` 切质量档；首用下载进缓存目录，`--offline` 禁下载）；目录输入递归批量搜，命中行带路径前缀，`--pages` 与 `--ocr` 不可用）
-- **结构化提取**：`reader query <文件> <mq表达式>`（jq 风格：`.h2`/`.code`/`.link`/`.table`/select 管道，完整语法见 mqlang.org；全格式面转 markdown 后查询；退出码 0/1/2 同 search；不支持目录）
-- **提文本**：`reader extract <文件>`（`--pages` 限页/节、`-o` 写文件；按单元输出 `== page N ==`（PDF）/ `== section N ==`（其余，标题分节）分节；输出 markdown 形态（PDF 布局管线 / anydoc GFM），不可靠页节头后给 `[needs_ocr: 原因]` 提示行；`--ocr`/`--offline` 同上对 PDF needs_ocr 页兜底；`--format json` 包膜、`--filter` 裁剪、`--offset/--limit` 分页带 `next_offset` 与 `cta`）
-- **agent 发现**：`reader --llms`（紧凑命令索引）、`reader skill`（生成 SKILL.md；仓根 `SKILL.md` 与运行时输出逐字节一致，测试守卫）
-- **自升级**：`reader self update [--force]`（GitHub Releases 最新正式版，资产 sha256 digest 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
-- **发布**：`git tag v<版本>` 推 tag 触发 `.github\workflows\release.yml`（tag 须与 Cargo.toml version 一致，流水线有闸）；资产命名 `reader-v<版本>-<target>.<zip|tar.gz>`
-- **构建测试**：`cargo build` / `cargo test`；本地门禁 `cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`
-- **分层跑批**：`cargo test --test smoke`（冒烟）、`cargo test --test regress`（真样本回归）、`cargo test --test snapshot`（insta 输出快照）、`cargo test --test accept`（验收 cucumber BDD，场景在 tests\features\）；六层口径见 G006
-- **A/B 对比**：`uv run --script .tools\ab_run.py --a tiny --b small`（tests\ab\ 对象资源加检查点，OCR 模型档位质量与性能对比，报告落 tests\ab\reports\；标准见 G006）
-- **查文档**：先搜 `INDEX.md` 定位编号，再读文件
-- **文档门禁**：`rumdl check .`、`uv run --script .tools\md-ref-scan.py`、`uv run --script .tools\md-heading-scan.py`、`uv run --script .tools\md-char-scan.py`（G004 禁用字符）
-
-已落地：`search`（含目录批量）、`extract`、`query`（mq 结构化提取，P0016）、`skill`、`--llms`、超长单元 part 分片、`--ocr` OCR 兜底（仅 PDF 单文件 needs_ocr 页，P0014）、`self update`（P0015）。候选方向与已拒绝项（MCP、TOON 等）登记在 `PRD.md` 需求清单，禁止假装未落地能力已经可跑。
-
-## 四、文档索引
+## 三、文档索引
 
 > 定位看 `INDEX.md`（项目根目录，唯一索引：编号表、目录结构、代码文件位置）。本节是配合 INDEX 的搜索方法。
 
