@@ -1,0 +1,13 @@
+[package]
+name = "poc-ocr"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+hayro = "0.7"
+image = "0.25"
+lopdf = "0.44"
+pure-onnx-ocr = "0.1"
+
+[patch.crates-io]
+pure-onnx-ocr = { path = "vendor-poon" }

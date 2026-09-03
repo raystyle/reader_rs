@@ -9,3 +9,9 @@
 Thumbs.db
 *.evobak
 .secrets/
+
+# poc 原型：只入仓源码与清单，构建产物与模型大件钉死
+poc/**/target/
+poc/**/models/
+poc/**/out/
+poc/**/vendor*/
