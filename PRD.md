@@ -57,6 +57,8 @@
 | D38 | trycmd 跑帮助与文档示例测试 | 待澄清 | 未发起 | G007 三节；触发：README 示例数量上来后 |
 | D39 | 工程效率件：edition 2024 加 rust-toolchain.toml 钉死、nextest 运行器、llvm-cov 覆盖率、cargo deny/audit 供应链闸 | 待澄清 | 未发起 | G007 一/三节；触发：CI 门禁扩展轮 |
 | D40 | README 规范供稿消化：定 G008（结构顺序、About 一致性、写作增量、反模式、同步义务）并按此整改 README | 已交付 | 第 3 轮（About 裁定维持纯中文现状；README 首要内容裁定为全平台部署安装、升级、配置与管理；self update 默认匿名无需 GH_TOKEN；开头改定位速览符合人类阅读习惯） | G008；README 整改（部署集群提升、License 置末、速览化） |
+| D41 | 封版发布流程确定：先本地全平台编译、全平台测试验收，后封版触发 GitHub Action 发布 release | 已交付 | 第 0 轮（用户点名流程骨架） | R008；v0.4.0 首轮执行 |
+| D42 | OCR 模型分发自维护：不再依赖 HuggingFace 直连（国内机器首用下载不可达） | 已澄清 | 第 1 轮（用户裁定下一版本自维护模型分发；载体待立项澄清：候选 GitHub Releases 资产、ModelScope、自有镜像） | 证据：v0.4.0 封版验收 lan-linux 首用下载 tiny-rec 三连重试失败、scp 手动放置后 `--offline` 全通（2026-09-03）；P0014 时代 ModelScope 源无此问题；触发：v0.4.0 发布后立项 |
 
 ## 维护规则
 
