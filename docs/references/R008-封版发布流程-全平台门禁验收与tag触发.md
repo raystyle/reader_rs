@@ -50,3 +50,4 @@ git push origin main v<版本>     # tag 推送即触发 release.yml
 ## 验收记录
 
 - **2026-09-03，v0.4.0 首轮**：三平台全绿 [实证: 各路退出码与阶段标记]——Windows（fmt / clippy / test 8 target 全绿：27 单元、52 集成、smoke 3、regress 4、snapshot 3、accept；release 构建过）；lan-mac（门禁三件 53 集成、release 构建过；首次失败为 rsproxy 镜像拉新依赖网络坑，重试过，同 diary 上轮前科）；lan-linux（同 mac 全绿）；CI main 三系统绿（run 33715506021）。OCR 端到端（release 件加仓内 scan-cjk.pdf）：linux 0.24 秒每页、mac 0.12 秒，exit 0、`[needs_ocr]` 保留、中英正文正确；发现 D42（模型 HF 直连国内不可达，scp 手动放置后 `--offline` 全通，模型分发自维护入下版计划）。封版件：Cargo.toml 0.4.0、CHANGELOG 定版、SKILL 重生（仅版本行）、`--llms` 快照人工审后入库（仅版本行与断言行号）。
+- **2026-09-03，v0.4.0 发行验收**：run 33717012416 五 job 绿；10 资产齐（约 20 至 23 MB 每包）；windows zip `.sha256` 校验过（CRLF 复现，`tr -d` 后验，M008 族）；解包冒烟 `reader 0.4.0`、双名加三文档齐；**self update 真实升级路径首验**：v0.3.0 发行件升 0.4.0 全链路（下载、digest 校验、双名原子替换）通，v0.3.0 留白项闭环 [实证: 临时目录实测 0.3.0 报 0.4.0]。
