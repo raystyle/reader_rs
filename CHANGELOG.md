@@ -2,6 +2,15 @@
 
 本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
 
+## [Unreleased]
+
+> 镜像分发落地（D42）：模型与升级默认走自有镜像 `reader.ohmygh.com`，国内机器首用不再卡 HuggingFace；新增 `ocr init / doctor / switch` 三子命令。
+
+- **模型三级回退源链（D42）**：首用 `--ocr` 下载 PP-OCRv6 模型改为镜像 `reader.ohmygh.com`、HuggingFace 直连、GitHub Releases `models-v6` 三级回退（预取入 ppocr-rs 缓存目录，逐件 sha256 钉死校验，ppocr-rs 内嵌值全量校验兜底）；`READER_MIRROR` 覆盖镜像基址。
+- **`ocr` 子命令组（D42 用户点名）**：`reader ocr init [--size] [--offline]` 显式下载/修复模型（有效件跳过、`--offline` 只校验）；`reader ocr doctor` 只读诊断两档就位情况（行式输出，退出码 0 为当前档双包完整）；`reader ocr switch <tiny|small>` 切换档位并持久化（设置文件在缓存目录旁，`READER_OCR_MODEL_SIZE` 环境变量仍优先）；内网手动部署不再需要先跑一次 `--ocr` 落缓存。
+- **self update 镜像通道（D42）**：查新版先读镜像 `reader/latest.json`（Tauri v2 形状加 sha256），不可用自动回退 GitHub API（原路径含 403 回退 gh api 全保留）。
+- **CI 镜像腿（D42）**：release.yml 加 mirror job（资产与 `.sha256` 边车上 R2 桶 immutable、`latest.json` 最后传、`workflow_dispatch` 可对历史 tag 演练）；新增 mirror-models.yml（每周一自动加手动 dispatch：HF 四仓校验后上桶 `models/`，Apache-2.0 与 NOTICE 随分发，GitHub `models-v6` 恒 prerelease 兜底）。
+
 ## [0.4.0] - 2026-09-03
 
 > OCR 换引擎（P0018）：ppocr-rs 原生内核 PP-OCRv6 tiny，质量与速度双优；README 按规范重构（G008：部署安装、升级、配置与管理为首要内容）。

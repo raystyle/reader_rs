@@ -29,6 +29,8 @@
 | `.tools\md-replace.py` | 中文与反斜杠路径安全的字面批量替换 |
 | `.tools\make-scan-sample.py` | tests\ab 合成扫描件样本生成（无文本层 PDF 加独立检查点） |
 | `.tools\ab_run.py` | A/B 对比跑批器（tests\ab 层，质量加性能报告） |
+| `.tools\gen-latest-json.py` | 镜像升级清单生成（D42）：release API JSON 加 `.sha256` 边车出 `reader/latest.json`（五平台白名单校验） |
+| `.tools\mirror-models.py` | 模型镜像 staging（D42）：按 Cargo.toml 钉的 ppocr-rs rev 取 models.json，HF 下载校验后出 R2 上传树与 gh 兜底资产 |
 | `src\main.rs` | 薄壳入口（reader / rr 双 bin 共用） |
 | `src\lib.rs` | clap CLI 定义、`run()` 分发、页/章范围解析 |
 | `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/节，含 needs_ocr 信号） |
@@ -38,8 +40,9 @@
 | `src\search.rs` | 匹配器（字面/正则/忽略大小写）与命中收集 |
 | `src\output.rs` | JSON 包膜（ok/data/error 加 meta）、filter 点路径裁剪、cta 生成 |
 | `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
-| `src\ocr.rs` | OCR 兜底（P0014）：hayro 渲染 needs_ocr 页加 tract 推理 PP-OCRv5 mobile；模型三件 ModelScope 下载加 SHA-256 钉死、进程内 strip value_info；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
-| `src\selfupdate.rs` | self update（P0015）：latest 元数据（GH_TOKEN 加 gh api 兜底）、版本判新、资产 digest 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
+| `src\ocr.rs` | OCR 兜底（P0014、P0018 换引擎、D42 源链）：hayro 渲染 needs_ocr 页加 ppocr-rs 原生 CPU 内核跑 PP-OCRv6；首用三级回退预取（镜像到HF到GitHub，`mirror` 模块）、缓存先零网络探测；`ocr init / doctor / switch` 三子命令与档位三级（env > model-size 设置 > tiny）；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
+| `src\mirror.rs` | 镜像源链与清单（D42）：四包 pin 表（与 ppocr-rs rev 同步换，单测钉）、三级回退单件下载（`.part` 加校验加 rename）、只读 assess、latest.json 拉取解析；`READER_MIRROR` 覆盖基址 |
+| `src\selfupdate.rs` | self update（P0015、D42 加镜像通道）：镜像 latest.json 优先、GitHub API 加 gh api 兜底、版本判新、资产 sha256 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
 | `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤 |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
 | `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；accept 为 cucumber BDD，场景 tests\features\，D33；G006 载体规则） |
@@ -52,10 +55,10 @@ reader_rs/
   PRD.md / GOAL.md / PLAN.md / TODO.md / INDEX.md   四原语加总索引
   AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md / SKILL.md
   Cargo.toml / LICENSE / .rumdl.toml
-  .tools\            自定义脚本工具（md 四件门禁加 make-scan-sample / ab_run）
+  .tools\            自定义脚本工具（md 四件门禁加 make-scan-sample / ab_run / gen-latest-json / mirror-models）
   poc\               研究原型产物（S 编号前缀子目录；产物与模型 gitignore）
   src\
-    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  selfupdate.rs  query.rs
+    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  mirror.rs  selfupdate.rs  query.rs
   tests\
     cli.rs  assets\legacy.doc
     smoke.rs / regress.rs / accept.rs   冒烟/回归/验收独立 test target（accept 为 cucumber BDD）
@@ -131,7 +134,7 @@ reader_rs/
 | R004 | `R004-Linux实机验收清单-门禁真样本与musl预建.md` | Linux 接管验收操作手册（P0011-P0013 轮，已回填全绿含 M007） |
 | R005 | `R005-mac接管开发验收清单-门禁真样本与交叉预建.md` | mac 接管开发验收操作手册（P0011-P0013 轮接续，已回填全绿含 M007 验点） |
 | R007 | `R007-工作流标准细则-从登记到归档五步.md` | 五步工作流与优先级（2026-09-03 自 guide 迁入，原 G003） |
-| R008 | `R008-封版发布流程-全平台门禁验收与tag触发.md` | 封版发布操作手册：全平台门禁验收、封版件、tag 触发、资产验收（D41） |
+| R008 | `R008-封版发布流程-全平台门禁验收与tag触发.md` | 封版发布操作手册：全平台门禁验收、封版件、tag 触发、资产验收、镜像腿与 models 镜像（D41；D42 镜像分发） |
 
 ## 七、guide：做事的规范
 
@@ -157,7 +160,7 @@ reader_rs/
 | 编号 | 分类文件 | 覆盖关键词 | 行级编号段 |
 | --- | --- | --- | --- |
 | M101 | `M101-文档门禁扫描错误.md` | rumdl、断链扫描、标题括号、豁免清单、门禁退出码被管道吞 | M001 M006 |
-| M102 | `M102-Windows路径与shell错误.md` | MSYS 路径、os error 3、引号、原生二进制、跨平台路径拼接、SIGPIPE 管道早退、cmd 风格重定向 | M002 M005 M007 M008 |
+| M102 | `M102-Windows路径与shell错误.md` | MSYS 路径、os error 3、引号、原生二进制、跨平台路径拼接、SIGPIPE 管道早退、cmd 风格重定向、重定向命中 target 旧产物与 CRLF | M002 M005 M007 M008 M014 |
 | M103 | `M103-开发环境安装错误.md` | 架构不配、bad CPU type、接管机装工具 | M003 |
 | M104 | `M104-CI与发布流水线错误.md` | runner 退役、上传竞态、资产命名 | M004 |
 | M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端、Cargo.toml 节序吞键 | M009 M010 M011 M012 M013 |

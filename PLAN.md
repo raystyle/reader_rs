@@ -1,17 +1,16 @@
 # PLAN：当前目标实施计划
 
-> 角色：**当前目标方案文档**：基于 `docs\research\`（为什么）与 `docs\references\`（怎么做）撰写的执行计划；每条挂依据来源，随目标变化更新，不存历史目标。
-> 分工：`PRD.md` = 要什么；`GOAL.md` = 要达成什么；`TODO.md` = 做到哪；本文件 = 怎么做；通用工作流见 `docs\references\R007-工作流标准细则-从登记到归档五步.md`。
+> 角色：**当前目标方案文档**：基于 `docs\research\`(为什么)与 `docs\references\`(怎么做)撰写的执行计划;每条挂依据来源,随目标变化更新,不存历史目标。
+> 分工:`PRD.md` = 要什么;`GOAL.md` = 要达成什么;`TODO.md` = 做到哪;本文件 = 怎么做;通用工作流见 `docs\references\R007-工作流标准细则-从登记到归档五步.md`。
 
-## 当前目标：D28 / D29 / D30 测试体系与 PoC 目录
+## 当前目标:D42 镜像分发落地
 
-> 2026-09-03 已达成：G006 六层规范、tests\ab\ A/B 层加首跑报告、poc\ 目录约定与迁移。下一目标待用户点名后在此立项（候选见 `PRD.md` D23 至 D26）。
+> 2026-09-03 立项。依据:PRD D42;ISSUE #1 裁决(ohmycloud S009 规范摘录)与基建回执;架构验证修正要点九项(见 GOAL 时间线立项行)。
 
 ## 完成的定义
 
 > 本目标验收口径。
 
-- D28：`docs\guide\G006-测试体系细则-六层分层与各层标准.md` 落盘，六层各定「测什么、落点、什么叫过、何时跑」，真样本行为基线登记。[实证: 2026-09-03 已达成]
-- D29：`tests\ab\` 建成（README 协议、manifest 对象资源、expectations 独立来源检查点、合成样本 scan-cjk.pdf 入仓、external 真样本钉 sha256）；`.tools\ab_run.py` 跑批器出质量与性能报告；tiny vs small 首跑报告落 reports。[实证: 2026-09-03 已达成]
-- D30：`poc\` 目录约定（poc\README.md 登记表、gitignore 钉产物与模型）、G002 增八节 PoC 产物约定、S006 PoC 源码迁入 poc\s006-ocr-mobile\。[实证: 2026-09-03 已达成]
-- 支撑改动：`READER_OCR_MODEL_SIZE` 档位开关（tiny 默认、small 可选）进 src\ocr.rs 带单元测试；门禁三件加 rumdl 四件全绿。[实证: 2026-09-03 已达成]
+- D42 客户端:模型三级回退源链(镜像 `reader.ohmygh.com` 到 HF 直连到 GitHub Releases `models-v6`,预取入 ppocr-rs 缓存目录,`resolve_pair(Offline)`/`verify()` 终检)进 `src\mirror.rs` 与 `src\ocr.rs`;self update 先读镜像 latest.json 失败回退 GitHub API(`src\selfupdate.rs`);`ocr init / doctor / switch` 三子命令(下载、只读诊断、档位切换,设置文件锚缓存兄弟位,env 优先)。[实证: 进行中]
+- D42 CI:release.yml 镜像腿(资产与边车上桶 immutable、latest.json 最后传 max-age=60、dispatch 可对历史 tag 演练、末尾 `gh release edit --latest`);mirror-models.yml(models 目录从 ppocr-rs models.json 派生、HF tree 源校验告警、Apache-2.0 与 NOTICE 随分发、manifest 最后传、`models-v6` 恒 prerelease)。[实证: 进行中]
+- D42 验收:本机门禁三件加文档四件全绿;dispatch 演练全链绿(curl 验缓存头与清单、`releases/latest` 恒指 v*);ISSUE #1 知会后 ohmycloud 大陆侧验收(首用 `--ocr` 走镜像全通、self update 镜像通道、三断回退)。[实证: 进行中]

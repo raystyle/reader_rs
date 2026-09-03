@@ -8,13 +8,13 @@
 > 当前目标的起点：何时发起、为什么发起、要解决什么问题。
 
 - **日期**：2026-09-03。
-- **起点**：用户指示三连：补齐 A/B 测试目录并翻入可供测试验证的对象资源、跑质量与性能 A/B；确定单元/集成/冒烟/回归/验收/A/B 六层测试的标准规范；研究产物是 PoC 原型、对应 poc 目录。登记 PRD D28 / D29 / D30。
+- **起点**：v0.4.0 封版验收暴露 D42（lan-linux 首用下载 HF 模型三连重试失败）；ISSUE #1 与 ohmycloud 完成载体裁决（镜像 reader.ohmygh.com 默认、镜像 到 HF 到 GitHub Releases 三级回退、self update 先读 latest.json、minisign 首轮不上）与基建回执（桶 reader-dl、域名 SSL active、R2 Secrets 进仓）；用户点名 ocr init / doctor / switch 三件套（下载、诊断、切换两档），立项落地。
 
 ## 锚点
 
 > 当前锚定的目标 + 推进时间线。
 
-- **锚定的目标**：D28 / D29 / D30 测试体系与 PoC 目录落地（已达成：G006 六层规范、tests\ab\ A/B 层首跑 tiny vs small、poc\ 目录约定与 S006 迁移）；上一目标 D27 PRD 四原语已收官。
+- **锚定的目标**：D42 镜像分发落地（进行中）；上一目标 D40 README 规范供稿消化已达成（G008 落盘与 README 整改）、D41 封版发布流程已交付（R008，v0.4.0 首轮）。
 
 ### 推进时间线
 
@@ -22,6 +22,8 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-03 | **D42 实现完成（待提交与 CI 演练）**：`src\mirror.rs` pin 表与三级回退、`ocr init / doctor / switch` 三子命令（档位三级，设置锚缓存兄弟位）、在线分支先 Offline 探测、selfupdate 镜像 latest.json 通道（真机验回退 GH 报 current）；CI 镜像腿（release.yml mirror job 加 mirror-models.yml，models-v6 恒 prerelease）；`.tools` 两脚本实测过；漂移守卫二层递归；门禁七件全绿；M014 沉淀；README / G006 / R008 / CHANGELOG / INDEX / AGENTS 对齐 |
+| 2026-09-03 | **D42 立项**：ISSUE #1 三问回执（预取入缓存目录、schema 照落地、minisign 首轮不上）获 ohmycloud 全采纳；方案经架构验证后批准开工（九项修正要点入 PLAN：models-v6 恒 prerelease 防 latest 遮蔽、doctor 只读不调 verify、switch 设置文件锚缓存兄弟位、在线分支先 Offline 探测、漂移守卫二层递归、HF 源仓无 LICENSE 从 apache.org 取、tree API 小件无比 sha256、dispatch 演练不 checkout tag、rclone 钉版本与 401 重试） |
 | 2026-09-03 | **v0.4.0 发布（D41 R008 首轮）**：三平台门禁加 OCR 端到端验收全绿后封版 8cdd52b，tag 触发 release 五 job 绿、10 资产齐；self update 0.3.0 至 0.4.0 真实升级路径首验通过；发现 D42（模型 HF 直连国内不可达，下版自维护分发）；README 第 4 轮（模型档位、来源与手动部署、致谢节） |
 | 2026-09-03 | **D40 达成**：README 规范供稿消化：G008 落盘（首屏优先结构 14 节裁定表、About 逐字一致规则、写作增量、反模式 7 条、同步义务）；README 整改（部署集群安装全平台加升级加配置与管理提升为一等内容、首句对齐 About、CI 加 MIT 徽章、特性、快速开始、贡献与 License 段补齐、仓内引用相对链接化）；About 裁定维持纯中文现状、self update 表述修正（默认匿名有配额） |
 | 2026-09-03 | **D35 达成**：Rust CLI 工程基线供稿逐项裁定落 G007（已符合 6 项、已落地 1 项、候选 4 项入 PRD D36-D39、不适用 3 项防复问）；release profile strip 加 thin LTO 即落 |
@@ -75,7 +77,7 @@
 
 > 当前目标的进程：只记录当前这一个目标的进行状态。
 
-- 当前目标（已达成）：D28 / D29 / D30 测试体系与 PoC 目录，见 G006、tests\ab\、`poc\README.md`。
+- 当前目标（进行中）：D42 镜像分发落地（模型三级回退源链、self update latest.json 通道、ocr init / doctor / switch、CI 镜像腿），见 `PLAN.md` 完成的定义与 `TODO.md` 清单。
 
 ## 历史
 

@@ -63,7 +63,7 @@ reader --help
 reader self update [--force]
 ```
 
-从 GitHub Releases 最新正式版下载本平台资产，sha256 digest 校验后替换当前运行的二进制与同目录兄弟（`reader` / `rr` 双名一次替换）；已最新时明示。`--force` 同版本重装。查新版默认匿名访问 GitHub API，无需配置；匿名有配额，撞限流 403 时自动回退 `gh api`（用本机 gh CLI 登录态），配 `GH_TOKEN` 可提高配额。只走 stable 通道，不做自动更新。
+从镜像 `reader.ohmygh.com/reader/latest.json` 查新版并下载本平台资产（国内可达；`READER_MIRROR` 可覆盖基址），sha256 钉死校验后替换当前运行的二进制与同目录兄弟（`reader` / `rr` 双名一次替换）；已最新时明示。`--force` 同版本重装。镜像不可用时自动回退 GitHub API：默认匿名（有配额），撞限流 403 再回退 `gh api`（用本机 gh CLI 登录态），配 `GH_TOKEN` 可提高配额。只走 stable 通道，不做自动更新。
 
 源码安装的升级：重跑安装命令加 `--force`：
 
@@ -79,9 +79,10 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 
 | 变量 | 作用 | 缺省 |
 | --- | --- | --- |
-| `GH_TOKEN` | `self update` 查新版的认证令牌（提高 GitHub API 配额）；默认匿名即可用，撞限流自动回退 `gh api` | 匿名（有配额） |
+| `GH_TOKEN` | `self update` 回退 GitHub API 时的认证令牌（提高配额）；默认匿名即可用，撞限流自动回退 `gh api` | 匿名（有配额） |
+| `READER_MIRROR` | 分发镜像基址（模型下载与 self update 查新） | `https://reader.ohmygh.com` |
 | `READER_OCR_CACHE_DIR` | 覆盖 OCR 模型缓存目录 | 平台缓存目录（见下表） |
-| `READER_OCR_MODEL_SIZE` | OCR 模型档位 `tiny` / `small`（差异见下表） | `tiny` |
+| `READER_OCR_MODEL_SIZE` | OCR 模型档位临时覆盖（A/B 对比用），优先于 `ocr switch` 设置 | 未设（取 `ocr switch` 设置，再缺省 `tiny`） |
 
 **OCR 模型档位**（`READER_OCR_MODEL_SIZE`，缺省 `tiny`）：
 
@@ -93,13 +94,22 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 切换即用，两档模型独立缓存：
 
 ```bash
-READER_OCR_MODEL_SIZE=small reader extract ./scan.pdf --ocr      # bash
-$env:READER_OCR_MODEL_SIZE = "small"; reader extract .\scan.pdf --ocr   # pwsh
+reader ocr switch small                 # 切档并持久化（写入缓存目录旁 model-size 文件）
+reader ocr init --size small            # 预下载该档模型进缓存
+READER_OCR_MODEL_SIZE=small reader extract ./scan.pdf --ocr   # 环境变量临时覆盖（优先于 switch 设置）
 ```
 
 ### 模型来源与手动部署
 
-来源：HuggingFace [PaddlePaddle/PP-OCRv6_tiny_det_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_safetensors) 与 [PaddlePaddle/PP-OCRv6_tiny_rec_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_rec_safetensors)（small 档同系 `small_det` / `small_rec` 两仓），ppocr-rs 钉 revision 与逐件 sha256，首用 `--ocr` 时下载约 6.2 MB（small 档约 30 MB）。
+来源三级回退（国内机器首用不再卡 HF）：镜像 `reader.ohmygh.com`（R2 自定义域）到 HuggingFace 直连（[PaddlePaddle/PP-OCRv6_tiny_det_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_safetensors) 与 [PP-OCRv6_tiny_rec_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_rec_safetensors)，small 档同系两仓；ppocr-rs 钉 revision 与逐件 sha256）到 GitHub Releases `models-v6` 资产。首用 `--ocr` 或 `ocr init` 时按链下载约 6.2 MB（small 档约 31 MB），逐件 sha256 校验落缓存，ppocr-rs 内嵌钉死值全量校验兜底。
+
+模型管理三件套（`reader ocr --help` 看全）：
+
+```bash
+reader ocr init [--size tiny|small] [--offline]   # 显式下载/修复模型进缓存（有效件跳过；--offline 只校验）
+reader ocr doctor                                  # 只读诊断两档就位情况（退出码 0 为当前档双包完整）
+reader ocr switch <tiny|small>                     # 切换档位并持久化
+```
 
 缓存结构（档位 × det / rec 两包，各 4 件加隐藏完成标记 `.ppocr-rs.complete`）：
 
@@ -119,20 +129,21 @@ $env:READER_OCR_MODEL_SIZE = "small"; reader extract .\scan.pdf --ocr   # pwsh
 
 手动部署（网络不可达机器，如内网服务器；模型件字节跨平台一致）：
 
-1. 可达机器先跑一次 `reader extract ./任一.pdf --ocr --pages 1`，缓存自动落地；
+1. 可达机器跑 `reader ocr init`（small 档加 `--size small`），缓存自动落地；
 2. 整目录拷贝到目标机器同位置（必须含隐藏标记文件）：
 
 ```bash
 scp -r <可达机>/reader/models/tiny-det <可达机>/reader/models/tiny-rec <用户>@<目标机>:~/.cache/reader/models/
 ```
 
-3. 目标机以 `--offline` 验证（模型就位则零下载）：
+3. 目标机验证（`ocr doctor` 的 `verdict ok` 即当前档双包完整；或 `--offline` 实测零下载）：
 
 ```bash
+reader ocr doctor
 reader extract ./scan.pdf --ocr --offline --pages 1
 ```
 
-注意：`.ppocr-rs.complete` 内容是模型清单指纹而非空文件，手工从 HF 只拼 4 件数据缺标记会被判未完成；离线部署走「先落缓存再整目录拷贝」。缓存目录可随时删除，下次 `--ocr` 按需重新下载。
+注意：`.ppocr-rs.complete` 内容是模型清单指纹而非空文件，`ocr init` 与官方下载链会自动补写；缓存目录可随时删除，下次按需重新下载。档位设置文件在缓存目录旁（`model-size`），删缓存目录不影响档位偏好。
 
 卸载：预编译安装删除 `reader` 与 `rr` 两个二进制与缓存目录即可；cargo 安装用 `cargo uninstall reader_rs` 一并移除双名。
 

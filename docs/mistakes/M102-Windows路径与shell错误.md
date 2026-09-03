@@ -29,3 +29,10 @@
 - 现象：`reader search <目录> <关键词> | head` 在 Linux 上 panic：`failed printing to stdout: Broken pipe (os error 32)`，退出码 101 且 stderr 喷栈信息；Windows 侧同命令无恙（验收基线全绿）。
 - 根因：Rust 运行时把 SIGPIPE 置为 `SIG_IGN`，管道读者早退后写 stdout 返回 `EPIPE`，`println!` 对错误直接 panic。Windows 无 SIGPIPE 机制，此路径在 Windows 开发机上天然不可复现：又一类「只有对端平台能暴露」的坑（同 M005 形态）。
 - 正确处理：`main()` 最早点恢复 SIGPIPE 默认处置（`libc::signal(SIGPIPE, SIG_DFL)`，仅 unix；libc 升直接依赖），行为对齐 grep/rg：被 SIGPIPE 静默终止，shell 报 141。回归测试 `sigpipe_on_closed_stdout_kills_quietly`（unix-only，大输出夹具超管道缓冲保证死因确定）。验收口径相应修正：管道截断退出码预期 141 而非 0。
+
+## M014 重生成 SKILL.md 命中 target 里无扩展名旧产物，旧文案覆盖新文件
+
+- 首踩：2026-09-03（D42 镜像分发落地，introspect 更新后重生 SKILL.md）
+- 现象：Git Bash 里按 R008 封版件命令 `./target/debug/reader skill > SKILL.md` 重生，SKILL.md 变成 v0.2.0 时代旧文案（带破折号、无 mq、无 ocr 组）；`git diff` 全文变红。
+- 根因：`target\debug\` 里躺着 9 月 1 日 WSL 构建留下的无扩展名 Linux 旧二进制 `reader`，bash 相对路径 `./target/debug/reader` 恰好命中它（同名优先于 `reader.exe`），跑的是旧版。另有两处连带隐患：PowerShell `>` 重定向按行重组会转 CRLF（与仓内 LF 不一致）；同型坑 M005（bash 的 `nul`）。
+- 正确处理：重生命令一律显式写 `.exe`（bash：`./target/debug/reader.exe skill > SKILL.md`）；用 bash 原样重定向保 LF，不用 PowerShell `>`；重生后先 `git diff SKILL.md` 核对变更量与预期一致再收。R008 封版件第三步已加注。
