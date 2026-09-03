@@ -11,6 +11,7 @@ D31 测试程序载体裁定（登记日 2026-09-03；依据 `PRD.md`）。**202
 | 任务项 | 进度 | 说明 | 日期 |
 | --- | --- | --- | --- |
 | D31 三层归 cargo（第 2 轮裁定） | 已完成 | smoke.rs 3 测、regress.rs 4 测、accept.rs 5 测全绿；py 三脚本删除；uv 只留 A/B | 2026-09-03 |
+| D33 验收层 BDD 化 | 已完成 | cucumber 0.23 加 futures；accept.feature 8 场景 21 步全绿；harness=false；testcontainers 裁定不适用 | 2026-09-03 |
 | G006 载体规则与基线修正 | 已完成 | uv 运行时 Python 规则；CLR 书 25 命中归因修正、399 页标记实测 | 2026-09-03 |
 | 归类修正（references 流程 / guide 规范） | 已完成 | R003 改 G005、R006 改 G006、G003 改 R007；56 处引用替换 | 2026-09-03 |
 | D28-D30 落地 | 已完成 | G006 六层规范；tests\ab\ A/B 首跑；poc\ 目录与 S006 迁移 | 2026-09-03 |

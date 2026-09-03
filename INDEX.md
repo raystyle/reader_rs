@@ -42,7 +42,7 @@
 | `src\selfupdate.rs` | self update（P0015）：latest 元数据（GH_TOKEN 加 gh api 兜底）、版本判新、资产 digest 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
 | `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤 |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
-| `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；G006 载体规则） |
+| `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；accept 为 cucumber BDD，场景 tests\features\，D33；G006 载体规则） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
 
@@ -57,7 +57,8 @@ reader_rs/
     main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  selfupdate.rs  query.rs
   tests\
     cli.rs  assets\legacy.doc
-    smoke.rs / regress.rs / accept.rs   冒烟/回归/验收独立 test target
+    smoke.rs / regress.rs / accept.rs   冒烟/回归/验收独立 test target（accept 为 cucumber BDD）
+    features\  验收 Gherkin 场景（cucumber，D33）
     ab\      A/B 对比层（manifest / expectations / assets / reports）
   docs\
     proven\      P 编号，已完成 plan 归档
@@ -154,7 +155,7 @@ reader_rs/
 | M102 | `M102-Windows路径与shell错误.md` | MSYS 路径、os error 3、引号、原生二进制、跨平台路径拼接、SIGPIPE 管道早退、cmd 风格重定向 | M002 M005 M007 M008 |
 | M103 | `M103-开发环境安装错误.md` | 架构不配、bad CPU type、接管机装工具 | M003 |
 | M104 | `M104-CI与发布流水线错误.md` | runner 退役、上传竞态、资产命名 | M004 |
-| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端 | M009 M010 M011 M012 |
+| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端、Cargo.toml 节序吞键 | M009 M010 M011 M012 M013 |
 
 迭代规则：踩坑按当前最大号接编 MNNN 进对应分类文件；一行一事；同根因或同型坑可合并聚合进已有条目（保留最早编号与首踩日期）；反复踩落 `docs\research\`；新分类文件登记本节。
 

@@ -49,6 +49,7 @@
 | D30 | 研究产物是 PoC 原型，对应 poc 目录：规范落点并迁移存量 PoC | 已交付 | 第 1 轮（用户点名） | `poc\`；G002 八节 |
 | D31 | 测试程序载体裁定：A/B 跑批用 uv 运行时 Python 脚本（PEP 723 单文件），冒烟/回归/验收归 cargo test 体系（独立 test target） | 已交付 | 第 2 轮（第 1 轮四层全 uv，用户裁定收拢为 A/B 独占 uv、其余归 cargo） | tests\smoke.rs / regress.rs / accept.rs；`.tools\ab_run.py`；G006 载体规则 |
 | D32 | AGENTS 自省调整各目录和文档职责、规范、规则和意图路由；采纳 Rust 测试框架供稿（原生三层单元/集成/文档测试为地基，冒烟/回归/验收/A/B 为目的流程层靠约定拼装） | 已交付 | 第 1 轮（用户供稿加点名） | AGENTS 一/二/四节；G006 一节框架修正 |
+| D33 | 验收层 BDD 化：cucumber Gherkin 场景驱动（testcontainers-rs 裁定不适用：纯 CLI 无可容器化依赖） | 已交付 | 第 1 轮（用户供稿点名 cucumber） | tests\features\accept.feature 8 场景加 tests\accept.rs 步骤绑定 |
 
 ## 维护规则
 

@@ -29,3 +29,10 @@
 - 现象：`flate2 = "0.2"` 默认拉 miniz-sys（C 编译）；写 `default-features = false, features = ["rust_backend"]` 报 feature 不存在。
 - 根因：flate2 0.2.x 的后端 feature 只有 miniz-sys / libz-sys / zlib（全 C）；纯 Rust 的 rust_backend（miniz_oxide）从 1.x 起才是默认。
 - 正确处理：解 gzip 用 `flate2 = "1"` 默认 feature；写完依赖先 `grep miniz-sys Cargo.lock` 之类确认没有 C 后端混进来（纯 Rust 边界仓的例行检查）。
+
+## M013 Cargo.toml 里 [[test]] 表插进 dev-dependencies 中间吞后续键
+
+- 首踩：2026-09-03（D33 验收层 BDD 化）
+- 现象：在 `[dev-dependencies]` 节中间插入 `[[test]]` 块后，其后的 `rbook` / `zip` 依赖变成 test 表的键，cargo 警 unused manifest key 且依赖丢失。
+- 根因：TOML 节序即语义：表头之后的键值对都归最近的表头，直到下一个表头。
+- 正确处理：新增 `[[bin]]` / `[[test]]` 等表一律放文件末尾；改 Cargo.toml 后留意 unused manifest key 警告。
