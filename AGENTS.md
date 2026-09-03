@@ -34,7 +34,7 @@
 ### 工作节奏
 
 1. **每轮对话**
-   - 可以：先核对四原语 `PRD.md`、`GOAL.md`、`TODO.md`、`PLAN.md`（需求驱动目标：新需求先入 PRD 走追问链，澄清后登记；GOAL 目标须回指 PRD 编号）；实质推进当场更新 todo 与 plan。
+   - 可以：先核对四原语 `PRD.md`（需求清单，要什么）、`GOAL.md`（理解 PRD 后定下的目标和达成标准）、`PLAN.md`（规划，怎么做）、`TODO.md`（进度，做到哪）；需求驱动目标：新需求先入 PRD 走追问链，澄清后登记；GOAL 目标须回指 PRD 编号；实质推进当场更新 todo 与 plan。
    - 禁止：不核对四原语就干活；偏离当前目标；推进了不更新 todo/plan；替用户静默假设需求。
 
 2. **踩坑时**
@@ -72,7 +72,7 @@
    - 禁止：把「没验证」写成「已验证」（实证滥用）；断言不标六态；用猜测冒充结论。
 
 10. **写测试时**
-    - 可以：遵守 `docs\guide\G005-测试标准细则-分层断言与门禁流程.md`（三层分层、集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\guide\G006-测试体系细则-六层分层与各层标准.md`（单元/集成/冒烟/回归/验收/A/B 六层落点与口径）。
+    - 可以：遵守 `docs\guide\G005-测试标准细则-分层断言与门禁流程.md`（原生地基：单元/集成/文档测试，集成优先、期望值独立来源、稳定字段断言、`dies_` 负例前缀、`TestResult` 错误传播）与 `docs\guide\G006-测试体系细则-六层分层与各层标准.md`（目的流程四层：冒烟/回归/验收/A/B 落点与口径）；跑批程序（冒烟/回归/验收/A/B）一律 uv 运行时 Python 脚本（PEP 723 单文件，`uv run --script tests\smoke.py` 形态，D31）。
     - 禁止：重言式断言；公开 API 测试塞 `mod tests{}` 不进 `tests\`；默认 mock；计时进断言；只测 happy path；A/B 检查点从被测输出反抄。
 
 11. **写临时脚本时**
@@ -103,6 +103,8 @@
 
 **速记**：前缀定位 `P`（proven 归档）/ `S`（research 研究）/ `R`（references 做事的流程）/ `G`（guide 做事的规范）/ `M`（mistakes 错误；文件 M1xx、行级 M0xx）；根目录四原语 `PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（规划）/ `TODO`（进度）。
 
+**目录职责**：`docs\proven\` 已完成方案归档；`docs\diary\` 一天一篇总结自省；`docs\research\` 研究（为什么，六态）；`docs\references\` 做事的流程（操作手册、流程细则）；`docs\guide\` 做事的规范（标准与禁令）；`docs\mistakes\` 出错怎么纠；`poc\` 研究原型产物（S 编号前缀子目录，产物与模型 gitignore）；`tests\` 集成测试加三层跑批脚本（smoke / regress / accept）加 `tests\ab\` A/B 层；`.tools\` 项目脚本工具（清单见 `.tools\README.md`）。
+
 **搜索方法（文档）**：
 
 ```powershell
@@ -112,4 +114,4 @@ rg -n "关键词" docs\research docs\references    # 3 全文搜研究参考
 rg -n "关键词" docs\mistakes\                   # 4 搜错误处理
 ```
 
-**分析路径**：改产品行为先读 `docs\references\`（怎么做）再回 `docs\research\`（为什么）；踩坑查 `docs\mistakes\`；写码选库走 R002；测试规范 G005；新想法走 R007 五步；定位代码先 INDEX 模块表。
+**分析路径**：改产品行为先读 `docs\references\`（做事的流程）再回 `docs\research\`（为什么）；规范禁令查 `docs\guide\`（做事的规范）；踩坑查 `docs\mistakes\`；写码选库走 R002；写测试走 G005 加 G006；新想法走 R007 五步；定位代码先 INDEX 模块表。
