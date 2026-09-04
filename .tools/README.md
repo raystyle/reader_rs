@@ -22,7 +22,7 @@
 | `make-scan-sample.py` | 生成 tests\ab 合成扫描件样本（无文本层 PDF 加独立来源检查点） | `uv run --script .tools/make-scan-sample.py`；幂等覆盖产物 |
 | `ab_run.py` | A/B 对比跑批（tests\ab 层）：双变体跑样本，出质量与性能 markdown 报告 | `uv run --script .tools/ab_run.py --a tiny --b small [--sample 名]`；退出码 0/2 |
 | `gen-latest-json.py` | 镜像升级清单生成（D42）：release API JSON 加 `.sha256` 边车出 `reader/latest.json`（Tauri v2 形状加 sha256；五平台白名单校验） | `uv run --script .tools/gen-latest-json.py --release x.json --assets-dir dist [--mirror URL] [--out latest.json]`；退出码 0/2 |
-| `ebook-corpus.py` | E:\ebook 语料登记/质量基线/性能报告/核验（D46：manifest 钉 sha256，盘缺失即跳过） | `uv run --script .tools/ebook-corpus.py --scan|--baseline|--perf|--verify [--root DIR]`；退出码 0/2 |
+| `materials-corpus.py` | E:\研究资料 语料登记/质量基线/性能报告/核验（D46 第 2 轮：弃 E:\ebook 改此；manifest 钉 sha256，盘缺失即跳过） | `uv run --script .tools/materials-corpus.py --scan\|--baseline\|--perf\|--verify [--root DIR]`；退出码 0/2 |
 | `mirror-models.py` | 模型镜像 staging（D42）：按 Cargo.toml 钉的 ppocr-rs rev 取 models.json，HF 下载校验后staging r2 上传树与 gh 兜底资产 | `uv run --script .tools/mirror-models.py [--work DIR] [--date ISO] [--dry-run]`；退出码 0/2 |
 
 ## 历史注记

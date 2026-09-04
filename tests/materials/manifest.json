@@ -1,0 +1,4596 @@
+{
+  "root": "E:\\研究资料",
+  "scanned_at": "2026-09-04T03:58:22+00:00",
+  "count": 576,
+  "note": "外部真样本不入仓;身份钉 sha256;质量基线字段确定性,duration 只进 perf 报告(D46)",
+  "entries": [
+    {
+      "rel": "Aapo Oksman - certmitm automatic exploitation of TLS certificate validation vulnerabilities.pdf",
+      "size": 631634,
+      "sha256": "6f38e260b490dc5e0848d826350bcd7609f1e5ef968c6462e796a600b7f375ef",
+      "status": 0,
+      "units": 80,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "Adrian atrox Dabrowski Gabriel K. Gegenhuber - Cellular carriers hate this trick Using SIM tunneling to travel at light speed.pdf",
+      "size": 5506832,
+      "sha256": "ba5e7ef516b90f4dc662e174575d0ddb8b09e8c809837f5e08b1a1d5f7a973ca",
+      "status": 0,
+      "units": 64,
+      "needs_ocr": 35
+    },
+    {
+      "rel": "Alessandro klezVirus Magnosi Arash waldoirc Parsa Athanasios trickster0 Tserpelis - StackMoonwalk A Novel approach to stack spoofing on Windows x64.pdf",
+      "size": 3004512,
+      "sha256": "64bb32b13883da002eb47ac5e6375c2001cf90ed9e372ba66faf0bf482fd1f4c",
+      "status": 0,
+      "units": 61,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Alex - Meduza How an exiled pirate media outlet breaks through the Kremlin's propaganda firewall.pdf",
+      "size": 17900549,
+      "sha256": "581b77bbe5a32f9b4012a2ac23a58d92d8757ce6642b4dabe9b293ed76b3998a",
+      "status": 0,
+      "units": 18,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "Alex Tereshkin Adam Zabrocki - Breaking BMC The Forgotten Key to the Kingdom.pdf",
+      "size": 7500879,
+      "sha256": "d78a152d722809b978ffb60db4ec7c011bd2953d388169ed3b8f678757a10999",
+      "status": 0,
+      "units": 72,
+      "needs_ocr": 58
+    },
+    {
+      "rel": "Alexander Dalsgaard Krog Alexander Skovsende - Backdoor in the Core - Altering the Intel x86 Instruction Set at Runtime.pdf",
+      "size": 2521847,
+      "sha256": "37844314a9d258a237e83b633ba5dec99240cd84636ed839642e2859842b1824",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "Allison Young Diane Akerman - Private Until Presumed Guilty.pdf",
+      "size": 7633847,
+      "sha256": "32e72139644d04351fba3b55641ba56f88ee68c698ddb71e170c857da0d68ea4",
+      "status": 0,
+      "units": 59,
+      "needs_ocr": 23
+    },
+    {
+      "rel": "Andrew Brandt - Youre Not George Clooney and This Isnt Ocean's Eleven.pdf",
+      "size": 3823174,
+      "sha256": "4e6af9b446e50999636f639d1b822df72bae092f7c1c4986303eef8e8db23122",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "Andréanne Bergeron Olivier Bilodeau - I Watched You Roll the Die Unparalleled RDP Monitoring Reveal Attackers Tradecraft.pdf",
+      "size": 10249855,
+      "sha256": "267e067f5e843404ad079d83b1cf8bffb828df7458afd7cc75888c26e298c4be",
+      "status": 0,
+      "units": 65,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "Anon - Mass Owning of Seedboxes - A Live Hacking Exhibition.pdf",
+      "size": 56703,
+      "sha256": "e34f7bc4c76c3a054ba93c30f44de2e6289955b458fb870194501f6ce2503d9c",
+      "status": 0,
+      "units": 12,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Asi Greenholts - The GitHub Actions Worm Compromising GitHub repositories through the Actions dependency tree.pdf",
+      "size": 1776320,
+      "sha256": "e891f7bd1611e4e0806315e69f8bfc4b7d1ad325f9c465afb7aecfce02db15ca",
+      "status": 0,
+      "units": 64,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "Austin Emmitt - Apple's Predicament NSPredicate Exploitation on macOS and iOS.pdf",
+      "size": 1796729,
+      "sha256": "3907b22a8df5c42a3c832230b0a1f3281a702a774dc22c3ee31f053246f45431",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "Ben Nassi - Video-based Cryptanalysis Extracting Secret Keys from Power LEDs of Various Non-compromised Devices Using a Video Camera.pdf",
+      "size": 3999826,
+      "sha256": "0f147809e4b3567fe6552906c8dbe7509671bd1f00b2f3eaf073d2f0f4eb9c99",
+      "status": 0,
+      "units": 82,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "Ben Sadeghipour Corben Leo - A Series of Unfortunate Events.pptx",
+      "size": 10592389,
+      "sha256": "69044c7746277a6820328d131998719901324822fc0edcd98658e99d98adf969",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Benny Zeltser Jonathan Lusky - The RingHopper Journey or How We Almost Zero-day’d the World.pptx",
+      "size": 10600088,
+      "sha256": "d1c3c243eca9632f48289188aa48e48b72eed1a55a173900cc19fdf8a5d0155f",
+      "status": 0,
+      "units": 95,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Bill Demirkapi - A SSLippery Slope Unraveling the Hidden Dangers of Certificate Misuse.pdf",
+      "size": 2859371,
+      "sha256": "dd298e895920963f175ed21007cfab355945529a15e7d015b4e72f648dedbf06",
+      "status": 0,
+      "units": 69,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "Bohan Liu Zheng Wang GuanCheng Li - ndays are also 0days Can hackers launch 0day RCE attack on popular softwares only with chromium ndays.pdf",
+      "size": 4831046,
+      "sha256": "3c81765dbad22202aa505777b5e61d7e305dd86d189b9a11e0da51b7130fee61",
+      "status": 0,
+      "units": 69,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "byt3bl33d3r - SpamChannel Spoofing Emails From 2 Million Domains and Virtually Becoming Satan.pdf",
+      "size": 3387967,
+      "sha256": "06a07094264232316d26491c3caa0b660404412ff680c912cf93e802f0df13d3",
+      "status": 0,
+      "units": 81,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "byt3bl33d3r - SpamChannel Spoofing Emails From 2 Million+ Domains and Virtually Becoming Satan.pdf",
+      "size": 3415700,
+      "sha256": "efe078804c655c470a754eabf1181333d1f51d87e2f7cc5bb61905b1bf60c5ff",
+      "status": 0,
+      "units": 83,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "Carlos Polop Yago Gutierrez - Exploring Linux Memory Manipulation for Stealth and Evasion Strategies to bypass Read-Only No-Exec and Distroless Environments.pdf",
+      "size": 931598,
+      "sha256": "af17acb6e54d79e6fa98ee0742ee6d0f4f613924c19c3fcb0a2c2097987ff116",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "Ceri Coburn - A Broken Marriage Abusing Mixed Vendor Kerberos Stacks.pdf",
+      "size": 2243474,
+      "sha256": "a288788ac32f552989f74942bef448ee9f2f6e30fd01d92ca8c8b4f2bda91ab5",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "Christian quaddi Dameff MD Jacqueline Burgette Jeff r3plicant Tully MD Nitin Natarajan Senator Mark Warner Suzanne Schwartz MD - D0 N0 H4RM A Healthcare Security Conversation.pdf",
+      "size": 931121,
+      "sha256": "db3d6f8ebb1213035cbc9d969840ec7fd2150a233768a0496ee0f011861840cc",
+      "status": 0,
+      "units": 7,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "Christien DilDog Rioux Katelyn Medus4 Bowden - The Internals of Veilid a New Decentralized Application Framework.pdf",
+      "size": 4992442,
+      "sha256": "18ae35c87f188f3666c51b2983e36eab1fddb8216301b3d7289a7a8f4e15625f",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "Christopher Wade - Physical Attacks Against Smartphones.pdf",
+      "size": 2192240,
+      "sha256": "c61694c61ec56879c61f1de7c3d5d969dc3b674d80f0a40c92b2635dcfb0fd98",
+      "status": 0,
+      "units": 69,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "cooperq - Tracking the Worlds Dumbest Cyber-Mercenaries.pdf",
+      "size": 4480074,
+      "sha256": "101df3402db2f782c48916ea9f5b82a47fd6f027e0ef5312550bc71998ac5571",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "Dan Borgogno Ileana Barrionuevo - Turning my virtual wallet into a skimming device mPOS solutions.pdf",
+      "size": 11398410,
+      "sha256": "7d53d0ad14c6dfa673332ac5e18ae094c5a6241d5ce1be589c190a46638da3c2",
+      "status": 0,
+      "units": 62,
+      "needs_ocr": 27
+    },
+    {
+      "rel": "Dan Petro David Vargas - Badge of Shame Breaking into Secure Facilities with OSDP.pdf",
+      "size": 12614889,
+      "sha256": "cac580509f840773b487cf33a246785b168b8c89e8db1ec07b5a9fd85b77516e",
+      "status": 0,
+      "units": 169,
+      "needs_ocr": 163
+    },
+    {
+      "rel": "Daniel Avinoam - Contain Yourself Staying Undetected Using the Windows Container Isolation Framework.pdf",
+      "size": 1394565,
+      "sha256": "662a2a3987ddc7231b3055963d7a4a81baad243f45b02866b31ea29f8311def2",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "Daniel dos Santos Simon Guiot - Route to bugs Analyzing the security of BGP message parsing.pdf",
+      "size": 1955636,
+      "sha256": "9f0b167889f1df098bfe455854a6e264e4d2d625972cf8d6a6450239eae53937",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "Daniel Wegemer - Unlocking hidden powers in Xtensa based Qualcomm Wifi chips.pdf",
+      "size": 1165207,
+      "sha256": "201609cf239c57c3fc4883673c6eb611abdbc4178491d24e33ffc9da0d252d75",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "David Leadbeater - Terminally Owned - 60 years of escaping.pdf",
+      "size": 87911855,
+      "sha256": "5cd14f1acdf98a2c414157960876168fbb246a21f7d0f603ae7293c8f8b495b0",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 35
+    },
+    {
+      "rel": "David McGrew Brandon Enright Andrew Chi - Assessing the Security of Certificates at Scale.pdf",
+      "size": 480053,
+      "sha256": "98a290ee7835a00a4e539741d920f1276fcd8e521ccaeb55f5d5bffb8c1dd5f6",
+      "status": 0,
+      "units": 18,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "David Melendez Gabriela Gabs García - Spread spectrum techniques in disposable drones for anti drone evasion.pdf",
+      "size": 7819467,
+      "sha256": "ce577af0981edab75ca7835e2cee566c6dfd2cde7d736cf36e273cb672342c45",
+      "status": 0,
+      "units": 49,
+      "needs_ocr": 28
+    },
+    {
+      "rel": "Dongsung Donny Kim - Your Clocks Have Ears - Timing-Based Browser-Based Local Network Port Scanner.pdf",
+      "size": 7287107,
+      "sha256": "745f842bc2317c24d18e504228d02e7dcfdd618338000e9e4c0905356373ed44",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "Dongsung Donny Kim - Your Clocks Have Ears — Timing-Based Browser-Based Local Network Port Scanner.pdf",
+      "size": 7287107,
+      "sha256": "745f842bc2317c24d18e504228d02e7dcfdd618338000e9e4c0905356373ed44",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "Dr. Bramwell Brizendine Max Libra Kersten Jake Hince - Game-Changing Advances in Windows Shellcode Analysis.pdf",
+      "size": 1044383,
+      "sha256": "6c965d546006c759fdfa7d9c94197d6c2e55701a2256c59b3d93f240663f93c8",
+      "status": 0,
+      "units": 24,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Dr. Bramwell Brizendine Shiva Shashank Kusuma - Advanced ROP Framework Pushing ROP to Its Limits-whitepaper.pdf",
+      "size": 790921,
+      "sha256": "90012c382634567a426741255529a5a751230418cebbd2cb2bedba17963ca8d7",
+      "status": 0,
+      "units": 24,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Dr. Bramwell Brizendine Shiva Shashank Kusuma - Advanced ROP Framework Pushing ROP to Its Limits.pptx",
+      "size": 59492499,
+      "sha256": "cbcebb65e69fc660c8198df4071e3eed7794cbc3789b2fb932e9160ffa535f83",
+      "status": 0,
+      "units": 53,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Dr. Nestori Syynimaa - From Feature to Weapon Breaking Microsoft Teams and SharePoint Integrity.pdf",
+      "size": 2548017,
+      "sha256": "09ef1b3f6963c32af4c7a1a53b540a33961e382424ce5f69860eda26b6e99b73",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 28
+    },
+    {
+      "rel": "Duckie - J4 Gate The Hustler Poker Cheating Scandal investigation and how Hacking helped me do it.pdf",
+      "size": 3810893,
+      "sha256": "63a2dab65a5689310a754ea217abe1cc28199c2f263dfe0f6c275daea6adb80c",
+      "status": 0,
+      "units": 45,
+      "needs_ocr": 32
+    },
+    {
+      "rel": "ElfMaster - Revolutionizing ELF binary patching with Shiva A JIT binary patching system for Linux.pdf",
+      "size": 914347,
+      "sha256": "535a9039128b4549e3186123b0459c5f38d27586447d3bcf4d64e04f65148779",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "EPUB/Attribution of Advanced Persistent Threats - How to Identify the Actors Behind Cyber-Espionage.epub",
+      "size": 1164050,
+      "sha256": "3874d06e65a4df8313c4a5f0d0a5c60cc2fcde1bb4eacea43b89c44fbb26ee41",
+      "status": 2
+    },
+    {
+      "rel": "EPUB/Black Hat Rust - Applied offensive security with the Rust programming language.epub",
+      "size": 4782901,
+      "sha256": "c8cedb870cfea974b9e6702802e18b5a8e038f17b3b7e61965ed39c6c23f5dba",
+      "status": 2
+    },
+    {
+      "rel": "EPUB/Cybersecurity Ops with bash - Attack, Defend, and Analyze from the Command Line.epub",
+      "size": 2003951,
+      "sha256": "107ed944a6e704e85ea00c2a9b134bc795077dc535805ddfc866c34db7dab4bc",
+      "status": 0,
+      "units": 534,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/Data Science at the Command Line - Obtain, Scrub, Explore, and Model Data with Unix Power Tools.epub",
+      "size": 8477436,
+      "sha256": "72d479f6ba81b4275ae51846f82a5c8a47c2c9cd84f828f62c8da76ef6984114",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/Logging and Log Management.epub",
+      "size": 5414585,
+      "sha256": "04979b5d822bffc9fede53a3ca783fb2e22cc97750c540a87783f6f8aff6f4de",
+      "status": 0,
+      "units": 1188,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/Network Security Through Data Analysis - From Data to Action.epub",
+      "size": 4574559,
+      "sha256": "955342f2b8a5af890960b89990d62079a910e3247c1b318c03e53fa2017fe990",
+      "status": 2
+    },
+    {
+      "rel": "EPUB/Powershell® For Sysadmins - Workflow Automation Made Easy.epub",
+      "size": 17512596,
+      "sha256": "8c6a4d09e3338e8ce04ed0ab611f190480a318fcf0b63c10d898b3875baf5463",
+      "status": 0,
+      "units": 347,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Farzan Karimi Xuan Xing  Xiling Gong Eugene Rodionov - Over the Air Under the Radar Attacking and Securing the Pixel Modem.pdf",
+      "size": 2887070,
+      "sha256": "c69e1f91933f8a64cceb00a4f40201a0c286d2ce6204dba0a96a8b9d180c1ece",
+      "status": 0,
+      "units": 42,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "Gal Zror - Look Ma I'm the CEO Real-Time Video and Audio Deep-Fake.pptx",
+      "size": 56534866,
+      "sha256": "4564cf82f09f11ca3e7f15ce7c9649a296c177d165046c1cad1ce2164148900e",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "James Horseman Zach Hanley - New Isnt Always Novel Greping Your Way to 20K at Pwn2Own and How You Can Too.pdf",
+      "size": 5110151,
+      "sha256": "8be79cc80d1422a5ac18f7fca6537518f46a37fe848023bae8bedcd01044bc82",
+      "status": 0,
+      "units": 54,
+      "needs_ocr": 34
+    },
+    {
+      "rel": "Joe Slowik - Burrowing Through The Network Contextualizing The Vulkan Leaks Historical State-Sponsored Offensive Operations.pdf",
+      "size": 4730972,
+      "sha256": "d06babe1f89c9b9d869f2e4f1d4ebae3a5889071b587a5d048cf958a7c2f201c",
+      "status": 0,
+      "units": 146,
+      "needs_ocr": 54
+    },
+    {
+      "rel": "Joe Sullivan - A Different Uber Post Mortem.pdf",
+      "size": 33523312,
+      "sha256": "643b831a03a33966919dfdce6211e659a5f20d01018efcfb874e7d80b1307283",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 42
+    },
+    {
+      "rel": "John Novak - Azure B2C 0-Day An Exploit Chain from Public Keys to Microsoft Bug Bounty.pdf",
+      "size": 12892213,
+      "sha256": "9fbc5d5e4b566b9700359319c3cd44ad99654111a390603e23af2050ac7c92a5",
+      "status": 0,
+      "units": 56,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "Jonathan Bar Or Michael Pearse Anurag Bohra - Getting a Migraine - uncovering a unique SIP bypass on macOS.pdf",
+      "size": 2989820,
+      "sha256": "de6fb2739eb8e3249454b213734542feb559ade787c6dfde5e671cde0728d161",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "Jonathan Birch - Second Breakfast Implicit and Mutation-Based Serialization Vulnerabilities in .NET-whitepaper.pdf",
+      "size": 280955,
+      "sha256": "d8b7ba3a07da13b1364f9b7f298853097e3e9b72a69f733d532ceb31cb8f718c",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Jonathan Birch - Second Breakfast Implicit and Mutation-Based Serialization Vulnerabilities in .NET.pdf",
+      "size": 1176017,
+      "sha256": "4eb6e466ce977c03f0e56215f9f797edf3bfd049086b4223cc00a23ef6e57cd1",
+      "status": 0,
+      "units": 57,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "Josep Pi Rodriguez - Contactless Overflow Code execution in payment terminals and ATM’s over NFC.pdf",
+      "size": 10131042,
+      "sha256": "5101746c6f23c911cac3ec9a6fc41aea6051b0267bdb83492773a4a85c210dc4",
+      "status": 0,
+      "units": 87,
+      "needs_ocr": 60
+    },
+    {
+      "rel": "Joseph Gabay - Warshopping - Further Phreaking Smart Shopping Cart Wheels Through RF Sniffing and Hardware Reverse Engineering.pdf",
+      "size": 11730849,
+      "sha256": "3296ef472f1ad9e8b0d7022d18dbafc2712b2cd13046ffac6ddcbc2c903f1905",
+      "status": 0,
+      "units": 50,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "Katie Inns - HL7Magic Medical Data Hacking Made Easy.pdf",
+      "size": 2823195,
+      "sha256": "15405c7a242d7df79b8558a7ad5a29628d3e754d3d15d5700ba051af1295b562",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "Katitza Rodriguez Bill Budington - UNConventional Cybercrime How a Bad Anti-Hacking Treaty is Becoming a Law.pdf",
+      "size": 1037034,
+      "sha256": "ec1474f6fc6d93fd0a500b2198f22cd1799d92ef0e7b38f95bbead8e37c0c94e",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "Laurie Kirk - Runtime Riddles Abusing Manipulation Points in the Android Source.pdf",
+      "size": 2562825,
+      "sha256": "53bd87c2b2742cedac0969701af94b7eb55d7c55bf49b9f583e076fb586128ef",
+      "status": 0,
+      "units": 85,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "Lorenzo Cococcia - You can't cheat time - Finding foes and yourself with latency trilateration..pdf",
+      "size": 2727075,
+      "sha256": "16fbe34e348e2ee630426485ac910fa1042efbf11eb4eff0bae40be792eb0eb5",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "Matthew Harris Zachary Bertocchi Scott Campbell Noah Gibson - Boston Infinite Money Glitch Hacking Transit Cards Without Ending Up In Handcuffs.pdf",
+      "size": 31950067,
+      "sha256": "0f608fc4369292d0fc4d2b15f7a6ddc1d7bc873db5a01b0284a9a1d905dd4f4a",
+      "status": 0,
+      "units": 176,
+      "needs_ocr": 64
+    },
+    {
+      "rel": "Maxime Clementz - Defeating VPN Always-On.pdf",
+      "size": 2175311,
+      "sha256": "346d62d36d09c8eb5dc5f0f0e6d530da66172b7b71aedff7e9fb83dd688f725e",
+      "status": 0,
+      "units": 59,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "Miana Ella Windall - Designing RFID Implants How flipping the bird opens doors for me.pdf",
+      "size": 10448962,
+      "sha256": "68cc496e0ca9da1fd1b6667c2b5dc3f677540865140d7951ce23cf20f8e4cece",
+      "status": 0,
+      "units": 91,
+      "needs_ocr": 44
+    },
+    {
+      "rel": "Michael Stepankin - mTLS when certificate authentication done wrong.pdf",
+      "size": 1295082,
+      "sha256": "105a592f1fb11e046f8c54d653d4a801ca7623423b6c56e5afb0814120ba573b",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "Mikhail Shcherbakov Musard Balliu - Silent Spring Prototype Pollution Leads to Remote Code Execution in Node.js.pdf",
+      "size": 1458290,
+      "sha256": "85231e23e0c0c8f42e7bf9199a92b7a807ad3f6b5e04c9fb4f7e70a173c17895",
+      "status": 0,
+      "units": 24,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "Mikko Hypponen - Living Next Door to Russia.pdf",
+      "size": 13591447,
+      "sha256": "c189afd9bc61ade07cbdfce817c4cf7f481f53adfdd156b518a96580e0f4d4c1",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 47
+    },
+    {
+      "rel": "Nicolas Minvielle Xavier Facélina - Looking into the future what can we learn about hacking in science-fiction.pdf",
+      "size": 28100385,
+      "sha256": "47acb92ab357ab64690da6d008d9c378398f7877198f3002d8e68bc8cb4b2637",
+      "status": 0,
+      "units": 57,
+      "needs_ocr": 38
+    },
+    {
+      "rel": "Nils Amiet Marco Macchetti - Polynonce An ECDSA Attack and Polynomial Dance.pdf",
+      "size": 3205593,
+      "sha256": "1d8a63f7ff205d5b47970fbeee9fac1bfa3035c30607820a915aa68b2f5a8ef3",
+      "status": 0,
+      "units": 41,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "NiNi Chen - A Comprehensive Review on the Less-Traveled Road 9 Years of Overlooked MikroTik Pre-Auth RCE.pdf",
+      "size": 15763316,
+      "sha256": "4b5aa0486bf29c4f429a6bd9d6cf3c72542e19466de10dd0e45c22d34bfb0457",
+      "status": 0,
+      "units": 160,
+      "needs_ocr": 80
+    },
+    {
+      "rel": "Noam Moshe Sharon Brizinov - A Pain in the NAS Exploiting Cloud Connectivity to PWN your NAS.pdf",
+      "size": 7304068,
+      "sha256": "7de202952da9d9786c71430de7b408c1df72163901c57d9e40d127c0167359fe",
+      "status": 0,
+      "units": 154,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "nullagent rekcahdam - Snoop on to them as they snoop on to us.pdf",
+      "size": 8135942,
+      "sha256": "147eceec493b7e05ad418d69893d85c09339a3b202982fa95e4a74bbfbc7a347",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 15
+    },
+    {
+      "rel": "nyxgeek - Track the Planet Mapping Identities Monitoring Presence and Decoding Business Alliances in the Azure Ecosystem.pdf",
+      "size": 10110269,
+      "sha256": "8916d00075ca15602bb64aa499288b48f4d16273191c89ce55e14734235aded5",
+      "status": 0,
+      "units": 100,
+      "needs_ocr": 54
+    },
+    {
+      "rel": "Omer Attias - The Price of Convenience How Security Vulnerabilities in Global Transportation Payment Systems Can Cost You.pdf",
+      "size": 3585656,
+      "sha256": "2a834f771cfbe2e4347ae9cb488f6815c1de44db73b9c935599e86b6bdf4a8c0",
+      "status": 0,
+      "units": 104,
+      "needs_ocr": 49
+    },
+    {
+      "rel": "Omri Ben-Bassat - How I Ransomwared Your [REDACTED] Car.pdf",
+      "size": 73584326,
+      "sha256": "e27e801f6b48cfd6de6ec4550c7447602d0059d718f38978bbe31fd437a64d27",
+      "status": 0,
+      "units": 102,
+      "needs_ocr": 40
+    },
+    {
+      "rel": "Patrick Wardle - Demystifying ( Bypassing) macOS's Background Task Management.pdf",
+      "size": 18719105,
+      "sha256": "43c5996cafc6ae75f50dd6f91bc92b937a2ae2a2869e81cc47d8a406ffbf2958",
+      "status": 0,
+      "units": 62,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "Patrick Wardle - Nothing but Net Leveraging macOS's Networking Frameworks to Heuristically Detect Malware.pdf",
+      "size": 25640150,
+      "sha256": "1b22315de0d9f3eb85fe2ce3d330378f5ab1c05a53ba37a401dd7d629d89fcd6",
+      "status": 0,
+      "units": 67,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "Paz Hameiri - CON trolling the weather.pdf",
+      "size": 893570,
+      "sha256": "5aaa7644279138c3d267def3f1fa7a6b1f8152783a0825f56405fa153c3e48bb",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "R.J. McDown - Malware design - abusing legacy Microsoft transports and session architecture.pdf",
+      "size": 29215631,
+      "sha256": "375cfc42adfdf7681b48e9c1ed24570b192059577c150e25cbce82b12bce36d3",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 34
+    },
+    {
+      "rel": "Renderman Thomas Dang - Damned if you do - The risks of pointing out the emperor is buck naked.pdf",
+      "size": 2135410,
+      "sha256": "938cfd75a20b2282748f067a35992ac68133576747743e332370c208104e45b5",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Ricky Lawshae - Fantastic Ethertypes and Where to Find Them.pdf",
+      "size": 1740737,
+      "sha256": "c22988e95b24a037b92d33251e3d40f846aa1a36ceacf7f9905b515c8ab482ba",
+      "status": 0,
+      "units": 58,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "Ron Ben-Yizhak - NoFilter Abusing Windows Filtering Platform for privilege escalation.pdf",
+      "size": 1838170,
+      "sha256": "f1b62e6d3e4e1615aadea3d08b4fa78681f216df8eb2ed5e2d60c8bb6acc1e14",
+      "status": 0,
+      "units": 68,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "Ryan Johnson Mohamed Elsabagh Angelos Stavrou - Still Vulnerable Out of the Box Revisiting the Security of Prepaid Android Carrier Devices.pdf",
+      "size": 10617213,
+      "sha256": "a199b10abdb5fdf1ae73fa796adea5c3ad29b4dce2fc7fb2d80c5e6d923f3429",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "Sam Quinn Jesse Chick - Power Corrupts Corrupt It Back Hacking Power Management in Data Centers.pdf",
+      "size": 4415524,
+      "sha256": "0340c087bc34aa33f75b9c2d5970ead318a087b35d62323bdd12823c33abe158",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "Sharon Brizinov Noam Moshe - Exploiting OPC-UA in Every Possible Way Practical Attacks Against Modern OPC-UA Architectures.pdf",
+      "size": 12476015,
+      "sha256": "a137d103c4643976a84ab2d5e415e8f0cee0bf190e842b284189c79fc2752cda",
+      "status": 0,
+      "units": 150,
+      "needs_ocr": 35
+    },
+    {
+      "rel": "STÖK - Weaponizing Plain Text ANSI Escape Sequences as a Forensic Nightmare.pdf",
+      "size": 26018885,
+      "sha256": "0c35b624a2636f8f76b5f36b50cfa9974f7753bd6cb834aaa815ed678bc90fc7",
+      "status": 0,
+      "units": 150,
+      "needs_ocr": 97
+    },
+    {
+      "rel": "Sven Cattell Rumman Chowdhury Austin Carson - Growing the Community of AI Hackers with the Generative Red Team.pdf",
+      "size": 8701187,
+      "sha256": "1b2ad6b8c74286b6c51fe10b33ca14abc546b80252d397fbccb115a1e69b73b1",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "Taiiwo Artorias Puck TheClockworkBird - Cracking Cicada 3301 The Future of Collaborative Puzzle-Solving.pdf",
+      "size": 1166731,
+      "sha256": "468cedd7f7226a481730987c84af2791f88267a17c24fef1f02245af408ff417",
+      "status": 0,
+      "units": 22,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Tal Skverer - GhostToken Exploiting Google Cloud Platform App Infrastructure to Create Unremovable Trojan Apps.pdf",
+      "size": 2404275,
+      "sha256": "8580ad23f82d3400e7ec003b1fe64766fccd016657ed8fbb8ddcbf9360ca3647",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "Tamas Jos - Spooky authentication at a distance.pdf",
+      "size": 3801517,
+      "sha256": "e67a3df7930b3c4b21d79acb316ddd513622d8f4d1950f0fca91b5c020f42a7c",
+      "status": 0,
+      "units": 40,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "Thomas Chauchefoin Paul Gerste - Visual Studio Code is why I have (Workspace) Trust issues.pdf",
+      "size": 1729027,
+      "sha256": "52606234e6c421c8624544c0e684db5eb503ec43ba3dc87bf08e0b886c36c7e9",
+      "status": 0,
+      "units": 67,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "Tiffany Rad Austin Shamlin - Civil Cyber Defense Use Your Resources to Defend Non-Profits as they Combat Human Trafficking and Subvert Authoritarian Regimes.pdf",
+      "size": 1649335,
+      "sha256": "6f851b713becff89df6424a7c4d6ae63621a60c436bf1d640271bf8f8a91c920",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "Tom Pohl - Private Keys in Public Places.pdf",
+      "size": 7897790,
+      "sha256": "e2d49cf352d7d64e616b6190470e3ee65c969653196cd0898ef8e0effe18ced6",
+      "status": 0,
+      "units": 46,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "Tomer Bar Omer Attias - Defender-Pretender When Windows Defender Updates Become a Security Risk.pdf",
+      "size": 4882196,
+      "sha256": "c32c04f956f51318e3d61d5329a2bdd826df433729317bf69e2677e80eddbaa4",
+      "status": 0,
+      "units": 86,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "Tomer Bar Omer Attias - Defender-Pretender When Windows Defender Updates Become a Security Risk.pptx",
+      "size": 93226384,
+      "sha256": "6ab27c2751d3b4a1c53b3700f69a85f7ee8e656db808776b5d5366a170de712b",
+      "status": 0,
+      "units": 79,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Tracy Mosley - Nuthin But A G Thang Evolution of Cellular Networks.pdf",
+      "size": 8678282,
+      "sha256": "f70dfd18cefedc4ffcf9fac97d90ad2f240daed89d5407591e4342b45a3ddc21",
+      "status": 0,
+      "units": 47,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "Trevor Stevado Sam Haskins - Unlocking Doors from Half a Continent Away.pdf",
+      "size": 2018797,
+      "sha256": "74fade63bec0be22eec79b9aadc6e2b29ff10abe8ff7fb944a5a577350ac9cdb",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "Vangelis Stykas - The Art of Compromising C2 Servers A Web Application Vulnerabilities Perspective.pptx",
+      "size": 18269358,
+      "sha256": "adca24f4d533741359d45375ee7e137e23a253ed380162bc35a722186edbd1c3",
+      "status": 0,
+      "units": 80,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Wesley McGrew - Retro Exploitation Using Vintage Computing Plaforms as a Vulnerability Research Playground and Learning Environment.pdf",
+      "size": 2979320,
+      "sha256": "7bdca69561d11d21fd82268f03418e0e738e11b4e53fed3ae483a2ddf32342eb",
+      "status": 0,
+      "units": 76,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "winn0na and Panel - Hacker Court Interactive Scenario.pptx",
+      "size": 7511579,
+      "sha256": "b72e25e709216002ca9ebeac8367bccf7d096d9d5d767ad7cc9be6351d19923c",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "Wojciech Reguła - ELECTRONizing macOS privacy - a new weapon in your red teaming armory.pdf",
+      "size": 3903113,
+      "sha256": "e069b910fada3bd6ec4ca23e00b9adf67cc52ed72f0d9f3a99ef56e4b3be7625",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "X - LLMs at the Forefront Pioneering the Future of Fuzz Testing in a Rapidly Changing World.pdf",
+      "size": 3602465,
+      "sha256": "74afc8975e92eedd6dc2f0a6e31e224b8707d2f552dc7ca384551a78e7d9ab05",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/Active Directory, 5th Edition Designing, Deploying, and Running Active Directory (Brian Desmond, Joe Richards, Robbie Allen etc.) .pdf",
+      "size": 26954792,
+      "sha256": "8784ac81dbf7cc8d12101216cb5e7b9f00f5f318d1867fca56a66d0539603f46",
+      "status": 0,
+      "units": 738,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "书籍作品/ADVANCED WEB ATTACKS AND EXPLOITATION WEB-300 (2022).pdf",
+      "size": 33741572,
+      "sha256": "4ec08c12eb6a4bbfec3afaa0d195b80db66b76b4322dea4dcb1ba1bf561f9d66",
+      "status": 0,
+      "units": 564,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "书籍作品/ADVANCED WINDOWS EXPLOITATION (2010 Offensive security ltd).pdf",
+      "size": 382210360,
+      "sha256": "f1586e857c07eff6611c0a79c448fef1defb262480c4301d76b2ae3ac17a1a28",
+      "status": 0,
+      "units": 243,
+      "needs_ocr": 234
+    },
+    {
+      "rel": "书籍作品/ADVANCED WINDOWS EXPLOITATION - PRESENTATION (2010 Offensive security ltd).pdf",
+      "size": 2484644,
+      "sha256": "b0142d0d69a42b093d4a524fa09bc962d6471f5093bf53e587118566f4fd2cf7",
+      "status": 0,
+      "units": 66,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Antivirus Bypass Techniques Learn practical techniques and tactics to combat, bypass, and evade antivirus software (Nir Yehoshua, Uriel Kosayev).pdf",
+      "size": 21762074,
+      "sha256": "298a5716b7a1d08e70d3c445260fa1a5bc7aa929a2e05f7345966d901437b56c",
+      "status": 0,
+      "units": 242,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "书籍作品/Applied Incident Response (Steve Anson) .pdf",
+      "size": 40226711,
+      "sha256": "363f1991443f0d504eaf8efec5df37e941e2374672c2bf3e38ad1e6f82b155ae",
+      "status": 0,
+      "units": 674,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "书籍作品/APT归因_Attribution of Advanced Persistent Threat/Attribution of Advanced Persistent Threats by Timo Steffens.pdf",
+      "size": 5019985,
+      "sha256": "afb9b08f836add63aedbee50930db75aeabb16c630510218b4ef931189a1c52d",
+      "status": 0,
+      "units": 281,
+      "needs_ocr": 37
+    },
+    {
+      "rel": "书籍作品/blackhat rust/black_hat_rust.pdf",
+      "size": 4087789,
+      "sha256": "9145a89cdab0bc25e002cd18d999c4f551ef955d3ccd3b263708b51ba0d994a7",
+      "status": 0,
+      "units": 357,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/blackhat rust/black_hat_rust_0524.pdf",
+      "size": 4092331,
+      "sha256": "61ea3d37ac2e39eb65e0ab0a5dd3622b3e5cc2594b074c3eefba0c85beea26f3",
+      "status": 0,
+      "units": 358,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/blackhat rust/Command-Line Rust_ A Project-Based Primer for Writing Rust CLIs 1 (2022, O'Reilly Media).pdf",
+      "size": 5795354,
+      "sha256": "05fc14c57ee757355621988315978280bbf41158646be3fc7f25ced25ac78de9",
+      "status": 0,
+      "units": 399,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "书籍作品/Blue Fox - Arm Assembly Internals and Reverse Engineering.pdf",
+      "size": 15091105,
+      "sha256": "3f327d16436b91e5fed12cc29912ece09ee56f612955191abe3f2e8cc0814321",
+      "status": 0,
+      "units": 476,
+      "needs_ocr": 32
+    },
+    {
+      "rel": "书籍作品/Bug Bounty Playbook[1].pdf",
+      "size": 7848976,
+      "sha256": "eb629bc9c64e5dd1ea93083cfd810a52dd8aa89f1d63f5ce50c66c9a970b5508",
+      "status": 0,
+      "units": 212,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/Bug Bounty Playbook[2].pdf",
+      "size": 30319840,
+      "sha256": "d81ae936a46acee1a94ba00697bc560cd284e345fa7cbde0c1a3cdfec759918d",
+      "status": 0,
+      "units": 250,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/CEH Certified Ethical Hacker Cert Guide (Michael Gregg, Omar Santos) .pdf",
+      "size": 61162811,
+      "sha256": "e437ade3540abe911b173f3a343561e60b566edd64390a44b338f65a569e6d5a",
+      "status": 0,
+      "units": 1161,
+      "needs_ocr": 219
+    },
+    {
+      "rel": "书籍作品/Clean Code/Beyond the Basic Stuff with Python Best Practices for Writing Clean Code (Al Sweigart) .pdf",
+      "size": 7976680,
+      "sha256": "93472157c8371cb87d5ae5766162065d30adf99bac0c49a4f5b507171c878bcc",
+      "status": 0,
+      "units": 386,
+      "needs_ocr": 36
+    },
+    {
+      "rel": "书籍作品/Clean Code/Clean Code in JavaScript Develop reliable, maintainable and robust JavaScript (James Padolsey) .pdf",
+      "size": 13769378,
+      "sha256": "9a1bb90b80cc66367bcbb562061a6e6d5c7af300e3c43fde5f93e90bff8cd9f4",
+      "status": 0,
+      "units": 527,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Clean Code/Clean Code in Python Develop maintainable and efficient code, 2nd Edition (Mariano Anaya) .pdf",
+      "size": 3150827,
+      "sha256": "57c36636992733c59a16574a3bd06be1d06bb09b75752741b765d3613603e655",
+      "status": 0,
+      "units": 423,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "书籍作品/Clean Code/Hands-On Software Engineering with Golang Move beyond basic programming to design and build reliable software with clean code (Achilleas Anagnostopoulos) .pdf",
+      "size": 11670693,
+      "sha256": "27d72c30d693f71b865cdcccb86c3e0f15236015b0edda403aa18452993d8497",
+      "status": 0,
+      "units": 625,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Clean Code/Python One-Liners (Christian Mayer) .pdf",
+      "size": 7022899,
+      "sha256": "4776593d352299f36a70d2bbfe60de1abfd62df1e298d0ee9fe71fe19dda4e3a",
+      "status": 0,
+      "units": 285,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/Clean Code/代码整洁之道 (Robert C. Martin) .pdf",
+      "size": 86720322,
+      "sha256": "dba5746dcf3ba1d0baabdb543151ecc1c1e6e280cee459287efb059dcbdf964d",
+      "status": 0,
+      "units": 404,
+      "needs_ocr": 404
+    },
+    {
+      "rel": "书籍作品/Cloud Attack Vectors Building Effective Cyber-Defense Strategies to Protect Cloud Resources (Morey J. Haber, Brian Chappell etc.) .pdf",
+      "size": 11055513,
+      "sha256": "13c61452d97d3283c83c1641ea7e74a2634c3a7e60145fdb58d03f863cecf4b1",
+      "status": 0,
+      "units": 492,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/CLOUD HACKING PLAYBOOK (ghostlulz) .pdf",
+      "size": 18595537,
+      "sha256": "f0d2a6e7ceac6b30840c1eb3e88854503cc33099576c23a4d4a8daa12d49f0ff",
+      "status": 2
+    },
+    {
+      "rel": "书籍作品/Crafting the infosec playbook [security monitoring and incident response master plan] (Bollinger, JeffEnright, BrandonValites etc.) .pdf",
+      "size": 11182467,
+      "sha256": "c148f79cd41db6f9e17558d964a2534c127d577413d4eafe9b4864b29d3c8771",
+      "status": 0,
+      "units": 275,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "书籍作品/Cyber Threat Hunting (MEAP V05) (Nadhem Al Fardan) .pdf",
+      "size": 7086509,
+      "sha256": "08d54da06d812b28278b0dc3c3defd062ac18603656c03b2bd3b00b8b48bca4e",
+      "status": 0,
+      "units": 306,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Cyberjutsu Cybersecurity for the Modern Ninja (Ben McCarty) .pdf",
+      "size": 7404718,
+      "sha256": "7173f639ade32256c222262ce87aaf5d85e3690ca365370b6132f0cdd5709fd2",
+      "status": 0,
+      "units": 267,
+      "needs_ocr": 31
+    },
+    {
+      "rel": "书籍作品/Cybersecurity Attacks - Red Team Strategies A practical guide to building a penetration testing program having homefield... (Johann Rehberger).pdf",
+      "size": 22223772,
+      "sha256": "02a566990c0fe8376dcf2a5d62cbb9c71cead85fa851017df584d04512afe5ac",
+      "status": 0,
+      "units": 525,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "书籍作品/Cybersecurity Ops with bash (Paul Troncone, Carl Albing).pdf",
+      "size": 4040350,
+      "sha256": "57b8a5ba2bf1e93172522ad8d86b9ddcd6b386f148e75fd09d57ca252d26c2e2",
+      "status": 0,
+      "units": 414,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/eBPF安全可观测性_Security Observability with eBPF (Jed Salazar, Natalia Reka Ivanko) .pdf",
+      "size": 3026807,
+      "sha256": "558ddf07db1d3de92523d5faf9e3f5ebe24735d120dc74ec9856070153ec5fc0",
+      "status": 0,
+      "units": 65,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Essential cybersecurity science build, test, and evaluate secure systems (Dykstra, Josiah) .pdf",
+      "size": 6018777,
+      "sha256": "62be812e25f8a1ddbad7ee11ed1b6ea5b062de1b82fc1b97ab5bfb04895914b4",
+      "status": 0,
+      "units": 190,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "书籍作品/Evasion Techniques and Breaching Defenses 1.0 (Offensive security ltd).pdf",
+      "size": 28310809,
+      "sha256": "c8c94442573a0061c7be2367857956ce706fed8c6f6bb2db0f12c5cec4d425ea",
+      "status": 0,
+      "units": 704,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "书籍作品/Full Stack Python Security Cryptography, TLS, and attack resistance (Dennis Byrne) .pdf",
+      "size": 10511202,
+      "sha256": "32d9714edd03734dd431fd9fc10b60c048c187f00476fd797b2ba063ec6d0e81",
+      "status": 0,
+      "units": 305,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/Hacking APIs Breaking Web Application Programming Interfaces(Corey J. Ball).pdf",
+      "size": 24745674,
+      "sha256": "bb0e382dfc7a6d58a1d81d8b33dce935c436e5d5c9a7d4ab134b82b21d516215",
+      "status": 0,
+      "units": 363,
+      "needs_ocr": 36
+    },
+    {
+      "rel": "书籍作品/Hands-On Artificial Intelligence for Cybersecurity Implement smart AI systems for preventing cyber attacks and detecting... (Alessandro Parisi) .pdf",
+      "size": 9535522,
+      "sha256": "6447cc15835db648e12bcfba14c50ed8b6eb9a768c957ad793f7c21fbacc79f1",
+      "status": 0,
+      "units": 331,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Intelligence-Driven Incident Response Outwitting the Adversary (Scott J. Roberts, Rebekah Brown) .pdf",
+      "size": 7932272,
+      "sha256": "a72726a972352b03b201c1d6d9c0a4b2ef627cffc2af2eda0476de1f086d148f",
+      "status": 0,
+      "units": 282,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "书籍作品/Mastering Cyber Intelligence Gain comprehensive knowledge and skills to conduct threat intelligence (Jean Nestor M. Dahj) (Z-Library).pdf",
+      "size": 14771660,
+      "sha256": "0cf401f18f1e74764ef3fe8b5bdb3fefed0090166bde11ecc9d53e8a1e0c6125",
+      "status": 0,
+      "units": 528,
+      "needs_ocr": 21
+    },
+    {
+      "rel": "书籍作品/Microsoft Defender for Endpoint in Depth Take any organizations endpoint security to the next level (Paul Huijbregts, Joe Anich, Justen Graves)  (1).pdf",
+      "size": 23822126,
+      "sha256": "1b6dd42bc4ccf35856ce0a29a04d998c75678d4b2d1c0118bb8d804fffa5dbf4",
+      "status": 0,
+      "units": 362,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "书籍作品/Microsoft Exchange Server 2016 PowerShell Cookbook.pdf",
+      "size": 13087189,
+      "sha256": "a45ffeab5408522f09c2fbad80faea15c12b7b31d4ddf8b5d415793077ac95e5",
+      "status": 0,
+      "units": 1163,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/Microsoft Sentinel in Action - Second Edition (Richard Diver, Gary Bushey, John Perkins) .pdf",
+      "size": 52517127,
+      "sha256": "8a661fa0f0daae36470cc9c912cd8887a3ba3f55d2e2ade4dd1d3b62fa6b2a0c",
+      "status": 0,
+      "units": 478,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "书籍作品/Modern Windows Exploit Development (MassiMiliano ToMassoli) .pdf",
+      "size": 19949371,
+      "sha256": "70e198276935588b3ea00ae2cfb3cae723b7d792105575ce77d1e4c8783c262e",
+      "status": 0,
+      "units": 529,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Network Security Assessment Know Your Network (Chris McNab) .pdf",
+      "size": 20041320,
+      "sha256": "0fb725eeefaf85264000cf2a410ea4c688f1f4a3431d458b78eaa108145a8339",
+      "status": 0,
+      "units": 734,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/Network Security Through Data Analysis From Data to Action (Michael Collins) .pdf",
+      "size": 10548282,
+      "sha256": "e3f4c0043343b647522c1393c3f56b351e87c0baf3b42de1f9be2d309c4500d7",
+      "status": 0,
+      "units": 427,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "书籍作品/Network traffic anomaly detection and prevention  concepts, techniques, and tools (Bhattacharyya, Dhruba K. Bhuyan etc.) .pdf",
+      "size": 5960092,
+      "sha256": "3447ecaa56e7454bf67883643254ced3745fd18de31a5d95a8d1df54520c82cc",
+      "status": 0,
+      "units": 278,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Offensive Shellcode from Scratch Get to grips with shellcode countermeasures and discover how to bypass them (Rishalin Pillay) .pdf",
+      "size": 20936483,
+      "sha256": "9ebb07e266614ee135830e873747635d90a9622c7f3e2af0b3d3b692f46df861",
+      "status": 0,
+      "units": 209,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/OSINT_Data Science at the Command Line_.pdf",
+      "size": 12061599,
+      "sha256": "a9767cb5d66562131ab47091d18f2426b8ded43875dbed2290442f3553479db2",
+      "status": 0,
+      "units": 283,
+      "needs_ocr": 70
+    },
+    {
+      "rel": "书籍作品/OSMR - EXP312.pdf",
+      "size": 26553986,
+      "sha256": "b4985732fb6c29e3bb1b4f08870c997554011697aa4a27b6db5354158ac868f5",
+      "status": 0,
+      "units": 502,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/Peerlyst_The_Red_Team_Guide_by_Peerlyst_community.pdf",
+      "size": 12648679,
+      "sha256": "2cc82c1be263daa4d0b8a18c706435b98d265e11c83c3b053db69a663b34776c",
+      "status": 0,
+      "units": 241,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/Practical Cloud Native Security with Falco Risk and Threat Detection for Containers, Kubernetes, and Cloud (Loris Degioanni, Leonardo Grasso) .pdf",
+      "size": 5824211,
+      "sha256": "66572161f8dc8e3295cacadf7f95ba7d78efb85bacf724a9bff2d0ebf91dd84e",
+      "status": 0,
+      "units": 227,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "书籍作品/Purple Team Strategies Enhancing global security posture through uniting red and blue teams with adversary emulation (David Routin, Simon Thoores, Samuel Rossier).pdf",
+      "size": 20557075,
+      "sha256": "e060ae96557c858bb87de864fd940c95a4a26c97dc898295b19c598ea775686c",
+      "status": 0,
+      "units": 450,
+      "needs_ocr": 44
+    },
+    {
+      "rel": "书籍作品/RTFM Red Team Field Manual v2 (Ben Clark, Nick Downer) .pdf",
+      "size": 1538825,
+      "sha256": "92ae9d0524c15ec1e302daabb76a355195dc8d3316aed2ef3b1c92bf9f135c43",
+      "status": 0,
+      "units": 200,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "书籍作品/SocialEngineering_the science of human hacking.pdf",
+      "size": 16705040,
+      "sha256": "d29c1c7ca188dfb29f0fc48f6d3a2a437165e1879a62bbed290ecb8b9733271f",
+      "status": 0,
+      "units": 478,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/The CISO and The Art of War win the cyber battles (Lienard, Alexander) .pdf",
+      "size": 649424,
+      "sha256": "77b20cc8e877671ace41830f8e2f571f0b2c4d8e5e8b696597505ef8da7aff83",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/The Hacker And The State Cyber Attacks And The New Normal Of Geopolitics (Ben Buchanan) .pdf",
+      "size": 21572172,
+      "sha256": "3f9315fc3dfefd37fdd9163b89c5b100086bf78cf9f44fcaa22af098bd8bca5d",
+      "status": 0,
+      "units": 433,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "书籍作品/The Hacker’s Guide to Scaling Python (Julien Danjou) .pdf",
+      "size": 3125229,
+      "sha256": "dee05caad2efaf8c957a561d537947f83be10fc4cbfebd52d00c73d57684000f",
+      "status": 0,
+      "units": 283,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/The Hardware Hacking Handbook. Breaking Embedded Security With Hardware Attacks (Jasper van Woudenberg, Colin O’Flynn) .pdf",
+      "size": 58186140,
+      "sha256": "6a0b870b813fb291cf158658b8d3f071b9c296a447ae64a0fec5bf1f79dc2358",
+      "status": 0,
+      "units": 781,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Threat Hunting with Elastic Stack Solve complex security challenges with integrated prevention, detection, and response (Andrew Pease) .pdf",
+      "size": 48712720,
+      "sha256": "35caa5c1d50e678b7c2a1d97d671c9d5c89197ee05a1f9abbc2bc9ee14e25db2",
+      "status": 0,
+      "units": 392,
+      "needs_ocr": 37
+    },
+    {
+      "rel": "书籍作品/Web Application Obfuscation - WAFs..Evasion..Filters  alert( Obfuscation )- (Mario Heiderich, Eduardo Alberto Vela Nava etc.).pdf",
+      "size": 1578516,
+      "sha256": "1725d7e4e72843f842736536e6a32913b205796200899d0fb4bcc1639e8af057",
+      "status": 0,
+      "units": 290,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "书籍作品/What Every Engineer Should Know about Cyber Security and Digital Forensics (JOANNA F. DEFRANCO, Bob Maley) .pdf",
+      "size": 14193700,
+      "sha256": "697cc7f21800836a1786feebd8fbd89563392df586970005e4acdd9c867e190b",
+      "status": 0,
+      "units": 199,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Troubleshooting Windows Server with PowerShell (Derek Schauland, Donald Jacobs) .pdf",
+      "size": 9390858,
+      "sha256": "4c0ab19ac13e3e879ca0d0da7919a114c8ff7906ccf06a7625ce791393192d2e",
+      "status": 0,
+      "units": 136,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows File System Troubleshooting (Andrew Bettany, Mike Halsey (auth.)) .pdf",
+      "size": 9482484,
+      "sha256": "09db74d868611b566314c6f1a1f6f2cea7241b3c09c2ba81649e125bdf8be313",
+      "status": 0,
+      "units": 165,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Group Policy Troubleshooting A Best Practice Guide for Managing Users and PCs Through Group Policy (Kapil Arya (auth.), Andrew Bettany (eds.)) .pdf",
+      "size": 15289155,
+      "sha256": "086cfd1fd2c9a2837fb80068b0624aac9cdb7fe83acc56d2e903bc10a1ae1b3f",
+      "status": 0,
+      "units": 225,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Installation and Update Troubleshooting (Chris Rhodes, Andrew Bettany (auth.)) .pdf",
+      "size": 8993056,
+      "sha256": "9ea8ae4dd4da287d89e7ef543c55a4c3b3684e38c41cd5228cd64e926fb0629e",
+      "status": 0,
+      "units": 201,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Networking Troubleshooting (Mike Halsey, Joli Ballew) .pdf",
+      "size": 9819926,
+      "sha256": "4d1eae66b494389d6793b64ac0f80022f2e8005fba9238ca639c8247fb561063",
+      "status": 0,
+      "units": 160,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Registry Forensics, Second Edition Advanced Digital Forensic Analysis of the Windows Registry (Carvey, Harlan A) .pdf",
+      "size": 12101882,
+      "sha256": "f229b810faade1a63ed7e6d424f7cdd69f5746b49c34e155e0fb5697d8e409c4",
+      "status": 0,
+      "units": 204,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Registry Troubleshooting (Mike Halsey, Andrew Bettany (auth.)) .pdf",
+      "size": 5813111,
+      "sha256": "ae06fcb6c542c79a87e64f4a20c64cb3badd934425f2ec5a79840522175ea789",
+      "status": 0,
+      "units": 124,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Windows User Mode Exploit Development (Offensive security ltd).pdf",
+      "size": 11878634,
+      "sha256": "ab05579769c5e62f97b36d039bb6e21a3cad5e2d4bd7c7cd15895f20803f32d1",
+      "status": 0,
+      "units": 604,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/WINDOWS WSL/Pro Windows Subsystem for Linux (WSL) Powerful Tools and Practices for Cross-Platform Development and Collaboration (Hayden Barnes).pdf",
+      "size": 18090479,
+      "sha256": "40569254f9689ec08610b754b0c0f1385869a42a610d98d40bc4c2507d48a864",
+      "status": 0,
+      "units": 304,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/WINDOWS WSL/Windows Subsystem for Linux 2 (WSL 2) Tips, Tricks, and Techniques Maximise productivity of your Windows 10 development... (Stuart Leeks) .pdf",
+      "size": 3721000,
+      "sha256": "fd04f49b95e164b0b2bb45f90eedbf491c23b0c60f12639a26b011c91065a7a3",
+      "status": 0,
+      "units": 246,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/凯文米特社工书籍原版——The Art of Invisibility The World’s Most Famous Hacker Teaches You How to Be Safe in the Age of Big Brother and Big Data (Kevin D. Mitnick, Robert Vamosi).pdf",
+      "size": 1428753,
+      "sha256": "40a8e0abf4078cad738854521f2424432f6e39fae633bf1ee0892008861d7b8d",
+      "status": 0,
+      "units": 259,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "书籍作品/基于系统思维构筑安全系统.pdf",
+      "size": 224062153,
+      "sha256": "ca8b8d1cb793fc6da9bcc9e0a223c46111a25587522848eddd4c9510e1288211",
+      "status": 0,
+      "units": 404,
+      "needs_ocr": 404
+    },
+    {
+      "rel": "书籍作品/基于系统思维构筑安全系统—Engineering a Safer World Systems Thinking Applied to Safety (Nancy G. Leveson) .pdf",
+      "size": 12894234,
+      "sha256": "c4584d4cd52e0c643ee7c7260a9d6e9838b805cb02976d0fbb68175aa618c1e6",
+      "status": 0,
+      "units": 537,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/安全相似系统学.pdf",
+      "size": 28708521,
+      "sha256": "79845e77d0bc403b4a8415c85d349267e42cb6988078b8550fe6bebdf1f4defd",
+      "status": 0,
+      "units": 161,
+      "needs_ocr": 161
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Accelerated .NET Memory Dump Analysis.pdf",
+      "size": 33490971,
+      "sha256": "a589ee26867b6d812912a58f314e58d00c6372ea217d9fc82dea49cd38debb8a",
+      "status": 0,
+      "units": 445,
+      "needs_ocr": 34
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Accelerated Mac OS X Core Dump Analysis, Second Edition Training Course Transcript with Gdb and Lldb Practice Exercises (Dmitry Vostokov) .pdf",
+      "size": 8582303,
+      "sha256": "bb48f64205aebbeb92a1762c03c16d8df90bf57c701f5dbfce09c8c52b8b9e9b",
+      "status": 0,
+      "units": 405,
+      "needs_ocr": 62
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Advanced Windows Memory Dump Analysis with Data Structures (Dmitry Vostokov) .pdf",
+      "size": 9999102,
+      "sha256": "a984c2e043cdc8160394d4e110b0033bf1d1576ba0c2782e9b74aa2aebf465ea",
+      "status": 0,
+      "units": 371,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Encyclopedia of Crash Dump Analysis Patterns (Dmitry Vostokov) .pdf",
+      "size": 14284492,
+      "sha256": "e1a1067b0b3fd65b40e0c93021d359d881eee3ee4f32be3cd7b51344915ac579",
+      "status": 0,
+      "units": 1200,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Linux Debugging Dissasseblining Reversing (Dmitry Vostokov, Software Diagnostics Services) .pdf",
+      "size": 3532319,
+      "sha256": "77bdb7b47ec43ed41f19cc2db5a98145dd07e3354cf6539b9b688a10acaa7fda",
+      "status": 0,
+      "units": 175,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology Volume 11.pdf",
+      "size": 34214139,
+      "sha256": "64e9d234157dc27151c042a05b7e6538fc57acb242df793d03d383d294237b69",
+      "status": 0,
+      "units": 264,
+      "needs_ocr": 23
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 1.pdf",
+      "size": 6040841,
+      "sha256": "9afbe02ac82ac52484aee4d13ff17bcce55da9c78ae7dfdbb35d15b2a6c7adae",
+      "status": 0,
+      "units": 720,
+      "needs_ocr": 23
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 10.pdf",
+      "size": 5215307,
+      "sha256": "6375f4163b6b0e547f9767a1845e75b10f81b7ee7de48a34e1fcdf148f6ab0b0",
+      "status": 0,
+      "units": 168,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 2 .pdf",
+      "size": 4684784,
+      "sha256": "921b6d2cab9a160dbef2a2caae8c9ed79c2d7a1dc155c08ebf2be6f9295628d3",
+      "status": 0,
+      "units": 470,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 3.pdf",
+      "size": 5030593,
+      "sha256": "89c593117d4c23e4684adeabbb0f775ef688af7d0f519e7a020dc8bdae201074",
+      "status": 0,
+      "units": 403,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 5.pdf",
+      "size": 8474569,
+      "sha256": "ed898ac44795751bc2b81bbebb4c0bba47f58dcb4bf4f33fc124ebad823584cc",
+      "status": 0,
+      "units": 431,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 6.pdf",
+      "size": 3478184,
+      "sha256": "064d6b94887da5eddb6c683429403f4acbb93685e894dcf0624bdfe9ebd08340",
+      "status": 0,
+      "units": 305,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 7.pdf",
+      "size": 7699740,
+      "sha256": "2d168b04435c40c0058e46c1e8ee7c791af61987d424b79885b9e6dca3236461",
+      "status": 0,
+      "units": 523,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Mobile Software Diagnostics An Introduction (Dmitry Vostokov, Software Diagnostics Services) .pdf",
+      "size": 2267522,
+      "sha256": "fbe9fb8a31e23af1d2707add6143ac2e71be09440caee985d26c6f354f43169c",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Practical Foundations of Windows Debugging, Disassembling, Reversing Training Course (Dmitry Vostokov) .pdf",
+      "size": 5772456,
+      "sha256": "b8cdcb794fe550e4baa80dc8a9e03f3e6255c2726ec8ec6f18c002e2ff4bb37b",
+      "status": 0,
+      "units": 350,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Software Trace and Log Analysis  A Pattern Reference (Dmitry Vostokov, Software Diagnostics Institute) .pdf",
+      "size": 11932162,
+      "sha256": "6379705b34a89d80e310e7a2e092f330b0f1c5e9a1340aa0c979e5b27f1cbbaa",
+      "status": 2
+    },
+    {
+      "rel": "书籍作品/特权攻击向量-Privileged Attack Vectors Building Effective Cyber-Defense Strategies to Protect Organizations (Morey J. Haber, Brad Hibbert).pdf",
+      "size": 2393793,
+      "sha256": "4a64c1551feb5eeb8f170f15f465a4546ba94867274c227419a0a891b6e6a16f",
+      "status": 0,
+      "units": 222,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/身份攻击向量—Morey J. Haber, Darran Rolls - Identity Attack Vectors_ Implementing An Effective Identity And Access Management Solution-Apress (2020).pdf",
+      "size": 5431454,
+      "sha256": "57e8cc67c615f7b50bab0fe2de61370004eb1176d6498c0c3d4cbcf180cd078f",
+      "status": 0,
+      "units": 205,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/2021年国内威胁诱捕（蜜罐）类产品研究与测试报告.pdf",
+      "size": 6792932,
+      "sha256": "3da934140d53158dfd091075944c4ef2fa4e8d7b812ba1bc77aae3bb905ce4e3",
+      "status": 0,
+      "units": 96,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/APT产品购买评估指南—APT_Buyers_Guide_v10_20210121-1612978736.pdf",
+      "size": 509828,
+      "sha256": "709ce89d539fa14d081ec334f92dfe12124876e62f600f2588594e2016fdf4eb",
+      "status": 0,
+      "units": 15,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Attivo资料/Attivo BOTsink Deployment Scenarios Guide.pdf",
+      "size": 1853884,
+      "sha256": "4d8b076b95eea7bfc6886f2fa67303fe5a8ba5fb408394fdf51efe94bc6ce75a",
+      "status": 0,
+      "units": 17,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Attivo资料/Attivo BOTsink Deployment Scenarios Guide_20230129_170139.pdf",
+      "size": 1853884,
+      "sha256": "4d8b076b95eea7bfc6886f2fa67303fe5a8ba5fb408394fdf51efe94bc6ce75a",
+      "status": 0,
+      "units": 17,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Attivo资料/ATTIVO NETWORKS BOTSINK DECEPTION SERVERS.pdf",
+      "size": 699779,
+      "sha256": "4ad45801bb5c05de0165dfed6b5e2d90ba3808703fce8004a37be1dc97de3e22",
+      "status": 0,
+      "units": 4,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Attivo资料/Attivo-Networks-品牌與產品簡報.pdf",
+      "size": 3056852,
+      "sha256": "52a4cc6a0d91fd75a5ab8085fa23bf73516c15d1a9bd74eb2bddbbf3ae3bca22",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/Attivo资料/Attivo_Networks-ThreatDirect_Solution_Brief.pdf",
+      "size": 193172,
+      "sha256": "d2c5d994b55e5e4b69fe3b129599abc3d587a65232396b61a75511d52b143377",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Attivo资料/Attivo_Networks-ThreatPath_Datasheet.pdf",
+      "size": 270861,
+      "sha256": "9e5dae3440e4c84da2af5957375a0a52c548d8c31dbb4c7eaf3a5128b22a27f7",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Attivo资料/Attivo_Networks-ThreatStrike_End-Point_Deception_Suite.pdf",
+      "size": 193551,
+      "sha256": "af795434ade6efb1d5f5d3b8654a743038ac349e828551637dc24b5398502eb8",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Attivo资料/Deception-for-a-SWIFT-DEFENSE.pdf",
+      "size": 1001663,
+      "sha256": "825632b4a782d408d63ba393e0315c439e1f61bcdb9575ab7db9e9ac2e9a6d51",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-01-YerushalmiSimonovich.pdf",
+      "size": 4470799,
+      "sha256": "d60ee704b94dda7678433fdfc43b7fac5dace3560eaa3223d40e92561a5c2aff",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-03-vanderLindenKersten.pdf",
+      "size": 695954,
+      "sha256": "c68141215a83afa2b0465bf3c0ff72c362eb91c23f26fa06911d4ed245c0ca44",
+      "status": 0,
+      "units": 17,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-04-MyrakasymovRogachev.pdf",
+      "size": 8067240,
+      "sha256": "fe8126d12dddc6a98c4673944ef2a84101f0d39ab8d1ab85e6d75bb268d4f2ed",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-06-DaihesTzaban.pdf",
+      "size": 1956898,
+      "sha256": "6b6293ff419b0ad1f2fc23b1cdf219473d53ae8327e56a7632c5a754534c28de",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-10-Regeciova.pdf",
+      "size": 1269242,
+      "sha256": "0c7d0f09c5bb92ad91d6aeaeaed05e9921abe963a58ec068a58fb2573e49a99b",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-12-Kersten-SeeYaSharp.pdf",
+      "size": 670554,
+      "sha256": "ad4cfab2a52996928ecbbb164dd203ce870f527e3f87c64e60686b1eaa3eb478",
+      "status": 0,
+      "units": 34,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-16-PoliakovaYuzifovich.pdf",
+      "size": 17567233,
+      "sha256": "8affb16b27f8aac539181c1791a569f113a8dbde1a47f8850a26c7879c455aef",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-17-PimentaLopez.pdf",
+      "size": 1394121,
+      "sha256": "d5a3228b3dc5469c51eed596af37ccf47703bbfeb784401ed2182591bb0bade1",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-18-PicadoRubio.pdf",
+      "size": 2330986,
+      "sha256": "00360b113bb4bcec6a32a256986e1bd8c3b6b80b8d2312c4ac20ae77e6b197e3",
+      "status": 0,
+      "units": 56,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-23-DoraisMunoz.pdf",
+      "size": 2646662,
+      "sha256": "d27808f8ed161da058ac37eb8a597d72996cae973f60fc9d187ead42e34c698e",
+      "status": 0,
+      "units": 41,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-24-PalotayZsigovits.pdf",
+      "size": 12707057,
+      "sha256": "868e5e77b6f8af67f9c24bf43656a2856cd33ecbf5b747bdabf3f2cd015f7f62",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-26-BrunoniDecaryHetu.pdf",
+      "size": 2078334,
+      "sha256": "266967fe8df485c09e1a5983c161e601e74a79cef8b2e4ef4fe0ff6e53443391",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-31-Alvares.pdf",
+      "size": 2403929,
+      "sha256": "97593e0057e116acfd88f149f63d7ad5afd34b25234c960ef6371edcb554ce0e",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-37-Hammou.pdf",
+      "size": 1053063,
+      "sha256": "4ab6df9a9c4bd596c16c67d6a1124c079c995aaf2447104ac93f3195b41e0104",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-39-BoeckKaruppayah.pdf",
+      "size": 3050983,
+      "sha256": "a8387a12f23e9d512706875cbf5a59077fb0eaac812f4fe08ab6ce6481c46847",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-40-LnghiHorejsi.pdf",
+      "size": 1120771,
+      "sha256": "202299a37b626a8f8a6f7fe8cc0732477fc34431bf1f0afc06e5bf54b7107f6a",
+      "status": 0,
+      "units": 56,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/Botconf 2022/Botconf2022-42-BarthelEydam.pdf",
+      "size": 962743,
+      "sha256": "a8b386276841747857a5b8271aa9bd2d91c53846957f6d9df1ba076aef771452",
+      "status": 0,
+      "units": 32,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/Candiru公司业务资料.pdf",
+      "size": 1691627,
+      "sha256": "7d65b6fe6beb8cadd0634bd0070a2527748e517e1c357bc688f72a414fcc9d6f",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/CISA KEV解读报告/Decoding CISA KEV-A Latency Analysis.pdf",
+      "size": 2891472,
+      "sha256": "a4bb4f0ea26af52df6601460afadbcb199096a84bbf358f4a353ff09c1f498c4",
+      "status": 0,
+      "units": 14,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CISA KEV解读报告/Decoding CISA KEV-KEV Metrics _ Threat Associations _20230117_104041.pdf",
+      "size": 2869748,
+      "sha256": "844b0061eeea454d52478e085e1c4f92f5a4b6e85fd99ac9a7068cdbcf0df319",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/CISA KEV解读报告/Decoding CISA KEV-MITRE Analysis.pdf",
+      "size": 3088294,
+      "sha256": "859c49ef8bbbbdd1efdcec83477b45f0b99b93d90eec78319ea2e4d916e76612",
+      "status": 0,
+      "units": 12,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CISA KEV解读报告/Decoding CISA KEV-Predictive Analysis _ Early Warning.pdf",
+      "size": 2606687,
+      "sha256": "a90f905985d67462e08f1283e9def2875619c739f0207bc0073a7b8b228cd9a1",
+      "status": 0,
+      "units": 14,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/CISA KEV解读报告/Decoding CISA KEV-Severity Scores _ Weakness Analysis .pdf",
+      "size": 4083515,
+      "sha256": "b7b9637efa007b3e70b2609f2aaa1725d81f6ac3828e18285c192c3d6d21c2ac",
+      "status": 0,
+      "units": 12,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/cobalt-strike-tlpwhite.pdf",
+      "size": 3809234,
+      "sha256": "00325359a0a7aa8c7df8d6958de10a8777d0c241b4b4bd77d9ebc4d4ee2027c4",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "技术资料/Communication in a world of pervasive surveillance.pdf",
+      "size": 25490078,
+      "sha256": "9d5707215314f2c6e05e849f8fa26e06b0955adc88646a23dedc4c6c599a8c5a",
+      "status": 0,
+      "units": 355,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "技术资料/crowdstrike核心体系-continuous-diagnostics-mitigation-cdm.pdf",
+      "size": 1543463,
+      "sha256": "0aa46400db42add17a75d9c9b482b3767eaa7faa1f32c070f28b1db385c9cf0f",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/CrowdStrike资料/2022 OverWatch Threat Hunting Report.pdf",
+      "size": 5494693,
+      "sha256": "83760ecb41d67f9b2023ebc001e1fccdbab2b17630a96a25a2b2639c759a9029",
+      "status": 0,
+      "units": 80,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Attacks & Defences/Adversarial_Behaviours_v1.0.1.pdf",
+      "size": 393478,
+      "sha256": "fde7fa65eb0ea41fc6a52ed88f93a69152fd8df08f24a907adf5ca8aedefab0a",
+      "status": 0,
+      "units": 45,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Attacks & Defences/Forensics_KA_webinar_slides.pdf",
+      "size": 2152127,
+      "sha256": "a707fa0c23243439a9cced64bd86f5f1126ff1337df4da379ac808299204f154",
+      "status": 0,
+      "units": 49,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Attacks & Defences/Forensics_v1.0.1.pdf",
+      "size": 1489025,
+      "sha256": "066a3ba6b5ea8be9719d6a52930389bad53be769fabdddc6d46d1e7f3c3b4a80",
+      "status": 0,
+      "units": 41,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Attacks & Defences/Malware_Attack_Technologies_v1.0.1.pdf",
+      "size": 334687,
+      "sha256": "7392258223c1f5c1f52c8c5852bab142e8dc7dab6b51edf4af61314b42e5bbe0",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Attacks & Defences/Malware_KA_webinar_slides.pdf",
+      "size": 1433524,
+      "sha256": "e1ac7cea35974e7a561f8bce222c82de5b25f7bf9f9176f92729b1cb7ef68215",
+      "status": 0,
+      "units": 40,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Attacks & Defences/Security_Operations_Incident_Management_v1.0.2.pdf",
+      "size": 1500836,
+      "sha256": "03c461ac2f87909a9259396c74ab62d89da7b75652249c8727ea06b5a03504f9",
+      "status": 0,
+      "units": 55,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Attacks & Defences/Security_Operations_KA_webinar_-slides.pdf",
+      "size": 1335029,
+      "sha256": "6be8408bbb9392a1c52d67fd2ad08c2177d162945115aaed29fb28b2c9745e8f",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Human_Factors_KA_webinar_-_slides.pdf",
+      "size": 1626448,
+      "sha256": "a9f93f27c2908f55fb60bd45afff06643ba26d6bdbea37283efc16667dc9f406",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Human_Factors_v1.0.1.pdf",
+      "size": 8668625,
+      "sha256": "dad6c0fbcc03c64012bbe0649168073c35d2bf4cffb961ceba77c0be29fe9b35",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Law_and_Regulation_webinar_-_slides.pdf",
+      "size": 1134595,
+      "sha256": "26327402aed0f8c6aafb77ed3d07155b29d7cb974b069e96bdc44bdc12e25890",
+      "status": 0,
+      "units": 69,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Law_Regulation_v1.0.2.pdf",
+      "size": 809742,
+      "sha256": "9f085deb3f43f3543e7a8dbb5f6763c312ace3c56bf9c5c65439dfd83e5edd67",
+      "status": 0,
+      "units": 121,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Management_Governance_v1.1.1.pdf",
+      "size": 675740,
+      "sha256": "1d266bc0b8ea5a695ddd2966a2a31ecc295454ac3b3516c8df6603179102ec95",
+      "status": 0,
+      "units": 41,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Privacy_Online_Rights_KA_webinar_slides.pdf",
+      "size": 2770072,
+      "sha256": "fdf5352e79c2935bfc6a3ee4cbb1bafb0030806059214665c91aa28c1e14ce6c",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Privacy_Online_Rights_v1.0.2.pdf",
+      "size": 405059,
+      "sha256": "23e0c3108166b4d70f3d82b9fc2c2d436eca8471e7f1b59c98f3833d63b86ea8",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Human, Organisational & Regulatory Aspects/Risk_Management__Governance_KA_webinar_-_slides.pdf",
+      "size": 592599,
+      "sha256": "e3b9141335ef66d9aabb0aedbeab6dcf03b3746d8acea1caff69fdf9eb8b7dbb",
+      "status": 0,
+      "units": 60,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Applied_Cryptography_KA_webinar_slides.pdf",
+      "size": 790905,
+      "sha256": "f93324214b5b7f8320567611137455bb61d257fa534dbd76642d5d5b11cdd764",
+      "status": 0,
+      "units": 38,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Applied_Cryptography_v1.0.0.pdf",
+      "size": 607020,
+      "sha256": "512b88c4045167da8ba04441df489ad2b55c9f0438a9ae4a883540ab2eee173a",
+      "status": 0,
+      "units": 74,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Cyber-Physical_Systems_Security_KA_webinar_-_slides.pdf",
+      "size": 2018358,
+      "sha256": "7fd2d89c206b7abbec1d2280e16a22b86b27b74591a61b684d79e5a60233a846",
+      "status": 0,
+      "units": 31,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Cyber_Physical_Systems-v1.0.1.pdf",
+      "size": 1345563,
+      "sha256": "7b4061b8cc16a364df9fe0967c3cb79f9defe374369391b407c6ffbb6c31835b",
+      "status": 0,
+      "units": 62,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Hardware_Security_KA_webinar_slides_v_2.pdf",
+      "size": 3559500,
+      "sha256": "48e6351aa93769237f7e79b64171abab2eb44c6104a185f5c244d4e7e80f657c",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Hardware_Security_v1.0.1.pdf",
+      "size": 328786,
+      "sha256": "c4f0c060fe71ed6d3c5f2dd95d33e58297b8ed523e5a531f8063e8c77e9e7749",
+      "status": 0,
+      "units": 41,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Introduction_v1.1.0.pdf",
+      "size": 331871,
+      "sha256": "33a9adb4a941cfa013d303415b48d3e1cf15f5c20113c7fd2dac138c0e925956",
+      "status": 0,
+      "units": 22,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Network_Security_KA_2.0.0-webinar_slides.pdf",
+      "size": 832904,
+      "sha256": "6bc198a9a43f0fb2eb1701cf961dd9a6180bca3b1ee498213c53fc78ac3e35a6",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Network_Security_v2.0.0.pdf",
+      "size": 1012203,
+      "sha256": "0a23572ae0eb04d036b6619466477f2897d89bef394596fced07cfd6e9bac28c",
+      "status": 0,
+      "units": 56,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Infrastructure Security/Physical_Layer_v1.0.1.pdf",
+      "size": 1240008,
+      "sha256": "69035b4ddc0f65df5ee3382425e25a9f07bf8a555a11f18811ab61b5cef9ca75",
+      "status": 0,
+      "units": 45,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Software and Platform Security/Secure_Software_Lifecycle_KA_webinar_-_slides.pdf",
+      "size": 2549411,
+      "sha256": "e1abd094a0e706104f77e2d307087deacf1b3b5608ca9d9d205b63776cf092c9",
+      "status": 0,
+      "units": 40,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Software and Platform Security/Secure_Software_Lifecycle_v1.0.2.pdf",
+      "size": 371613,
+      "sha256": "c71e3d562c382ca9321377f17904d0e97b33a4c7a8593d456897f55617510ba3",
+      "status": 0,
+      "units": 47,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Software and Platform Security/Software_Security_KA_webinar_-_slides.pdf",
+      "size": 844166,
+      "sha256": "b7569ea81c83bca2d8bcac75cc7fc6fe58b80ea6550f0b4d5f82aab8754ade18",
+      "status": 0,
+      "units": 38,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Software and Platform Security/Software_Security_v1.0.1.pdf",
+      "size": 326561,
+      "sha256": "a17e43aff02e38f758aa56011330e8bd03105dc0223ca13bf1f52cd54bdac60b",
+      "status": 0,
+      "units": 34,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Software and Platform Security/Web_Mobile_Security_KA_webinar_slides.pdf",
+      "size": 1975308,
+      "sha256": "df6aa7b8a6a5ef3911351a0066caad87c0e0181f23aad6847f244eaface5c0b9",
+      "status": 0,
+      "units": 42,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Software and Platform Security/Web_Mobile_Security_v1.0.1.pdf",
+      "size": 3546823,
+      "sha256": "1aa2e9d3732f2eed908ee52b34355d097a4597c063b3e74f1bfae1506759ef5d",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/AAA_KA_webinar_slides_b3HPcNp.pdf",
+      "size": 657653,
+      "sha256": "b8d8948ec5f3102c2712f5a83938d6caacdc49effc02233e175f32f7d6ff3b6f",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Authentication_Authorisation_Accountability_v1.0.2.pdf",
+      "size": 406385,
+      "sha256": "5485417e1e289b5c9fadf7ffbdaf6238c01ae7b57d1f4f1d90c30283e64ce9fe",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Cryptography_KA_webinar_-_slides.pdf",
+      "size": 193175,
+      "sha256": "6e8eb48e6f6d05caf68884ba69e6c885d0470ff0236ed294c41d6a432609cc18",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Cryptography_v1.0.1.pdf",
+      "size": 510302,
+      "sha256": "ea97500a8a89a09bea08d9c37fd5fad8637a70dc2a105070a07212e729c44e33",
+      "status": 0,
+      "units": 45,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Distributed_Systems_Security_KA_webinar_slides_lB66fk9.pdf",
+      "size": 862434,
+      "sha256": "8015ac887a8d0579c153d1ddf2974ca16ce0f0bd54b2828d8c5db719ee05c156",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Distributed_Systems_Security_v1.0.1.pdf",
+      "size": 396193,
+      "sha256": "0e5e58b4de10e97ba74abc3f004e3ee8320496ccc90dedd64e6800df46867687",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Formal_Methods_for_Security_KA_webinar_slides.pdf",
+      "size": 2110520,
+      "sha256": "cb0c9d729602d1a073d92076a32c63a355e87145d797e7502624cb53ff106893",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Formal_Methods_for_Security_v1.0.0.pdf",
+      "size": 573638,
+      "sha256": "e19db9d3412fabcb313f3a536b1b2af7380b24da92a8d737d8e5ccd4117cffb2",
+      "status": 0,
+      "units": 66,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Operating_Systems__Virtualisation_Security_KA_webinar_-_slides.pdf",
+      "size": 2306451,
+      "sha256": "784811b1bae93a6540aa45e37a078292399550f5c3d388a409b0f1a906056bad",
+      "status": 0,
+      "units": 88,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/CyBOK网络安全知识体系/Systems Security/Operating_Systems_Virtualisation_Security_v1.0.1.pdf",
+      "size": 475534,
+      "sha256": "b584b801c5cc1fbe2bab6f5688a929cfef6b2679049de0fce9c74093d47a5d7f",
+      "status": 0,
+      "units": 50,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DARPA/APTShield- A Fine-grained Detection System for Remote Access Trojan in the APT Attacks.pdf",
+      "size": 2087582,
+      "sha256": "ca851cf7e233c81655aae3e863180d313bd0d7111571206cb5095c3350f092d8",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/DARPA/APTSHIELD-A Stable, Efficient and Real-time APT Detection System.pdf",
+      "size": 2905727,
+      "sha256": "fbbfa53e06885fb1c3ec8f9269058ea9ca397e92442ea768ca113c90ab1210e7",
+      "status": 0,
+      "units": 22,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DARPA/MARPLE Mitigating APT Damage by Reasoning with Provenance in Large Enterprise Networks .ppt",
+      "size": 6451803,
+      "sha256": "bbcecfdec1be7286d4017d5e39a8bdff31c4a536910526ff8efaaaf07ff77c9c",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DARPA/Windows Low-Level System Monitoring Data Collection and APT Detection.pptx",
+      "size": 10525362,
+      "sha256": "6dc07cf26ffb47f78a14d97cd7d1006f86d72e0478f3d7ee91270c92e0276d4d",
+      "status": 0,
+      "units": 54,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DARPA/Windows Low-Level System Monitoring Data Collection.ppt",
+      "size": 2896495,
+      "sha256": "6425408acea60e196ce47e12d4d866b55ffdc4f7eafbf0373b2431aea312411a",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Debugging Virtual Machines with the Checkpoint to Core Tool.pdf",
+      "size": 547820,
+      "sha256": "6d4cd2f84360e79b14fbc06f9b3f9e1a9b0054da9ebf50d0e7860ff645d9fea5",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Decoy positioning tool for Active Directory.pdf",
+      "size": 2321907,
+      "sha256": "06e4f3c2e9fc1a78880414e266f9d024c1c13f93ce7523f2479fb8e45b257810",
+      "status": 0,
+      "units": 53,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/Detecting Anomalies in TLS Traffic Using Encrypted Traffic Analysis.pdf",
+      "size": 3105901,
+      "sha256": "f97eb3abb16c2b6900e42ff4e88efce3c64ac133495699c07e6b63edca778827",
+      "status": 0,
+      "units": 95,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DevSecOps_Enterprise_Container_Image_Creation_and_Deployment_Guide_2.6-Public-Release.pdf",
+      "size": 897157,
+      "sha256": "e4322bf41ea6ba00152dfaa9b44065b28fed00188715b8fe5bb2ee32d3e65b24",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DevSecOpsTools-ActivitiesGuidebook.pdf",
+      "size": 1033286,
+      "sha256": "8b811d9631e6af5c6d4a36997e1222f438dc1d4e30bd3fb069d3822c194b9c19",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DISA-DevSecOps-Enterprise-Strategy_07-30-21_Final-Version.docx",
+      "size": 1002799,
+      "sha256": "a182766faa085bef405f65b6510ec41d446634278dfcf28d210a9ef8016b7499",
+      "status": 0,
+      "units": 22,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DoD Enterprise DevSecOps Reference Design v1.0_Public Release.pdf",
+      "size": 2649618,
+      "sha256": "e9ae27959c309ffb5560d21785a8445d497dff4be50d3b6839d2ecb7c70687f1",
+      "status": 0,
+      "units": 89,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DoD-Enterprise-DevSecOps-2.0-Playbook.pdf",
+      "size": 887447,
+      "sha256": "1512db417bfed7ccdacc52b4bca8c295b828d3e23a2990be9661d55abb2c38cc",
+      "status": 0,
+      "units": 13,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DoD-Enterprise-DevSecOps-Reference-Design-v2.0-CNCF-Kubernetes.pdf",
+      "size": 3150197,
+      "sha256": "61435d2af041cba75ad4fdecdbb725c529bbf48bfaaf9da0afdc487700960a89",
+      "status": 0,
+      "units": 31,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DoDEnterpriseDevSecOpsFundamentals.pdf",
+      "size": 2917860,
+      "sha256": "245f8758470892fc4f9d9d787166f70d04839ac663fc97637eac832ffc647393",
+      "status": 0,
+      "units": 45,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/DoDEnterpriseDevSecOpsStrategyGuide.pdf",
+      "size": 1947759,
+      "sha256": "686bcd420f6a6ec74702dcab1b0f7fea2bd8ec3c84c72e135c51e7be08f71766",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/Final_DevSecOps_Enterprise_Container_Hardening_Guide_1.1.pdf",
+      "size": 1005829,
+      "sha256": "11ac3ca80735a5fc4ef3d8eedf49e39179bd817423d6904f6e84eafc2ec96f22",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_STIG/U_Docker_Enterprise_2-x_Linux-UNIX_STIG_Release_Memo.pdf",
+      "size": 367426,
+      "sha256": "21a52ad0ae138a895b5719af26778ad68d7ab5e29843381c5b89fff0686109ef",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_STIG/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_Manual_STIG/DoD-DISA-logos-as-JPEG.jpg",
+      "size": 85334,
+      "sha256": "54c9045cf7ac316f7dd4e5036bb47d7a216520cfb7c92fc0bc2ab46c98c3cde7",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_STIG/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_Overview.pdf",
+      "size": 465420,
+      "sha256": "da5868e2dc94b369c711d3dcc4fa59d5bee172e91dee4acab93f19532d6de0aa",
+      "status": 0,
+      "units": 13,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_STIG/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_Revision_History.pdf",
+      "size": 53904,
+      "sha256": "63dda1c6fa25eb19d138380e545814d3ce2f58573a6a8623e35d2663d67c035d",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/U_Docker_Enterprise_2-x_Linux-UNIX_V2R1_STIG/U_Readme_SRG_and_STIG.pdf",
+      "size": 93636,
+      "sha256": "9f0edffb19f62fc26a2b4b802daa580a784f7b5c7fea6a03d2e9a1c3b5182568",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/U_Docker_Enterprise_2-x_Linux_Unix_V1R1_STIG_Ansible/U_Docker_Enterprise_2-x_Linux_Unix_Ansible_V1R1_Documentation.pdf",
+      "size": 521339,
+      "sha256": "b339a22b2d1902b9136d5cb5d394b5c2a32c5876dbcf7f59d6f6a8589aff9abe",
+      "status": 0,
+      "units": 6,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD安全方案文档/DOD文档/unclass-CNAP-RefDesign_ver-1.0.pdf",
+      "size": 1646466,
+      "sha256": "aaa535a781be9985a20ca288b49bc00eaaf08904feb3077d8343353bee5bb13b",
+      "status": 0,
+      "units": 38,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/DOD术语大全—DOD Dictionary of Military and Associated Terms - 2021.pdf",
+      "size": 1219556,
+      "sha256": "c5dd903fab3ef3a65c50cf99f605f46347856f844a81ea401c0ef1072f6c55ac",
+      "status": 0,
+      "units": 360,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/Dream-Job-Campaign.pdf",
+      "size": 2132235,
+      "sha256": "6d7e260ab64115eeabfa429ff13ad01b385fe094115d05e16b0b4afbe54aba20",
+      "status": 0,
+      "units": 46,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/eBPF-安卓逆向工程师的超能力.pptx",
+      "size": 781830,
+      "sha256": "b7c0f62ec63e3425185a953a989e9ad363320ee02a0d38b68b6a888e6825592b",
+      "status": 0,
+      "units": 60,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/eBPF_for_security_observability.pdf",
+      "size": 3394840,
+      "sha256": "d42bb717c8c3331beb59c115412f50404820d27c92cf35db81fc931dcdb652f7",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 27
+    },
+    {
+      "rel": "技术资料/Electron程序安全_An Analysis of the State of Electron Security in the wild.pdf",
+      "size": 473734,
+      "sha256": "56493a7b2c40c4aabf594e3a5e7b7c937ffd323cf2c0f64cc2d4ded8221adda5",
+      "status": 0,
+      "units": 62,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Evil Never Sleeps - When Wireless Malware Stays On After Turning Off iPhones.pdf",
+      "size": 1239474,
+      "sha256": "5b5f7aaed485eb6be6de8106c9328a45d2ca750211142f99cef5b4019205822b",
+      "status": 0,
+      "units": 11,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Flash Crash for Cash Cyber Threats in Decentralized Finance.pdf",
+      "size": 248562,
+      "sha256": "5de762da12cbb07411bc08147380bdff7d2b4bc46d1f8ba2299fde27ad8b7566",
+      "status": 0,
+      "units": 9,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Frida手册_fridahandbook_.pdf",
+      "size": 4903500,
+      "sha256": "bdbedaa745184fb5832ce4fa991e2f0e3297dc2ee380f523502177862db8a803",
+      "status": 0,
+      "units": 197,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/go-offensive-building-blocks-final.pdf",
+      "size": 2303816,
+      "sha256": "deb1e3081995a4c494392e8c860511d2e1dce9ddb755c2baaa8ea1f86256456a",
+      "status": 0,
+      "units": 42,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Frost Radar ™ Global Cyber Threat Intelligence Market, 2021.pdf",
+      "size": 1387805,
+      "sha256": "72aaa05557213dc727dcf3c863ab2abd953627490275168f837126ad55805167",
+      "status": 0,
+      "units": 17,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Group-IB_PUBLIC_TIA_RPRT_ENG_1221_Hi-Tech Crime Trends - Access Brokers 2021.pdf",
+      "size": 15147649,
+      "sha256": "9903e68eda7fb2cc636f5d754f6f72771e7afbb73d52c02d58a1c573d86f7957",
+      "status": 0,
+      "units": 69,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Group-IB_PUBLIC_TIA_RPRT_ENG_1221_Hi-Tech Crime Trends - Ransomware 2021.pdf",
+      "size": 22391424,
+      "sha256": "3ad056215ab9613945ef6a809fb2b402b8400f2d20f18ab72e3590615d1ad2ec",
+      "status": 0,
+      "units": 92,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Group_IB_AssetZero_White_Paper.pdf",
+      "size": 3561440,
+      "sha256": "77bdd59ea377f66d72f3eda7d4c7818b105751730aa7e280cadb596e5119af95",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Group_IB_PUBLIC_AZ_ENG_0122_AssetZero_White_Paper.pdf",
+      "size": 3561440,
+      "sha256": "77bdd59ea377f66d72f3eda7d4c7818b105751730aa7e280cadb596e5119af95",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Group-IB资料/GROUP_IB_PUBLIC_TI&A_RPRT_ENG_1221_Hi-Tech Crime Trends - Scams and Phishing 2021.pdf",
+      "size": 14571561,
+      "sha256": "310723ad774f06767b85577468022f701e5587a7ae285e208bb3c0cdc0510ed3",
+      "status": 0,
+      "units": 76,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Group-IB资料/HI-TECH CRIME TRENDS 2020 2021.pdf",
+      "size": 7003361,
+      "sha256": "b7696b2262ab8bea13669d40010de4cecf813fbf355834593007c5205d181b50",
+      "status": 0,
+      "units": 78,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Huntbox.pdf",
+      "size": 478549,
+      "sha256": "eb5c3c4e2119d335ea672263ec23d3e36ec3093ef909bb4e3ea7b4d3a1772beb",
+      "status": 0,
+      "units": 8,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Huntpoint.pdf",
+      "size": 515683,
+      "sha256": "f7e41901b2a708400df340fa1b91a007cdde54882f8ef965fb82ee34c85ccc5e",
+      "status": 0,
+      "units": 7,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Polygon.pdf",
+      "size": 650015,
+      "sha256": "7ff91a2f63bed3abcae73dd3ce4f1af321e91ee2459c022be18adcc703c94a42",
+      "status": 0,
+      "units": 8,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Sensor.pdf",
+      "size": 498108,
+      "sha256": "cdf8d2fe10c80e87f5d3a15036103c84a9dda99111703ec8419b29607209e097",
+      "status": 0,
+      "units": 8,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Group-IB资料/Sensor_Industrial.pdf",
+      "size": 755943,
+      "sha256": "7484f95df310ba1eb1b5873f089de03fe6dbc0a47300a7ceb0002a088ecec5c0",
+      "status": 0,
+      "units": 8,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Group-IB资料/The Total Economic Impact™ Of Group-IB Threat Intelligence & Attribution.pdf",
+      "size": 811935,
+      "sha256": "43dc213db4d0203e27f372e6d0fba2a9a7240d833bacd460662f4d82386baffc",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Group-IB资料/THREAT INTELLIGENCE & ATTRIBUTION.pdf",
+      "size": 2617320,
+      "sha256": "7877914b00ba69513909510cb3273b405bcbe3b0b29e0df59db4cdb97f53e59a",
+      "status": 0,
+      "units": 4,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/How to Detect Malicious Domain Fronting.pdf",
+      "size": 4678552,
+      "sha256": "4500fcdcc8f5f4be2d424c3fc021527b0aa0f8cf37d394cb9d58e7db86ea57a5",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/humio数据库资料/all-the-things-we-didnat-do-schema-vs-ad-hoc-based-search-schema-based-systems.pdf",
+      "size": 6815350,
+      "sha256": "54d74fd76fcf42052afcf69998b0eaa48f0c7fdecada22f88c42375c55d38835",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 28
+    },
+    {
+      "rel": "技术资料/humio数据库资料/humio-kafka-talk_2.pdf",
+      "size": 924940,
+      "sha256": "08274e53709186fa59f35da1bdb55173dcecf77021f157eaa65592fde796469b",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "技术资料/humio数据库资料/one-page-fact-sheet.pdf",
+      "size": 711675,
+      "sha256": "98e9f824742a92253a2eca40f57a5a9b94440be4daba9d936dd914229095935b",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/IOT_网络设备最常利用漏洞_CSA_PRC_SPONSORED_CYBER_ACTORS_EXPLOIT_NETWORK_PROVIDERS_DEVICES_TLPWHITE.pdf",
+      "size": 576408,
+      "sha256": "6d672a219296cd109ade19195c56a930fd22761459ee3bb14ff0f9016b048c6f",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Knowbe4公司社工资料_12+_Ways_to_Hack_Two-Factor_Authentication_.pdf",
+      "size": 7947097,
+      "sha256": "2b54c1025ce0e3a5230cf36b6ae99f7a4410858fc1e2ed458e3fb69b38c7cce3",
+      "status": 0,
+      "units": 41,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Nmap备忘清单—nmap_cheet_sheet_v7.pdf",
+      "size": 576692,
+      "sha256": "24ae5a0028e2bcfd39e1a85ab0741ad0a8194291671bbbcebcfa45ddf4d629f1",
+      "status": 0,
+      "units": 6,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/NSA-TUTELAGE（监护）_TUTELAGE.pdf",
+      "size": 4308780,
+      "sha256": "f04fae14875ef07a1a03391e7114dee601aa32a2ecba9213fa75e789948d2682",
+      "status": 0,
+      "units": 0,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/NSA劫持SSL资料/20141228-speigel-analysis_from_ssl-tls_connections_through_gchq_in_the_flying_pig_database_0.pdf",
+      "size": 1528939,
+      "sha256": "b23e53ec2bf34f43ad62171311f2572c94e9bedd2ef10bebebdbb2fb251836a1",
+      "status": 0,
+      "units": 0,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/NSA劫持SSL资料/20141228-spiegel-nsa_experiment_for_massive_ssl-tls_decryption.pdf",
+      "size": 713321,
+      "sha256": "01eac72ae4f1adf92f27a89806d3c7173252c0bafb7a3ea024a28089528bc5f8",
+      "status": 0,
+      "units": 0,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/NSA劫持SSL资料/NSA Presentation on the Analysis and Contextualisation of VPN Data.pdf",
+      "size": 3979797,
+      "sha256": "0c9a782e168be345c432cd2426b276ca4d6673c8efab6e43647bed56e852d460",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/offensivecon2022/Beaconfuzz_OffensiveCon2022_patrick_ventuzelo.pdf",
+      "size": 3594469,
+      "sha256": "fe12fea7f3ed6807ff76dd93fa02c70a07a1307c1bfa85c7d7d699a9b082812b",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "技术资料/offensivecon2022/Blackswan_Technical_Write Up_Field_Effect.pdf",
+      "size": 35361870,
+      "sha256": "2b01ea9d56d87e1595ffcb0961f0661ffdf4bf5b7590b38333f633cfe9ea6e00",
+      "status": 0,
+      "units": 49,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/offensivecon2022/CHIP RED PILL- HOW WE ACHIEVED THE ARBITRARY [MICRO]CODE EXECUTION INSIDE INTEL ATOM CPUS.pdf",
+      "size": 1874080,
+      "sha256": "253eacb43e4f72c7a059ead28302198a816514bf3c8f125f3c60119f3390a325",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 15
+    },
+    {
+      "rel": "技术资料/offensivecon2022/Life as an iOS Attacker.pdf",
+      "size": 1201413,
+      "sha256": "37954c509cf0151243601d58b1dbb0be885a4638f74700843da02d0a63a3deb6",
+      "status": 0,
+      "units": 61,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/offensivecon2022/offensivecon2022_mdowd_final.pdf",
+      "size": 3833530,
+      "sha256": "64b7e71fcb07623f22ff767b4e8579af89a38b605505e7376cfd4d4e9be519c3",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "技术资料/offensivecon2022/offensivecon_22_attacking_javascript_engines.pdf",
+      "size": 945868,
+      "sha256": "9cd013eb73ad507f9fe3eeba4018c9210e31f0c4a421455cce948fa2e4195414",
+      "status": 0,
+      "units": 75,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/offensivecon2022/rage-against-the-machine-clear.pdf",
+      "size": 3573824,
+      "sha256": "bf74ab41d8ade081bc648a3763526d303f69a54bf80b1f82f043fdf972d97f5a",
+      "status": 0,
+      "units": 121,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "技术资料/offensivecon2022/Tamas K Lengyel - Fuzzing Linux with Xen.pdf",
+      "size": 10501774,
+      "sha256": "c9f92d457f736c6e2b2fba0938691073a27be5ec7c634ff9f9af0c2b54ac1096",
+      "status": 0,
+      "units": 69,
+      "needs_ocr": 39
+    },
+    {
+      "rel": "技术资料/offensivecon2022/UEFI Firmware Vulns Past, Present and Future.pdf",
+      "size": 6014770,
+      "sha256": "437608943b6a527389f07247e241fde1d3394db91cc762a943d7c68ef232044a",
+      "status": 0,
+      "units": 71,
+      "needs_ocr": 21
+    },
+    {
+      "rel": "技术资料/OT工控安全-ICEFALL.pdf",
+      "size": 3499240,
+      "sha256": "99e9233e0bc0d2227753a88adcf607bbc1295cc2e71aca017e57feba405e5bba",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/PCB供应链攻击-The Big Hack Explained - Detection and Prevention of PCB.pdf",
+      "size": 9869351,
+      "sha256": "51e0ce040f6dd24f82465838cad8d1c174c9b7ff14454ab01b5fa55a7725b35e",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/PNT弹性安全框架_22_0609_st_resilient_pnt_ra.pdf",
+      "size": 4693237,
+      "sha256": "6bcb285774b5cedfb6e7cb6f5be0f589918d22dc409e0a36f758e1fa11012d42",
+      "status": 0,
+      "units": 87,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/PwC-Business_Email_Compromise-Guide.pdf",
+      "size": 1704946,
+      "sha256": "4e8e7bbddf7ea17fc7a43e58ab66917620d6c4bac7a31cc19fd640159475ac2a",
+      "status": 0,
+      "units": 50,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Reading-Windows-based-Code/Reading-Windows-based-Code-Part1.pdf",
+      "size": 411269,
+      "sha256": "d5fed16e64a5883a4068a4bad1de0ccf452d7dae7dbd169dbcc08b006ab09578",
+      "status": 0,
+      "units": 24,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Reading-Windows-based-Code/Reading-Windows-based-Code-Part2.pdf",
+      "size": 308904,
+      "sha256": "a81c849af56fd7b8c872b48b4762c462d2ad454f11fe7b308a3d4ee8c46c3cfb",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Reading-Windows-based-Code/Reading-Windows-based-Code-Part3.pdf",
+      "size": 347605,
+      "sha256": "18b22da1644ffbab7e848144c38940e6e0f9d9f49c8ae7f56b8167c4401d733c",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Reading-Windows-based-Code/Reading-Windows-based-Code-Part4.pdf",
+      "size": 455191,
+      "sha256": "308d4e0eab8361442db9e6982875809b62eae098b3ba0cbd115bfe7ce70cbc92",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Reading-Windows-based-Code/Reading-Windows-based-Code-Part5.pdf",
+      "size": 349404,
+      "sha256": "01f56fb96814cde27510203f6cc53fa0dd60637a0f70d55bc02d7d01cfa9a758",
+      "status": 0,
+      "units": 17,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Recorded Future安全情报手册/intelligence-handbook-fourth-edition.pdf",
+      "size": 17534428,
+      "sha256": "fca3c456a1ee4465835458d5b4bd8f2146add57b223a52ad85ee1a5636908903",
+      "status": 0,
+      "units": 198,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "技术资料/Recorded Future安全情报手册/intelligence-handbook-fourth-edition_TXT zh.docx",
+      "size": 12269938,
+      "sha256": "5ea4d184aa20275ee063513ffb1cb4fb041c67ddb8cf6df05abebfbc307a0db1",
+      "status": 0,
+      "units": 242,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AFD-M02_01_OTP-Bot-Attacks_1654098506189001emn9.pdf",
+      "size": 2102423,
+      "sha256": "524f6bc394d447489b6fae749e9a7629eed603df4094e27bf141b80c0ec5309b",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AFD-M03_01_BEC-&-Ransomware-Two-Sides-of-the-Same-Cybercrime-Coin_1654098902815001gKMP.pdf",
+      "size": 3479837,
+      "sha256": "2de0f0b259cfef6c48ea9497be54b3be238dd63c34b17bdbac0a3bf5a5c8f70d",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AFD-W02_01_Hydra-Marketplace-Where-Crypto-Money-Laundering-Trail-Goes-Cold_16547271523240014Cqx.pdf",
+      "size": 1131015,
+      "sha256": "d007d77f2cfdcdb14505ee205f422f8bd9db592248058f460317446749d3ea26",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AFD-W08_01_Knowing-The-Robocallers-Illegal-Call-Centers-And-Efforts-To-Stop-Them_1654099501787001g9ZP.pdf",
+      "size": 3988157,
+      "sha256": "ba24dccfebdb8a236882cefbda3453f204a709d0eb4a0b8fe855e6cf62a61c9c",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR-M03_01_Cyber-Invisibility_Developing-a-Security-Incident-Notification-Regime_1654105550741001GktI.pdf",
+      "size": 760261,
+      "sha256": "731da45fa22241dba2e8156713175ec207c633301cdee963f776eab59bc1bbce",
+      "status": 0,
+      "units": 4,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR-T01_01_Best-Teacher-is-Last-Mistake-Improving-and-Applying-Incident-Response-Plan_16541070108470019lvb.pdf",
+      "size": 1166782,
+      "sha256": "80d78a469685b1ec5f902aaa8de443f12c5bd657eb951a684e666c0d8aafd6fb",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR-T02_01_Cyber-Range-on-a-Budget_1654107664439001KznO.pdf",
+      "size": 1858168,
+      "sha256": "4aa1562fc3ee0379c3b8c8ff0fa151e53720e79a40a2bd02fe375b81fedac268",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR-W01_01_Evaluating_Indicators_Composite_Objects_1654108013925001AsD1.pdf",
+      "size": 2090177,
+      "sha256": "dd5ded741def12a9bef87906449459cc253d65eb23af909dd14534db576e7634",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR-W02_01_Dissecting-The-Ransomware-Kill-Chain-Why-Companies-Need-It_1654727895990001LaFc.pdf",
+      "size": 1759059,
+      "sha256": "98b178e76457cf6da1401d6a43db9941827511aaa4b58105fe740c38198fff7e",
+      "status": 0,
+      "units": 17,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR1-M06_01_Using-Critical-Threat-Intelligence-Strategically_1654105325543001gm5f.pdf",
+      "size": 748763,
+      "sha256": "7390be958bd5115f0caba04b2d70283aa9dfdb5a8583bce022027e21364d43ca",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR2-M06_01_Automated-threats-The-Rise-of-Bots-and-What-to-Do-About-It_1654560058142001l0b1.pdf",
+      "size": 1309321,
+      "sha256": "54b9b49905455a256fa56ca8dd73c27b03af3bfe72c0841e13745299ebe6ec95",
+      "status": 0,
+      "units": 21,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_AIR_M05_01_Importance-of-Cyber-Diligence-in-Third-Party-Risk-Management_1654105227269001e9aE.pdf",
+      "size": 1043733,
+      "sha256": "35a2529697e7b8a8efa5d94bd9051b533c120cd7a4216366770c0b46dfd3d549",
+      "status": 0,
+      "units": 7,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CSCS-T02_01_Security-Industry-Call-to-Action-We-Need-a-Cloud-Vulnerability-Database_1654560191495001bAZt.pdf",
+      "size": 3794598,
+      "sha256": "75ff858947f4d16223c694365be037b092e9befb4630a10cc8c6986b939c63d7",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CSCS-T08_01_Cloud-Security-How-to-Defend-Healthcare-Data-in-the-Cloud_16545441632290012jxr.pdf",
+      "size": 2323795,
+      "sha256": "39967d69856c7f166e5db3c87ed0036897bd813cf3f7ed0e4ac624ac92b2ec1a",
+      "status": 0,
+      "units": 32,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CSCS-T09_01_Continuous-Security-Integrating-Pipeline-Security_1654287214775001tkJN.pdf",
+      "size": 2789192,
+      "sha256": "7ed0d0229cbc0d5dc4cac6661820e90716283f202a21dd7fa1f3c826637362ec",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CSCS-W01_01_Shift-left!-Scanning-for-Security-Compliance-from-Day-Zero_1654287260454001qVwo.pdf",
+      "size": 1594773,
+      "sha256": "7eb26495cdcb5cf6eb688c0319f65c9b22f8fcbb7d351cf753d5e58fdbfc6b99",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CSCS-W08_01_The-Cloud-Gray-Zone-Vulnerabilities-Found-in-Azure-Built-in-VM-Agents_1654465618255001IuNp.pdf",
+      "size": 5883946,
+      "sha256": "facd95606eed1f89f34ab6db13df7ac11ce959323ad49288f212e6b8b183b585",
+      "status": 0,
+      "units": 82,
+      "needs_ocr": 50
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CSCS-W09_01_Service-Mess-to-Service-Mesh_1654543872430001qIBY.pdf",
+      "size": 2374241,
+      "sha256": "604fa6a327cb36aa774916b8e0189dc9171ee9e6b512d6ba43b173a986983ecb",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CXO-M03_01_The-Reason-Companies-Fall-Victim-to-Ransomware-Isn’t-What-You-Think_1654302009380001DhMM.pdf",
+      "size": 1084256,
+      "sha256": "62cbeb15cc5b34f5ec9a2228bd0921167ceee5261740c9913daf2d70bcdd66ff",
+      "status": 0,
+      "units": 15,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CXO-M05_01_Integrity-Matters_165410887936500142U4.pdf",
+      "size": 628728,
+      "sha256": "4561fa611fd69c710da10da6312f725059b968d4a7e359a81a88a97e628af264",
+      "status": 0,
+      "units": 6,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CXO-W02_01_Business-Information-Security-Officer-A-Cybersecurity-Secret-Weapon_16541090438340014Hbf.pdf",
+      "size": 557257,
+      "sha256": "bc3a27f9d53b1ed80d607b6695860113a46cac36d7c814225f6bae07cfa93f19",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_CXO-W08_01_Open-for-Business- How-to-Build-a-Security-Program-as-the-First-CISO_1654645314031001B9kz.pdf",
+      "size": 2544358,
+      "sha256": "cb75f321cde23c7a981248129f45ea9fe1da579527c05ece72c509164a660fee",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-M01_01_The-Practicalities-of-Pentesting_16541852917350014DZf.pdf",
+      "size": 8107172,
+      "sha256": "8c209edb69824548faedf87e73883a3e1c37a8c005a23c07b3befbda46c7bb28",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 34
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-M02_01_Elite-Security-Champions-Build-Strong-Security-Culture-In-a-DevSecOps-World_1654465021670001Iw7c.pdf",
+      "size": 1413566,
+      "sha256": "01da95f773d0827742a19124a51f824f9baf7af92da9ebf78a83132e8d91eaac",
+      "status": 0,
+      "units": 46,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-M03_01_Tooling-up-Getting-SBOMs-to-Scale_1654301833390001t8kN.pdf",
+      "size": 4387397,
+      "sha256": "9fab74dd40b70ffc4538f1bc3f6dc9acf1736390a866cd204ce9e1739de89abf",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-M06_01_Is-Secure-Supply-Chain-Possible_1654094362955001yQMT.pdf",
+      "size": 1666224,
+      "sha256": "65b585c3f4b2582e4a3aa8e02cd0b6e4302e24e95ca15cf1e56b118461ece24c",
+      "status": 0,
+      "units": 13,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-T02_01_What-Could-Possibly-Go-Wrong_1654094506024001yJZc.pdf",
+      "size": 5653858,
+      "sha256": "63753739cb76aab95b12b1563fc965e7b58542b68902904b5fb213d974890296",
+      "status": 0,
+      "units": 31,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-W01_01_Security-Automation-for-DevOps-at-the-Scale-of-Dell_1654094536617001TEqT.pdf",
+      "size": 2594269,
+      "sha256": "82718e8da3c95a8f4bdcfed1a647b11db59c2ef929d09d895a7c8e85da8b2d1e",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 15
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-W02_01_CI-CD-Top-10-Security-Risks_1654202415338001eteV.pdf",
+      "size": 16959047,
+      "sha256": "f6e5ceb46d2ca1689ec1203ca60e70a0c95514e25da395ceef147160fe0aa6b5",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-W08_01_Site-Reliability-Engineering-and-the-Security-Team-They-Love_1654306338690001BupQ.pdf",
+      "size": 5157349,
+      "sha256": "0c85ca09678417ecf8e72855dcd04e76a666da076a6cfc8c0c3661fa2bc3a953",
+      "status": 0,
+      "units": 60,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_DSO-W09_01_Product-Security-at-Scale-Lessons-from-Comcast_1654095129298001Tj5Y.pdf",
+      "size": 1158733,
+      "sha256": "81f61f22ee71fc122c21c7489acf62227f71efa29e1ac64bb851ad478a265006",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-M01_01_ESPecter-Showing-the-Future-of-UEFI-Threats_1654098813782001estI.pdf",
+      "size": 5834149,
+      "sha256": "71b7a6dbf6e1ad7a29ef19902384f8461f3d1219f180555918dc8bc5116a90e2",
+      "status": 0,
+      "units": 56,
+      "needs_ocr": 29
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-M02_01_All-Your-Macs-Are-Belong-To-Us-Again_1654041634128001ZTKe.pdf",
+      "size": 27304225,
+      "sha256": "d965d80c619eebb8b93e88b47f1e4c6bca756c7ed35019f475ef66b159487284",
+      "status": 0,
+      "units": 60,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-M06_01_Breaking-Prometheus_16541997414470015tUP.pdf",
+      "size": 3543413,
+      "sha256": "b92c15e51725dd1af41f51083d336719f83cba8a0a93e0dc0d1e9ccfa25a5d39",
+      "status": 0,
+      "units": 46,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-T01_01_Bypassing-Windows-Hello-For-Business-And-Pleasure_1654202267882001n6LT.pdf",
+      "size": 30493091,
+      "sha256": "e1a91a70e71cf4494bd06bad88e6951583cfb12dcd9af2f1b244c3b6f9b3c7cd",
+      "status": 0,
+      "units": 64,
+      "needs_ocr": 43
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-T09_01_Malicious-Uses-of-API-Frameworks-and-Scanning-Tools_1654099043928001INTB.pdf",
+      "size": 2571215,
+      "sha256": "d9b3c725c24071d62708a3467a58be66f67a6acd12184c211bc1c1d33577fad6",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-W01_01_Botnets-Dont-Die_1654618043300001Ahe6.pdf",
+      "size": 53408595,
+      "sha256": "2b01f8194ee9d463585b315a684f195a75f667ea5de59c158d392c61e7b42293",
+      "status": 0,
+      "units": 50,
+      "needs_ocr": 28
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-W02_01_Pain-in-the-Apps_16542026619600016kE3.pdf",
+      "size": 128436448,
+      "sha256": "891540ea6d3ec34123d09b5f05280c61feb5219427ddc63f77695787e4a48763",
+      "status": 0,
+      "units": 72,
+      "needs_ocr": 52
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HT-W09_01_Machine-Learning-to-Ultimately-Defeat-Advanced-Ransomware-Threats_16540991911470017gOP.pdf",
+      "size": 1278113,
+      "sha256": "c34ca1fb2048b3f34a250210d68ea619602e86093af9916f33b0035889fe0f1d",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HTA-M03_01_OT-Reverse-Engineering-What-Can-Be-Automated_1654131335333001GZdQ.pdf",
+      "size": 3648932,
+      "sha256": "7be2952b334272023ee9d678ca5c632471fa658e471be8e41c74212a17d7471a",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HTA-M05_01_Strong-Story-to-Tell-Top-10-Mistakes-by-Administrators-About-Remote-Work_1654099348955001KxG2.pdf",
+      "size": 5002422,
+      "sha256": "9b5f3c221ecc30119081c60a4ee72072a41f3b44cc2612bda5a313bf7251b40e",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HTA-T02_01_My-Fuzzy-Driver_1654203480826001eHjj.pdf",
+      "size": 3182737,
+      "sha256": "12413a13c661abec9659ffee26beab82e877b2fdb7c95a2fba938cc4b3713e0d",
+      "status": 0,
+      "units": 57,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HTA-T08_01_Defeating-Windows-Anti-Exploit-and-Security-Features-with-WHQL-Kernel-Drivers_16540993789230017BuK.pdf",
+      "size": 68916123,
+      "sha256": "48393e5f9f11906794a25086445c708709488a9f6745800cba37ad173f4b21f9",
+      "status": 0,
+      "units": 42,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HTA-W08_01_The-SaaS-RootKit-A-New-Attack-Vector-for-Hidden-Forwarding-Rules-in-O365_1654099410585001eU6k.pdf",
+      "size": 1579896,
+      "sha256": "9f9ad6fbb318823a3f2d8dcd1e4bd4be4017f59267b39dc11100c9f7e43baffc",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HTA_W09_01_State-of-the-Hacks-NSAs-Perspectives_1654643464905001kS8I.pdf",
+      "size": 5915302,
+      "sha256": "7c94381bba63b3d60aa773744c960903746d5d42484193f54ad592cd18247a1b",
+      "status": 0,
+      "units": 18,
+      "needs_ocr": 15
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-M01_01_Defeat-Your-Curse-of-Knowledge-&-Make-Security-Messaging-More-Impactful_16541099542940014nWo.pdf",
+      "size": 5111317,
+      "sha256": "1a14c9c175a0cf48e2c71559dfa6b01a9dc2107eced9a27e64071176eac66074",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-M02_01_The-Transformation-of-Post-Pandemic-Mental-Health_1654110450758001GonU.pdf",
+      "size": 4669611,
+      "sha256": "debf5c0e85e6beda5a2be5e1232ca18d33f10a04e75a3d0a45d5de58b12c3d58",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 15
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-M03_01_Stop-Chasing-Insider-Threats-Start-Managing-Insider-Risk_1654110620785001AsEW.pdf",
+      "size": 3117837,
+      "sha256": "a2e16d354d67422e1acec57490a6c0e77750b648243f0c28ae8f169366004d0b",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-T02_01_How-Behavioral-Economics-Can-Help-Make-Better-Security-Decisions.pptx_1654450968232001wn9s.pdf",
+      "size": 15157046,
+      "sha256": "d388949c9eef6a08663b6a621c1e2f7221c78172d28bec438f2f6d9ea377c87e",
+      "status": 0,
+      "units": 88,
+      "needs_ocr": 84
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-T08_01_Users-Are-Not-Stupid-Eight-Cybersecurity-Pitfalls-Overturned_1654304932412001tVev.pdf",
+      "size": 3826474,
+      "sha256": "af117da80032fc5b5d784d7583b73135f1b9266a768a9e2c52e6076ce0ea7bea",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 15
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-T09_01_Reaching-Gen-Z-Cybersecurity-Outreach-with-Viral-TikTok-&-YouTube-Content_16546339596610012YGv.pdf",
+      "size": 13358031,
+      "sha256": "f47d140e9ddc7418026a0d4483e826a12a24b3357049b1ec450645ff6049854d",
+      "status": 0,
+      "units": 61,
+      "needs_ocr": 31
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-W08_01_Security's-Holy-Grail-Predicting-Attacks-Before-They-Happen_16541114971280014i2H.pdf",
+      "size": 3855319,
+      "sha256": "809765db605fc85aeba9948d5a169a8d670cfc852ec8d8caf1bbe19204d563b0",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_HUM-W09_01_The-2-Sides-of-Social-Media-Organizational-Risk-and-Cyber-Intelligence _165411163815000144TP.pdf",
+      "size": 8063589,
+      "sha256": "9ceefec5e995ec907b4b59f5f66e4fe73c30ec2d3b948c0496307a0c24b7d2d8",
+      "status": 0,
+      "units": 54,
+      "needs_ocr": 37
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_IDY-W02_01_The-Many-Faces-of-Identity_1654287702160001jXBP.pdf",
+      "size": 1556088,
+      "sha256": "864b683a5e9309c2fe70f86ecd57e3239f571e0fb2be475fb7ced872020116da",
+      "status": 0,
+      "units": 82,
+      "needs_ocr": 38
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_IDY-W08_01_Solving-the-Identity-Security-Crisis-A-Guide-to-Today’s-Top-Threats _1654475530181001b8pK.pdf",
+      "size": 9410701,
+      "sha256": "26dd39d76715ca7948c7fa405fa980bc0e21bd1b387405163db219a4b5c268e7",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_KEY-T01S_01_Privacy-2022-Perspectives-from-the-Top_1653687039383001XAFD.pdf",
+      "size": 365638,
+      "sha256": "469978dd93ecbb535dd880d4dd1cfaba5a9fd9ac64c004c1b0f11b59d9cb0108",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_KEY-T08S_01_Cybersecurity-as-a-National-Security-Imperative_1653687183303001fYys.pdf",
+      "size": 364132,
+      "sha256": "9e53a24e71b98cece919681df4aad5a24e1ab9c19e185b59fb8b287642c2185a",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_KEY-T09S_01_What-Matters-Most_1653687292095001Kv6a.pdf",
+      "size": 385542,
+      "sha256": "99e90d6209c6ed7d427b21ba1db65c19f7bed08518accff08c149d26e951a9da",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_KEY-W01S_01_Words-and-Actions-Matter-Leading-as-a-Change-Agent_1654198446018001e7Qy.pdf",
+      "size": 383909,
+      "sha256": "07d537dd40ff48b120bd9d89215f41816f7aa44edd11228f1f1adf6adec947c2",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_KEY-W02S_01_Cyber-Civil-Defense-A-Coalition-to-Protect-our-Digital-Future_1654199430875001OnxI.pdf",
+      "size": 363921,
+      "sha256": "977da3f198c8e512090a2ea317b531dc32cb194d564ecec9eaca007d71c3c37c",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_KEY-W08S_01_Building-Trust-in-a-Zero-Trust-World-to-Confront-Tomorrows-Cyber-Threats_1653687563554001ferx.pdf",
+      "size": 365552,
+      "sha256": "2ee8f39dca30f20153f4aa733a889bb44f774a50f5b69076f9dd4ad2afc4824b",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_KEY-W09S_01_How-a-Musician-Used-Sheet-Music-Encryption-to-Help-Soviet-Defectors_16542000574520015UxR.pdf",
+      "size": 653742,
+      "sha256": "4a0f46c53340bac5e83c6e3f7cf9718dabca98c5983918b58f37f6e692188dc0",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-M01_01_Victims-and-Vectors-Mitigating-Legal-Risks-of-Supply-Chain-Attacks_1654100434829001ADmz.pdf",
+      "size": 1935796,
+      "sha256": "649d45e10b44eb6722e78ab4e48abc8c9b528e01c1f1036a458c0441f50790c9",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-M02_01_Data-Protection-and-Privacy-Development-Around-the-World_1654305235378001lnfR.pdf",
+      "size": 1508102,
+      "sha256": "89205223ff547a37f7d55ca6b81009416151925f1b87ca6cd9dde7fd346c4f88",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-M03_01_The-States-of-Cyber-Incentives_1654100489819001e2dj.pdf",
+      "size": 1096964,
+      "sha256": "c199e49c8b26b2e39a1804f651e0e1910bb0c1565d18216fc652aa29147565da",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-M05_01_Hacker-Law-After-the-Supreme-Court-Ruling-Insider-Threats-Research_1654532414053001gtGe.pdf",
+      "size": 1699626,
+      "sha256": "c95de153b6451297573f8226cd8122d15a3af42ffbba181f9173d3909284c763",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-M06_01_What-Have-the-Courts-Done-Now_1654533893148001kCA7.pdf",
+      "size": 1287705,
+      "sha256": "426f13a03f02b45d40ab20d54abcfcc0d091199696e4b74714954be7142e4863",
+      "status": 0,
+      "units": 15,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-T01_01_Hacking-Back-To-Be-Or-Not-To-Be_1654385036404001kRLm.pdf",
+      "size": 1824193,
+      "sha256": "fc3e954f2468e111a1c65521924de2575c6dd1caa75c5928a0d6c1f4708592c3",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-T02_01_Understanding-the-Role-of-Cybersecurity-Expert-Witnesses_16541006764170019PR4.pdf",
+      "size": 579863,
+      "sha256": "31f9ea6d3cd1591b5f850bf9ac5159f99df619017469f6fea9ee738f0b059a8b",
+      "status": 0,
+      "units": 22,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-T08_01_FaceOff-The-Battle-to-Authenticate-with Biometrics_1654385199756001kBVT.pdf",
+      "size": 1755960,
+      "sha256": "9a3feecfa966f1abadc05b9c0d095f0f8eb0b67e6e8209de4f8e87011f740a55",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-T09_01_Designing-a-Data-Ethics-and-Privacy-Program-for-AI-ML_1654615494358001ASQJ.pdf",
+      "size": 1769018,
+      "sha256": "de0f59ae2842572ec8f4ed7916f86cf976f5dc5c973fff4b9b0b5736c2cc986a",
+      "status": 0,
+      "units": 24,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-W01_01_Defeating-Covert-Foreign-Influence-While-Protecting-Free-Expression_16547285767440014vKW.pdf",
+      "size": 713282,
+      "sha256": "4bd48a9c64e2e1c5f8071d15ea49a6ae7e14c90ea9c5c79690e5859f32bb9d4f",
+      "status": 0,
+      "units": 13,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-W02_01_The-Defence-Industrial-Base-CMMC-the-FCA-and-Insider-Threat_1654709380844001lz6y.pdf",
+      "size": 5949184,
+      "sha256": "ae915579a14d178938ac8c2f547cb7b12775dbe08c60ec59accfa8ac08e2e6dc",
+      "status": 0,
+      "units": 22,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_LAW-W08_01_Are-You-Sure-You-Are-Doing-That-Right-A-Mock-Hearing_1654635628019001zq3q.pdf",
+      "size": 1515375,
+      "sha256": "a3ac5bca640ae988298a202cb0ebbfde437ccc8991f029d00759d79ac7e7d57b",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MASH-M05_01_A Data-Driven-Topical-History-of-the-RSA-Conference_1654535840146001grBJ.pdf",
+      "size": 6188655,
+      "sha256": "cacda008c67782981729af4bc827012350ff8ebe76eb7128ac4520b18024289a",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 33
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MASH-M06_01_Ransomware_How-One-Company-Fought-Back_1654180297166001na0R.pdf",
+      "size": 981995,
+      "sha256": "3bc937b20da0a51c9b7f03a0097a2d83958a71a40984a61a2d389e2e72ec053a",
+      "status": 0,
+      "units": 13,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MASH-T09_01_A-Proven-Methodology-to-Secure-the-Budget-You-Need_1654557794303001XnCx.pdf",
+      "size": 2719995,
+      "sha256": "dc52cb1e7aa03ce63c62957336b687dcdccf969f3d5d7db69bccbf17c61c375e",
+      "status": 0,
+      "units": 61,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MASH-W01_01_Security-Smackdown_1654180675350001n0Bb.pdf",
+      "size": 2236012,
+      "sha256": "93d79e68bc7406d9032ef685a0482dc5f9e5f885d99da300f17312e01407318a",
+      "status": 0,
+      "units": 14,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MASH-W02_01_Protecting-Traditional-and-Blockchain-Virtual-Economies_1654639186652001kamE.pdf",
+      "size": 5956973,
+      "sha256": "a6984ffd2b782c6517e328424fea4da487f7c7482847215a5eacc2adbfc44d54",
+      "status": 0,
+      "units": 57,
+      "needs_ocr": 32
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MASH-W08_01_Maximizing-Our-Cyber-Non-Profits_1654731766634001b3UE.pdf",
+      "size": 956836,
+      "sha256": "8d8c852b484c7e0a109a894c772fe0344bc6e4be612b4b787aeb34305d062a61",
+      "status": 0,
+      "units": 4,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MASH2-T09_01_Cyber-and-Modern-Conflict-The-Changing Face-of-Modern-Warfare_16541787096690014ACM.pdf",
+      "size": 90183845,
+      "sha256": "e9f865aab25019bf092ebdc23b834ead17891234b220d650c3083178fb15b7a1",
+      "status": 0,
+      "units": 68,
+      "needs_ocr": 45
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MLAI-M01_01_Assessing-Vendor-AI-Claims-like-a-Data-Scientist-Even-if-You-Arent-One_16541107013550014oOW.pdf",
+      "size": 26107085,
+      "sha256": "4a487a883f4c353e118e5989fe41f0da96824bac2bd00ec86c89d9be0afd7930",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MLAI-M03_01_Privacy-and-Compliance-for-AI-Open-Source-Tools-and-Industry-Perspective_1654110739927001eNRa.pdf",
+      "size": 2739221,
+      "sha256": "7c72751486e6cdd3ccd0de7f97aa6cab29287ddf401176352e0316b69cd3a2a9",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MLAI-M05_01_Measuring-the-Difference-Metric-Development-at-NCCoEs-Securing-AI-Testbed_1654474567844001gSbF.pdf",
+      "size": 4329895,
+      "sha256": "90fca2c4a2c993f1867a9c6b9768376b41f42726d077cf5aa980d93bfd275a05",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MLAI-M06_01_Its-Not-Fair-Detecting-Algorithmic-Bias-with-Open-Source-Tools_1654553315678001ksaD.pdf",
+      "size": 138699635,
+      "sha256": "3a7b5d695a6fbe01ad7a04cf09647de96dcf03dc4f194894f6e42c0c9e68d11b",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 27
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MLAI-T01_01_Red-Teaming-AI-Systems-The-Path-the-Prospect-and-the-Perils_1654553313926001XEay.pdf",
+      "size": 1689972,
+      "sha256": "1cf1c5382bfde68c8bf4bfa48556ccd54f9851671ebc6ec64f2f3875d1413b65",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MLAI-T02_01_Generative-Email-Attacks-and-How-to-Defend-Against-Them_16546235720890012g3h.pdf",
+      "size": 8686881,
+      "sha256": "835dc93d43db946852c2a8fe96944c1ae1e4f21783faac28d88de08dd63e5b65",
+      "status": 0,
+      "units": 85,
+      "needs_ocr": 64
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_MLAI-T08_01_AI-Legal-and-Policy-Considerations-and-Landmines-to-Avoid_1654457507252001gr7M.pdf",
+      "size": 1883984,
+      "sha256": "a580ab512c0f944dd947253686a2becccccb2398fa9e9d2ba0cbd448a8178139",
+      "status": 0,
+      "units": 42,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_OST-M01_01_The-Challenges-of-Building-Safe-End-to-End-Encrypted-Services-for-Business_1654450882109001gqwA.pdf",
+      "size": 3105350,
+      "sha256": "74135f9b122934ce744f70a33ff4b887c0d89d3ed92940c07184254834afcbe6",
+      "status": 0,
+      "units": 64,
+      "needs_ocr": 38
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_OST-M05_01_Scalable-Confidential-Computing-on-Kubernetes-with-Marblerun_1654470820023001qm4f.pdf",
+      "size": 2104941,
+      "sha256": "15f8da0c977bcb25baf83137d073d1309eabf4b740e8d1d9edf0bc56e3c74f58",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 26
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_OST-T01_01_Sigstore-the-Open-Source-Software-Signing-Service_1654611740705001ko6t.pdf",
+      "size": 1680086,
+      "sha256": "a3459b480066f2e82db04b5f79252e2634e5929d4ec2c94e0b0a0958320df008",
+      "status": 0,
+      "units": 41,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_OST-T08_01_CHRYSALIS-Age-of-the-AI-Enhanced-Threat-Hunters-&-Forensicators_1654305233999001Bpcs.pdf",
+      "size": 4564763,
+      "sha256": "63d0152d399492e0035a98f67f1a31148746bcc37f9288368bccb99c070bab9a",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_OST-T09_01_Attacking-and-Defending-Kubernetes-Cluster-Kubesploit-vs-KubiScan_1654305270039001q9sI.pdf",
+      "size": 2290643,
+      "sha256": "659411772b07623fe6ae478abb0ae3d26fa3249e0be44628b055e11ec5451d04",
+      "status": 0,
+      "units": 38,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_OST-W09_01_Open-Source-Enterprise-Adoption-and-Overcoming-Barriers_1654305453355001Bel2.pdf",
+      "size": 896294,
+      "sha256": "c1baece6baf3cc3270b216e9b451fe59bf5eb80507eb696b1fed6c3686c8cfe4",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART1-T01_01_Cybersecurity-as-a-Business-Conversation_1654457718302001gSnn.pdf",
+      "size": 2283536,
+      "sha256": "bfe7340b11b533ecdd976cc538120262cac8d3098da372f696df35e4acce9f0a",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART1-T02_01_Never-Waste-a-Crisis-Identifying-and-Transforming-Digital-Risk-into-Reward_1654187827753001eh6O.pdf",
+      "size": 5087926,
+      "sha256": "39cb86bbe228cbae362cd0e07b237caf92e0a918e3f3bbddae4ff35df08b45f2",
+      "status": 0,
+      "units": 15,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART1-T08_01_Why-Zero-Trust-Network-Access-is-Broken-and-How-to-Fix-It_1653681109470001hLCK.pdf",
+      "size": 1982308,
+      "sha256": "ccbc58e403a406f6b619d845a8bb765cf7e2cfc90b3381a7399de63e672aa6bf",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART1-W01_01_Opening-the-Valve-on-an-Untapped-Human-Pipeline_16546376620110012PFY.pdf",
+      "size": 4607617,
+      "sha256": "978f18fc8277877a67bf817f87f0d36b6dee937a5b0837dd5882e2541c3f6441",
+      "status": 0,
+      "units": 47,
+      "needs_ocr": 33
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART1-W02_01_Ransomware-Reality-Checklist-5-Ways-to-Prevent-an-Attack_1654110877777001GUDB.pdf",
+      "size": 3959884,
+      "sha256": "8be2cd8583de9be81d91a5c4bec1f7baa98e48be6019a6f623a9e28968db8e23",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART1-W08_01_Open-XDR-A-Strategy-for-Evolving-Security-Needs_1653674654366001KyTe.pdf",
+      "size": 3590207,
+      "sha256": "e7e0d5f1ec03a532e8784801808279c3b23fb57d48aff836b6c9b8848e4ddb43",
+      "status": 0,
+      "units": 21,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART1-W09_01_Multifaceted-Extortion-Insider-Look-at-Ransom-Payments-and-Cyber-Defense-_16547212650560014ltr.pdf",
+      "size": 1154982,
+      "sha256": "3b8f592f40067072bed2d290f088732344f0654a1c1b098c5dd9c816914290c4",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART2-T01_01_A-Sanity-Check-on-Technology-Viewpoints-from-Security-Professionals_1654111191226001KA30.pdf",
+      "size": 1146757,
+      "sha256": "48aa9913e36b64f36f5eced8487576877b593376d6ccddc9623dfaff37b2d05c",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART2-T02_01_Evolving-Your-Defense-Making-Heads-or-Tails-of-Threat-Actor-Trends_1654457749465001g1EL.pdf",
+      "size": 2030771,
+      "sha256": "9e79dfe2dddb63aabb9f1969591dbfd144a8de465507552631778ac1b3a17f6f",
+      "status": 0,
+      "units": 45,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART2-T09_01_Europe-Gets-its-Identity-Back_1654111216125001egXU.pdf",
+      "size": 1860655,
+      "sha256": "c4969c8f7d39bfc14668490efade012e9a8b14e20e6b026cd27235d677abf3f2",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART2-W01_01_Importance-of-Cybersecurity-Mesh-Platform-in-Securing-Digital-Acceleration_16546237002630012T83.pdf",
+      "size": 3673617,
+      "sha256": "20c0cc9054915820280a0ab494a5a94c60c6802ddeab68c358fae822f992985c",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART2-W02_01_Being-Open-to-a-Zero-Trust-Future_1654702661601001l6xF.pdf",
+      "size": 3547759,
+      "sha256": "a99ee628989d1f6b0538a7ae3a31c5d4b652edd032e360e230f1c3322bb75c59",
+      "status": 0,
+      "units": 21,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART2-W08_01_The-State-of-Application-Protection-2022_1653674675412001XiBB.pdf",
+      "size": 5774233,
+      "sha256": "ccbda2091f31d57821f6ab03a0abb4e3ef46472adc9eaffcaa9c282263aa7d55",
+      "status": 0,
+      "units": 40,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART2-W09_01_Protect-Valuable-Data-as-Employee-Turnover-Rages_165463424783900127q9.pdf",
+      "size": 1317750,
+      "sha256": "8908aa1cd618bf5284bb63a7bfabe9c3dfee1bfe0356ea64cf5346680b8101ee",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART3-T01_01_A-Whole-Lotta-BS-Behavioral-Science-About-Cybersecurity_1654623712998001zuaH.pdf",
+      "size": 3701025,
+      "sha256": "5506bfb28057b383d7d8c927154ebd86bea46f629eb7d72040ef4bcfa98f719c",
+      "status": 0,
+      "units": 39,
+      "needs_ocr": 19
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART3-T02_01_How-Modern-Bank-Heists-Are-Escalating-to-Hostage-Situations_1654490641871001vmQq.pdf",
+      "size": 749367,
+      "sha256": "916d28bfcfc81af9fbe5a7be4ed283470936099b98a55406dde0e8e870c34f59",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART3-T09_01_IOT-Fix-the-Bugs-That-Leave-Customers-Inconvenienced-Stranded-or-Dead_16541127305710014fYB.pdf",
+      "size": 57699141,
+      "sha256": "61ba011fb1b75363d07bf640eab6845471453d16a354e9cd4c400e7f3729ade0",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART3-W01_01_Anticipate-and-Defend-Against-Advanced-Adversaries-Targeting-SaaS-and-IaaS_1654702719561001XlT3.pdf",
+      "size": 5740411,
+      "sha256": "b2f6d19555da84fa94690eeee01e0589491d8f49f61bdacf2ffa464037f5f279",
+      "status": 0,
+      "units": 32,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART3-W02_01_Practical-Learnings-for-Threat-Hunting-and-Improving-Your-Security-Posture_16547027664200014Nhv.pdf",
+      "size": 1529716,
+      "sha256": "700767164ba1f44848b3e7a0c020892b91206e9d782cee424d990b192b335600",
+      "status": 0,
+      "units": 47,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART3-W08_01_Can-A-Real-Security-Platform-Please-Stand-Up_16546352185120012qdy.pdf",
+      "size": 2573926,
+      "sha256": "96f4b0e5d62f9cd969d2b55aadd2c29999155aa48dbdb1a0294c8f99e48fd42e",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART3-W09_01_What-Will-it-Take-to-Stop-Ransomware_1654111372186001ArEh.pdf",
+      "size": 1143503,
+      "sha256": "f9b2d3838e49252b391ffb6133937365174c2672553b7e9802dba7ec51e0e675",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART4-W01_01_Voice-Authentication-Robinhood-and-Pindrops-Innovative-Methodology_1654634177128001Xkn8.pdf",
+      "size": 28177094,
+      "sha256": "6134d290e0544426b53f62e2adbc966dadd3834b3e9015df10a627c8804effab",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART4-W02_01_Digital-Trust-Cybersecurity-2025-A-Call-for-Openness-Interoperability_1654457809502001bGCR.pdf",
+      "size": 4164263,
+      "sha256": "d9d55dfc289753105b5c2e78fd222566f9971e97887ba94d2eb465f701803c31",
+      "status": 0,
+      "units": 40,
+      "needs_ocr": 16
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART4-W08_01_AI-ML-and-the-Gig-Economy-the-Only-Path-Forward-for-the-SOC_1653674714894001KiDD.pdf",
+      "size": 721991,
+      "sha256": "fc85c094d7f9d76aa02367347349fb58a98775d718a15e9697e6e7f9726cadb2",
+      "status": 0,
+      "units": 13,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PART4-W09_01_Modernizing-Cybersecurity-Through-a-Single-Solution-Approach_16536747240450012LSl.pdf",
+      "size": 3925126,
+      "sha256": "c6317d4f1a03311ba5836a22af12d2d71897190babf700ba89bad75aab3c31d7",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-M02_01_Validating-the-Integrity-of-Computing-Devices_1654301524761001Bzn1.pdf",
+      "size": 1033401,
+      "sha256": "ff02eafe71988c5f263001ff774e1df840edfb0b23ca92a81aac3ba19877895a",
+      "status": 0,
+      "units": 6,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-M03_01_Cutting-Through-Getting-Real-Answers-on-Supply-Chain-Security-Policy_16541119108220010nyV.pdf",
+      "size": 548982,
+      "sha256": "98ef3b6f377e96da33766241e33b9a0fb2ead7ebe40e1f0b2cf8b97c954db9c7",
+      "status": 0,
+      "units": 9,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-M05_01_What-the-Headlines-Dont-Tell-You-About-Exploited-Supply-Lines_1654128279945001AjMO.pdf",
+      "size": 3528773,
+      "sha256": "00fb3afa52b9130b5258cd383447bc18314876d2372611bb6aad1468ec7167a1",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-M06_01_New-Guidelines-for-Enhancing-Software-Supply-Chain-Security-Under-EO-14028_165411196231500103IJ.pdf",
+      "size": 1663025,
+      "sha256": "dba3622be0504f850c554055deef3894877c1d13a94fbaf82faf2ca323f3d50c",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-T02_01_By-Our-Powers-Combined-Critical-Infrastructure-Partners-for-Transparency_16541121727160019gsK.pdf",
+      "size": 628362,
+      "sha256": "ba7a73fa7883236448da6945c334c8311e3cc8048160a0fd4d61c0b0df21e072",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-T08_01_Addressing-Supply-Chain-Security-Risks-MITREs-System-of-Trust_1654112219810001Amgx.pdf",
+      "size": 11049220,
+      "sha256": "38f6f95864c90574b09d459ec9adca20adaf0d32585743da811891ef97880b1e",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-T09_01_The-Missing-Supply-Chain-Link-A-Safe-Harbor-for-Risk-Information-Sharing_1654307259791001qHw9.pdf",
+      "size": 3969788,
+      "sha256": "dadf5141c9d86c5f7d80766f55ba5a59673eb665a58559f7eb4f49ee5966eef1",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-W01_01_DLP-An-Implementation-Story_1654112277374001GQvY.pdf",
+      "size": 1524833,
+      "sha256": "d74e1d26763f17920218863059b27bca25defd964527623e94266d2b30eac293",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PDSC-W09_01_Too-Much-of-Good-Thing-The-Cost-of-Overusing-Encryption_16541123124760010Bm0.pdf",
+      "size": 3920944,
+      "sha256": "c0ec76d33cf969bdbff101bfae0c548936e8325f401ad6fbc5a96e60470ce6f1",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG-T01_01_American-Labyrinth-Demystifying-Adversary-Use-of-Domestic-Infrastructure_1654112519420001A5dA.pdf",
+      "size": 749474,
+      "sha256": "16dbd32b64505d0c565ff4f768aa9f3c11995997e61c3caf644a9e051f8d4728",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG-T02_01_Progress-in-the-Year-of-Ransomware-Analysis-with-the-Ransomware-Task-Force_1654303623691001Zra7.pdf",
+      "size": 3358471,
+      "sha256": "c58a76fea8c21fc6622fe4d43c1caac70b95647657786ab8721172a5caa1b55d",
+      "status": 0,
+      "units": 7,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG-T08_01_Supply-Chain-Cyber-Readiness-Upping-Your-Game_1654562444448001b6I7.pdf",
+      "size": 4016364,
+      "sha256": "7f3ba494dd9dcc8733b1fd037742714d99699aa6f0ad144e906727bb09f8fd60",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG-T09_01_Barbarians-at-the-Gate-Policy-Options-for-Combating-Ransomware-Attacks_16541127240450019Fcp.pdf",
+      "size": 722405,
+      "sha256": "7fe705e07ebe5d56a4a96b4833a9b366c95d8f5c1d2e441ecec0e102c7589d2d",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG-W01_01_Put-A Label-on-It-Protecting-IoT-by-Empowering-Consumers_1654699507948001zgEU.pdf",
+      "size": 755773,
+      "sha256": "1cc180dc9f1f8d291abc9cbdcfdaa163d7dfaaa344f841398da13a3cb1c940f7",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG-W08_01_The-Road-to-Adversary-Engagement-Get-Your-Organization-from-0-to-88-MPH_1654113086201001A83p.pdf",
+      "size": 749821,
+      "sha256": "1a8b63e34871fafc77197207275280f7dcd69798afc775c407fa602477d3a435",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG-W09_01_Are-Data-Localization-Policies-Looming-Disaster-Cybersecurity_1654113112264001e2T8.pdf",
+      "size": 752229,
+      "sha256": "99faa0cfc1e7f55d2518afc365b9de14e040173a0e618f8bbcaaf2498c7f7d63",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PNG1-T01_01_DOJs-Role-in-Countering-Nation-State-Cyber-Threats_1654112374427001GBi8.pdf",
+      "size": 627570,
+      "sha256": "a1c88c6d493789db2a6ee5caaece7e3fe52e09f1eb8f23dd06eef738fc396f9e",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PROF-M01_01_Transforming-Security-Champions_16541864454850014Jt5.pdf",
+      "size": 2441013,
+      "sha256": "8142abd68fc55e8364c7ddc9837f5cd29ef0d4017259210032c3a7a918f9d966",
+      "status": 0,
+      "units": 53,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PROF-M02_01_First-90-Days-In-the-CISO-Chair-A-Practitioners-Perspective_16541865777700015ppz.pdf",
+      "size": 757721,
+      "sha256": "e39f0171248214e478a035ac842f6a7687227ae69ffbe2e382c9c1b0e6ee94b2",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PROF-M06_01_Talent-Shortage-Fact-or-Myth-Resources-for-Finding-and-Growing-Talent_1654383905611001qMkv.pdf",
+      "size": 760285,
+      "sha256": "627266ef3c689e48aaa7369ad86fe5e0610b2118c799d384e46f77ebcaba3dcf",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PROF-T09_01_Making-the-Leap-Transform-from-Techie-to-CISO-Infosec-Leader_1654629468136001zXus.pdf",
+      "size": 5084513,
+      "sha256": "4acc76ea674d4e55b30d950e80949870094add774599afe4f102c1b8b16e2266",
+      "status": 0,
+      "units": 75,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PROF-W01_01_Security-Leadership-Influence-without-Authority_1654188039932001GB0t.pdf",
+      "size": 5995970,
+      "sha256": "f4a2eeca3c76a69bc216d0f2da42fe396a568fc547d969c528911d10795659c8",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PRV-M05_01_Can-Innovation-and-Regulation-Coexist_1654474541826001kuzs.pdf",
+      "size": 36373649,
+      "sha256": "d6e602dd26e2af4658a774c068bee05522d3cc881f06515dfac5ec88a3b69138",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PRV-T09_01_The-Steps-to-Successfully-Baking-Privacy-into-an-IAM-Implementation_1654111587381001Kk3e.pdf",
+      "size": 2531771,
+      "sha256": "d1c3a241342256ca89cbf0e351de27318188bee80c4ad4c7a576cf033377a604",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PRV-W01_01_Catch-Me-If-You-Can-Protecting-Mobile-Subscriber-Privacy-in-5G_1654457884589001buTu.pdf",
+      "size": 1551145,
+      "sha256": "4351ba6d953c8c58cfaa8d1234d3df13913bd3574f9669ef5d161fbd3d008e40",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_PRV-W02_01_Adaptive-Assurance-Implementing-an-Automated-Control-Testing-Program_1654457890821001EEhf.pdf",
+      "size": 2860451,
+      "sha256": "852497508a49c915828d91e3d45fff953fb2b5887a2286d5f4d3c20df69011c3",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_RMG-M01_01_Supplier-Risk-Throw-Out-the-Old-Playbook!_1654305497627001jEbZ.pdf",
+      "size": 10190958,
+      "sha256": "610b638dcbee0cbf46d3bffb0eb4459faf3162f1904f2c98d51f1040d201c76e",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 31
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_RMG-M02_01_The-Zoom-Effect-A-Framework-for-Security-Program-Transformation_1654530587305001vfkm.pdf",
+      "size": 2099881,
+      "sha256": "db6adf0410ca587f6f8166db8ed0845767fc52ead2c1de33a37503e2e56226b4",
+      "status": 0,
+      "units": 24,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_RMG-M05_01_Benefit-from-Cybersecurity-Insurance-Taking-Advantage-of-Insurer-Panels_1654305523427001jYhd.pdf",
+      "size": 908109,
+      "sha256": "3f821c849a0d067f90026a69becf578a577f425fe2d81c05128a108db8c13131",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_RMG-M06_01_How-to-Win-with-Cyber-Insurance-and-Side-Step-the-7-Biggest-Pitfalls_1654459811421001IWC3.pdf",
+      "size": 3890203,
+      "sha256": "1dbeb4f478e78a8a6311ab6e492ef6f4bc383c7005410a8141d31863558a6383",
+      "status": 0,
+      "units": 47,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_RMG-T08_01_What-Actually-Specifically-Makes-Security-Programs-EVEN-MORE-Successful_1654305547928001jGYG.pdf",
+      "size": 5428114,
+      "sha256": "f2b7c83c44985e83692f0eb86f8f9a2b963230e0c1dbd4f71f41118e8ae425bd",
+      "status": 0,
+      "units": 42,
+      "needs_ocr": 29
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_RMG-T09_01_Why-Does-Cyber-Tech-so-Often-Fail_1654388847857001Ehyw.pdf",
+      "size": 1185877,
+      "sha256": "e1ff5d9c4be460024f825fb9810f4dd8fb216a10f737ce07bfcd7913dd5e76d9",
+      "status": 0,
+      "units": 11,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_RMG-W09_01_PCI-DSS-4.0-Evolution-Revolution-or-an-Omen-of-Extinction_1654305628452001B5c9.pdf",
+      "size": 2569011,
+      "sha256": "21fae02b33543f3af7ec634bf8064fd1832559c9831477a1554428c45694a4ff",
+      "status": 0,
+      "units": 66,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-M01_01_Drones-and-Autonomous-Vehicles-Privacy-Security-vs-Surveillance_1654111708432001GXdK.pdf",
+      "size": 2165304,
+      "sha256": "6dcfb1d310f99f094c85dd2f81dc308f70455cb6e507e07ac494a50750855957",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-M02_01_Be-Debt-Free-Using-Cyber-Informed-Engineering-to-Future-Proof-Technology_1654111714255001KaI9.pdf",
+      "size": 1724460,
+      "sha256": "a1946f3f39e6237b326210b92fecc5a0b297a8db7426da078bc1da37e2b09f62",
+      "status": 0,
+      "units": 15,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-M03_01_Hacking-and-Protecting-Distributed-Energy-Infrastructure_1654553367370001Ai3g.pdf",
+      "size": 5163513,
+      "sha256": "d831e85ef23fb93c6b9e03d2d407434a33a59752582f424c23959d3c1d198257",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-T01_01_Where-Humane-Technology-and-Secure-Technology-Meet_1654623727980001lmkL.pdf",
+      "size": 2765065,
+      "sha256": "fed5322d97ab937a20849ceef12d4bca5ae6a6d19176cc6b60fd18d11648c6b0",
+      "status": 0,
+      "units": 44,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-T02_01_Thinking-Like-a-5G-Attacker_1654458061378001Ibmj.pdf",
+      "size": 658758,
+      "sha256": "a0c2ec5b0f6250cbfe76c998bd4ee35b69703a4a65ef33e592d8d53373d63bd1",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-W01_01_Protecting-Against-Evolving-Threats-to-Global-Shipping-Infrastructure_1654623749844001l1Tg.pdf",
+      "size": 4572696,
+      "sha256": "e63ffcb884de2ba28d7b0576fb1e033609832cb1be519da90c67c04ccc4cc6e3",
+      "status": 0,
+      "units": 28,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-W02_01_The-Cyber-Physical-War-Lessons-From-the-Digital-Front-Line_1654458069973001k2hT.pdf",
+      "size": 1679012,
+      "sha256": "c40e6060234d038180586a9e09daa481702045e4ca35b454f3de65e0c8cf6205",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_SAT-W08_01_Understanding-the-Latest-Evolution-of-ICS-Malware_1654111788240001gwlH.pdf",
+      "size": 1730803,
+      "sha256": "b5b7922096256618891fa9e5a3a4ae5337eec761cb7ec0729475979992a0da36",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR-M01_01_Cyber-Defense-Matrix PDF Version_1654470397213001wzdO.pdf",
+      "size": 3608465,
+      "sha256": "f9c6b238e15d93288ac5be235195ee5725da2945507085423761c00e29b12c92",
+      "status": 0,
+      "units": 32,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR-M02_01_Are-Low-Code-And-No-Code-Tools-A-Security-Risk_1654132029274001eE7v.pdf",
+      "size": 9223185,
+      "sha256": "2c443c4e7704c7468fba7ceeb74f15efb2c1e2c8c1e182ad6b1a62d2c14e9dc6",
+      "status": 0,
+      "units": 53,
+      "needs_ocr": 41
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR-M03_01_Transformational-Security-Strategy-Developing-a-Plan-That-Works_1654531848396001G615.pdf",
+      "size": 4605087,
+      "sha256": "8ecde68add35d99eb0cb10bd552ce019e3ad5dff67d140addab914ee2fe7bb44",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR-M06_01_The-Jetsons-Are-Here-Now-What-Are-The-Security-Implications_165411898377700148ri.pdf",
+      "size": 2651141,
+      "sha256": "6e5977edb678031915c3e3d689aa5cb74332e8e6c9738cf9c9bbac217827db12",
+      "status": 0,
+      "units": 12,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR-T02_01_Electrons-to-Clouds-One-SDL-to-Rule-the-World-from-Hardware-to-the-Cloud_16545464542550012Co9.pdf",
+      "size": 11757756,
+      "sha256": "052c6cc3a926e336e46c8018b8171dc341def011a8fa9158b0022a9918c74015",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR-W01_01_Four-Dimensions-Of-Building-A-Security-Program_16541191347660010Ba7.pdf",
+      "size": 4014920,
+      "sha256": "cbfde12c0767a7af12425f06c05477c55ae69580cbe036ab5406cf703b3f2beb",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR-W08_01_All-Hands-on-Deck-A-Whole-of-Society-Approach-for-Cybersecurity_1654710342367001BKpv.pdf",
+      "size": 748570,
+      "sha256": "689ea8f27c02dff2c0e8d987765aebfa15ee43ef55061f89860bbbf585d52596",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR1-T01_01_Novel-Swiss-Re-Framework-Shortens-800plus-Application-Multi-Cloud-Conversion_1654118863437001eGne.pdf",
+      "size": 2327861,
+      "sha256": "98a3c5c2f63bc5fbe453acb14a2109ab214d55792ca7f3b48147aa3aa56aeb6b",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_STR2-T01_01_CSF-Over-Time-Shifting-from-Identify-Protect-as-You-Grow_16545472084130012bzq.pdf",
+      "size": 2309572,
+      "sha256": "1dccea26ada2edb515746b8d98878ec51256f4ab1e316d29c995261c23cd9f35",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-M01_01_Wells-Fargo-PQC-Program-The-Five-Ws_1654458220335001wHfF.pdf",
+      "size": 748931,
+      "sha256": "ef5b638964b311c6b66af6abc623f4f7b9a5ba076657c739cd321bee405f398e",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-M02_01_Securing-Entry-Points-and-Active-Directory-to-Prevent-Ransomware-Attacks_1654458225754001grPj.pdf",
+      "size": 1289349,
+      "sha256": "ce27c24b361f4199ad038aabae17ff8566cdb168dc545315fd004b6f5265a6aa",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-M03_01_Building-an-Enterprise-scale-DevSecOps-Infrastructure-Lessons-Learned_1654111932165001KKQw.pdf",
+      "size": 41741428,
+      "sha256": "c977de42e8487fc1b56f2e4369f29d3d44dbf2f4d656c94b04b4e81ce14dffe7",
+      "status": 0,
+      "units": 22,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-M05_01_Securing-Medical-Devices-When-Cyber-Really-Is-a-Life-and-Death-Issue_1654111907465001KEma.pdf",
+      "size": 748891,
+      "sha256": "25ae2907b24c1f91d68fc3073f4681447eeda388722349566ecf765a893a2725",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-M06_01_Network-Based-Threat-Hunting-Lessons-Learned-Techniques-to-Share_1654458265918001gLyD.pdf",
+      "size": 164177226,
+      "sha256": "a26845bf2a9c9b34acb49c7b1e0129d09bab6f32c11be7ac4e049a1debbb85f1",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 15
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-T02_01_Getting-The-Most-Out-Of-Sysmon_1654623777566001XRkB.pdf",
+      "size": 20175442,
+      "sha256": "48d1443b0bbe8d19207c90aa667dfa61105ff3249bbbf9ba5d6b4a1b10c34b20",
+      "status": 0,
+      "units": 50,
+      "needs_ocr": 38
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-T08_01_Know-Your-Environment-Better-Than-the-Enemy_1654490656755001vmIj.pdf",
+      "size": 4192405,
+      "sha256": "cb7ea6cc14b33e828d4051ddd43ee8e9ad5b8db35a78c687a3aead44b77bcd33",
+      "status": 0,
+      "units": 36,
+      "needs_ocr": 23
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_TECH-W09_01_M365-Threat-Hunting-How-to-Understand-Attackers-TTPs-in-Your-Tenant_1654458263739001qE0u.pdf",
+      "size": 1275168,
+      "sha256": "87cd367bf9e593faaf8f44c957877e937478f191bea8842073537263ba592930",
+      "status": 0,
+      "units": 11,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_ZT-M01_01_What-is-Zero-Trust-What-ISNT-Zero-Trust-Lets-Make-Sense-of-This_16541192436560019Stt.pdf",
+      "size": 776103,
+      "sha256": "715e04f6c36d32a8d06343f8f4dcda23cc68fdfe5805184a7af716fcf5ccbc86",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_ZT-M03_01_Inside-the-Making-of-a-Zero-Trust-Architecture_1654305891301001ooRu.pdf",
+      "size": 3058146,
+      "sha256": "02f47798c3f08e95b102cb8f0e5924924e22b22e554d1b447fa8db2198db6f5a",
+      "status": 0,
+      "units": 21,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_ZT-M05_01_Bringing-Zero-Trust-to-Industrial-Control-Systems_16541193098080019NgD.pdf",
+      "size": 2165855,
+      "sha256": "51c0eb7377686704932d5f8647bd0abac24ec8f080cca7c44140d8febe97047d",
+      "status": 0,
+      "units": 31,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "技术资料/RSAConference2022/2022_USA22_ZT-M06_01_What-We-Learned-Implementing-Zero-Trust-Security_1654547503066001bcW9.pdf",
+      "size": 1900455,
+      "sha256": "c0139394c2328033179f09c2d0c0782df5322f83f88b4fabdc74fff4c71928db",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/Running Bro on BSD.pdf",
+      "size": 3165956,
+      "sha256": "642f07ddd9980fb77ca05aac2fcd88f4b1158c086cb98f124f0f61f85d4e1417",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Security Threats against Space Missions.pdf",
+      "size": 1491984,
+      "sha256": "a2da2aafe37c698c53ab8dbc2fabdac8d2405b1cec7d8186915e0b1faff4df19",
+      "status": 0,
+      "units": 45,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Three Decades of Deception Techniques in Active.pdf",
+      "size": 1063854,
+      "sha256": "c7dcf70fa1550f192c276ed961264d21b77115a2dffd4beae7c7cbb0700cc4ec",
+      "status": 0,
+      "units": 19,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/Antiy_Wannacry_Nsa.pdf",
+      "size": 2043136,
+      "sha256": "6236460c6b9cd3a1c164d17fa1f186ab3c1a0f69765a2313cece1f8c746766ae",
+      "status": 0,
+      "units": 18,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/cverc_20220314.pdf",
+      "size": 4905482,
+      "sha256": "e84307b3f8e80dab36b6b1b2557ced1af9d16a91a1f3baee73f06bd2c1da9d22",
+      "status": 0,
+      "units": 16,
+      "needs_ocr": 16
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/EQUATION_DRUG.pdf",
+      "size": 1210505,
+      "sha256": "16d0482630a6b976a27306bb4b232291a2fdf065ec9f2dda4b7e394f73ee69d7",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/Equation_FuzzBunch.pdf",
+      "size": 1072259,
+      "sha256": "a46d64449d1740a01e71ef4ef5c16e448788622eb6d102aba59b1c34b4fabf8d",
+      "status": 0,
+      "units": 85,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/Equation_NOPEN.pdf",
+      "size": 566056,
+      "sha256": "c77f8c34f82a17c011f0da28fcb222b701e81e181ce85476e0facfb879ce5b6c",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/Killsuit_Research_01.pdf",
+      "size": 4526858,
+      "sha256": "3cc0f4c50fb9f3f7b2034358e0d7a4838d83a4d3121e411df2720c965592cfb2",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/README.assets/xor47_2022-03-21_14-13-10.png",
+      "size": 141462,
+      "sha256": "f344e5f5abe4fcd7dc8ad19b53528d0deb673fce103a57d1a1e24c93634c01b3",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/todzhang方程式分析_EQGRP_Analysis/EQGRP_Analysis-master/README.md",
+      "size": 1171,
+      "sha256": "585fb6363c51b3615cd11ece9f8f85fa187fa373e684571fc560ae3e24887f76",
+      "status": 0,
+      "units": 11,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/unorthodox-lateral-movement.pdf",
+      "size": 3626876,
+      "sha256": "85f76ca06df5c036d8ca2a78300d88f4cec4d38d7a640704bed7bfa5572bd907",
+      "status": 0,
+      "units": 74,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "技术资料/Vectra资料/A SANS Review of Vectra Cognito.pdf",
+      "size": 4678300,
+      "sha256": "e03f6d852494a7063ea16c808d13204e93f4f4588ff3d7e6e2b024fee44975bc",
+      "status": 0,
+      "units": 14,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/Vectra资料/Cognito_Stream_Network_metadata_with_an_opinion_English.pdf",
+      "size": 410415,
+      "sha256": "d58ebc5dcc6e65c5799367dc10a3603c6a7b49a54c966a6e9c8c8756c692a222",
+      "status": 2
+    },
+    {
+      "rel": "技术资料/Vectra资料/Datasheet_CognitoStreamPlus.pdf",
+      "size": 859093,
+      "sha256": "913b88f242f68cac9b87fae3dd2635a3f646419d477eb237c2f6b9feb5e489a3",
+      "status": 2
+    },
+    {
+      "rel": "技术资料/Vectra资料/Hunting in Network Telemetry.pdf",
+      "size": 3066505,
+      "sha256": "07b0ee95d173889fed4ecf019c5a854bab04e070b4289a7e909f5f9de9a5f79e",
+      "status": 0,
+      "units": 43,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "技术资料/Vectra资料/ProductCompanyOverview_2019_Cognito_Stream_Network_metadata_with_an_opinion_English.pdf",
+      "size": 410415,
+      "sha256": "d58ebc5dcc6e65c5799367dc10a3603c6a7b49a54c966a6e9c8c8756c692a222",
+      "status": 2
+    },
+    {
+      "rel": "技术资料/Vectra资料/Recall Threat Hunting Guide.pdf",
+      "size": 2214712,
+      "sha256": "5d101ee1d5760c0e6ef10bd171bc271542718e57c907b62f90ddc6dd845c99f1",
+      "status": 2
+    },
+    {
+      "rel": "技术资料/Vectra资料/Vectra Cognito-detect-overview.pdf",
+      "size": 1323404,
+      "sha256": "0131a15d3e84c0b04d3a47834d7bdd7619c339f919873e724f3310adf0368737",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/Vectra资料/Vectra Concept Overview.pdf",
+      "size": 6014257,
+      "sha256": "9eb4de424b9c96aa715479b3cfe3efb26bc5d1115a11ce20e14acbf210fa210c",
+      "status": 0,
+      "units": 12,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/Vectra资料/Vectra-Metadata_Datasheet.pdf",
+      "size": 516734,
+      "sha256": "7078bf64ceae7e88cf9f23052724e64c237e1293e3e00674c8576a40e9a8b737",
+      "status": 0,
+      "units": 9,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/WarCon22 - Modern Initial Access and Evasion Tactics.pdf",
+      "size": 6769976,
+      "sha256": "35439bf1f94ed1ea7c5c0f8a83acb0e8a439ab24b8a50e59dd95e9c68a4d9999",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "技术资料/When eBPF meets TLS.pdf",
+      "size": 1611755,
+      "sha256": "3e07dc243fa3102008f2b7efc07bfcdbe5317b065ed0ca31ce4183fe36d1cb9d",
+      "status": 0,
+      "units": 77,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "技术资料/Windows shellcode从0开始.pdf",
+      "size": 1398349,
+      "sha256": "4c5f88a8df6211238dca7a108420900557b655ae92abdb5d8b2a41308f6f5d43",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "技术资料/zeek P4资料/Accelerating Real-Time Intrusion Detection by Offloading Capture Filters to P4 Programmable Switches.pdf",
+      "size": 1194755,
+      "sha256": "e08f4dd73dc91e21d80cc92dd4a0343a2a26313a2ac495746503004e42bc1a8c",
+      "status": 0,
+      "units": 52,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/zeek P4资料/An Automatic Code Generation Mechanism for Enabling Intrusion Detection Systems at Data-Plane Speeds A Zeek-based Study.pdf",
+      "size": 922486,
+      "sha256": "36e96454c5e3c8b3453a7d732eba3a3c50490bb06a7d7713447d7852f7b9b37d",
+      "status": 0,
+      "units": 54,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/【Mandiant网络威胁情报分析师核心能力框架】THE_MANDIANT_CYBER_THREAT_INTELLIGENCE_(CTI)_ANALYST_CORE_COMPETENCIES_FRAMEWORK.pdf",
+      "size": 2425237,
+      "sha256": "7c4c995bc5114974ec70b396be0d9994b9b7a42cdd1579e54f4affa3c36b5aaf",
+      "status": 0,
+      "units": 11,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/企业终端安全观测能力评估参考.xlsx",
+      "size": 17408,
+      "sha256": "cfede3a70ea9d753c20cb0e96b52946a7b8392af6a7e698f16cc029b40c306be",
+      "status": 2
+    },
+    {
+      "rel": "技术资料/勒索软件生态_THE RANSOMWARE ECOSYSTEM - How commodification of tactics and techniques birthed an industrial revolution of global cybercrime.pdf",
+      "size": 2993939,
+      "sha256": "19504efbc6b4777dc95c845b53a863b3dee27495335fc3004e0f2b8eacfe1544",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/工具化：让 SBOM 规模化_2022_USA22_DSO-M03_01_Tooling-up-Getting-SBOMs-to-Scale.pdf",
+      "size": 4387397,
+      "sha256": "9fab74dd40b70ffc4538f1bc3f6dc9acf1736390a866cd204ce9e1739de89abf",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "技术资料/工控安全最佳实践—NCCIC_ICS-CERT_Defense_in_Depth_2016_S508C.pdf",
+      "size": 7610899,
+      "sha256": "dd6b8eb0f9def9fd047348e6a2d53ce2425298282cf824c6b5e7fe263cc5f871",
+      "status": 0,
+      "units": 58,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/执法情报监控大会_ISSWorldEuropeBrochure2022-03_.pdf",
+      "size": 3980637,
+      "sha256": "50de4f3129593c1cff1f78f8194b0a8febd9dffa822a19b63e13e7f26c62022f",
+      "status": 0,
+      "units": 7,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/持续诊断和缓解计划技术能力第二卷：需求目录_CDM-PROG-2021-CDM Technical Volume 2_v24.pdf",
+      "size": 2400671,
+      "sha256": "834af35d2058a96b5728e0a619e8bdc8a8e5dfe73f166dc72d817bc45e5672cf",
+      "status": 0,
+      "units": 110,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/挖矿协议狩猎资料—Trick or treat Unveil the  Stratum of the mining pools.pdf",
+      "size": 2664628,
+      "sha256": "7887030dbb78711a2e866fc30398e216a1adc21b9825c485037ee5d6cf80070e",
+      "status": 0,
+      "units": 42,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "技术资料/攻击欺骗专题/2021年国内威胁诱捕（蜜罐）类产品研究与测试报告.pdf",
+      "size": 6792932,
+      "sha256": "3da934140d53158dfd091075944c4ef2fa4e8d7b812ba1bc77aae3bb905ce4e3",
+      "status": 0,
+      "units": 96,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/攻击欺骗专题/Cyber Deception Architecture - Covert Attack Reconnaissance Using a Safe.pdf",
+      "size": 1256548,
+      "sha256": "af9bd55d01a54adee18da44c7277ea13e3f3785414c065b903910110b856bd10",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/攻击欺骗专题/EngageHandbook-v1.0.pdf",
+      "size": 1886870,
+      "sha256": "b48dfb9833d4b8152effe2bc39abcf73ad72ca02e1a72636e09c3d1d05b6857b",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/攻击欺骗专题/基于攻击欺骗的威胁检测/Deception Based Threat Deception FINAL_sep27_ebook 2.pdf",
+      "size": 6148811,
+      "sha256": "80fb45df60b03b33f4d69007d32e95449b73cfba64d949e43869f5e1e1d958e8",
+      "status": 0,
+      "units": 63,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/攻击欺骗专题/基于攻击欺骗的威胁检测/基于攻击欺骗的威胁检测.pdf",
+      "size": 2301668,
+      "sha256": "9b41b8e549c1f4c03f058ccbcc044998167c88fc64ca4dd49eb1a3699a68cecf",
+      "status": 0,
+      "units": 63,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/模拟DDOS—AjSurasak-DIY_100G_DDos_Gen.pdf",
+      "size": 4953436,
+      "sha256": "7356548bac71578bc6a00982018a30aa9586d2d36c7e1273524d5fd6585c5a96",
+      "status": 0,
+      "units": 50,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "技术资料/现代勒索组织通用技战术_Common-TTPs-of-the-modern-ransomware_low-res.pdf",
+      "size": 4794005,
+      "sha256": "716c60ad376f12fcfc3cc223c00d6a2279e542a7aec523d780b28d0112b11731",
+      "status": 0,
+      "units": 137,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/终端安全数据漏斗概念_Data Science Hunting Funnel.pdf",
+      "size": 3468957,
+      "sha256": "fea9eee1e871e6835ae37e628981d67555caf61fba879150546554e780b9e765",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 23
+    },
+    {
+      "rel": "技术资料/美国土安全部2023年度安全预算/Cybersecurity and Infrastructure Security Agency (CISA)_Remediated zh.docx",
+      "size": 1029941,
+      "sha256": "847bbdd84285823c3728825b634c209796a971e8f3396b61d41042fa42977ca0",
+      "status": 0,
+      "units": 753,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "技术资料/美国土安全部2023年度安全预算/Cybersecurity and Infrastructure Security Agency (CISA)_Remediated.pdf",
+      "size": 9061590,
+      "sha256": "2f872f6448b87166b9641e78021e4f2792e7715def1d2e7c0e773186883b8177",
+      "status": 0,
+      "units": 505,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "技术资料/美国土安全部关于俄罗斯APT组织的情报简要总结_major-cyber-organizations-of-russian-intelligence-services.pdf",
+      "size": 3274296,
+      "sha256": "e2c5cabcc6108b482ab5ab1a92173ee7354e44457634095b1204f197b0a18b55",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "技术资料/美国能源系统弹性安全指导_FINAL DOE National CIE Strategy - June 2022_0.pdf",
+      "size": 1998212,
+      "sha256": "eadfc36b6114c71145be998ea2b3c28e127b1a70af9ee8197ffa76b1f0b7709a",
+      "status": 0,
+      "units": 37,
+      "needs_ocr": 0
+    }
+  ]
+}

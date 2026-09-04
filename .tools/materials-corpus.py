@@ -2,22 +2,22 @@
 # requires-python = ">=3.10"
 # dependencies = []
 # ///
-"""ebook-corpus.py:本地电子书库(E:\\ebook,用户裁定 D46 主性能与质量测试面)的语料登记、
-质量基线与性能报告工具。外部真样本不入仓:manifest 钉身份(sha256),缺盘即跳过,CI 免跑。
+"""materials-corpus.py:本地研究资料库(E:\\研究资料,D46 第 2 轮裁定弃 E:\\ebook 改此,主性能与质量测试面)
+的语料登记、质量基线与性能报告工具。外部真样本不入仓:manifest 钉身份(sha256),缺盘即跳过,CI 免跑。
 
 用法:
-  uv run --script .tools/ebook-corpus.py --scan             # 只扫盘出/更新 tests/ebook/manifest.json(身份层)
-  uv run --script .tools/ebook-corpus.py --baseline         # 扫盘加逐件跑 extract 记质量基线(status/units/needs_ocr)
-  uv run --script .tools/ebook-corpus.py --perf             # 逐件计时跑 extract,报告落 tests/ebook/reports/(不断言)
-  uv run --script .tools/ebook-corpus.py --verify           # 对照 manifest 基线逐件核验(退出码 0 一致 / 2 漂移)
+  uv run --script .tools/materials-corpus.py --scan             # 只扫盘出/更新 tests/materials/manifest.json(身份层)
+  uv run --script .tools/materials-corpus.py --baseline         # 扫盘加逐件跑 extract 记质量基线(status/units/needs_ocr)
+  uv run --script .tools/materials-corpus.py --perf             # 逐件计时跑 extract,报告落 tests/materials/reports/(不断言)
+  uv run --script .tools/materials-corpus.py --verify           # 对照 manifest 基线逐件核验(退出码 0 一致 / 2 漂移)
 选项:
-  --root DIR   语料根(缺省 E:\\ebook;或 env READER_EBOOK_ROOT)
+  --root DIR   语料根(缺省 E:\\研究资料;或 env READER_MATERIALS_ROOT)
   --reader PATH  reader 二进制(缺省 target/release/reader[.exe],perf 与 baseline 用 release 口径)
 约定:
   支持面 = reader is_supported 的扩展名(pdf/epub/md/图片/anydoc 族);其余跳过登记。
   基线字段 status(exit 码)、units(单元数)、needs_ocr(needs_ocr 单元数)全部确定性,
   duration 只进 perf 报告不进基线(G005 计时不进断言)。
-  tests/ebook.rs(gated)与 --verify 同口径:manifest 或盘缺失即整体跳过不算失败。
+  tests/materials.rs(gated)与 --verify 同口径:manifest 或盘缺失即整体跳过不算失败。
 退出码 0 成功 / 2 失败或漂移。
 """
 
@@ -40,17 +40,17 @@ SUPPORTED = {
     "rtf", "epub", "xlsx", "xlsm", "xlsb", "xls", "ods", "odp", "csv",
 }
 REPO = Path(__file__).resolve().parent.parent
-MANIFEST = REPO / "tests" / "ebook" / "manifest.json"
-REPORTS = REPO / "tests" / "ebook" / "reports"
+MANIFEST = REPO / "tests" / "materials" / "manifest.json"
+REPORTS = REPO / "tests" / "materials" / "reports"
 
 
 def die(msg: str) -> None:
-    print(f"ebook-corpus: {msg}", file=sys.stderr)
+    print(f"materials-corpus: {msg}", file=sys.stderr)
     raise SystemExit(2)
 
 
 def default_root() -> Path:
-    return Path("E:/ebook")
+    return Path("E:/研究资料")
 
 
 def default_reader() -> Path:
@@ -99,7 +99,7 @@ def run_reader(reader: Path, root: Path, rel: str) -> dict:
 
 def cmd_scan(root: Path) -> list[dict]:
     if not root.is_dir():
-        die(f"语料根不存在 {root}(本机无盘即跳过:tests/ebook.rs 会整体 skip)")
+        die(f"语料根不存在 {root}(本机无盘即跳过:tests/materials.rs 会整体 skip)")
     entries = scan(root)
     MANIFEST.parent.mkdir(parents=True, exist_ok=True)
     meta = {
@@ -118,7 +118,7 @@ def cmd_scan(root: Path) -> list[dict]:
         json.dumps({**meta, "entries": entries}, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    print(f"ebook-corpus: manifest {len(entries)} 件 → {MANIFEST}")
+    print(f"materials-corpus: manifest {len(entries)} 件 → {MANIFEST}")
     return entries
 
 
@@ -142,7 +142,7 @@ def cmd_baseline(root: Path, reader: Path) -> None:
         ) + "\n",
         encoding="utf-8",
     )
-    print(f"ebook-corpus: 基线 {len(entries)} 件 → {MANIFEST}")
+    print(f"materials-corpus: 基线 {len(entries)} 件 → {MANIFEST}")
 
 
 def cmd_perf(root: Path, reader: Path) -> None:
@@ -172,7 +172,7 @@ def cmd_perf(root: Path, reader: Path) -> None:
     ]
     lines += [f"| {r} | {s / 1e6:.1f} | {st} | {u} | {ms} |" for r, s, st, u, ms in rows]
     rep.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"ebook-corpus: 报告 → {rep}(不覆盖旧报告)")
+    print(f"materials-corpus: 报告 → {rep}(不覆盖旧报告)")
 
 
 def cmd_verify(root: Path, reader: Path) -> None:
@@ -187,14 +187,14 @@ def cmd_verify(root: Path, reader: Path) -> None:
         for d in drift:
             print(f"DRIFT {d}", file=sys.stderr)
         die(f"{len(drift)} 处漂移;有意变更须 --baseline 重钉并人工审")
-    print(f"ebook-corpus: {len(manifest['entries'])} 件全数一致")
+    print(f"materials-corpus: {len(manifest['entries'])} 件全数一致")
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="E:\\ebook 语料登记/基线/性能/核验")
+    ap = argparse.ArgumentParser(description="E:\\研究资料 语料登记/基线/性能/核验")
     ap.add_argument("--scan", action="store_true", help="只扫盘出/更新 manifest 身份层")
     ap.add_argument("--baseline", action="store_true", help="扫盘加逐件记质量基线")
-    ap.add_argument("--perf", action="store_true", help="逐件计时,报告落 tests/ebook/reports/")
+    ap.add_argument("--perf", action="store_true", help="逐件计时,报告落 tests/materials/reports/")
     ap.add_argument("--verify", action="store_true", help="对照基线逐件核验(漂移退出 2)")
     ap.add_argument("--root", type=Path, default=None)
     ap.add_argument("--reader", type=Path, default=None)
@@ -202,7 +202,7 @@ def main() -> None:
     modes = [m for m, on in (("scan", args.scan), ("baseline", args.baseline), ("perf", args.perf), ("verify", args.verify)) if on]
     if len(modes) != 1:
         die("须且只须一个模式:--scan / --baseline / --perf / --verify")
-    root = args.root or Path(os.environ.get("READER_EBOOK_ROOT") or default_root())
+    root = args.root or Path(os.environ.get("READER_MATERIALS_ROOT") or default_root())
     reader = args.reader or default_reader()
     {"scan": lambda: cmd_scan(root),
      "baseline": lambda: cmd_baseline(root, reader),

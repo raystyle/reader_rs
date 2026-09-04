@@ -1,11 +1,11 @@
-//! 本地电子书库语料回归层（G006 真样本族 gated target，D46）：E:\ebook（用户裁定主
-//! 性能与质量测试面）逐件对照 manifest 质量基线（status / units / needs_ocr 全确定性），
+//! 本地研究资料库语料回归层（G006 真样本族 gated target，D46 第 2 轮）：E:\研究资料
+//! （用户裁定弃 E:\ebook 改此，主性能与质量测试面）逐件对照 manifest 质量基线（status / units / needs_ocr 全确定性），
 //! 守「pdf-inspector / anydoc / 分派层升级引起的输出漂移」——CLR 书页标记 399 那类
 //! 手工基线的语料化全自动版。外部真样本不入仓：manifest 钉 sha256，盘或 manifest
 //! 缺失即整体跳过不算失败（CI 免跑）。性能口径不进断言（G005 计时禁令）：
-//! 全语料计时归 `.tools/ebook-corpus.py --perf` 报告（tests\ebook\reports\）。
-//! 基线重钉：`uv run --script .tools/ebook-corpus.py --baseline`（有意变更须人工审）。
-//! 大书较重（4GB 语料全量一遍），按回归层纪律跑：动提取/搜索/OCR 管线后或发版前。
+//! 全语料计时归 `.tools/materials-corpus.py --perf` 报告（tests\materials\reports\）。
+//! 基线重钉：`uv run --script .tools/materials-corpus.py --baseline`（有意变更须人工审）。
+//! 大书较重（5.4GB 语料全量一遍），按回归层纪律跑：动提取/搜索/OCR 管线后或发版前。
 
 use assert_cmd::Command;
 use serde_json::Value;
@@ -14,13 +14,13 @@ use std::path::{Path, PathBuf};
 type TestResult<T = ()> = Result<T, Box<dyn std::error::Error>>;
 
 fn manifest_path() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/ebook/manifest.json")
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/materials/manifest.json")
 }
 
-/// 语料跑批用二进制：env READER_EBOOK_BIN 指定（推荐 release，口径同 --verify），
+/// 语料跑批用二进制：env READER_MATERIALS_BIN 指定（推荐 release，口径同 --verify），
 /// 缺省 release 件优先（先 `cargo build --release`），再回退 cargo_bin 的 debug 件。
 fn corpus_reader() -> TestResult<Command> {
-    if let Some(bin) = std::env::var_os("READER_EBOOK_BIN") {
+    if let Some(bin) = std::env::var_os("READER_MATERIALS_BIN") {
         return Ok(Command::new(bin));
     }
     let release = Path::new(env!("CARGO_MANIFEST_DIR")).join(if cfg!(windows) {
@@ -57,11 +57,13 @@ fn probe(bin: &mut Command, file: &Path) -> TestResult<(i32, Option<usize>, Opti
     ))
 }
 
-/// manifest 质量基线逐件核验：与 `.tools/ebook-corpus.py --verify` 同口径。
+/// manifest 质量基线逐件核验：与 `.tools/materials-corpus.py --verify` 同口径。
 #[test]
-fn ebook_corpus_baseline_match() -> TestResult {
+fn materials_corpus_baseline_match() -> TestResult {
     let Some((root, entries)) = read_manifest() else {
-        eprintln!("skip: tests/ebook/manifest.json 或语料盘缺失（E:\\ebook 本机语料，CI 免跑）");
+        eprintln!(
+            "skip: tests/materials/manifest.json 或语料盘缺失（E:\\研究资料 本机语料，CI 免跑）"
+        );
         return Ok(());
     };
     let mut drift: Vec<String> = Vec::new();
@@ -86,11 +88,11 @@ fn ebook_corpus_baseline_match() -> TestResult {
     }
     assert!(
         drift.is_empty(),
-        "{} 处漂移(共 {total} 件;有意变更须 ebook-corpus.py --baseline 重钉并人工审):\n{}",
+        "{} 处漂移(共 {total} 件;有意变更须 materials-corpus.py --baseline 重钉并人工审):\n{}",
         drift.len(),
         drift.join("\n")
     );
-    eprintln!("ebook corpus: {total} 件全数一致");
+    eprintln!("materials corpus: {total} 件全数一致");
     Ok(())
 }
 

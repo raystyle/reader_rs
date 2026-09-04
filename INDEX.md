@@ -49,7 +49,7 @@
 | `tests\snapshot.rs` | 回归层 insta 输出快照（extract 全量、search 命中格式、--llms；快照在 tests\snapshots\，D34） |
 | `tests\mirror.rs` | 回归层 mirror 公开 API 直测（本机一次性 HTTP 服务加合成 pin；READER_MIRROR env 变更需独立 target 隔离，下载器自建父目录回归，M017） |
 | `tests\corpus.rs` | 回归层 anydoc 官方语料 63 件逐件全量快照加负例与滥用断言（stderr 绝对路径归一 `<repo>`；快照在 tests\snapshots\corpus__*，D44 第 3 轮） |
-| `tests\ebook.rs` | 回归层 E:\ebook 全语料 gated 基线核验（D46；manifest 钉 sha256，盘缺失整体跳过 CI 免跑；工具 `.tools\ebook-corpus.py`） |
+| `tests\materials.rs` | 回归层 E:\研究资料 全语料 gated 基线核验（D46 第 2 轮：弃 E:\ebook 改此；manifest 钉 sha256，盘缺失整体跳过 CI 免跑；工具 `.tools\materials-corpus.py`） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
 | `tests\assets\anydoc\` | anydoc 官方测试 fixtures 语料 71 件全量非 pdf corpus（firecrawl/anydoc@261fc25，MIT，镜像上游布局；含 malformed 负例与 abuse 滥用件；来源与 sha256 见目录内 README，D44 第 3 轮扩全量） |
 | `tests\assets\ocr-text.png` | 图片 OCR 端到端门控资产（GDI+ 现造 480x140 文字图 READER SMOKE 12345，tiny 档实测全识；D43） |
