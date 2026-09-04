@@ -43,3 +43,10 @@
 - 现象：`Path::new(r"C:\a\b\models").with_file_name("x")` 在 unix 得 `x` 而非 `C:\a\b\x`，断言左边只剩文件名。
 - 根因：反斜杠在 unix 不是路径分隔符，整串被当成单个文件名；`with_file_name` 语义是替换最后一段组件。Windows 上开发时绿掩盖了平台差异（同 M005 形态：只有对端平台能暴露）。
 - 正确处理：跨平台断言一律用正斜杠字面量（两平台都认 `/` 为分隔符）；确要测反斜杠形态用 `#[cfg(windows)]` 圈住。
+
+## M017 下载器依赖调用方建目录，空缓存首用 os error 3
+
+- 首踩：2026-09-03（D42 大陆侧验收回执，ISSUE #1：`ocr init` 对 `READER_OCR_CACHE_DIR` 指向不存在目录三通道全败；2026-09-04 修复）
+- 现象：镜像下载与 sha256 校验都成功，`fs::write` 写 `.part` 临时件报 os error 3（路径不存在），三通道逐个同败；同场景 `extract --ocr` 正常。
+- 根因：`fs::write` 不建父目录。`extract --ocr` 的 `prefetch_pair` 先 `create_dir_all` 了包目录所以没事，`ocr init` 直调 `download_file` 没人建目录；ppocr-rs 原生下载路径自建目录（models.rs `create_dir_all` 后才下载），换引擎前的旧管线无此坑。两个入口一套下载器，建目录权责漂在调用方就必踩。
+- 正确处理：建目录归下载器单一权责：`download_file` 落盘前 `create_dir_all(dest.parent())`（标准库即安全全平台实现，并发 create 容忍 AlreadyExists；懒人阶梯标准库优先，无需引库），`prefetch_pair` 冗余建目录删除；回归入 `tests\mirror.rs`（本机一次性 HTTP 服务加合成 pin，红态实证复现）。

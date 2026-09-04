@@ -258,9 +258,14 @@ fn ua() -> String {
 
 /// 三级回退下载单件到 `dest`:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件
 /// (bytes 加 sha256 对 pin 表校验通过才 rename 落盘),返回命中的源。
+/// 落盘前自建父目录(空缓存首用时包目录不存在,`fs::write` 对缺失目录是
+/// os error 3;`ocr init` 首版实测踩中,下载器不依赖调用方建目录)。
 /// 并发写不经 ppocr-rs 私有锁:单件 rename 原子,最坏并发方多做一次
 /// 全量哈希,无半损态。
 pub fn download_file(pin: &PackagePin, file: &FilePin, dest: &Path) -> Result<Source, String> {
+    if let Some(parent) = dest.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| format!("建包目录失败: {e}"))?;
+    }
     let urls = [
         mirror_file_url(pin, file),
         hf_file_url(pin, file),
