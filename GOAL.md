@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-04 | **v0.6.0 发布(D45 分支模型首轮,dev 23 件提交 FF 合并 main)**:Release 六 job 绿(run 33844239805);资产 10 件;镜像面全验(latest.json 0.6.0 五平台 sha256 加 60s 头、资产 immutable、latest 恒 v0.6.0、models-v6 恒 prerelease);镜像件 sha256 与官方边车一致;解包冒烟加 figures/export 命令面过;dev 分支即删。ISSUE #1 回执待发(M017 修复随版) |
 | 2026-09-04 | **封版 v0.6.0(dev 分支封版件)**:Cargo.toml 0.6.0、CHANGELOG 定版(五块成果)、SKILL 重生(版本行)、`--llms` 快照版本行人工审收录;门禁复跑绿;待 CI 绿后 FF 合并 main 打 tag 发布 |
 | 2026-09-04 | **dev/v0.6.0 全平台验收绿(R008 四路)**:Windows 七件(含 materials 576 件基线核验 600s)、lan-mac(arm64)与 lan-linux(x86_64)全 target 加 release 构建双绿(rustup stable 口径)、CI 三系统绿;两实机首切 dev 分支即验 D45 分支模型,corpus 快照跨三平台逐字节一致。待封版 v0.6.0 |
 | 2026-09-04 | **D47 第 3/4 轮:export 一键完整提取与 PDF 内嵌图直抽（用户点名）**:一键文本+图片+对齐元数据落一目录(text.md/text.json/pages/ 逐单元 markdown 支持 search 二次复用/images//manifest.json,`--pages` 指定页,`--ocr` 兜底);figures v1.1 内嵌位图 XObject 直抽(DCT jpg 原字节、Flate 按色彩空间 png,内联与引用两形态;扫描页才回退整页渲染);真机:certmitm 论文 28 件内嵌图、扫描书页渲染、EPUB 347 节 26 图 export 全通、二次搜索命中带页锚 |
