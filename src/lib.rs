@@ -4,6 +4,7 @@
 pub mod anydoc;
 pub mod batch;
 pub mod document;
+pub mod figures;
 pub mod introspect;
 pub mod mirror;
 pub mod ocr;
@@ -130,6 +131,28 @@ enum Commands {
     },
     /// 生成 SKILL.md（agent 发现与接入文档；--llms 给紧凑索引）
     Skill,
+    /// 提取图片本体并与文本元数据对齐（PDF 按页渲染 PNG、markdown 图片引用、Office 家族内嵌件、图片文件；有图退出 0，无图 1，出错 2）
+    #[command(after_long_help = "\
+示例:
+  reader figures ./scan.pdf --pages 12-32
+  reader figures ./report.docx --format json --filter 'figures[].anchor'
+  reader figures ./photo.jpg --out ./shots")]
+    Figures {
+        /// 文档路径（.pdf、.md/.markdown、图片与 anydoc 家族；扫描书整页即图本体）
+        file: PathBuf,
+        /// 限定页范围（仅 PDF），如 1-3,5
+        #[arg(long)]
+        pages: Option<String>,
+        /// 输出目录（缺省 <文件名>-figures/）
+        #[arg(short, long)]
+        out: Option<PathBuf>,
+        /// 输出形态：text（行式，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+        /// 裁剪 JSON data 的点路径（如 figures[].caption）；仅 --format json 下可用
+        #[arg(long)]
+        filter: Option<String>,
+    },
     /// 用 mq 表达式结构化提取文档（jq 风格：.h2 标题、.code 代码块、.link 链接、select 管道；命中退出 0，无命中退出 1，出错退出 2）
     #[command(after_long_help = "\
 示例:
@@ -202,6 +225,20 @@ pub fn run() -> i32 {
         Some(Commands::Skill) => {
             print!("{}", introspect::skill_md());
             0
+        }
+        Some(Commands::Figures {
+            file,
+            pages,
+            out,
+            format,
+            filter,
+        }) => {
+            let opts = OutputOpts { format, filter };
+            match run_figures(&file, pages, out, &opts) {
+                Ok(true) => 0,
+                Ok(false) => 1,
+                Err(err) => fail("figures", opts.format, err),
+            }
         }
         Some(Commands::Query {
             file,
@@ -474,6 +511,64 @@ fn check_filter(opts: &OutputOpts) -> Result<(), String> {
         return Err("--filter 仅在 --format json 下可用".to_string());
     }
     Ok(())
+}
+
+/// figures 子命令（D47）：图本体落盘加行式清单 / json 包膜；返回是否导出至少一件。
+fn run_figures(
+    file: &Path,
+    pages: Option<String>,
+    out: Option<PathBuf>,
+    opts: &OutputOpts,
+) -> Result<bool, String> {
+    let started = Instant::now();
+    let page_set = parse_optional_pages(pages)?;
+    check_filter(opts)?;
+    let default_out = std::env::current_dir()
+        .unwrap_or_else(|_| PathBuf::from("."))
+        .join(format!(
+            "{}-figures",
+            file.file_stem().and_then(|s| s.to_str()).unwrap_or("doc")
+        ));
+    let out_dir = out.unwrap_or(default_out);
+    let figures = figures::extract_figures(file, page_set.as_ref(), &out_dir)?;
+    match opts.format {
+        Format::Text => {
+            for f in &figures {
+                println!(
+                    "figure: {} | {} | {} | {} | {}B",
+                    f.kind,
+                    f.anchor,
+                    f.caption.as_deref().unwrap_or("-"),
+                    f.file.display(),
+                    f.bytes
+                );
+            }
+            eprintln!(
+                "reader: {} 件图本体导出至 {}（figures,元数据对齐:kind/锚/图题/路径）",
+                figures.len(),
+                out_dir.display()
+            );
+        }
+        Format::Json => {
+            let mut data = json!({
+                "figures": figures.iter().map(|f| json!({
+                    "kind": f.kind,
+                    "anchor": f.anchor,
+                    "caption": &f.caption,
+                    "context": &f.context,
+                    "file": f.file.display().to_string(),
+                    "bytes": f.bytes,
+                    "format": f.format,
+                })).collect::<Vec<_>>(),
+                "count": figures.len(),
+            });
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
+            println!("{}", output::ok_json("figures", started, data)?);
+        }
+    }
+    Ok(!figures.is_empty())
 }
 
 /// query 子命令：格式转 markdown 后跑 mq 表达式；命中与否映射退出码 0/1（P0016）。

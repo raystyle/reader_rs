@@ -19,6 +19,9 @@ reader extract ./report.docx --format json --offset 0 --limit 5
 # 结构化提取：mq 表达式（jq 风格，语法见 mqlang.org）
 reader query ./README.md ".h2"
 reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json
+# 图片本体导出（与文本元数据对齐：锚/图题/上下文；交给多模态模型分析）
+reader figures ./scan.pdf --pages 12-32
+reader figures ./report.docx --format json --filter 'figures[].anchor'
 # 扫描件/乱码层 PDF 与图片文件：OCR 兜底（PDF 与图片单文件；首用下载约 6.2MB 模型）
 reader extract ./scan.pdf --ocr
 reader extract ./photo.jpg --ocr
@@ -33,7 +36,7 @@ reader self update
 ## 输出契约
 
 - 退出码：0 成功或命中；1 无命中（search/query）；2 出错（stderr 人读行，json 形态 stdout 另出错误包膜）。
-- text 形态：search 命中行 `单元:行号:文本`（上下文 `单元-行号-文本`，目录模式前缀 `路径:`）；extract 节头 `== page N ==` / `== section N ==` / `== part N ==`（超 200 行单元按行分片），不可靠页节头后 `[needs_ocr: 原因]` 提示行；query 逐命中输出 markdown 片段原文。
+- text 形态：search 命中行 `单元:行号:文本`（上下文 `单元-行号-文本`，目录模式前缀 `路径:`）；extract 节头 `== page N ==` / `== section N ==` / `== part N ==`（超 200 行单元按行分片），不可靠页节头后 `[needs_ocr: 原因]` 提示行；query 逐命中输出 markdown 片段原文；figures 行式 `figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B`。
 - json 形态（`--format json`，compact 单行）：`{"ok":bool,"data":...,"meta":{command,duration_ms[,next_offset,cta]}}`；`--filter` 点路径裁剪 data（如 `hits[].text`、`results[]`）。
 - needs_ocr 页（扫描件/乱码 PDF、图片文件）OCR 后仍保留标记：OCR 文本仍可能有误。
 - ocr 子命令输出行式：`ocr_init:` / `ocr_doctor:` / `ocr_switch:` 前缀、ASCII token 前置（ok / missing / corrupt / download mirror|huggingface|github / verdict）；doctor 退出码 0 为当前档双包完整、1 为有缺损；init / switch 失败为 2。
@@ -42,5 +45,5 @@ reader self update
 
 - `reader --llms`：紧凑命令索引（省 token）。
 - `reader <子命令> --help`：该命令的全部参数与示例（如 `reader query --help`）。
-- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；self update `[--force]`；ocr init `[--size tiny|small] [--offline]`；ocr doctor 无参；ocr switch `<tiny|small>`。
+- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；figures `[--pages] [-o|--out] [--format] [--filter]`；self update `[--force]`；ocr init `[--size tiny|small] [--offline]`；ocr doctor 无参；ocr switch `<tiny|small>`。
 - 完整说明见 README.md。

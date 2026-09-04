@@ -26,13 +26,6 @@ pub fn ocr_pages(
     let file = std::fs::read(path).map_err(|e| format!("无法读取 PDF {}: {e}", path.display()))?;
     let pdf = Pdf::new(file).map_err(|e| format!("无法解析 PDF {}: {e:?}", path.display()))?;
     let pages = pdf.pages();
-    let settings = RenderSettings {
-        x_scale: 2.0,
-        y_scale: 2.0,
-        // hayro 默认透明底会染黑 OCR 输入（S006 踩坑 3），显式白底
-        bg_color: hayro::vello_cpu::color::palette::css::WHITE,
-        ..Default::default()
-    };
     let mut out = Vec::new();
     for &no in page_nos {
         let Some(page) = pages.get((no - 1) as usize) else {
@@ -42,10 +35,7 @@ pub fn ocr_pages(
             "reader: OCR 兜底第 {no} 页（PP-OCRv6 {}，多核并行）…",
             size.as_str()
         );
-        let pixmap = render(page, &RenderCache::new(), &Default::default(), &settings);
-        let png = pixmap
-            .into_png()
-            .map_err(|e| format!("页 {no} 渲染编码失败: {e:?}"))?;
+        let png = page_png(page, no)?;
         let rgb = image::load_from_memory(&png)
             .map_err(|e| format!("页 {no} 位图解码失败: {e}"))?
             .to_rgb8();
@@ -64,6 +54,24 @@ pub fn ocr_pages(
         out.push((no, lines));
     }
     Ok(out)
+}
+
+/// 渲染单页为 PNG 字节（OCR 管线与 figures 图本体导出共用，D47 抽出）。
+/// hayro 默认透明底会染黑位图（S006 踩坑 3），显式白底；2 倍缩放对齐 OCR 口径。
+pub(crate) fn page_png<'a>(
+    page: &'a hayro::hayro_syntax::page::Page<'a>,
+    no: u32,
+) -> Result<Vec<u8>, String> {
+    let settings = RenderSettings {
+        x_scale: 2.0,
+        y_scale: 2.0,
+        bg_color: hayro::vello_cpu::color::palette::css::WHITE,
+        ..Default::default()
+    };
+    let pixmap = render(page, &RenderCache::new(), &Default::default(), &settings);
+    pixmap
+        .into_png()
+        .map_err(|e| format!("页 {no} 渲染编码失败: {e:?}"))
 }
 
 /// OCR 引擎构建（PDF 页与图片文件共用，D43 抽出）。offline 走 Offline 解析（模型未就位

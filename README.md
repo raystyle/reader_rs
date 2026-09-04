@@ -12,6 +12,7 @@ Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB 
 | 读：按页或标题节取正文 | `reader extract ./doc.pdf --pages 1-3` |
 | 搜：字面、正则、目录批量 | `rr search ./材料 "配置" -C 2` |
 | 结构化提取：mq 表达式（jq 风格） | `reader query ./notes.md ".h2"` |
+| 取图：图片本体导出与元数据对齐 | `reader figures ./scan.pdf --pages 12-32` |
 
 - PDF 按页读；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 等 14 种格式按标题节读；图片文件（png / jpg / bmp / gif / webp / tiff 等 8 种扩展名）单图即单页
 - 扫描件与图片以 `needs_ocr` 检出，`--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2 MB 模型）
@@ -176,7 +177,7 @@ reader skill > SKILL.md
 
 ## 命令
 
-文档子命令三个：`search`（搜）、`extract`（取）与 `query`（mq 结构化提取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
+文档子命令四个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）与 `figures`（图片本体导出）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
 
 ### search 搜索
 
@@ -269,6 +270,7 @@ reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json --fil
 - search 的 `data`：`hits[]`（`unit` / `line` / `text` / `before[]` / `after[]`）加 `needs_ocr_units[]`（不可靠页序号）。无命中是 `ok:true` 加空 `hits`，退出码仍 1（`ok` 表执行成败，与命中有无分轨）。
 - extract 的 `data`：`units[]`（`kind` / `no` / `needs_ocr` / `lines[]`）。
 - query 的 `data`：`results[]`（mq 命中的 markdown 片段）加 `count`。
+- figures 的 `data`：`figures[]`（`kind` / `anchor` / `caption` / `context[]` / `file` / `bytes` / `format`）加 `count`。
 - 分页：`--offset/--limit` 后 meta 有剩余时附 `next_offset` 与 `cta`（下一条可直接执行的命令）。
 - `--filter` 点路径裁剪 `data`（包膜保留）：`hits[].text`（数组映射）、`units[0].lines`（下标）、`hits[].unit` 等键访问链；非法路径报错退出 2，不静默。
 
@@ -276,6 +278,24 @@ reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json --fil
 reader search ./doc.pdf "error" --format json
 reader search ./doc.pdf "error" --format json --filter 'hits[].unit'
 reader extract ./doc.pdf --format json --offset 0 --limit 20
+```
+
+### figures：图片本体导出与元数据对齐（D47）
+
+把文档里的图片本体落盘，并与文本元数据对齐（定位回文档的锚、图题候选、图题后上下文行）；图表理解交给调用方的多模态模型（reader 不载模型，S010 定界）。
+
+| 路径 | 行为 |
+| --- | --- |
+| PDF | 按页渲染 PNG（`--pages` 过滤；扫描书整页即图本体）；图题与上下文从页文本层对齐（扫描页无文本层则图题为空，配合 `--ocr` 文本可对） |
+| markdown | 解析 `![alt](path)` 引用并复制（悬空跳过；远程引用不抓取）；alt 即图题 |
+| anydoc 家族 | zip 直读内嵌图片部件原字节（锚为部件路径；legacy 二进制容器族 v1 无图可导） |
+| 图片文件 | 本体即自身，原字节复制 |
+
+输出行式 `figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B`；退出码：有图 0 / 无图 1 / 出错 2。缺省输出目录 `<文件名>-figures/`。
+
+```bash
+reader figures ./scan.pdf --pages 12-32
+reader figures ./report.docx --format json --filter 'figures[].anchor'
 ```
 
 ## 支持格式

@@ -11,7 +11,7 @@
 
 2. **边界**
    - 服务对象先 Agent 后人：输出稳定可解析（行式标记、grep 语义退出码 0/1/2）、单调用完成一件事、无交互无守护进程、错误走 stderr；机器可读优先于人类美观。
-   - 当前只读支持 PDF、markdown（.md/.markdown）、图片（png / jpg / jpeg / bmp / gif / webp / tiff / tif 八扩展名，单图即单页，D43）与 anydoc 家族（Word 含 legacy .doc、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV），不做渲染、编辑；OCR 仅以 `--ocr` 兜底形式支持（PDF 单文件 needs_ocr 页与图片文件，hayro 渲染加 ppocr-rs 原生 CPU 内核跑 PP-OCRv6 tiny，P0014/P0018；图片直走 image 解码首帧，D43；模型走镜像 到 HF 到 GitHub 三级回退，D42；`ocr init / doctor / switch` 子命令管模型，D42；默认不识别只提示）；结构化提取以 `query` 子命令嵌 mq-lang（mq 表达式，P0016；图片无文本层不支持）；其它格式按需另立项。
+   - 当前只读支持 PDF、markdown（.md/.markdown）、图片（png / jpg / jpeg / bmp / gif / webp / tiff / tif 八扩展名，单图即单页，D43）与 anydoc 家族（Word 含 legacy .doc、EPUB、ODT、RTF、PowerPoint、Excel、ODF、CSV），不做渲染、编辑；OCR 仅以 `--ocr` 兜底形式支持（PDF 单文件 needs_ocr 页与图片文件，hayro 渲染加 ppocr-rs 原生 CPU 内核跑 PP-OCRv6 tiny，P0014/P0018；图片直走 image 解码首帧，D43；模型走镜像 到 HF 到 GitHub 三级回退，D42；`ocr init / doctor / switch` 子命令管模型，D42；默认不识别只提示）；图片本体以 `figures` 子命令导出并与文本元数据对齐（页锚/图题/上下文，PDF 页渲染 PNG、md 引用、Office 内嵌件，D47），不做图表模型理解（T3 已拒，S010：理解归调用方 Agent 多模态侧）；结构化提取以 `query` 子命令嵌 mq-lang（mq 表达式，P0016；图片无文本层不支持）；其它格式按需另立项。
    - 文本质量只承诺英文与中文；其它语言不做质量承诺，不可靠页以 needs_ocr 提示兜底。
    - CLI 是唯一交互面；纯 Rust 单二进制，不外挂 pdfium 等二进制运行时。
    - Windows 优先验证；依赖均跨平台，不主动破坏其它平台。

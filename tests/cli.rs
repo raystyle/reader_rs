@@ -1767,3 +1767,149 @@ fn image_ocr_end_to_end_with_real_cache() -> TestResult {
         .stdout(predicate::str::contains("12345"));
     Ok(())
 }
+
+// ---------- figures 图片本体导出与元数据对齐（D47） ----------
+
+/// figures 用例临时目录（按用例名分目录，结尾清理）。
+fn repo_file(rel: &str) -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(rel)
+}
+
+fn figures_case_dir(case: &str) -> PathBuf {
+    let dir = std::env::temp_dir().join(format!("reader_rs_fig_{}_{case}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).expect("建用例目录");
+    dir
+}
+
+/// PDF：按页渲染 PNG，行式清单与 json 形状；--pages 过滤只出范围内页。
+/// 页文本层的图题对齐归单测（is_caption_line；lopdf 夹具排不了 CJK 图题行）。
+#[test]
+fn figures_pdf_pages_png_and_json_shape() -> TestResult {
+    let case = figures_case_dir("pdf");
+    let pdf = case.join("doc.pdf");
+    make_test_pdf(&pdf)?;
+    reader()?
+        .args(["figures"])
+        .arg(&pdf)
+        .args(["--pages", "2", "--out"])
+        .arg(case.join("out"))
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("figure: page | page 2 |"))
+        .stdout(predicate::str::contains(format!(
+            "doc-p2.png | {}B",
+            std::fs::read(case.join("out/doc-p2.png"))?.len()
+        )));
+    let v = json_stdout(
+        reader()?
+            .args(["figures"])
+            .arg(&pdf)
+            .args(["--pages", "2", "--out"])
+            .arg(case.join("out2"))
+            .args(["--format", "json", "--filter", "figures[].anchor"]),
+    )?;
+    assert_eq!(v["data"], serde_json::json!(["page 2"]));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// markdown：图片引用复制、alt 即图题；悬空引用跳过；无图 md 退出 1（有图 0 分轨）。
+#[test]
+fn figures_markdown_ref_caption_and_exit_codes() -> TestResult {
+    let case = figures_case_dir("md");
+    make_test_png(&case.join("shot.png"))?;
+    std::fs::write(
+        case.join("note.md"),
+        "# 笔记\n\n![实验图](shot.png)\n\n正文行。\n",
+    )?;
+    reader()?
+        .args(["figures"])
+        .arg(case.join("note.md"))
+        .arg("--out")
+        .arg(case.join("out"))
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "figure: md-ref | shot.png | 实验图 |",
+        ));
+    assert!(case.join("out/shot.png").is_file(), "引用图应已复制");
+    // 悬空引用：不报错但无图可导，退出 1
+    std::fs::write(case.join("empty.md"), "![缺图](ghost.png)\n")?;
+    reader()?
+        .args(["figures"])
+        .arg(case.join("empty.md"))
+        .arg("--out")
+        .arg(case.join("out"))
+        .assert()
+        .code(1);
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// anydoc zip 家族：内嵌 media 件原字节导出，锚为部件路径。
+#[test]
+fn figures_docx_media_asset() -> TestResult {
+    let case = figures_case_dir("docx");
+    let mut buf = std::io::Cursor::new(Vec::new());
+    {
+        use std::io::Write as _;
+        let mut w = zip::ZipWriter::new(&mut buf);
+        let opts = zip::write::SimpleFileOptions::default();
+        w.start_file("[Content_Types].xml", opts)?;
+        w.write_all(b"<Types/>")?;
+        w.start_file("word/document.xml", opts)?;
+        w.write_all(b"<w:document/>")?;
+        w.start_file("word/media/image1.png", opts)?;
+        w.write_all(&std::fs::read("tests/assets/ocr-text.png")?)?;
+        w.finish()?;
+    }
+    std::fs::write(case.join("mini.docx"), buf.into_inner())?;
+    reader()?
+        .args(["figures"])
+        .arg(case.join("mini.docx"))
+        .arg("--out")
+        .arg(case.join("out"))
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "figure: zip-asset | word/media/image1.png |",
+        ));
+    assert_eq!(
+        std::fs::read(case.join("out/mini__word__media__image1.png"))?,
+        std::fs::read("tests/assets/ocr-text.png")?,
+        "media 件应原字节导出"
+    );
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// 图片文件本体即自身原字节复制；不支持格式退出 2。
+#[test]
+fn figures_image_self_and_unsupported_format() -> TestResult {
+    let case = figures_case_dir("img");
+    reader()?
+        .args(["figures"])
+        .arg(repo_file("tests/assets/ocr-text.png"))
+        .arg("--out")
+        .arg(case.join("out"))
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("figure: file | ocr-text.png |"));
+    assert_eq!(
+        std::fs::read(case.join("out/ocr-text.png"))?,
+        std::fs::read(repo_file("tests/assets/ocr-text.png"))?
+    );
+    let fake = case.join("bad.avif");
+    std::fs::write(&fake, b"not avif")?;
+    reader()?
+        .args(["figures"])
+        .arg(&fake)
+        .arg("--out")
+        .arg(case.join("out"))
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("不支持的格式"));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}

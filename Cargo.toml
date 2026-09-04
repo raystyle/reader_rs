@@ -34,6 +34,9 @@ ureq = "3"
 sha2 = "0.10"
 # hayro 位图到引擎的内存传递
 image = "0.25"
+# zip 容器直读:figures 内嵌图导出(D47,anydoc 家族 media 件)+self update Windows 解 zip
+# (纯 Rust 默认后端,不破 musl 边界;由 windows 目标依赖升为全平台主依赖)
+zip = "8.6"
 # mq 结构化提取引擎（P0016，选型 S007）：jq 风格 markdown 查询，MIT 纯 Rust
 mq-lang = "0.8"
 
@@ -41,10 +44,6 @@ mq-lang = "0.8"
 # SIGPIPE 恢复默认处置用（M007）：管道读者早退（`reader … | head`）按 Unix 惯例
 # 静默终止，不 panic；已是 anydoc 家族传递依赖，此处升为直接依赖
 libc = "0.2"
-
-[target.'cfg(windows)'.dependencies]
-# self update 解 zip 资产（P0015；release.yml Windows 打包形态）
-zip = "8.6"
 
 [target.'cfg(not(windows))'.dependencies]
 # self update 解 tar.gz 资产（P0015；flate2 1.x 默认 rust_backend 走 miniz_oxide，纯 Rust 不破边界）
