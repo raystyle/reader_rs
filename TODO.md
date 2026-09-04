@@ -4,7 +4,7 @@
 
 ## 当前目标
 
-D42 镜像分发落地（登记日 2026-09-03；依据 `PRD.md` D42、ISSUE #1 裁决、`PLAN.md` 完成的定义）。**v0.5.0 已发布，本仓侧全链收官**；余一项等 ohmycloud 大陆侧验收回执后归档 P0019。
+D43 图片文件分析 加 D44 全格式冒烟覆盖（登记日 2026-09-04；依据 `PRD.md` D43 / D44、`S009`、`PLAN.md` 完成的定义）。随行 D42 收尾：M017 补丁随下版发布、P0019 归档等大陆侧第三级回退演练回执。D42 主体已发布（v0.5.0，2026-09-03）。
 
 ## 任务进度清单
 
@@ -23,3 +23,11 @@ D42 镜像分发落地（登记日 2026-09-03；依据 `PRD.md` D42、ISSUE #1 �
 | 全平台验收 | 已完成 | Windows 七件、lan-mac / lan-linux 三件双绿（M016 修后）、CI 三系统绿 | 2026-09-03 |
 | 封版与发布 v0.5.0 | 已完成 | 封版 7ae300b；tag 触发六 job 绿、10 资产；镜像面全验；self update 镜像真升级 0.4.0 至 0.5.0 首验 | 2026-09-03 |
 | ISSUE 知会与大陆侧验收 | 进行中 | ISSUE 已知会；等 ohmycloud 大陆侧回执（首用 --ocr 走镜像、ocr 组、self update、三断回退）后归档 P0019 | 2026-09-03 |
+| 验收回执 bug 修复（M017） | 已完成 | `ocr init` 对不存在缓存目录三通道 os error 3；建目录归 `download_file` 单一权责，`prefetch_pair` 冗余建目录删；回归入 tests\mirror.rs（红态实证复现）；随下个补丁版发布 | 2026-09-04 |
+| D43 图片管线 | 已完成 | `ocr_image`（内容嗅探、首帧、EXIF 方向、alpha 白底）加 `build_engine` 抽出共用；document 八扩展名分派与 is_supported 真源；query 拒图片指路 --ocr；本机 GDI+ 文字图端到端全识 | 2026-09-04 |
+| D43 文档面 | 已完成 | README（速览、格式表加图片行、OCR 段）、SKILL 重生、introspect、lib.rs help 全同步；漂移守卫绿 | 2026-09-04 |
+| D43 集成测试 | 已完成 | cli 图片 7 例：单页契约、pages 过滤、search 退出码与 needs_ocr_units、query 指路、avif 拒、批量目录、门控 OCR 端到端 | 2026-09-04 |
+| D44 全格式冒烟 | 已完成 | anydoc 官方 fixtures 九族入仓 tests\assets\anydoc\（firecrawl/anydoc@261fc25，MIT，README 钉 sha256）；smoke 全格式活体 5 项 0.3 秒全绿；ppt 二进制族与 xls / xlsb 零覆盖缺口消灭 | 2026-09-04 |
+| S009 与四原语对齐 | 已完成 | S009 落盘；PRD D43 / D44 已采纳（四裁加官方语料裁定）；AGENTS 边界、G006 冒烟落点、INDEX（S009、代码行、语料行）、GOAL / PLAN / TODO | 2026-09-04 |
+| 门禁收口与提交 | 进行中 | cargo 三件加文档四件全绿后按「一次提交只做一件事」分组提交（M017 修复、D43、D44、文档对齐）；diary 钩子随提交 | 2026-09-04 |
+| D45 版本分支模型 | 已完成 | 用户裁定 dev/v 命名、FF 合并、dev/main 隔离、合并 main 打 tag 发版；ci.yml 加 dev/** 触发；AGENTS 规则 3、R008、PRD D45 同步；首条分支 dev/v0.6.0 承载分组提交 | 2026-09-04 |

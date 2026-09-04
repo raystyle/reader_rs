@@ -59,6 +59,9 @@
 | D40 | README 规范供稿消化：定 G008（结构顺序、About 一致性、写作增量、反模式、同步义务）并按此整改 README | 已交付 | 第 4 轮（About 纯中文；部署首要；self update 匿名即可用；开头速览化；模型档位、来源与手动部署说清；致谢节补齐） | G008；README 整改（部署集群提升、License 置末、速览化、模型三问、致谢） |
 | D41 | 封版发布流程确定：先本地全平台编译、全平台测试验收，后封版触发 GitHub Action 发布 release | 已交付 | 第 0 轮（用户点名流程骨架） | R008；v0.4.0 首轮执行 |
 | D42 | OCR 模型分发自维护：不再依赖 HuggingFace 直连（国内机器首用下载不可达） | 已采纳 | 第 3 轮（第 1 轮用户裁定自维护分发；第 2 轮 ISSUE #1 载体裁决：reader.ohmygh.com 镜像默认、镜像 到 HF 直连 到 GitHub Releases 模型 tag 三级回退、self update 先读 latest.json、minisign 首轮不上；第 3 轮用户点名 ocr init / doctor / switch 三件套：下载、诊断、切换两档） | 证据：v0.4.0 封版验收 lan-linux 首用下载 tiny-rec 三连重试失败、scp 手动放置后 `--offline` 全通（2026-09-03）；裁决与基建回执 ISSUE #1；立项见 GOAL 锚点与 PLAN 完成的定义 |
+| D43 | 图片文件分析：位图文件（png / jpg 等）进 extract / search 面，OCR 管线复用 | 已采纳 | 第 1 轮四裁（2026-09-04）：格式集收常用八种（png / jpg / jpeg / bmp / gif / webp / tiff / .tif）；默认行为 `--ocr` opt-in 同 PDF 契约（无文本层恒标 `[needs_ocr: image]`）；多帧动图只取首帧；单图即 page 1 | 研究 S009（零新依赖实证：image 0.25.10 直依赖默认解码器已编入、ppocr-rs 直吃 RgbImage、EXIF 与 alpha 白底有解、Limits 512MB 防炸）；query 面拒图片指路 --ocr |
+| D44 | 全格式冒烟覆盖：所有支持文档格式的最小活体冒烟（现状：odt / rtf / pptx 族 / xlsx 族 / ods / odp / ppt 族零测试覆盖） | 已采纳 | 第 1 轮裁定（2026-09-04）：主干全补加 ppt 族资产门控；第 2 轮用户裁定：夹具取 anydoc 官方测试用例（firecrawl/anydoc@261fc25，MIT）入仓 `tests\assets\anydoc\`，ppt 二进制族与 xls / xlsb 变体官方语料直接补齐（原门控缺口消灭） | 覆盖矩阵实证：smoke 仅 md 与扫描 pdf 两族，cli 集成补 pdf / docx / csv / epub / legacy doc / md，其余族零覆盖；现 smoke 全格式活体 5 项（0.3 秒级） |
+| D45 | 版本分支模型：dev/main 状态隔离，版本分支测试完成后合并 main 打 tag 发版 | 已采纳 | 第 1 轮裁定（2026-09-04）：分支命名 `dev/v<版本>`；fast-forward 合并；dev 与 main 状态隔离，合并到 main 打 tag 触发 release 发布；CI 对 dev 分支推送触发（`ci.yml` 加 `dev/**`） | 落地：AGENTS 规则 3 分支模型段（main 冻结保 FF 可达）、R008 流程更新、首条分支 `dev/v0.6.0` 承载 M017 加 D43 加 D44 待提交工作 |
 
 ## 维护规则
 

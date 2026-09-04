@@ -16,7 +16,7 @@
 | --- | --- | --- |
 | 文档 | `docs\`（proven/diary/research/guide/references/mistakes）+ 根目录 PRD/GOAL/PLAN/TODO/INDEX/AGENTS/README/CHANGELOG/ROADMAP | 见上节职能 |
 | 代码 | `src\` | Rust CLI `reader`（`rr` 同入口双 bin） |
-| 测试 | `tests\` | assert_cmd 集成测试（cli.rs；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造；legacy .doc 用仓内资产）；冒烟/回归/验收三层 cargo 独立 target（smoke.rs / regress.rs / accept.rs，D31）；`tests\ab\` A/B 对比层（manifest 对象资源加 expectations 检查点加 reports 报告，G006） |
+| 测试 | `tests\` | assert_cmd 集成测试（cli.rs；测试 PDF 由 lopdf 现造、EPUB 由 rbook 现造、docx 由 zip 现造、PNG 由 image 现造；legacy .doc 用仓内资产；anydoc 官方 fixtures 语料见 tests\assets\anydoc\，D44）；冒烟/回归/验收三层 cargo 独立 target（smoke.rs / regress.rs / accept.rs，D31；mirror.rs 为 mirror 公开 API 直测独立 target，M017 回归）；`tests\ab\` A/B 对比层（manifest 对象资源加 expectations 检查点加 reports 报告，G006） |
 
 **代码文件位置**：
 
@@ -33,21 +33,23 @@
 | `.tools\mirror-models.py` | 模型镜像 staging（D42）：按 Cargo.toml 钉的 ppocr-rs rev 取 models.json，HF 下载校验后出 R2 上传树与 gh 兜底资产 |
 | `src\main.rs` | 薄壳入口（reader / rr 双 bin 共用） |
 | `src\lib.rs` | clap CLI 定义、`run()` 分发、页/章范围解析 |
-| `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/节，含 needs_ocr 信号） |
+| `src\document.rs` | 格式分派与统一文本单元 TextUnit（页/节，含 needs_ocr 信号）；图片八扩展名单页提取（D43，恒标 needs_ocr:image，`--ocr` 兜底） |
 | `src\pdf.rs` | PDF 页提取（pdf-inspector markdown 布局管线：多栏阅读序、needs_ocr） |
 | `src\anydoc.rs` | anydoc 家族提取（Word/EPUB/ODT/RTF/Office/CSV 出 GFM，按顶层标题分节，超 200 行单元切 part；P0009-P0011） |
 | `src\batch.rs` | 批量目录搜索（递归走查加两形态聚合；P0012） |
 | `src\search.rs` | 匹配器（字面/正则/忽略大小写）与命中收集 |
 | `src\output.rs` | JSON 包膜（ok/data/error 加 meta）、filter 点路径裁剪、cta 生成 |
 | `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
-| `src\ocr.rs` | OCR 兜底（P0014、P0018 换引擎、D42 源链）：hayro 渲染 needs_ocr 页加 ppocr-rs 原生 CPU 内核跑 PP-OCRv6；首用三级回退预取（镜像到HF到GitHub，`mirror` 模块）、缓存先零网络探测；`ocr init / doctor / switch` 三子命令与档位三级（env > model-size 设置 > tiny）；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
+| `src\ocr.rs` | OCR 兜底（P0014、P0018 换引擎、D42 源链、D43 图片）：hayro 渲染 needs_ocr 页与图片文件直解码（首帧、EXIF 方向、alpha 白底）加 ppocr-rs 原生 CPU 内核跑 PP-OCRv6；引擎构建共用 helper；首用三级回退预取（镜像到HF到GitHub，`mirror` 模块）、缓存先零网络探测；`ocr init / doctor / switch` 三子命令与档位三级（env > model-size 设置 > tiny）；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
 | `src\mirror.rs` | 镜像源链与清单（D42）：四包 pin 表（与 ppocr-rs rev 同步换，单测钉）、三级回退单件下载（`.part` 加校验加 rename）、只读 assess、latest.json 拉取解析；`READER_MIRROR` 覆盖基址 |
 | `src\selfupdate.rs` | self update（P0015、D42 加镜像通道）：镜像 latest.json 优先、GitHub API 加 gh api 兜底、版本判新、资产 sha256 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
-| `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤 |
+| `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤；图片拒入并指路 --ocr（D43） |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
-| `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；accept 为 cucumber BDD，场景 tests\features\，D33；G006 载体规则） |
+| `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；accept 为 cucumber BDD，场景 tests\features\，D33；smoke 自 D44 起全格式活体：现造 pdf/md/csv/epub 加 anydoc 官方语料九族；G006 载体规则） |
 | `tests\snapshot.rs` | 回归层 insta 输出快照（extract 全量、search 命中格式、--llms；快照在 tests\snapshots\，D34） |
+| `tests\mirror.rs` | 回归层 mirror 公开 API 直测（本机一次性 HTTP 服务加合成 pin；READER_MIRROR env 变更需独立 target 隔离，下载器自建父目录回归，M017） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
+| `tests\assets\anydoc\` | anydoc 官方测试 fixtures 语料九件（firecrawl/anydoc@261fc25，MIT；ppt 二进制族与 xls / xlsb 变体；来源与 sha256 见目录内 README，D44） |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
 
 ```text
@@ -122,6 +124,7 @@ reader_rs/
 | S006 | `S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` | 内嵌 OCR 选型（纯 Rust 管线实测可行，已落地 P0014） |
 | S007 | `S007-markdown支持选型-学习mq嵌mq-lang全引擎加零依赖分节.md` | markdown 支持选型（学习 mq，已落地 P0016） |
 | S008 | `S008-OCR质量升级-ppocr-rs的PP-OCRv6原生内核双优胜出现管线换引擎.md` | OCR 质量升级（v6 tiny 双优，已落地 P0018） |
+| S009 | `S009-图片文件支持-image直依赖零新增与OCR管线复用.md` | 图片文件支持（零新依赖复用 OCR 管线，四裁已落地 D43） |
 
 ## 六、references：做事的流程
 
@@ -163,7 +166,7 @@ reader_rs/
 | M102 | `M102-Windows路径与shell错误.md` | MSYS 路径、os error 3、引号、原生二进制、跨平台路径拼接、SIGPIPE 管道早退、cmd 风格重定向、重定向命中 target 旧产物与 CRLF | M002 M005 M007 M008 M014 |
 | M103 | `M103-开发环境安装错误.md` | 架构不配、bad CPU type、接管机装工具 | M003 |
 | M104 | `M104-CI与发布流水线错误.md` | runner 退役、上传竞态、资产命名、rclone 对 R2 单件 copyto 撞建桶 403 | M004 M015 |
-| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端、Cargo.toml 节序吞键、路径断言分隔符不跨平台 | M009 M010 M011 M012 M013 M016 |
+| M105 | `M105-Rust依赖与库行为错误.md` | ureq 响应上限、vendor 库 println 污染 stdout、引擎非 Send/Sync、flate2 后端、Cargo.toml 节序吞键、路径断言分隔符不跨平台、fs::write 不建父目录 | M009 M010 M011 M012 M013 M016 M017 |
 
 迭代规则：踩坑按当前最大号接编 MNNN 进对应分类文件；一行一事；同根因或同型坑可合并聚合进已有条目（保留最早编号与首踩日期）；反复踩落 `docs\research\`；新分类文件登记本节。
 

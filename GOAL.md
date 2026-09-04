@@ -7,14 +7,14 @@
 
 > 当前目标的起点：何时发起、为什么发起、要解决什么问题。
 
-- **日期**：2026-09-03。
-- **起点**：v0.4.0 封版验收暴露 D42（lan-linux 首用下载 HF 模型三连重试失败）；ISSUE #1 与 ohmycloud 完成载体裁决（镜像 reader.ohmygh.com 默认、镜像 到 HF 到 GitHub Releases 三级回退、self update 先读 latest.json、minisign 首轮不上）与基建回执（桶 reader-dl、域名 SSL active、R2 Secrets 进仓）；用户点名 ocr init / doctor / switch 三件套（下载、诊断、切换两档），立项落地。
+- **日期**：2026-09-04。
+- **起点**：用户两项点名：研究图片文件分析（位图进 extract / search 面，OCR 管线复用，D43）与全格式冒烟覆盖缺口（odt / rtf / pptx 族 / xlsx 族 / ods / odp / ppt 族零测试覆盖，D44）。S009 研究实证零新依赖可落地；用户四裁（格式集八种、--ocr opt-in 同 PDF 契约、多帧首帧、冒烟主干全补）与官方语料裁定（anydoc fixtures 入仓）。D42 收尾两件随行：M017 补丁（下载器自建父目录）与 P0019 归档（等大陆侧第三级回退演练回执）。上一目标 D42 的起点（2026-09-03）：v0.4.0 封版验收暴露模型 HF 直连国内不可达，ISSUE #1 载体裁决与基建回执后立项镜像分发。
 
 ## 锚点
 
 > 当前锚定的目标 + 推进时间线。
 
-- **锚定的目标**：D42 镜像分发落地（进行中）；上一目标 D40 README 规范供稿消化已达成（G008 落盘与 README 整改）、D41 封版发布流程已交付（R008，v0.4.0 首轮）。
+- **锚定的目标**：D43 图片文件分析 加 D44 全格式冒烟覆盖（进行中，2026-09-04 实现与测试完成待门禁收口）；上一目标 D42 镜像分发落地主体已发布（v0.5.0，2026-09-03），收尾随行。
 
 ### 推进时间线
 
@@ -22,6 +22,8 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-04 | **D45 版本分支模型落地（用户裁定）**：`main` 稳定主干唯一发版源、`dev/v<版本>` 承载开发与验收（状态隔离）、CI 加 `dev/**` 触发、验收全绿 fast-forward 合并 main 打 tag 发布、发版窗口 main 冻结；AGENTS 规则 3、R008、PRD D45 同步；首条分支 `dev/v0.6.0` 承载 M017 加 D43 加 D44 分组提交 |
+| 2026-09-04 | **D43 / D44 实现与测试完成（待门禁收口）**：图片八扩展名进 extract / search（`ocr_image`：内容嗅探、首帧、EXIF 方向、alpha 白底；`build_engine` 抽出共用，PDF 行为零变化；query 拒图片指路 --ocr；本机 GDI+ 文字图端到端全识）；smoke 全格式活体落地（anydoc 官方 fixtures 九族入仓 `tests\assets\anydoc\`，ppt 二进制族与 xls / xlsb 变体零覆盖缺口消灭，5 项 0.3 秒全绿）；cli 集成图片 7 例、M017 回归 target；S009 落盘、PRD D43 / D44 已采纳、AGENTS 边界与 README / SKILL / introspect / G006 / INDEX 同步。另：D42 收尾 M017 修复（`download_file` 自建父目录）当日早间完成，红态实证复现 |
 | 2026-09-03 | **v0.5.0 发布（D42 镜像分发）**：全平台门禁（Windows 七件、lan-mac / lan-linux 三件双绿、CI 三系统）后封版 7ae300b，tag 触发 release 六 job 绿、10 资产齐；镜像面全验（latest.json 广告 0.5.0 加 60s 头、资产 immutable、`releases/latest` 恒指 v\*、models-v6 恒 prerelease 18 资产）；**self update 镜像通道真升级 0.4.0 至 0.5.0 首验通过**；清单路径修订 `models/manifest.json` 落地（ISSUE 收口，旧路径对象已清）；M015 / M016 沉淀；待 ohmycloud 大陆侧验收回执后归档 P0019 |
 | 2026-09-03 | **D42 实现完成（待提交与 CI 演练）**：`src\mirror.rs` pin 表与三级回退、`ocr init / doctor / switch` 三子命令（档位三级，设置锚缓存兄弟位）、在线分支先 Offline 探测、selfupdate 镜像 latest.json 通道（真机验回退 GH 报 current）；CI 镜像腿（release.yml mirror job 加 mirror-models.yml，models-v6 恒 prerelease）；`.tools` 两脚本实测过；漂移守卫二层递归；门禁七件全绿；M014 沉淀；README / G006 / R008 / CHANGELOG / INDEX / AGENTS 对齐 |
 | 2026-09-03 | **D42 立项**：ISSUE #1 三问回执（预取入缓存目录、schema 照落地、minisign 首轮不上）获 ohmycloud 全采纳；方案经架构验证后批准开工（九项修正要点入 PLAN：models-v6 恒 prerelease 防 latest 遮蔽、doctor 只读不调 verify、switch 设置文件锚缓存兄弟位、在线分支先 Offline 探测、漂移守卫二层递归、HF 源仓无 LICENSE 从 apache.org 取、tree API 小件无比 sha256、dispatch 演练不 checkout tag、rclone 钉版本与 401 重试） |
