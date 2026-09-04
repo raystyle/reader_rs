@@ -106,8 +106,9 @@ pub fn extract_figures(
     }
 }
 
-/// PDF:逐页渲染 PNG(页即图本体,扫描书形态);图题与上下文从 pdf-inspector 页文本对齐
-/// (文本层才有;扫描页 caption 为 None,交给调用方配合 --ocr 文本)。
+/// PDF:优先内嵌位图 XObject 直抽(DCT 原字节 jpg / Flate 解压按色彩空间编码 png,
+/// 论文插图的正确本体);页无内嵌图且 needs_ocr(扫描页)才回退整页渲染(扫描书形态)。
+/// 图题与上下文从 pdf-inspector 页文本对齐(文本层才有;扫描页 caption 为 None)。
 fn figures_from_pdf(
     path: &Path,
     filter: Option<&HashSet<u32>>,
@@ -122,10 +123,12 @@ fn figures_from_pdf(
     });
     let result = pdf_inspector::extract_pages_markdown(path, zero_based.as_deref())
         .map_err(|e| format!("无法读取 PDF {}: {e}", path.display()))?;
+    let lopdf_doc =
+        lopdf::Document::load(path).map_err(|e| format!("无法解析 PDF {}: {e}", path.display()))?;
     let file = std::fs::read(path).map_err(|e| format!("无法读取 PDF {}: {e}", path.display()))?;
-    let pdf = hayro::hayro_syntax::Pdf::new(file)
+    let hayro_pdf = hayro::hayro_syntax::Pdf::new(file)
         .map_err(|e| format!("无法解析 PDF {}: {e:?}", path.display()))?;
-    let pages = pdf.pages();
+    let hayro_pages = hayro_pdf.pages();
     let mut out = Vec::new();
     for page in result.pages {
         let no = page.page + 1;
@@ -143,22 +146,198 @@ fn figures_from_pdf(
             ),
             None => (None, vec![]),
         };
-        let png = pages
-            .get(page.page as usize)
-            .map(|p| crate::ocr::page_png(p, no))
-            .transpose()?
-            .ok_or_else(|| format!("页 {no} 超范围"))?;
-        out.push(copy_as(
-            &png,
-            out_dir,
-            format!("{stem}-p{no}.png"),
-            "page",
-            &format!("page {no}"),
-            caption,
-            context,
-        )?);
+        let mut img_seq = 0usize;
+        for blob in embedded_page_images(&lopdf_doc, page.page as usize)? {
+            img_seq += 1;
+            let ext = if blob.is_jpeg { "jpg" } else { "png" };
+            out.push(copy_as(
+                &blob.bytes,
+                out_dir,
+                format!("{stem}-p{no}-i{img_seq}.{ext}"),
+                "pdf-image",
+                &format!("page {no} img {img_seq}"),
+                caption.clone(),
+                context.clone(),
+            )?);
+        }
+        if img_seq > 0 {
+            continue; // 本页有内嵌图,不再出整页渲染
+        }
+        if page.needs_ocr {
+            // 扫描页:整页位图即图本体
+            let png = hayro_pages
+                .get(page.page as usize)
+                .map(|p| crate::ocr::page_png(p, no))
+                .transpose()?
+                .ok_or_else(|| format!("页 {no} 超范围"))?;
+            out.push(copy_as(
+                &png,
+                out_dir,
+                format!("{stem}-p{no}.png"),
+                "page",
+                &format!("page {no}"),
+                caption,
+                context,
+            )?);
+        }
     }
     Ok(out)
+}
+
+/// 一件内嵌图本体。DCTDecode 原字节即 JPEG;其余取解压后的原始像素由调用方编码。
+struct EmbeddedImage {
+    bytes: Vec<u8>,
+    is_jpeg: bool,
+}
+
+/// 走查某页(0 基)Resources/XObject 的 /Subtype /Image(Resources 可继承自 Parent)。
+/// 支持 DCTDecode(jpg 原字节)与 FlateDecode(DeviceRGB / DeviceGray 编 png);
+/// CMYK / Indexed / JPX 等色彩空间或过滤器 v1 跳过(如实不计)。
+fn embedded_page_images(
+    doc: &lopdf::Document,
+    page_index0: usize,
+) -> Result<Vec<EmbeddedImage>, String> {
+    let mut out = Vec::new();
+    let pages = doc.get_pages();
+    let Some((_, page_id)) = pages.iter().nth(page_index0) else {
+        return Ok(out);
+    };
+    let Some(res_id) = page_resources_id(doc, *page_id) else {
+        return Ok(out);
+    };
+    let Ok(lopdf::Object::Dictionary(resources)) = doc.get_object(res_id) else {
+        return Ok(out);
+    };
+    // XObject 两种形态:引用(共享资源树)或 Resources 内联字典(实测论文 PDF 常见)
+    let xobjects: lopdf::Dictionary = match resources.get(b"XObject") {
+        Ok(lopdf::Object::Reference(xref)) => {
+            let Ok(lopdf::Object::Dictionary(xd)) = doc.get_object(*xref) else {
+                return Ok(out);
+            };
+            xd.clone()
+        }
+        Ok(lopdf::Object::Dictionary(xd)) => xd.clone(),
+        _ => return Ok(out),
+    };
+    for (_, obj) in xobjects.iter() {
+        let Ok(id) = obj.as_reference() else {
+            continue;
+        };
+        let Ok(lopdf::Object::Stream(stream)) = doc.get_object(id) else {
+            continue;
+        };
+        let subtype = stream
+            .dict
+            .get(b"Subtype")
+            .ok()
+            .and_then(|s| s.as_name().ok())
+            .unwrap_or_default();
+        if subtype != b"Image" {
+            continue;
+        }
+        let filter = String::from_utf8_lossy(
+            stream
+                .dict
+                .get(b"Filter")
+                .ok()
+                .and_then(|f| f.as_name().ok())
+                .unwrap_or_default(),
+        )
+        .to_string();
+        // 64MB 上限防炸弹(与镜像下载件同量级)
+        match filter.as_str() {
+            "DCTDecode" => {
+                if stream.content.len() <= 64 * 1024 * 1024 {
+                    out.push(EmbeddedImage {
+                        bytes: stream.content.clone(),
+                        is_jpeg: true,
+                    });
+                }
+            }
+            "FlateDecode" => {
+                let width = stream.dict.get(b"Width").ok().and_then(|v| v.as_i64().ok());
+                let height = stream
+                    .dict
+                    .get(b"Height")
+                    .ok()
+                    .and_then(|v| v.as_i64().ok());
+                let cs = String::from_utf8_lossy(
+                    stream
+                        .dict
+                        .get(b"ColorSpace")
+                        .ok()
+                        .and_then(|c| c.as_name().ok())
+                        .unwrap_or_default(),
+                )
+                .to_string();
+                let (Some(w), Some(h)) = (width, height) else {
+                    continue;
+                };
+                if w <= 0 || h <= 0 || w as u64 * h as u64 > 64 * 1024 * 1024 {
+                    continue;
+                }
+                let channels = match cs.as_str() {
+                    "DeviceRGB" => 3usize,
+                    "DeviceGray" => 1usize,
+                    _ => continue, // CMYK / Indexed 等 v1 不碰
+                };
+                let expected = w as usize * h as usize * channels;
+                let Ok(raw) = stream.decompressed_content_with_limit(expected.saturating_mul(2))
+                else {
+                    continue;
+                };
+                if raw.len() < expected {
+                    continue;
+                }
+                let dynimg = if channels == 3 {
+                    let mut img = image::RgbImage::new(w as u32, h as u32);
+                    for (i, px) in img.pixels_mut().enumerate() {
+                        let s = i * 3;
+                        *px = image::Rgb([raw[s], raw[s + 1], raw[s + 2]]);
+                    }
+                    image::DynamicImage::ImageRgb8(img)
+                } else {
+                    let mut img = image::GrayImage::new(w as u32, h as u32);
+                    for (i, px) in img.pixels_mut().enumerate() {
+                        *px = image::Luma([raw[i]]);
+                    }
+                    image::DynamicImage::ImageLuma8(img)
+                };
+                let mut buf = Vec::new();
+                let mut curs = std::io::Cursor::new(&mut buf);
+                if dynimg.write_to(&mut curs, image::ImageFormat::Png).is_err() {
+                    continue;
+                }
+                out.push(EmbeddedImage {
+                    bytes: buf,
+                    is_jpeg: false,
+                });
+            }
+            _ => continue, // JPX / CCITTFax / LZW 等 v1 不碰
+        }
+    }
+    Ok(out)
+}
+
+/// 页 Resources 的对象 id(缺省时沿 Pages 树 Parent 继承链上溯)。
+fn page_resources_id(doc: &lopdf::Document, page_id: lopdf::ObjectId) -> Option<lopdf::ObjectId> {
+    let mut current = Some(page_id);
+    let mut hops = 0;
+    while let Some(id) = current {
+        let Ok(lopdf::Object::Dictionary(dict)) = doc.get_object(id) else {
+            return None;
+        };
+        if let Ok(res) = dict.get(b"Resources").and_then(|r| r.as_reference()) {
+            return Some(res);
+        }
+        // Resources 也可能是内联字典(不引用):本 v1 只认引用形态,内联则放弃该页内嵌图
+        current = dict.get(b"Parent").ok().and_then(|p| p.as_reference().ok());
+        hops += 1;
+        if hops > 32 {
+            return None;
+        }
+    }
+    None
 }
 
 /// markdown:解析 `![alt](path)` 引用;相对路径按 md 所在目录解析,存在即复制。

@@ -1782,34 +1782,45 @@ fn figures_case_dir(case: &str) -> PathBuf {
     dir
 }
 
-/// PDF：按页渲染 PNG，行式清单与 json 形状；--pages 过滤只出范围内页。
-/// 页文本层的图题对齐归单测（is_caption_line；lopdf 夹具排不了 CJK 图题行）。
+/// PDF：扫描页（无文本层）回退整页渲染 PNG；纯文本页（无内嵌图）无图退出 1（v1.1
+/// 行为：内嵌图优先、文本页不出渲染）。图题对齐归单测（is_caption_line；lopdf 夹具
+/// 排不了 CJK 图题行）。
 #[test]
 fn figures_pdf_pages_png_and_json_shape() -> TestResult {
     let case = figures_case_dir("pdf");
-    let pdf = case.join("doc.pdf");
-    make_test_pdf(&pdf)?;
+    let scan = case.join("scan.pdf");
+    make_pdf_with(&scan, &[vec![], vec![]])?; // 两页空内容 = 扫描形态（needs_ocr）
     reader()?
         .args(["figures"])
-        .arg(&pdf)
+        .arg(&scan)
         .args(["--pages", "2", "--out"])
         .arg(case.join("out"))
         .assert()
         .success()
         .stdout(predicate::str::contains("figure: page | page 2 |"))
         .stdout(predicate::str::contains(format!(
-            "doc-p2.png | {}B",
-            std::fs::read(case.join("out/doc-p2.png"))?.len()
+            "scan-p2.png | {}B",
+            std::fs::read(case.join("out/scan-p2.png"))?.len()
         )));
     let v = json_stdout(
         reader()?
             .args(["figures"])
-            .arg(&pdf)
+            .arg(&scan)
             .args(["--pages", "2", "--out"])
             .arg(case.join("out2"))
             .args(["--format", "json", "--filter", "figures[].anchor"]),
     )?;
     assert_eq!(v["data"], serde_json::json!(["page 2"]));
+    // 纯文本页（有文本层、无内嵌图）：无图可导，退出 1
+    let text_pdf = case.join("text.pdf");
+    make_test_pdf(&text_pdf)?;
+    reader()?
+        .args(["figures"])
+        .arg(&text_pdf)
+        .arg("--out")
+        .arg(case.join("out"))
+        .assert()
+        .code(1);
     let _ = std::fs::remove_dir_all(&case);
     Ok(())
 }
@@ -1910,6 +1921,109 @@ fn figures_image_self_and_unsupported_format() -> TestResult {
         .assert()
         .code(2)
         .stderr(predicate::str::contains("不支持的格式"));
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// 造带内嵌 JPEG(DCTDecode XObject,Resources 与 XObject 均内联字典形态)的单页 PDF。
+fn make_pdf_with_embedded_jpeg(path: &Path) -> TestResult {
+    use lopdf::{dictionary, Object as LObject, Stream};
+    let mut doc = Document::with_version("1.5");
+    let jpeg = include_bytes!("assets/tiny.jpg");
+    let img_id = doc.add_object(Stream::new(
+        dictionary! {
+            "Type" => "XObject",
+            "Subtype" => "Image",
+            "Width" => 4,
+            "Height" => 4,
+            "ColorSpace" => "DeviceRGB",
+            "BitsPerComponent" => 8,
+            "Filter" => "DCTDecode",
+        },
+        jpeg.to_vec(),
+    ));
+    let xobjects_id = doc.add_object(dictionary! { "Im1" => img_id });
+    let resources_id = doc.add_object(dictionary! { "XObject" => xobjects_id });
+    let pages_id = doc.new_object_id();
+    let content_id = doc.add_object(Stream::new(dictionary! {}, vec![]));
+    let page_id = doc.add_object(dictionary! {
+        "Type" => "Page",
+        "Parent" => pages_id,
+        "MediaBox" => vec![0.into(), 0.into(), 612.into(), 792.into()],
+        "Resources" => resources_id,
+        "Contents" => content_id,
+    });
+    doc.objects.insert(
+        pages_id,
+        LObject::Dictionary(dictionary! {
+            "Type" => "Pages",
+            "Kids" => vec![page_id.into()],
+            "Count" => 1,
+        }),
+    );
+    let catalog_id = doc.add_object(dictionary! { "Type" => "Catalog", "Pages" => pages_id });
+    doc.trailer.set("Root", catalog_id);
+    doc.save(path)?;
+    Ok(())
+}
+
+/// PDF 内嵌图直抽(D47 figures v1.1):DCT 原字节落 jpg,锚为页内序号;
+/// 文本页不再出整页渲染。
+#[test]
+fn figures_pdf_embedded_jpeg_extracted_as_is() -> TestResult {
+    let case = figures_case_dir("embed");
+    let pdf = case.join("img.pdf");
+    make_pdf_with_embedded_jpeg(&pdf)?;
+    reader()?
+        .args(["figures"])
+        .arg(&pdf)
+        .arg("--out")
+        .arg(case.join("out"))
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "figure: pdf-image | page 1 img 1 |",
+        ));
+    let out_jpg = case.join("out/img-p1-i1.jpg");
+    assert_eq!(
+        std::fs::read(&out_jpg)?,
+        include_bytes!("assets/tiny.jpg").to_vec(),
+        "DCT 内嵌图应原字节导出"
+    );
+    let _ = std::fs::remove_dir_all(&case);
+    Ok(())
+}
+
+/// export 一键提取端到端(D47 第 3 轮):text.md / text.json / pages/ 逐单元 /
+/// images/ / manifest.json 全落一个目录;pages/ 可直接 search 二次复用。
+#[test]
+fn export_end_to_end_and_secondary_search() -> TestResult {
+    let case = figures_case_dir("export");
+    let pdf = case.join("doc.pdf");
+    make_test_pdf(&pdf)?;
+    reader()?
+        .args(["export"])
+        .arg(&pdf)
+        .args(["--pages", "1"])
+        .arg("--out")
+        .arg(case.join("exp"))
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("export: manifest"));
+    assert!(case.join("exp/text.md").is_file());
+    assert!(case.join("exp/text.json").is_file());
+    assert!(case.join("exp/pages/p0001.md").is_file());
+    let v: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(case.join("exp/manifest.json"))?)?;
+    assert_eq!(v["counts"]["units"], serde_json::json!(1));
+    // 二次复用:导出目录当语料搜,命中行带 pages/pNNNN.md 页锚前缀
+    reader()?
+        .args(["search"])
+        .arg(case.join("exp"))
+        .arg("Reader")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("p0001.md"));
     let _ = std::fs::remove_dir_all(&case);
     Ok(())
 }

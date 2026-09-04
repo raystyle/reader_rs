@@ -37,6 +37,9 @@ image = "0.25"
 # zip 容器直读:figures 内嵌图导出(D47,anydoc 家族 media 件)+self update Windows 解 zip
 # (纯 Rust 默认后端,不破 musl 边界;由 windows 目标依赖升为全平台主依赖)
 zip = "8.6"
+# PDF 内嵌位图 XObject 直抽(figures v1.1,D47):页 Resources/XObject 走查与流解压
+# (已是 pdf-inspector 传递依赖与测试造 PDF 件,升主依赖)
+lopdf = "0.44"
 # mq 结构化提取引擎（P0016，选型 S007）：jq 风格 markdown 查询，MIT 纯 Rust
 mq-lang = "0.8"
 
