@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-04 | **dev/v0.6.0 全平台验收绿(R008 四路)**:Windows 七件(含 materials 576 件基线核验 600s)、lan-mac(arm64)与 lan-linux(x86_64)全 target 加 release 构建双绿(rustup stable 口径)、CI 三系统绿;两实机首切 dev 分支即验 D45 分支模型,corpus 快照跨三平台逐字节一致。待封版 v0.6.0 |
 | 2026-09-04 | **D47 第 3/4 轮:export 一键完整提取与 PDF 内嵌图直抽（用户点名）**:一键文本+图片+对齐元数据落一目录(text.md/text.json/pages/ 逐单元 markdown 支持 search 二次复用/images//manifest.json,`--pages` 指定页,`--ocr` 兜底);figures v1.1 内嵌位图 XObject 直抽(DCT jpg 原字节、Flate 按色彩空间 png,内联与引用两形态;扫描页才回退整页渲染);真机:certmitm 论文 28 件内嵌图、扫描书页渲染、EPUB 347 节 26 图 export 全通、二次搜索命中带页锚 |
 | 2026-09-04 | **D47 图片本体提取与元数据对齐落地（S010 定界）**：用户追问「图 1-1 呢」引出研究,两轮追问定界「只负责提取存储图片,和文本元数据对齐」(T3 模型理解已拒);`reader figures` 子命令四路(PDF 页渲染 PNG 加图题/上下文对齐、md 引用、anydoc zip 内嵌件、图片文件原字节),行式 `figure:` 与 json figures[];T2 几何还原 PoC 实测「机制可行数值配列不足」暂不进主仓(poc\s010-chart-geometry);单测 2 加 cli 4 例;真机四路加研究资料书页实测;AGENTS 边界与 README/SKILL/introspect/G006/INDEX 同步 |
 | 2026-09-04 | **D45 版本分支模型落地（用户裁定）**：`main` 稳定主干唯一发版源、`dev/v<版本>` 承载开发与验收（状态隔离）、CI 加 `dev/**` 触发、验收全绿 fast-forward 合并 main 打 tag 发布、发版窗口 main 冻结；AGENTS 规则 3、R008、PRD D45 同步；首条分支 `dev/v0.6.0` 承载 M017 加 D43 加 D44 分组提交 |
