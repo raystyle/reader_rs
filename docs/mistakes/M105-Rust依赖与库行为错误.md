@@ -50,3 +50,10 @@
 - 现象：镜像下载与 sha256 校验都成功，`fs::write` 写 `.part` 临时件报 os error 3（路径不存在），三通道逐个同败；同场景 `extract --ocr` 正常。
 - 根因：`fs::write` 不建父目录。`extract --ocr` 的 `prefetch_pair` 先 `create_dir_all` 了包目录所以没事，`ocr init` 直调 `download_file` 没人建目录；ppocr-rs 原生下载路径自建目录（models.rs `create_dir_all` 后才下载），换引擎前的旧管线无此坑。两个入口一套下载器，建目录权责漂在调用方就必踩。
 - 正确处理：建目录归下载器单一权责：`download_file` 落盘前 `create_dir_all(dest.parent())`（标准库即安全全平台实现，并发 create 容忍 AlreadyExists；懒人阶梯标准库优先，无需引库），`prefetch_pair` 冗余建目录删除；回归入 `tests\mirror.rs`（本机一次性 HTTP 服务加合成 pin，红态实证复现）。
+
+## M018 重生的产物进了提交而生成源漏列，本地绿 CI 红
+
+- 首踩：2026-09-04（D47 figures：`feat` 提交重生 SKILL.md 与 `--llms` 快照并入库，但文件清单漏列 `src\introspect.rs` 本身；补提交 3f54198 修）
+- 现象：本地全绿（工作树源与产物齐全）；CI 三系统逐字节守卫全红(检出的源无 figures 行,产物有)。
+- 根因：部分暂存:产物与生成源分属两处变更,手工列文件清单只列了产物侧;提交后未复核 git status。
+- 正确处理：重生类提交（SKILL、快照、manifest）先 `git status` 复核无未暂存源变更再推；本地绿 CI 红且同 sha 时，用干净克隆复现加 git diff HEAD 对账定位(本轮实证)。
