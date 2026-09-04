@@ -1,0 +1,1364 @@
+{
+  "root": "E:\\ebook",
+  "scanned_at": "2026-09-04T03:27:06+00:00",
+  "count": 172,
+  "note": "外部真样本不入仓;身份钉 sha256;质量基线字段确定性,duration 只进 perf 报告(D46)",
+  "entries": [
+    {
+      "rel": "EPUB/Attribution of Advanced Persistent Threats - How to Identify the Actors Behind Cyber-Espionage.epub",
+      "size": 1164050,
+      "sha256": "3874d06e65a4df8313c4a5f0d0a5c60cc2fcde1bb4eacea43b89c44fbb26ee41",
+      "status": 2
+    },
+    {
+      "rel": "EPUB/Black Hat Rust - Applied offensive security with the Rust programming language.epub",
+      "size": 4782901,
+      "sha256": "c8cedb870cfea974b9e6702802e18b5a8e038f17b3b7e61965ed39c6c23f5dba",
+      "status": 2
+    },
+    {
+      "rel": "EPUB/Cybersecurity Ops with bash - Attack, Defend, and Analyze from the Command Line.epub",
+      "size": 2003951,
+      "sha256": "107ed944a6e704e85ea00c2a9b134bc795077dc535805ddfc866c34db7dab4bc",
+      "status": 0,
+      "units": 534,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/Data Science at the Command Line - Obtain, Scrub, Explore, and Model Data with Unix Power Tools.epub",
+      "size": 8477436,
+      "sha256": "72d479f6ba81b4275ae51846f82a5c8a47c2c9cd84f828f62c8da76ef6984114",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/Hypermodern Python Tooling_ Building Reliable Workflows for -- Claudio Jolowicz -- 1, 2024 -- O'Reilly Media, Inc_ -- 9781098139582 -- 2687cff69e48794ebb672ab9f7623e47 -- Anna’s Archive.epub",
+      "size": 3150544,
+      "sha256": "5622385080d263b941ef9385cc79e5be6bd5e93292eedfd4d8521617e955cabb",
+      "status": 0,
+      "units": 437,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/Logging and Log Management.epub",
+      "size": 5414585,
+      "sha256": "04979b5d822bffc9fede53a3ca783fb2e22cc97750c540a87783f6f8aff6f4de",
+      "status": 0,
+      "units": 1188,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/Network Security Through Data Analysis - From Data to Action.epub",
+      "size": 4574559,
+      "sha256": "955342f2b8a5af890960b89990d62079a910e3247c1b318c03e53fa2017fe990",
+      "status": 2
+    },
+    {
+      "rel": "EPUB/Powershell® For Sysadmins - Workflow Automation Made Easy.epub",
+      "size": 17512596,
+      "sha256": "8c6a4d09e3338e8ce04ed0ab611f190480a318fcf0b63c10d898b3875baf5463",
+      "status": 0,
+      "units": 347,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "EPUB/the-logstash-book-log-management-made-easy-james--annas-archive.epub",
+      "size": 5736380,
+      "sha256": "7c3efe9fbe0eb01fe0c9b629ac0a0f16ca8cbe6b4b3335f2ddd0f8943df6580a",
+      "status": 0,
+      "units": 155,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "LAB_BOOK/black_hat_rust_0524.pdf",
+      "size": 4092331,
+      "sha256": "61ea3d37ac2e39eb65e0ab0a5dd3622b3e5cc2594b074c3eefba0c85beea26f3",
+      "status": 0,
+      "units": 358,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "LAB_BOOK/Command-Line Rust_ A Project-Based Primer for Writing Rust CLIs 1 (2022, O'Reilly Media).pdf",
+      "size": 5795354,
+      "sha256": "05fc14c57ee757355621988315978280bbf41158646be3fc7f25ced25ac78de9",
+      "status": 0,
+      "units": 399,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "LAB_BOOK/Cybersecurity Ops with bash (Paul Troncone, Carl Albing).pdf",
+      "size": 4040350,
+      "sha256": "57b8a5ba2bf1e93172522ad8d86b9ddcd6b386f148e75fd09d57ca252d26c2e2",
+      "status": 0,
+      "units": 414,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "LAB_BOOK/dtrace-ebook.pdf",
+      "size": 1150616,
+      "sha256": "760cc8021f42fe9117835fd61bed1dfcfff6920cb65bf4e240e88fa05db919e8",
+      "status": 0,
+      "units": 362,
+      "needs_ocr": 27
+    },
+    {
+      "rel": "LAB_BOOK/Evading EDR The Definitive Guide to Defeating Endpoint Detection Systems (Matt Hand) (Z-Library).pdf",
+      "size": 14076799,
+      "sha256": "93a39a7519a84b6296220dcb2e234c970cb36cf3f90d0d12593e8aefcce10bdd",
+      "status": 0,
+      "units": 315,
+      "needs_ocr": 28
+    },
+    {
+      "rel": "LAB_BOOK/Hypermodern Python Toolin.epub",
+      "size": 3150544,
+      "sha256": "5622385080d263b941ef9385cc79e5be6bd5e93292eedfd4d8521617e955cabb",
+      "status": 0,
+      "units": 437,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "LAB_BOOK/Robust Python.pdf",
+      "size": 7425661,
+      "sha256": "faff02d9085bcef742a53ff142f0c1d8dd601a0cee97c5d2c1e7e882d6a1df58",
+      "status": 0,
+      "units": 381,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "LAB_BOOK/RTFM Red Team Field Manual v2 (Ben Clark, Nick Downer) .pdf",
+      "size": 1538825,
+      "sha256": "92ae9d0524c15ec1e302daabb76a355195dc8d3316aed2ef3b1c92bf9f135c43",
+      "status": 0,
+      "units": 200,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "LAB_BOOK/Test-Driven Development in Go A practical guide to writing idiomatic and efficient Go tests through real-world examples (ADELINA. SIMION) (Z-Library).pdf",
+      "size": 22265178,
+      "sha256": "594c3e8fd0d89e2eda15c2a8b1c6f140909d181c0dcc7fb3ca4e256d788d2e0d",
+      "status": 0,
+      "units": 338,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "LAB_BOOK/TheSecurityAnalystsGuidetoSuricata.pdf",
+      "size": 6461139,
+      "sha256": "00ce93410c4560d29854e0cc36a16f3b20289805786a6cd2a29c2a6f497cda67",
+      "status": 0,
+      "units": 100,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "LAB_BOOK/Threat Hunting with Elastic Stack Solve complex security challenges with integrated prevention, detection, and response (Andrew Pease) .pdf",
+      "size": 48712720,
+      "sha256": "35caa5c1d50e678b7c2a1d97d671c9d5c89197ee05a1f9abbc2bc9ee14e25db2",
+      "status": 0,
+      "units": 392,
+      "needs_ocr": 37
+    },
+    {
+      "rel": "LAB_BOOK/Windows 10 System Programming, Part 1.pdf",
+      "size": 6438140,
+      "sha256": "84b1221e904172c9c2fa74e762f2efecf91be33b5e99417357ec8667fe4e55fd",
+      "status": 0,
+      "units": 629,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "LAB_BOOK/Windows 10 System Programming, Part 2.pdf",
+      "size": 7917883,
+      "sha256": "0b03bd3ab4552fb8123908f0daa50c9324ee71eb9ffee3f2b25b1f544b728d4d",
+      "status": 0,
+      "units": 625,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "LAB_BOOK/Windows Native API Programming -- Pavel Yosifovich.pdf",
+      "size": 7874733,
+      "sha256": "ce01b2e2b28f9c53b85f76e2a77aacd312695c31a66fec7aec8990af1737abe2",
+      "status": 0,
+      "units": 258,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "LAB_BOOK/Windows Security Internals A Deep Dive into Windows Authentication, Authorization, and Auditing (James Forshaw) .pdf",
+      "size": 24168082,
+      "sha256": "f7b0b4fec1036a5b92de892c68e5fe81ca5e723153c644c1c99f8ed109ddb927",
+      "status": 0,
+      "units": 904,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/Active Directory, 5th Edition Designing, Deploying, and Running Active Directory (Brian Desmond, Joe Richards, Robbie Allen etc.) .pdf",
+      "size": 26954792,
+      "sha256": "8784ac81dbf7cc8d12101216cb5e7b9f00f5f318d1867fca56a66d0539603f46",
+      "status": 0,
+      "units": 738,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "书籍作品/ADVANCED WEB ATTACKS AND EXPLOITATION WEB-300 (2022).pdf",
+      "size": 33741572,
+      "sha256": "4ec08c12eb6a4bbfec3afaa0d195b80db66b76b4322dea4dcb1ba1bf561f9d66",
+      "status": 0,
+      "units": 564,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "书籍作品/ADVANCED WINDOWS EXPLOITATION (2010 Offensive security ltd).pdf",
+      "size": 382210360,
+      "sha256": "f1586e857c07eff6611c0a79c448fef1defb262480c4301d76b2ae3ac17a1a28",
+      "status": 0,
+      "units": 243,
+      "needs_ocr": 234
+    },
+    {
+      "rel": "书籍作品/ADVANCED WINDOWS EXPLOITATION - PRESENTATION (2010 Offensive security ltd).pdf",
+      "size": 2484644,
+      "sha256": "b0142d0d69a42b093d4a524fa09bc962d6471f5093bf53e587118566f4fd2cf7",
+      "status": 0,
+      "units": 66,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Antivirus Bypass Techniques Learn practical techniques and tactics to combat, bypass, and evade antivirus software (Nir Yehoshua, Uriel Kosayev).pdf",
+      "size": 21762074,
+      "sha256": "298a5716b7a1d08e70d3c445260fa1a5bc7aa929a2e05f7345966d901437b56c",
+      "status": 0,
+      "units": 242,
+      "needs_ocr": 22
+    },
+    {
+      "rel": "书籍作品/Applied Incident Response (Steve Anson) .pdf",
+      "size": 40226711,
+      "sha256": "363f1991443f0d504eaf8efec5df37e941e2374672c2bf3e38ad1e6f82b155ae",
+      "status": 0,
+      "units": 674,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "书籍作品/APT归因_Attribution of Advanced Persistent Threat/Attribution of Advanced Persistent Threats by Timo Steffens.pdf",
+      "size": 5019985,
+      "sha256": "afb9b08f836add63aedbee50930db75aeabb16c630510218b4ef931189a1c52d",
+      "status": 0,
+      "units": 281,
+      "needs_ocr": 37
+    },
+    {
+      "rel": "书籍作品/APT归因_Attribution of Advanced Persistent Threat/Attribution of Advanced Persistent Threats zh.pdf",
+      "size": 2827377,
+      "sha256": "52dcc7c9f32890538c85e8e07011bfbd4bd28009caf7e6e9b23f4ac23be41209",
+      "status": 0,
+      "units": 345,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/blackhat rust/black_hat_rust.pdf",
+      "size": 4087789,
+      "sha256": "9145a89cdab0bc25e002cd18d999c4f551ef955d3ccd3b263708b51ba0d994a7",
+      "status": 0,
+      "units": 357,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/blackhat rust/black_hat_rust_0524.pdf",
+      "size": 4092331,
+      "sha256": "61ea3d37ac2e39eb65e0ab0a5dd3622b3e5cc2594b074c3eefba0c85beea26f3",
+      "status": 0,
+      "units": 358,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/blackhat rust/Command-Line Rust_ A Project-Based Primer for Writing Rust CLIs 1 (2022, O'Reilly Media).pdf",
+      "size": 5795354,
+      "sha256": "05fc14c57ee757355621988315978280bbf41158646be3fc7f25ced25ac78de9",
+      "status": 0,
+      "units": 399,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "书籍作品/Bug Bounty Playbook[1].pdf",
+      "size": 7848976,
+      "sha256": "eb629bc9c64e5dd1ea93083cfd810a52dd8aa89f1d63f5ce50c66c9a970b5508",
+      "status": 0,
+      "units": 212,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/Bug Bounty Playbook[2].pdf",
+      "size": 30319840,
+      "sha256": "d81ae936a46acee1a94ba00697bc560cd284e345fa7cbde0c1a3cdfec759918d",
+      "status": 0,
+      "units": 250,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/CEH Certified Ethical Hacker Cert Guide (Michael Gregg, Omar Santos) .pdf",
+      "size": 61162811,
+      "sha256": "e437ade3540abe911b173f3a343561e60b566edd64390a44b338f65a569e6d5a",
+      "status": 0,
+      "units": 1161,
+      "needs_ocr": 219
+    },
+    {
+      "rel": "书籍作品/Clean Code/Beyond the Basic Stuff with Python Best Practices for Writing Clean Code (Al Sweigart) .pdf",
+      "size": 7976680,
+      "sha256": "93472157c8371cb87d5ae5766162065d30adf99bac0c49a4f5b507171c878bcc",
+      "status": 0,
+      "units": 386,
+      "needs_ocr": 36
+    },
+    {
+      "rel": "书籍作品/Clean Code/Clean Code in JavaScript Develop reliable, maintainable and robust JavaScript (James Padolsey) .pdf",
+      "size": 13769378,
+      "sha256": "9a1bb90b80cc66367bcbb562061a6e6d5c7af300e3c43fde5f93e90bff8cd9f4",
+      "status": 0,
+      "units": 527,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Clean Code/Clean Code in Python Develop maintainable and efficient code, 2nd Edition (Mariano Anaya) .pdf",
+      "size": 3150827,
+      "sha256": "57c36636992733c59a16574a3bd06be1d06bb09b75752741b765d3613603e655",
+      "status": 0,
+      "units": 423,
+      "needs_ocr": 12
+    },
+    {
+      "rel": "书籍作品/Clean Code/Hands-On Software Engineering with Golang Move beyond basic programming to design and build reliable software with clean code (Achilleas Anagnostopoulos) .pdf",
+      "size": 11670693,
+      "sha256": "27d72c30d693f71b865cdcccb86c3e0f15236015b0edda403aa18452993d8497",
+      "status": 0,
+      "units": 625,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Clean Code/Python One-Liners (Christian Mayer) .pdf",
+      "size": 7022899,
+      "sha256": "4776593d352299f36a70d2bbfe60de1abfd62df1e298d0ee9fe71fe19dda4e3a",
+      "status": 0,
+      "units": 285,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/Clean Code/代码整洁之道 (Robert C. Martin) .pdf",
+      "size": 86720322,
+      "sha256": "dba5746dcf3ba1d0baabdb543151ecc1c1e6e280cee459287efb059dcbdf964d",
+      "status": 0,
+      "units": 404,
+      "needs_ocr": 404
+    },
+    {
+      "rel": "书籍作品/Clean Data (2015) By Megan Squire PACKT.pdf",
+      "size": 10743555,
+      "sha256": "55aac98a28c68e83d21bdd5adb8d9a28d88316c898835b1f5832652f9457e237",
+      "status": 0,
+      "units": 272,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "书籍作品/Cloud Attack Vectors Building Effective Cyber-Defense Strategies to Protect Cloud Resources (Morey J. Haber, Brian Chappell etc.) .pdf",
+      "size": 11055513,
+      "sha256": "13c61452d97d3283c83c1641ea7e74a2634c3a7e60145fdb58d03f863cecf4b1",
+      "status": 0,
+      "units": 492,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/CLOUD HACKING PLAYBOOK (ghostlulz) .pdf",
+      "size": 18595537,
+      "sha256": "f0d2a6e7ceac6b30840c1eb3e88854503cc33099576c23a4d4a8daa12d49f0ff",
+      "status": 2
+    },
+    {
+      "rel": "书籍作品/Crafting the infosec playbook [security monitoring and incident response master plan] (Bollinger, JeffEnright, BrandonValites etc.) .pdf",
+      "size": 11182467,
+      "sha256": "c148f79cd41db6f9e17558d964a2534c127d577413d4eafe9b4864b29d3c8771",
+      "status": 0,
+      "units": 275,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "书籍作品/Cyber Threat Hunting (MEAP V05) (Nadhem Al Fardan) .pdf",
+      "size": 7086509,
+      "sha256": "08d54da06d812b28278b0dc3c3defd062ac18603656c03b2bd3b00b8b48bca4e",
+      "status": 0,
+      "units": 306,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Cyberjutsu Cybersecurity for the Modern Ninja (Ben McCarty) .pdf",
+      "size": 7404718,
+      "sha256": "7173f639ade32256c222262ce87aaf5d85e3690ca365370b6132f0cdd5709fd2",
+      "status": 0,
+      "units": 267,
+      "needs_ocr": 31
+    },
+    {
+      "rel": "书籍作品/Cybersecurity Attacks - Red Team Strategies A practical guide to building a penetration testing program having homefield... (Johann Rehberger).pdf",
+      "size": 22223772,
+      "sha256": "02a566990c0fe8376dcf2a5d62cbb9c71cead85fa851017df584d04512afe5ac",
+      "status": 0,
+      "units": 525,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "书籍作品/Cybersecurity Ops with bash (Paul Troncone, Carl Albing).pdf",
+      "size": 4040350,
+      "sha256": "57b8a5ba2bf1e93172522ad8d86b9ddcd6b386f148e75fd09d57ca252d26c2e2",
+      "status": 0,
+      "units": 414,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/eBPF安全可观测性_Security Observability with eBPF (Jed Salazar, Natalia Reka Ivanko) .pdf",
+      "size": 3026807,
+      "sha256": "558ddf07db1d3de92523d5faf9e3f5ebe24735d120dc74ec9856070153ec5fc0",
+      "status": 0,
+      "units": 65,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/Essential cybersecurity science build, test, and evaluate secure systems (Dykstra, Josiah) .pdf",
+      "size": 6018777,
+      "sha256": "62be812e25f8a1ddbad7ee11ed1b6ea5b062de1b82fc1b97ab5bfb04895914b4",
+      "status": 0,
+      "units": 190,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "书籍作品/Evasion Techniques and Breaching Defenses 1.0 (Offensive security ltd).pdf",
+      "size": 28310809,
+      "sha256": "c8c94442573a0061c7be2367857956ce706fed8c6f6bb2db0f12c5cec4d425ea",
+      "status": 0,
+      "units": 704,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "书籍作品/Full Stack Python Security Cryptography, TLS, and attack resistance (Dennis Byrne) .pdf",
+      "size": 10511202,
+      "sha256": "32d9714edd03734dd431fd9fc10b60c048c187f00476fd797b2ba063ec6d0e81",
+      "status": 0,
+      "units": 305,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/Hacking APIs Breaking Web Application Programming Interfaces(Corey J. Ball).pdf",
+      "size": 24745674,
+      "sha256": "bb0e382dfc7a6d58a1d81d8b33dce935c436e5d5c9a7d4ab134b82b21d516215",
+      "status": 0,
+      "units": 363,
+      "needs_ocr": 36
+    },
+    {
+      "rel": "书籍作品/Hands-On Artificial Intelligence for Cybersecurity Implement smart AI systems for preventing cyber attacks and detecting... (Alessandro Parisi) .pdf",
+      "size": 9535522,
+      "sha256": "6447cc15835db648e12bcfba14c50ed8b6eb9a768c957ad793f7c21fbacc79f1",
+      "status": 0,
+      "units": 331,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Intelligence-Driven Incident Response Outwitting the Adversary (Scott J. Roberts, Rebekah Brown) .pdf",
+      "size": 7932272,
+      "sha256": "a72726a972352b03b201c1d6d9c0a4b2ef627cffc2af2eda0476de1f086d148f",
+      "status": 0,
+      "units": 282,
+      "needs_ocr": 18
+    },
+    {
+      "rel": "书籍作品/Mastering Cyber Intelligence Gain comprehensive knowledge and skills to conduct threat intelligence (Jean Nestor M. Dahj) (Z-Library).pdf",
+      "size": 14771660,
+      "sha256": "0cf401f18f1e74764ef3fe8b5bdb3fefed0090166bde11ecc9d53e8a1e0c6125",
+      "status": 0,
+      "units": 528,
+      "needs_ocr": 21
+    },
+    {
+      "rel": "书籍作品/Microsoft Defender for Endpoint in Depth Take any organizations endpoint security to the next level (Paul Huijbregts, Joe Anich, Justen Graves)  (1).pdf",
+      "size": 23822126,
+      "sha256": "1b6dd42bc4ccf35856ce0a29a04d998c75678d4b2d1c0118bb8d804fffa5dbf4",
+      "status": 0,
+      "units": 362,
+      "needs_ocr": 10
+    },
+    {
+      "rel": "书籍作品/Microsoft Exchange Server 2016 PowerShell Cookbook.pdf",
+      "size": 13087189,
+      "sha256": "a45ffeab5408522f09c2fbad80faea15c12b7b31d4ddf8b5d415793077ac95e5",
+      "status": 0,
+      "units": 1163,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/Microsoft Sentinel in Action - Second Edition (Richard Diver, Gary Bushey, John Perkins) .pdf",
+      "size": 52517127,
+      "sha256": "8a661fa0f0daae36470cc9c912cd8887a3ba3f55d2e2ade4dd1d3b62fa6b2a0c",
+      "status": 0,
+      "units": 478,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "书籍作品/Modern Windows Exploit Development (MassiMiliano ToMassoli) .pdf",
+      "size": 19949371,
+      "sha256": "70e198276935588b3ea00ae2cfb3cae723b7d792105575ce77d1e4c8783c262e",
+      "status": 0,
+      "units": 529,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Network Security Assessment Know Your Network (Chris McNab) .pdf",
+      "size": 20041320,
+      "sha256": "0fb725eeefaf85264000cf2a410ea4c688f1f4a3431d458b78eaa108145a8339",
+      "status": 0,
+      "units": 734,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/Network Security Through Data Analysis From Data to Action (Michael Collins) .pdf",
+      "size": 10548282,
+      "sha256": "e3f4c0043343b647522c1393c3f56b351e87c0baf3b42de1f9be2d309c4500d7",
+      "status": 0,
+      "units": 427,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "书籍作品/Network traffic anomaly detection and prevention  concepts, techniques, and tools (Bhattacharyya, Dhruba K. Bhuyan etc.) .pdf",
+      "size": 5960092,
+      "sha256": "3447ecaa56e7454bf67883643254ced3745fd18de31a5d95a8d1df54520c82cc",
+      "status": 0,
+      "units": 278,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Offensive Shellcode from Scratch Get to grips with shellcode countermeasures and discover how to bypass them (Rishalin Pillay) .pdf",
+      "size": 20936483,
+      "sha256": "9ebb07e266614ee135830e873747635d90a9622c7f3e2af0b3d3b692f46df861",
+      "status": 0,
+      "units": 209,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/OSINT_Data Science at the Command Line_.pdf",
+      "size": 12061599,
+      "sha256": "a9767cb5d66562131ab47091d18f2426b8ded43875dbed2290442f3553479db2",
+      "status": 0,
+      "units": 283,
+      "needs_ocr": 70
+    },
+    {
+      "rel": "书籍作品/Peerlyst_The_Red_Team_Guide_by_Peerlyst_community.pdf",
+      "size": 12648679,
+      "sha256": "2cc82c1be263daa4d0b8a18c706435b98d265e11c83c3b053db69a663b34776c",
+      "status": 0,
+      "units": 241,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/Practical Cloud Native Security with Falco Risk and Threat Detection for Containers, Kubernetes, and Cloud (Loris Degioanni, Leonardo Grasso) .pdf",
+      "size": 5824211,
+      "sha256": "66572161f8dc8e3295cacadf7f95ba7d78efb85bacf724a9bff2d0ebf91dd84e",
+      "status": 0,
+      "units": 227,
+      "needs_ocr": 20
+    },
+    {
+      "rel": "书籍作品/Purple Team Strategies Enhancing global security posture through uniting red and blue teams with adversary emulation (David Routin, Simon Thoores, Samuel Rossier).pdf",
+      "size": 20557075,
+      "sha256": "e060ae96557c858bb87de864fd940c95a4a26c97dc898295b19c598ea775686c",
+      "status": 0,
+      "units": 450,
+      "needs_ocr": 44
+    },
+    {
+      "rel": "书籍作品/RTFM Red Team Field Manual v2 (Ben Clark, Nick Downer) .pdf",
+      "size": 1538825,
+      "sha256": "92ae9d0524c15ec1e302daabb76a355195dc8d3316aed2ef3b1c92bf9f135c43",
+      "status": 0,
+      "units": 200,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "书籍作品/SocialEngineering_the science of human hacking.pdf",
+      "size": 16705040,
+      "sha256": "d29c1c7ca188dfb29f0fc48f6d3a2a437165e1879a62bbed290ecb8b9733271f",
+      "status": 0,
+      "units": 478,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/The CISO and The Art of War win the cyber battles (Lienard, Alexander) .pdf",
+      "size": 649424,
+      "sha256": "77b20cc8e877671ace41830f8e2f571f0b2c4d8e5e8b696597505ef8da7aff83",
+      "status": 0,
+      "units": 33,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/The Hacker And The State Cyber Attacks And The New Normal Of Geopolitics (Ben Buchanan) .pdf",
+      "size": 21572172,
+      "sha256": "3f9315fc3dfefd37fdd9163b89c5b100086bf78cf9f44fcaa22af098bd8bca5d",
+      "status": 0,
+      "units": 433,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "书籍作品/The Hacker’s Guide to Scaling Python (Julien Danjou) .pdf",
+      "size": 3125229,
+      "sha256": "dee05caad2efaf8c957a561d537947f83be10fc4cbfebd52d00c73d57684000f",
+      "status": 0,
+      "units": 283,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/The Hardware Hacking Handbook. Breaking Embedded Security With Hardware Attacks (Jasper van Woudenberg, Colin O’Flynn) .pdf",
+      "size": 58186140,
+      "sha256": "6a0b870b813fb291cf158658b8d3f071b9c296a447ae64a0fec5bf1f79dc2358",
+      "status": 0,
+      "units": 781,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "书籍作品/Threat Hunting with Elastic Stack Solve complex security challenges with integrated prevention, detection, and response (Andrew Pease) .pdf",
+      "size": 48712720,
+      "sha256": "35caa5c1d50e678b7c2a1d97d671c9d5c89197ee05a1f9abbc2bc9ee14e25db2",
+      "status": 0,
+      "units": 392,
+      "needs_ocr": 37
+    },
+    {
+      "rel": "书籍作品/Web Application Obfuscation - WAFs..Evasion..Filters  alert( Obfuscation )- (Mario Heiderich, Eduardo Alberto Vela Nava etc.).pdf",
+      "size": 1578516,
+      "sha256": "1725d7e4e72843f842736536e6a32913b205796200899d0fb4bcc1639e8af057",
+      "status": 0,
+      "units": 290,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "书籍作品/What Every Engineer Should Know about Cyber Security and Digital Forensics (JOANNA F. DEFRANCO, Bob Maley) .pdf",
+      "size": 14193700,
+      "sha256": "697cc7f21800836a1786feebd8fbd89563392df586970005e4acdd9c867e190b",
+      "status": 0,
+      "units": 199,
+      "needs_ocr": 13
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Troubleshooting Windows Server with PowerShell (Derek Schauland, Donald Jacobs) .pdf",
+      "size": 9390858,
+      "sha256": "4c0ab19ac13e3e879ca0d0da7919a114c8ff7906ccf06a7625ce791393192d2e",
+      "status": 0,
+      "units": 136,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows File System Troubleshooting (Andrew Bettany, Mike Halsey (auth.)) .pdf",
+      "size": 9482484,
+      "sha256": "09db74d868611b566314c6f1a1f6f2cea7241b3c09c2ba81649e125bdf8be313",
+      "status": 0,
+      "units": 165,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Group Policy Troubleshooting A Best Practice Guide for Managing Users and PCs Through Group Policy (Kapil Arya (auth.), Andrew Bettany (eds.)) .pdf",
+      "size": 15289155,
+      "sha256": "086cfd1fd2c9a2837fb80068b0624aac9cdb7fe83acc56d2e903bc10a1ae1b3f",
+      "status": 0,
+      "units": 225,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Installation and Update Troubleshooting (Chris Rhodes, Andrew Bettany (auth.)) .pdf",
+      "size": 8993056,
+      "sha256": "9ea8ae4dd4da287d89e7ef543c55a4c3b3684e38c41cd5228cd64e926fb0629e",
+      "status": 0,
+      "units": 201,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Networking Troubleshooting (Mike Halsey, Joli Ballew) .pdf",
+      "size": 9819926,
+      "sha256": "4d1eae66b494389d6793b64ac0f80022f2e8005fba9238ca639c8247fb561063",
+      "status": 0,
+      "units": 160,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Registry Forensics, Second Edition Advanced Digital Forensic Analysis of the Windows Registry (Carvey, Harlan A) .pdf",
+      "size": 12101882,
+      "sha256": "f229b810faade1a63ed7e6d424f7cdd69f5746b49c34e155e0fb5697d8e409c4",
+      "status": 0,
+      "units": 204,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Windows Troubleshooting/Windows Registry Troubleshooting (Mike Halsey, Andrew Bettany (auth.)) .pdf",
+      "size": 5813111,
+      "sha256": "ae06fcb6c542c79a87e64f4a20c64cb3badd934425f2ec5a79840522175ea789",
+      "status": 0,
+      "units": 124,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/Windows User Mode Exploit Development (Offensive security ltd).pdf",
+      "size": 11878634,
+      "sha256": "ab05579769c5e62f97b36d039bb6e21a3cad5e2d4bd7c7cd15895f20803f32d1",
+      "status": 0,
+      "units": 604,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "书籍作品/WINDOWS WSL/Pro Windows Subsystem for Linux (WSL) Powerful Tools and Practices for Cross-Platform Development and Collaboration (Hayden Barnes).pdf",
+      "size": 18090479,
+      "sha256": "40569254f9689ec08610b754b0c0f1385869a42a610d98d40bc4c2507d48a864",
+      "status": 0,
+      "units": 304,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/WINDOWS WSL/Windows Subsystem for Linux 2 (WSL 2) Tips, Tricks, and Techniques Maximise productivity of your Windows 10 development... (Stuart Leeks) .pdf",
+      "size": 3721000,
+      "sha256": "fd04f49b95e164b0b2bb45f90eedbf491c23b0c60f12639a26b011c91065a7a3",
+      "status": 0,
+      "units": 246,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/凯文米特社工书籍原版——The Art of Invisibility The World’s Most Famous Hacker Teaches You How to Be Safe in the Age of Big Brother and Big Data (Kevin D. Mitnick, Robert Vamosi).pdf",
+      "size": 1428753,
+      "sha256": "40a8e0abf4078cad738854521f2424432f6e39fae633bf1ee0892008861d7b8d",
+      "status": 0,
+      "units": 259,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "书籍作品/基于系统思维构筑安全系统.pdf",
+      "size": 224062153,
+      "sha256": "ca8b8d1cb793fc6da9bcc9e0a223c46111a25587522848eddd4c9510e1288211",
+      "status": 0,
+      "units": 404,
+      "needs_ocr": 404
+    },
+    {
+      "rel": "书籍作品/基于系统思维构筑安全系统—Engineering a Safer World Systems Thinking Applied to Safety (Nancy G. Leveson) .pdf",
+      "size": 12894234,
+      "sha256": "c4584d4cd52e0c643ee7c7260a9d6e9838b805cb02976d0fbb68175aa618c1e6",
+      "status": 0,
+      "units": 537,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/安全相似系统学.pdf",
+      "size": 28708521,
+      "sha256": "79845e77d0bc403b4a8415c85d349267e42cb6988078b8550fe6bebdf1f4defd",
+      "status": 0,
+      "units": 161,
+      "needs_ocr": 161
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Accelerated .NET Memory Dump Analysis.pdf",
+      "size": 33490971,
+      "sha256": "a589ee26867b6d812912a58f314e58d00c6372ea217d9fc82dea49cd38debb8a",
+      "status": 0,
+      "units": 445,
+      "needs_ocr": 34
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Accelerated Mac OS X Core Dump Analysis, Second Edition Training Course Transcript with Gdb and Lldb Practice Exercises (Dmitry Vostokov) .pdf",
+      "size": 8582303,
+      "sha256": "bb48f64205aebbeb92a1762c03c16d8df90bf57c701f5dbfce09c8c52b8b9e9b",
+      "status": 0,
+      "units": 405,
+      "needs_ocr": 62
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Advanced Windows Memory Dump Analysis with Data Structures (Dmitry Vostokov) .pdf",
+      "size": 9999102,
+      "sha256": "a984c2e043cdc8160394d4e110b0033bf1d1576ba0c2782e9b74aa2aebf465ea",
+      "status": 0,
+      "units": 371,
+      "needs_ocr": 25
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Encyclopedia of Crash Dump Analysis Patterns (Dmitry Vostokov) .pdf",
+      "size": 14284492,
+      "sha256": "e1a1067b0b3fd65b40e0c93021d359d881eee3ee4f32be3cd7b51344915ac579",
+      "status": 0,
+      "units": 1200,
+      "needs_ocr": 30
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Linux Debugging Dissasseblining Reversing (Dmitry Vostokov, Software Diagnostics Services) .pdf",
+      "size": 3532319,
+      "sha256": "77bdb7b47ec43ed41f19cc2db5a98145dd07e3354cf6539b9b688a10acaa7fda",
+      "status": 0,
+      "units": 175,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology Volume 11.pdf",
+      "size": 34214139,
+      "sha256": "64e9d234157dc27151c042a05b7e6538fc57acb242df793d03d383d294237b69",
+      "status": 0,
+      "units": 264,
+      "needs_ocr": 23
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 1.pdf",
+      "size": 6040841,
+      "sha256": "9afbe02ac82ac52484aee4d13ff17bcce55da9c78ae7dfdbb35d15b2a6c7adae",
+      "status": 0,
+      "units": 720,
+      "needs_ocr": 23
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 10.pdf",
+      "size": 5215307,
+      "sha256": "6375f4163b6b0e547f9767a1845e75b10f81b7ee7de48a34e1fcdf148f6ab0b0",
+      "status": 0,
+      "units": 168,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 2 .pdf",
+      "size": 4684784,
+      "sha256": "921b6d2cab9a160dbef2a2caae8c9ed79c2d7a1dc155c08ebf2be6f9295628d3",
+      "status": 0,
+      "units": 470,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 3.pdf",
+      "size": 5030593,
+      "sha256": "89c593117d4c23e4684adeabbb0f775ef688af7d0f519e7a020dc8bdae201074",
+      "status": 0,
+      "units": 403,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 5.pdf",
+      "size": 8474569,
+      "sha256": "ed898ac44795751bc2b81bbebb4c0bba47f58dcb4bf4f33fc124ebad823584cc",
+      "status": 0,
+      "units": 431,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 6.pdf",
+      "size": 3478184,
+      "sha256": "064d6b94887da5eddb6c683429403f4acbb93685e894dcf0624bdfe9ebd08340",
+      "status": 0,
+      "units": 305,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Memory Dump Analysis Anthology, Volume 7.pdf",
+      "size": 7699740,
+      "sha256": "2d168b04435c40c0058e46c1e8ee7c791af61987d424b79885b9e6dca3236461",
+      "status": 0,
+      "units": 523,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Mobile Software Diagnostics An Introduction (Dmitry Vostokov, Software Diagnostics Services) .pdf",
+      "size": 2267522,
+      "sha256": "fbe9fb8a31e23af1d2707add6143ac2e71be09440caee985d26c6f354f43169c",
+      "status": 0,
+      "units": 25,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Practical Foundations of Windows Debugging, Disassembling, Reversing Training Course (Dmitry Vostokov) .pdf",
+      "size": 5772456,
+      "sha256": "b8cdcb794fe550e4baa80dc8a9e03f3e6255c2726ec8ec6f18c002e2ff4bb37b",
+      "status": 0,
+      "units": 350,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/德米特里-沃斯托科夫系列/Software Trace and Log Analysis  A Pattern Reference (Dmitry Vostokov, Software Diagnostics Institute) .pdf",
+      "size": 11932162,
+      "sha256": "6379705b34a89d80e310e7a2e092f330b0f1c5e9a1340aa0c979e5b27f1cbbaa",
+      "status": 2
+    },
+    {
+      "rel": "书籍作品/特权攻击向量-Privileged Attack Vectors Building Effective Cyber-Defense Strategies to Protect Organizations (Morey J. Haber, Brad Hibbert).pdf",
+      "size": 2393793,
+      "sha256": "4a64c1551feb5eeb8f170f15f465a4546ba94867274c227419a0a891b6e6a16f",
+      "status": 0,
+      "units": 222,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "书籍作品/身份攻击向量—Morey J. Haber, Darran Rolls - Identity Attack Vectors_ Implementing An Effective Identity And Access Management Solution-Apress (2020).pdf",
+      "size": 5431454,
+      "sha256": "57e8cc67c615f7b50bab0fe2de61370004eb1176d6498c0c3d4cbcf180cd078f",
+      "status": 0,
+      "units": 205,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/11-strategies-of-a-world-class-cybersecurity-operations-center.pdf",
+      "size": 16476290,
+      "sha256": "2425d2a4d11cf2e335018ec1e654aa0e5e1d92a36bf711ee315ca9e34f0c4731",
+      "status": 0,
+      "units": 452,
+      "needs_ocr": 14
+    },
+    {
+      "rel": "威胁情报调研资料/aa23-165a_understanding_TA_LockBit_0.pdf",
+      "size": 1298132,
+      "sha256": "ee5f1bd8d8ab0bedac1b11b69dc482ec7073f280d4f0c644334c015a463cf29c",
+      "status": 0,
+      "units": 30,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/Advanced Snort Rule.pdf",
+      "size": 3144788,
+      "sha256": "68c0dc87467898c8b94defe18db358eb5b92240926526d7802c7744e8ee0ac6f",
+      "status": 0,
+      "units": 135,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "威胁情报调研资料/AI-in-Security_cn.pdf",
+      "size": 9891674,
+      "sha256": "c8e44fe72c4b3bb711f89c41630c99fe24ade5aeaa72b4334e84ff7a61aaae36",
+      "status": 0,
+      "units": 114,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/Analyse_Telemetriekomponente.pdf",
+      "size": 889347,
+      "sha256": "3f7e4fc40e05faca2c2d236cf5597b7dfda0fa740b2d79129acef4fd45f3b1c8",
+      "status": 0,
+      "units": 27,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "威胁情报调研资料/Apache-Metron-in-the-Real-World-Dave-Russell-Hortonworks.pdf",
+      "size": 5733982,
+      "sha256": "8c1286dffc5305b7b0b55177df82aa360bae0b6c1fc35efd0e23880c0006af8a",
+      "status": 0,
+      "units": 51,
+      "needs_ocr": 27
+    },
+    {
+      "rel": "威胁情报调研资料/AsiaCCS_BOTection.pdf",
+      "size": 4312397,
+      "sha256": "46a1852d2900ed4926a7b38cb3a5359dcbdeedc6516421db98461d1d58eb50e2",
+      "status": 0,
+      "units": 13,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/Detecting Encrypted Command & Control Channels with Network Fingerprints.pdf",
+      "size": 1911251,
+      "sha256": "194ec7ed1237c68720bbfdf79121a0a9ee599689b03e8cbb72ff2f5a4774659f",
+      "status": 0,
+      "units": 80,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/ET Intelligence Rep List Tech Description.pdf",
+      "size": 342257,
+      "sha256": "cd766053d70e518eb9e536df9159e31fd10a2914169297c273c2972ec300c58b",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/fdark流程.pdf",
+      "size": 419757,
+      "sha256": "2103f5b7090fd435c73ae92d8ff6bf396ebc9769f1ac703926b4156985249594",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "威胁情报调研资料/fdark系统和数据流说明.cly/__MACOSX/fdark/._readme.pdf",
+      "size": 332,
+      "sha256": "f8f710fbc2fdb4066790c08d00534a8bd0ada45c604c109312a174fbb495a40d",
+      "status": 2
+    },
+    {
+      "rel": "威胁情报调研资料/fdark系统和数据流说明.cly/fdark/readme.pdf",
+      "size": 419757,
+      "sha256": "2103f5b7090fd435c73ae92d8ff6bf396ebc9769f1ac703926b4156985249594",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "威胁情报调研资料/fdark系统技术分析-20230614.pdf",
+      "size": 581100,
+      "sha256": "dfb3878a7caea66e3273dace0d50c8a82a81866d8442c59abea5cde61b2cff03",
+      "status": 0,
+      "units": 14,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "威胁情报调研资料/Fdark资产信息.pdf",
+      "size": 967644,
+      "sha256": "b8da33c80e7259e0dad842050dfd01e64299a277d842c5ee4b3fc800cea6a2c6",
+      "status": 0,
+      "units": 11,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "威胁情报调研资料/Fosdem_Suricata_2023.pdf",
+      "size": 3574438,
+      "sha256": "fbbfbfb5a8d774a0d7f9fe52234c3109b2d916f26872c7394dda62608ec3e2bc",
+      "status": 0,
+      "units": 53,
+      "needs_ocr": 24
+    },
+    {
+      "rel": "威胁情报调研资料/groenberg_mari_thesis.pdf",
+      "size": 754453,
+      "sha256": "d426a05265a9f376e08789a032503dd5c8bf5762f8a68f26a54db237d9429375",
+      "status": 0,
+      "units": 100,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "威胁情报调研资料/IOC生产运营情况说明.pptx",
+      "size": 2393096,
+      "sha256": "b7cd13834e4d1c353528535becf5c64496be47c0c1dd65646ffae084a3859057",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/MITRE_ActiveDefenseCapabilitySet_TechnicalManual.pdf",
+      "size": 8477912,
+      "sha256": "f6ee772f87d5741d318d7babf8c66666a45b78096446665f12a0e4e8ac86f927",
+      "status": 0,
+      "units": 146,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "威胁情报调研资料/netlab/202302.botnet组工作介绍.pdf",
+      "size": 2608102,
+      "sha256": "1a1c10f5afa2ad1abb4bfe9dba6edf6ad12db5378ed853f96d55c58d31a8201e",
+      "status": 0,
+      "units": 29,
+      "needs_ocr": 8
+    },
+    {
+      "rel": "威胁情报调研资料/netlab/botnet ioc数量及其生产情况统计-20220926.pdf",
+      "size": 1474678,
+      "sha256": "cd4e6e307f2c91781ec87536f1101a3320009f21b4c8ff02b7ad40f1629b7207",
+      "status": 0,
+      "units": 35,
+      "needs_ocr": 7
+    },
+    {
+      "rel": "威胁情报调研资料/netlab/botnet ioc数量及其生产情况统计-20221017.pdf",
+      "size": 1241889,
+      "sha256": "d96728c32edb1b516ce7a799adaf30ff30eb6977949f2be34dce1ea78acd0e63",
+      "status": 0,
+      "units": 24,
+      "needs_ocr": 5
+    },
+    {
+      "rel": "威胁情报调研资料/netlab/botnet ioc数量及其生产情况统计-20221107.pdf",
+      "size": 1393620,
+      "sha256": "563ba5f4fe45e693d3b5d4ffd94b8e76dedbd880af7264fe694f432ae8441668",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 6
+    },
+    {
+      "rel": "威胁情报调研资料/netlab/botnet工作交接文档.20230529.pdf",
+      "size": 675118,
+      "sha256": "543159aafa5ef683f1fc6dce55acb06ada8ce3472bcccf40c759df3aa7bf8840",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/netlab/cc_inspector/README.md",
+      "size": 6482,
+      "sha256": "b21caeba846a9f0ac71d12caefc388d4468798047e8393c12d18c53578a80333",
+      "status": 0,
+      "units": 8,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/netlab/海兔系统交接文档.pdf",
+      "size": 319516,
+      "sha256": "3754dc8645bc1fe57b86522b75c34d46ea403f8c4bdf5c8d39a5362aafa3ca34",
+      "status": 0,
+      "units": 7,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/NSO-Pegasus.pdf",
+      "size": 3922283,
+      "sha256": "f6f0170d41075766b5ea18508453fa68dc946b8c58eaea4281b36207a32c7ade",
+      "status": 0,
+      "units": 40,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "威胁情报调研资料/pfpt-wp-tb-etpro-subscription-overview.pdf",
+      "size": 500286,
+      "sha256": "5b1278c90f40d1e2598a15ef11d433a7710a9f7162f4ec77971700db265eda25",
+      "status": 0,
+      "units": 12,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/recordedfuture/4 Ways Machine Learning Is Powering Smarter Threat Intelligence.pdf",
+      "size": 2711850,
+      "sha256": "b33249a5395ff5fa9a71f70d403e9193e9ffce84796c2e90e09e1617dd0d2721",
+      "status": 0,
+      "units": 14,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/recordedfuture/Designing an interactive network graph for threat intelligence investigations and research.pdf",
+      "size": 11323803,
+      "sha256": "b2a387e1e63f624a91fe31723b1a1f6f10b9c14696169d6a4eff08992a217985",
+      "status": 0,
+      "units": 114,
+      "needs_ocr": 11
+    },
+    {
+      "rel": "威胁情报调研资料/recordedfuture/intelligence-handbook-fourth-edition.pdf",
+      "size": 17534428,
+      "sha256": "fca3c456a1ee4465835458d5b4bd8f2146add57b223a52ad85ee1a5636908903",
+      "status": 0,
+      "units": 198,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "威胁情报调研资料/recordedfuture/security-intelligence-graph.pdf",
+      "size": 2462975,
+      "sha256": "ec5a2ab642ee0779800d9151d70961e55c19cf4587ef177f25ce0f2feeca39b9",
+      "status": 0,
+      "units": 14,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/Signature-based IDS for Encrypted C2.pdf",
+      "size": 940023,
+      "sha256": "0e05a9d8a14915fd5c6ead6b8e3e8a7ef5a30ea6e2d14851f3ddb057dd05371b",
+      "status": 0,
+      "units": 57,
+      "needs_ocr": 2
+    },
+    {
+      "rel": "威胁情报调研资料/So what cha want (to sig).pdf",
+      "size": 2609343,
+      "sha256": "1f7c69336b91e2467f62be2aeeba912c10b6f2966fb9d50375aa4dd9628b7006",
+      "status": 0,
+      "units": 50,
+      "needs_ocr": 9
+    },
+    {
+      "rel": "威胁情报调研资料/SuriCon2016_AnthonyTellez.pdf",
+      "size": 14968781,
+      "sha256": "16fcd7808332e6ee6c393ae33b8956d90812ceaa1013915c77093e3e6f76ea1e",
+      "status": 0,
+      "units": 48,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "威胁情报调研资料/The Security Analyst’s Guide to Suricata.pdf",
+      "size": 5124331,
+      "sha256": "eec3884e09389cc5c67a4064d37d470e73eb9b109d6eac5023dd111b78c0ad51",
+      "status": 0,
+      "units": 86,
+      "needs_ocr": 17
+    },
+    {
+      "rel": "威胁情报调研资料/Thesis_Lupari_Pekka.pdf",
+      "size": 3105901,
+      "sha256": "f97eb3abb16c2b6900e42ff4e88efce3c64ac133495699c07e6b63edca778827",
+      "status": 0,
+      "units": 95,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/TI/API网关文档.docx",
+      "size": 2194069,
+      "sha256": "d57ae9e9fb2c7ebbc7df245851a14224bcefa32fff25de7f5b325850344d479b",
+      "status": 0,
+      "units": 122,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/TI/ip-history接口文档.docx",
+      "size": 21940,
+      "sha256": "6f676eeafa9befdf7f83c8ca40298c31c99d80f3c3e11499a9ebe3d6c80c07bd",
+      "status": 0,
+      "units": 15,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/TI/情报引擎V5数据流图.pdf",
+      "size": 771551,
+      "sha256": "89b2ed73841987ee43a4496ef180e4425871a00d7b830e40d3c194d394ecc218",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 3
+    },
+    {
+      "rel": "威胁情报调研资料/TI/近30天API网关统计.xlsx",
+      "size": 16793,
+      "sha256": "9d47ac0242f5d179c266d297d8c5379dc67a28640bb2f819378926254712aeca",
+      "status": 0,
+      "units": 2,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/TROOPERS19_DM_Telemetry.pdf",
+      "size": 1485015,
+      "sha256": "a240c5670b873a97a41b1d751819a3dbc25546f7c6e0bba40bc2e03b3df32a87",
+      "status": 0,
+      "units": 40,
+      "needs_ocr": 4
+    },
+    {
+      "rel": "威胁情报调研资料/【微步】一种威胁情报生成方法及装置.pdf",
+      "size": 751896,
+      "sha256": "41fa64d669b020759e83dac0081bcf4a1b25598ed5cd993b5fb2d56607401032",
+      "status": 0,
+      "units": 20,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/中国移动IT领域流量安全监测技术规范.docx",
+      "size": 90498,
+      "sha256": "55efaa8e3cc0547019a638ab389c4653cbe1e0e0278c10b4cd61955263aede62",
+      "status": 0,
+      "units": 86,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/__MACOSX/交接-生命周期APT服务状态/._APT-IPPORT生命周期方案记录.docx",
+      "size": 192,
+      "sha256": "6e050db0c5aa0180805e7873aab4ceaae615a6cad9b4a336b0454afbf371f6b6",
+      "status": 2
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/__MACOSX/交接-生命周期APT服务状态/._IOC全量状态更新库设计.drawio.png",
+      "size": 192,
+      "sha256": "6e050db0c5aa0180805e7873aab4ceaae615a6cad9b4a336b0454afbf371f6b6",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/__MACOSX/交接-生命周期APT服务状态/._建立IOC为主键的状态变更集.docx",
+      "size": 192,
+      "sha256": "6e050db0c5aa0180805e7873aab4ceaae615a6cad9b4a336b0454afbf371f6b6",
+      "status": 2
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/__MACOSX/交接-生命周期APT服务状态/._生命周期APT服务.md",
+      "size": 192,
+      "sha256": "6e050db0c5aa0180805e7873aab4ceaae615a6cad9b4a336b0454afbf371f6b6",
+      "status": 2
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/__MACOSX/交接-生命周期APT服务状态/._生命周期误报反馈流程.md",
+      "size": 192,
+      "sha256": "6e050db0c5aa0180805e7873aab4ceaae615a6cad9b4a336b0454afbf371f6b6",
+      "status": 2
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/交接-生命周期APT服务状态/APT-IPPORT生命周期方案记录.docx",
+      "size": 1297981,
+      "sha256": "5dde5a22ebda18bb2fdeaef9660dbdcbab946f205985964a9715abd003ffa28b",
+      "status": 0,
+      "units": 23,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/交接-生命周期APT服务状态/IOC全量状态更新库设计.drawio.png",
+      "size": 74382,
+      "sha256": "63dcd59b256b201c1a34e8dc91266f5e1c612a8de4b71a9ee93099431b1371b3",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/交接-生命周期APT服务状态/建立IOC为主键的状态变更集.docx",
+      "size": 530177,
+      "sha256": "ecf8ec608615ac59e6630c4b938c6b0329fa940a536da81e44628303b6eb744d",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/交接-生命周期APT服务状态/生命周期APT服务.md",
+      "size": 4244,
+      "sha256": "b7eefa0b50b0deefb372a0a6d82d35d7f1a4ca6481f9220a2a2b07a24e549eca",
+      "status": 0,
+      "units": 4,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/交接-生命周期APT服务状态/交接-生命周期APT服务状态/生命周期误报反馈流程.md",
+      "size": 2007,
+      "sha256": "7d75b1b19e1b8bf6cb76c316f22096d1c2d0c80999059748600f9e5c8d60614e",
+      "status": 0,
+      "units": 5,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/情报生产流程.png",
+      "size": 3198392,
+      "sha256": "2cbfe685133196ce012461be517c4698ea0894e41bc91f3bcb2d85cba735fe01",
+      "status": 0,
+      "units": 1,
+      "needs_ocr": 1
+    },
+    {
+      "rel": "威胁情报调研资料/自身能力/netlab码表第一版@20221103 - 副本.xlsx",
+      "size": 1551986,
+      "sha256": "7d3f554aee55090a6c0ff00cfe0d297740c71876363288451cd6c08fac0c8a71",
+      "status": 0,
+      "units": 63,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/自身能力/云查报毒/virusname_rule.pdf",
+      "size": 398403,
+      "sha256": "5624891424069862bce4c7a4e963e0184c5a47be16a5c493ed608ea6c6432d37",
+      "status": 0,
+      "units": 10,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/自身能力/云查报毒/云查字段病毒名映射关系_20220711.xlsx",
+      "size": 3089128,
+      "sha256": "59f66fa2772d852f1119a8167713400edab6299c61fb2cb3be0882f2b1c46dc3",
+      "status": 0,
+      "units": 449,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/自身能力/网盾的标签和场景.xlsx",
+      "size": 208579,
+      "sha256": "058894bea9132dc7933adb8034ecfd1b951dd68f60ef230de3fc5e5f77c82b09",
+      "status": 0,
+      "units": 3,
+      "needs_ocr": 0
+    },
+    {
+      "rel": "威胁情报调研资料/观成瞰云加密威胁智能检测系统介绍.pdf",
+      "size": 6523159,
+      "sha256": "a192bc9ff7c265dd0e9f727403752584219decd15d8dc61c260c77a9dcb98a07",
+      "status": 0,
+      "units": 26,
+      "needs_ocr": 5
+    }
+  ]
+}

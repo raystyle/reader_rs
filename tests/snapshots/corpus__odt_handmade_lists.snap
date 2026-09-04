@@ -1,0 +1,16 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+Header without a marker
+- 1 one
+- 2 two
+- 10 ten via restart
+- 11 eleven
+Interruption paragraph.
+- 12 twelve continues lstA
+--- stderr ---

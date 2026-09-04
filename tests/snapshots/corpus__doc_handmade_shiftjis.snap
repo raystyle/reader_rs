@@ -1,0 +1,11 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+こんにちは世界。
+日本語の段落です。
+--- stderr ---

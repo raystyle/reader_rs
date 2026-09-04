@@ -1,0 +1,16 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== section 1 ==
+## Style heading stays a heading
+== section 2 ==
+### Direct level overrides the style
+Direct nine turns the style heading off
+== section 3 ==
+# Direct outline without a style
+Child style nine stops inheritance
+--- stderr ---

@@ -1,0 +1,11 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+Before the object
+Embedded object: Excel.Sheet.12
+--- stderr ---

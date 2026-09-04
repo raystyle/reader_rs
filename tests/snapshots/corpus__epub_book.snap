@@ -1,0 +1,34 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== section 1 ==
+# Fixture Book
+== section 2 ==
+# Fixture Book
+anydoc tests
+<a id="epub-text-ch001-xhtml-chapter-one"></a>
+== section 3 ==
+# Chapter One
+Opening paragraph with **bold**, *italic*, and `code` runs.
+A list of things:
+1. first
+2. second
+   - nested bullet
+3. third
+See [Chapter Two](#epub-text-ch002-xhtml-chapter-two) for the table, or jump straight to [the marked paragraph](#epub-text-ch002-xhtml-markpoint).
+tiny dot tiny dot
+<a id="epub-text-ch002-xhtml-chapter-two"></a>
+== section 4 ==
+# Chapter Two
+| Name | Qty |
+| --- | --- |
+| Bolts | 12 |
+| Nuts | 30 |
+<a id="epub-text-ch002-xhtml-markpoint"></a>This paragraph carries an inline anchor and is not a heading.
+Back to [Chapter One](#epub-text-ch001-xhtml-chapter-one).
+External reference: [example site](https://example.com/ref).
+--- stderr ---

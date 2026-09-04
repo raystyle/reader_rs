@@ -1,0 +1,14 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+|  |  |  |
+| --- | --- | --- |
+| Merged across |  | padded |
+| tall | b2 | 3.5 |
+|  | b3 |  |
+--- stderr ---

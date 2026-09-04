@@ -1,0 +1,10 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== section 1 ==
+## Relocated deck title
+--- stderr ---

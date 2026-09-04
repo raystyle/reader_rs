@@ -1,0 +1,14 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== section 1 ==
+## Inherited Title Slide
+- iii. **Roman three bold via master**
+- iv. **Roman four** with bold turned off
+      - *Dash bullet italic via master level two*
+**Plain closing line**
+--- stderr ---

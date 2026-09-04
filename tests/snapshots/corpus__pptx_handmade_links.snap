@@ -1,0 +1,13 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+[Jump to the second slide](#slide-2)
+[External link](https://example.com/)
+<a id="slide-2"></a>
+Second slide content
+--- stderr ---

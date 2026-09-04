@@ -1,0 +1,11 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+Einstein wrote $E=mc^{2}$ on the board.
+Inline object: $\frac{a}{b}+\sqrt{x}$ done.
+--- stderr ---

@@ -1,0 +1,29 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== section 1 ==
+# Cascade Book
+== section 2 ==
+# Sheet A Chapter
+**Bold via sheet A.**
+See [the picture](pic.png), [the download](data.bin), [the non-linear appendix](#oebps-appendix-xhtml), or [chapter two](#oebps-ch2-xhtml).
+<a id="oebps-ch2-xhtml"></a>
+== section 3 ==
+# Sheet B Chapter
+*Italic via sheet B only.*
+~~Struck via the chapter style block.~~
+== section 4 ==
+# Cascade Chapter
+*Sheet B wins the conflict.*
+== section 5 ==
+# Specificity Chapter
+after the span
+Restored: the class rule outweighs the hiding tag rule.
+**Bold: tag.class beats the later class rule.**
+<a id="oebps-appendix-xhtml"></a>
+Non-linear content, not converted.
+--- stderr ---

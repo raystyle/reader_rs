@@ -1,0 +1,17 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== section 1 ==
+# Math Book
+== section 2 ==
+# Formulas
+Euler: $e^{i\pi} + 1 = 0$ holds.
+$$
+\sum_{k=0}^{\infty}\frac{x^{k}}{k!}=\exp\left(x\right)
+$$
+Vectors: $\vec{v}\cdot\vec{w}$.
+--- stderr ---

@@ -32,3 +32,5 @@ D43 图片文件分析 加 D44 全格式冒烟覆盖（登记日 2026-09-04；�
 | 门禁收口与提交 | 进行中 | cargo 三件加文档四件全绿后按「一次提交只做一件事」分组提交（M017 修复、D43、D44、文档对齐）；diary 钩子随提交 | 2026-09-04 |
 | D45 版本分支模型 | 已完成 | 用户裁定 dev/v 命名、FF 合并、dev/main 隔离、合并 main 打 tag 发版；ci.yml 加 dev/** 触发；AGENTS 规则 3、R008、PRD D45 同步；首条分支 dev/v0.6.0 承载分组提交 | 2026-09-04 |
 | 镜像分发幂等闸 | 已完成 | 用户裁定(2026-09-04):mirror-models 清单核心比对(排除 mirrored_at)与远端一致即零 HF 下载零 R2 上传零元数据变更;workflow 三步 skip 守卫;本机实跑 NO-CHANGE;客户端幂等回归 ocr init 完整缓存零下载(死镜像证) | 2026-09-04 |
+| 测试面扩充:官方语料全量 | 已完成 | 用户点名「测试文档与用例太少」;anydoc corpus 71 件入仓(镜像上游布局,含 malformed 负例与 abuse 滥用件);tests\corpus.rs 63 快照加负例加滥用断言(64 测 0.37s);smoke 路径随布局更新 | 2026-09-04 |
+| 测试面扩充:E:\ebook 主性能质量面 | 已完成 | 用户点名;`.tools\ebook-corpus.py`(scan/baseline/perf/verify 四模式)加 tests\ebook.rs gated 基线核验;manifest 钉 sha256 外部样本不入仓;PRD D46 | 2026-09-04 |

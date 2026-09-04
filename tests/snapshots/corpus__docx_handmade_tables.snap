@@ -1,0 +1,14 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+| Head A | Head B | Head C |
+| --- | --- | --- |
+|  |  |  |
+| legacy start<br>legacy cont |  |  |
+after the table
+--- stderr ---

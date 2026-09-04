@@ -1,0 +1,14 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== section 1 ==
+Kicker before the title
+== section 2 ==
+## Title placed second
+Body after the title
+Quarterly numbers
+--- stderr ---

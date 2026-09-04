@@ -1,7 +1,7 @@
 # R008-封版发布流程-全平台门禁验收与tag触发
 
 > 角色：**做事的流程**：从「Unreleased 有货」到「Release 资产验收」的封版发布操作手册，下次照着做。2026-09-03 用户裁定流程骨架：先本地全平台编译、全平台测试验收，后封版触发 GitHub Action 发布 release（PRD D41）；2026-09-03 D42 加镜像腿；2026-09-04 D45 加版本分支模型（dev 与 main 状态隔离）。
-> 自动化事实：`\.github\workflows\release.yml` 由 `v*` tag 推送触发，五 job（windows msvc、linux gnu、linux musl、macOS 双架构）各带「tag 与 Cargo.toml 版本一致」闸，`--locked` 构建后打包 `reader` / `rr` 双名加 README、LICENSE、SKILL.md 与 `.sha256` 上传 Release；`mirror` job 随后把资产上 R2 桶 `reader/<version>/`（immutable 头）并最后传 `reader/latest.json`（max-age=60，清单即发布提交点），支持 `workflow_dispatch` 对历史 tag 演练 [实证: release.yml]。模型镜像走 `\.github\workflows\mirror-models.yml`（每周一 03:17 UTC 加手动 dispatch：HF 四仓校验后上桶 `models/` 并传 GitHub `models-v6` 兜底 release，恒 prerelease 防 `/releases/latest` 遮蔽；幂等闸 2026-09-04 用户裁定：清单核心（repo / rev / file / sha256 / license，排除 mirrored_at）与远端 `models/manifest.json` 一致即整体跳过，零 HF 下载、零 R2 上传与元数据变更——模型只在 ppocr-rs rev 变更时才真变）[实证: mirror-models.yml 与 mirror-models.py NO-CHANGE 实跑]。
+> 自动化事实：`\.github\workflows\release.yml` 由 `v*` tag 推送触发，五 job（windows msvc、linux gnu、linux musl、macOS 双架构）各带「tag 与 Cargo.toml 版本一致」闸，`--locked` 构建后打包 `reader` / `rr` 双名加 README、LICENSE、SKILL.md 与 `.sha256` 上传 Release；`mirror` job 随后把资产上 R2 桶 `reader/<version>/`（immutable 头）并最后传 `reader/latest.json`（max-age=60，清单即发布提交点），支持 `workflow_dispatch` 对历史 tag 演练 [实证: release.yml]。模型镜像走 `\.github\workflows\mirror-models.yml`（每周一 03:17 UTC 加手动 dispatch：HF 四仓校验后上桶 `models/` 并传 GitHub `models-v6` 兜底 release，恒 prerelease 防 `/releases/latest` 遮蔽；幂等闸 2026-09-04 用户裁定：清单核心（repo / rev / file / sha256 / license，排除 mirrored_at）与远端 `models/manifest.json` 一致即整体跳过，零 HF 下载、零 R2 上传与元数据变更;模型只在 ppocr-rs rev 变更时才真变）[实证: mirror-models.yml 与 mirror-models.py NO-CHANGE 实跑]。
 
 ## 一、前置裁定
 

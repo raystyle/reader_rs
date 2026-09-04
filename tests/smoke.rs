@@ -150,15 +150,15 @@ fn all_supported_formats_extract_alive() -> TestResult {
         ("sheet.csv", "| smoke | csv |"),
         ("book.epub", "smoke epub text"),
         // anydoc 官方 fixtures（针为实测提取输出的稳定字段）
-        ("anydoc/text.odt", "Fixture Document"),
-        ("anydoc/text.rtf", "Fixture Document"),
-        ("anydoc/sheet.ods", "## Values"),
-        ("anydoc/sheet.xlsx", "## Values"),
-        ("anydoc/sheet.xls", "## Values"),
-        ("anydoc/handmade-sheet.xlsb", "| Region |"),
-        ("anydoc/pres.odp", "Deck Title Slide"),
-        ("anydoc/pres.pptx", "Deck Title Slide"),
-        ("anydoc/pres.ppt", "Deck Title Slide"),
+        ("anydoc/odt/text.odt", "Fixture Document"),
+        ("anydoc/rtf/text.rtf", "Fixture Document"),
+        ("anydoc/ods/sheet.ods", "## Values"),
+        ("anydoc/xlsx/sheet.xlsx", "## Values"),
+        ("anydoc/xls/sheet.xls", "## Values"),
+        ("anydoc/xlsb/handmade-sheet.xlsb", "| Region |"),
+        ("anydoc/odp/pres.odp", "Deck Title Slide"),
+        ("anydoc/pptx/pres.pptx", "Deck Title Slide"),
+        ("anydoc/ppt/pres.ppt", "Deck Title Slide"),
     ] {
         let path = if name.starts_with("anydoc/") {
             repo_file(&format!("tests/assets/{name}"))

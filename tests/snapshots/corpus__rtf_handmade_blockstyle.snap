@@ -1,0 +1,20 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+Body before.
+```
+fn main() {
+    println!("ok");
+}
+```
+Body between.
+> A quotation.
+>
+> Its second paragraph.
+Body after.
+--- stderr ---

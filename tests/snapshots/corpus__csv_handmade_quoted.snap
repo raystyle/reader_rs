@@ -1,0 +1,13 @@
+---
+source: tests/corpus.rs
+assertion_line: 66
+expression: snap
+---
+exit: 0
+--- stdout ---
+== part 1 ==
+| name | desc | qty |
+| --- | --- | --- |
+| padded | comma, inside | 3 |
+| plain | multi line | 4 |
+--- stderr ---
