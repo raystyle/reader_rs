@@ -40,7 +40,7 @@ reader self update
 ## 输出契约
 
 - 退出码：0 成功或命中；1 无命中（search/query）；2 出错（stderr 人读行，json 形态 stdout 另出错误包膜）。
-- text 形态：search 命中行 `单元:行号:文本`（上下文 `单元-行号-文本`，目录模式前缀 `路径:`）；extract 节头 `== page N ==` / `== section N ==` / `== part N ==`（超 200 行单元按行分片），不可靠页节头后 `[needs_ocr: 原因]` 提示行；query 逐命中输出 markdown 片段原文；figures 行式 `figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B`。
+- text 形态：search 命中行 `单元:行号:文本`（上下文 `单元-行号-文本`，目录模式前缀 `路径:`）；extract 节头 `== page N ==` / `== section N ==` / `== part N ==`（超 200 行单元按行分片），不可靠页节头后 `[needs_ocr: 原因]` 提示行；query 逐命中输出 markdown 片段原文；figures 行式 `figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B`；export 摘要行 `export: text/pages/figures/manifest <路径>`（五件套落一目录，pages/ 可 search 复用）。
 - json 形态（`--format json`，compact 单行）：`{"ok":bool,"data":...,"meta":{command,duration_ms[,next_offset,cta]}}`；`--filter` 点路径裁剪 data（如 `hits[].text`、`results[]`）。
 - needs_ocr 页（扫描件/乱码 PDF、图片文件）OCR 后仍保留标记：OCR 文本仍可能有误。
 - ocr 子命令输出行式：`ocr_init:` / `ocr_doctor:` / `ocr_switch:` 前缀、ASCII token 前置（ok / missing / corrupt / download mirror|huggingface|github / verdict）；doctor 退出码 0 为当前档双包完整、1 为有缺损；init / switch 失败为 2。

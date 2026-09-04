@@ -62,14 +62,15 @@ reader_rs/
   PRD.md / GOAL.md / PLAN.md / TODO.md / INDEX.md   四原语加总索引
   AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md / SKILL.md
   Cargo.toml / LICENSE / .rumdl.toml
-  .tools\            自定义脚本工具（md 四件门禁加 make-scan-sample / ab_run / gen-latest-json / mirror-models）
+  .tools\            自定义脚本工具（md 四件门禁加 make-scan-sample / ab_run / gen-latest-json / mirror-models / materials-corpus）
   poc\               研究原型产物（S 编号前缀子目录；产物与模型 gitignore）
   src\
-    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  mirror.rs  selfupdate.rs  query.rs
+    main.rs  lib.rs  document.rs  pdf.rs  anydoc.rs  search.rs  output.rs  introspect.rs  ocr.rs  mirror.rs  selfupdate.rs  query.rs  figures.rs
   tests\
-    cli.rs  assets\legacy.doc
-    smoke.rs / regress.rs / accept.rs   冒烟/回归/验收独立 test target（accept 为 cucumber BDD）
+    cli.rs  smoke.rs / regress.rs / accept.rs   集成加冒烟/回归/验收独立 test target（accept 为 cucumber BDD）
     snapshot.rs  snapshots\   回归层 insta 输出快照（D34）
+    corpus.rs  mirror.rs  materials.rs + manifest.json   语料快照回归 / mirror 直测 / E:\研究资料 gated 基线
+    assets\legacy.doc  assets\ocr-text.png  assets\tiny.jpg  assets\anydoc\（官方语料 71 件）
     features\  验收 Gherkin 场景（cucumber，D33）
     ab\      A/B 对比层（manifest / expectations / assets / reports）
   docs\

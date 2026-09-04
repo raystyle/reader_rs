@@ -16,7 +16,7 @@
 > 三路全绿才进封版。本机交叉编译不可行（cc-rs 缺交叉 gcc，zstd-sys 需 C 工具链），全平台编译靠实机加 CI [实证: diary 2026-09-03 全平台回归节]。
 
 1. **Windows 主开发机**：
-   - cargo 三件：`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`（含 smoke / regress / accept / snapshot 全 target；外部真样本缺失自动跳过）。
+   - cargo 三件：`cargo fmt --all -- --check`、`cargo clippy --all-targets -- -D warnings`、`cargo test --locked`（含 smoke / regress / accept / snapshot / corpus / materials / mirror 全 target；外部真样本与语料盘缺失自动跳过）。
    - 文档四件：rumdl、md-heading-scan、md-ref-scan、md-char-scan（见 G001 三节与 G004）。
    - release 构建：`cargo build --release --locked`。
 2. **lan-mac 实机**（ssh `lan-mac`，仓 `~/reader_rs`）：`git pull --ff-only` 后门禁三件（`rustup run stable cargo ...` 与 CI 同通道）加 release 构建；OCR 真样本口径见 R005。

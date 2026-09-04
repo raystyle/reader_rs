@@ -4,7 +4,7 @@
 > 来源：[firecrawl/anydoc](https://github.com/firecrawl/anydoc) `tests\fixtures\`，commit `261fc257d17c3eab0f673be31c408fd9fdc2171a`（2026-09-04 取样），MIT 许可（随 anydoc 0.2.4 依赖同源，再分发合规）。
 > 用途：`tests\smoke.rs` 全格式活体、`tests\corpus.rs` 逐件快照回归与负例断言。
 > 期望行为编码（malformed / abuse 文件名 `--<outcome>` 后缀，同上游）：`errors` 提取应失败（exit 2）、`recovers` / `skips` 容错出部分内容（exit 0）。
-> 未取：pdf 族（reader 走 pdf-inspector 非 anydoc，真样本由 E:\ebook 语料承载）与 fixture-src（fodt 等扩展名不在 reader 支持面）。
+> 未取：pdf 族（reader 走 pdf-inspector 非 anydoc，真样本由 E:\研究资料 语料承载（D46））与 fixture-src（fodt 等扩展名不在 reader 支持面）。
 
 共 71 件，sha256：
 

@@ -2,6 +2,16 @@
 
 本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
 
+## [Unreleased]
+
+> dev/v0.6.0 分支(D45 分支模型首跑):图片文件支持、图片本体与一键提取、测试面大扩、镜像幂等。
+
+- **图片文件支持（D43,S009）**：png / jpg / jpeg / bmp / gif / webp / tiff / tif 八扩展名进 extract / search（单图即单页，恒标 `[needs_ocr: image]`，`--ocr` 识别；EXIF 方向、透明底合成白底、多帧取首帧；零新依赖复用 OCR 管线）；query 拒图片指路 `--ocr`。
+- **图片本体导出与一键完整提取（D47,S010 定界：只提取存储与元数据对齐，图表模型理解已拒）**：`reader figures`（PDF 内嵌位图 XObject 直抽：DCT jpg 原字节 / Flate 按色彩空间 png；扫描页回退整页渲染；md 引用；Office 家族 zip 内嵌件；图片文件）行式 `figure:` 加 json `figures[]`（锚/图题/上下文对齐）；`reader export` 一键文本+图片+对齐元数据落一目录（manifest.json / text.md / text.json / pages/ 逐单元 / images/），`--pages` 指定页、`--ocr` 兜底，导出目录可直接 `search` 二次复用（页锚命中）。
+- **测试面大扩（D44 第 3 轮、D46）**：anydoc 官方语料 71 件全量入仓（含 malformed 负例与 abuse 滥用件），`tests\corpus.rs` 63 件全量快照加负例加滥用断言（跨平台逐字节一致）；smoke 全格式活体；E:\研究资料 576 件 4.97GB gated 质量基线（`tests\materials.rs` 加 `.tools\materials-corpus.py`，manifest 钉 sha256，性能归报告不进断言）；镜像分发幂等闸（模型无变化零 HF 下载零 R2 上传零元数据变更）加客户端幂等回归。
+- **修复**：M017 `ocr init` 对不存在缓存目录三通道 `os error 3`（建目录归 `download_file` 单一权责，ISSUE #1 大陆侧验收回执上报）。
+- **工程**：D45 版本分支模型（`main` 唯一发版源 + `dev/v<版本>` 承载开发验收 + fast-forward 合并 + CI `dev/**` 触发）；zip / lopdf 升全平台主依赖。
+
 ## [0.5.0] - 2026-09-03
 
 > 镜像分发落地（D42）：模型与升级默认走自有镜像 `reader.ohmygh.com`，国内机器首用不再卡 HuggingFace；新增 `ocr init / doctor / switch` 三子命令。
