@@ -63,7 +63,7 @@ enum Commands {
   reader search ./doc.pdf \"err(or|code)\" --regex --pages 2-10
   reader search ./docs \"配置\" --format json --filter 'hits[].file'")]
     Search {
-        /// 文档或目录路径（.pdf、.md/.markdown 及 Word / EPUB / ODT / RTF / Office / CSV 家族；目录递归批量搜）
+        /// 文档或目录路径（.pdf、.md/.markdown、图片（.png/.jpg/.bmp/.gif/.webp/.tiff 等）及 Word / EPUB / ODT / RTF / Office / CSV 家族；目录递归批量搜）
         file: PathBuf,
         /// 关键词；`--regex` 时按正则解释
         pattern: String,
@@ -85,7 +85,7 @@ enum Commands {
         /// 裁剪 JSON data 的点路径（如 hits[].text）；仅 --format json 下可用
         #[arg(long)]
         filter: Option<String>,
-        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF 单文件；首用下载约 6.2MB 模型，多核并行约 1-5 秒/页）
+        /// 对 needs_ocr 页与图片文件走 OCR 兜底（PDF 与图片单文件；首用下载约 6.2MB 模型，多核并行约 1-5 秒/页）
         #[arg(long)]
         ocr: bool,
         /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）
@@ -98,9 +98,10 @@ enum Commands {
   reader extract ./doc.pdf
   reader extract ./doc.pdf --pages 1-3,5
   reader extract ./scan.pdf --ocr
+  reader extract ./photo.jpg --ocr
   reader extract ./report.docx --format json --offset 0 --limit 5")]
     Extract {
-        /// 文档路径（.pdf、.md/.markdown 及 Word / EPUB / ODT / RTF / Office / CSV 家族）
+        /// 文档路径（.pdf、.md/.markdown、图片（.png/.jpg/.bmp/.gif/.webp/.tiff 等）及 Word / EPUB / ODT / RTF / Office / CSV 家族）
         file: PathBuf,
         /// 限定页/节范围（1 起），如 1-3,5
         #[arg(long)]
@@ -120,7 +121,7 @@ enum Commands {
         /// 最多输出 M 个单元
         #[arg(long)]
         limit: Option<usize>,
-        /// 对 needs_ocr 页走 OCR 兜底（仅 PDF；首用下载约 6.2MB 模型，多核并行约 1-5 秒/页）
+        /// 对 needs_ocr 页与图片文件走 OCR 兜底（PDF 与图片单文件；首用下载约 6.2MB 模型，多核并行约 1-5 秒/页）
         #[arg(long)]
         ocr: bool,
         /// 禁模型下载（须与 --ocr 同用；模型未就位时报错）
@@ -136,7 +137,7 @@ enum Commands {
   reader query ./doc.pdf \".code\" --format json
   reader query ./notes.md \".[] | select(contains(\\\"关键词\\\"))\" --filter 'results[]'")]
     Query {
-        /// 文档路径（.md/.markdown 原文、.pdf 及 anydoc 家族转 markdown 后查询）
+        /// 文档路径（.md/.markdown 原文、.pdf 及 anydoc 家族转 markdown 后查询；图片无文本层不支持）
         file: PathBuf,
         /// mq 表达式（完整语法见 mqlang.org）
         expression: String,
@@ -356,7 +357,7 @@ fn run_search(
             return Err("--pages 不适用于目录搜索".to_string());
         }
         if ocr.ocr {
-            return Err("--ocr 不适用于目录搜索（请对单个 PDF 文件使用）".to_string());
+            return Err("--ocr 不适用于目录搜索（请对单个 PDF 或图片文件使用）".to_string());
         }
         check_filter(opts)?;
         let matcher =
@@ -556,7 +557,7 @@ pub(crate) fn warn_unreliable(units: &[document::TextUnit], ocr: bool) {
         );
     } else {
         eprintln!(
-            "reader: 提示: {label} {list} 文本层不可靠（needs_ocr，疑似扫描件或编码问题），命中可能失真；可加 --ocr 兜底识别（仅 PDF 单文件）"
+            "reader: 提示: {label} {list} 文本层不可靠（needs_ocr，疑似扫描件、图片或编码问题），命中可能失真；可加 --ocr 兜底识别（PDF 与图片单文件）"
         );
     }
 }

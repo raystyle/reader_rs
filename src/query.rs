@@ -39,6 +39,12 @@ pub fn to_markdown(path: &Path) -> Result<String, String> {
         )
         .map_err(|e| format!("无法解析文档 {}: {e}", path.display()));
     }
+    if crate::document::is_image_ext(&ext) {
+        return Err(format!(
+            "query 不支持图片（{} 无文本层；用 extract --ocr 或 search --ocr 取图片文本）",
+            path.display()
+        ));
+    }
     Err(format!(
         "不支持的格式 {}（{}）；query 支持 .pdf、markdown（.md/.markdown）与 anydoc 家族",
         if ext.is_empty() {

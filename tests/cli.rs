@@ -1542,3 +1542,191 @@ fn dies_query_on_directory() -> TestResult {
         .stderr(predicate::str::contains("query 不支持目录"));
     Ok(())
 }
+
+// ---------- 图片文件面（D43）：八扩展名、needs_ocr 契约、--ocr 兜底 ----------
+
+/// 合成 PNG 夹具（image crate 现造，零外部资产）：黑白竖条，内容无关紧要——
+/// 本节测契约不测识别质量（识别归门控用例与 A/B 层）。
+fn make_test_png(path: &Path) -> TestResult {
+    use image::{ImageBuffer, Rgb};
+    let img = ImageBuffer::from_fn(64u32, 32u32, |x, _| {
+        if (8..40).contains(&x) {
+            Rgb([0u8, 0, 0])
+        } else {
+            Rgb([255u8, 255, 255])
+        }
+    });
+    img.save(path)?;
+    Ok(())
+}
+
+/// 图片单页契约：单图即 page 1，无 --ocr 时仅 needs_ocr 提示行；json 形态
+/// units[0] 带 kind=page、needs_ocr="image"、lines 空。
+#[test]
+fn image_extract_hints_needs_ocr_and_single_page() -> TestResult {
+    let png = pdf_path("d43-image").with_extension("png");
+    make_test_png(&png)?;
+    reader()?
+        .args(["extract"])
+        .arg(&png)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("== page 1 =="))
+        .stdout(predicate::str::contains("[needs_ocr: image]"));
+    let v = json_stdout(
+        reader()?
+            .args(["extract"])
+            .arg(&png)
+            .args(["--format", "json"]),
+    )?;
+    assert_eq!(v["data"]["units"].as_array().map(Vec::len), Some(1));
+    assert_eq!(v["data"]["units"][0]["kind"], serde_json::json!("page"));
+    assert_eq!(v["data"]["units"][0]["no"], serde_json::json!(1));
+    assert_eq!(
+        v["data"]["units"][0]["needs_ocr"],
+        serde_json::json!("image")
+    );
+    assert_eq!(v["data"]["units"][0]["lines"], serde_json::json!([]));
+    let _ = std::fs::remove_file(&png);
+    Ok(())
+}
+
+/// `--pages` 过滤只认 1：过滤掉（如 2）即空结果退出 0；json units 空。
+#[test]
+fn image_pages_filter_outside_single_page_yields_empty() -> TestResult {
+    let png = pdf_path("d43-pages").with_extension("png");
+    make_test_png(&png)?;
+    reader()?
+        .args(["extract"])
+        .arg(&png)
+        .args(["--pages", "2"])
+        .assert()
+        .success()
+        .stdout(predicate::str::is_empty());
+    let v = json_stdout(
+        reader()?
+            .args(["extract"])
+            .arg(&png)
+            .args(["--pages", "2", "--format", "json"]),
+    )?;
+    assert_eq!(v["data"]["units"], serde_json::json!([]));
+    let _ = std::fs::remove_file(&png);
+    Ok(())
+}
+
+/// search 图片无 --ocr：无命中退出 1，stderr 不可靠提示；json 形态 needs_ocr_units 报 1。
+#[test]
+fn image_search_without_ocr_exits_1_and_reports_unit() -> TestResult {
+    let png = pdf_path("d43-search").with_extension("png");
+    make_test_png(&png)?;
+    reader()?
+        .args(["search"])
+        .arg(&png)
+        .arg("zz-绝不存在的词-zz")
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("文本层不可靠"));
+    // json 形态退出码同 1（无命中），stdout 仍是合法包膜：不走 json_stdout（其断言 exit 0）
+    let out = reader()?
+        .args(["search"])
+        .arg(&png)
+        .arg("zz-绝不存在的词-zz")
+        .args(["--format", "json"])
+        .assert()
+        .code(1)
+        .get_output()
+        .stdout
+        .clone();
+    let v: serde_json::Value = serde_json::from_slice(&out).map_err(|e| {
+        format!(
+            "stdout 不是合法 JSON: {e}\n{}",
+            String::from_utf8_lossy(&out)
+        )
+    })?;
+    assert_eq!(v["data"]["hits"], serde_json::json!([]));
+    assert_eq!(v["data"]["needs_ocr_units"], serde_json::json!([1]));
+    let _ = std::fs::remove_file(&png);
+    Ok(())
+}
+
+/// query 拒图片并指路（无文本层；引导 extract --ocr / search --ocr）。
+#[test]
+fn image_query_rejected_with_guidance() -> TestResult {
+    let png = pdf_path("d43-query").with_extension("png");
+    make_test_png(&png)?;
+    reader()?
+        .args(["query"])
+        .arg(&png)
+        .arg(".h2")
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("query 不支持图片"))
+        .stderr(predicate::str::contains("--ocr"));
+    let _ = std::fs::remove_file(&png);
+    Ok(())
+}
+
+/// 八扩展名之外（如 avif）按不支持格式退出 2（分派按扩展名，与内容无关）。
+#[test]
+fn dies_unsupported_image_variant_rejected() -> TestResult {
+    let fake = pdf_path("d43-avif").with_extension("avif");
+    std::fs::write(&fake, b"not really avif")?;
+    reader()?
+        .args(["extract"])
+        .arg(&fake)
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("不支持的格式 avif"));
+    let _ = std::fs::remove_file(&fake);
+    Ok(())
+}
+
+/// 批量目录含图片：进扫描面不报错（is_supported 真源）；无 --ocr 无命中退出 1。
+#[test]
+fn image_in_batch_directory_scanned_without_hits() -> TestResult {
+    let dir = std::env::temp_dir().join(format!("reader_rs_cli_{}_d43-batch", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir)?;
+    make_test_png(&dir.join("shot.png"))?;
+    reader()?
+        .args(["search"])
+        .arg(&dir)
+        .arg("zz-绝不存在的词-zz")
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("文本层不可靠"));
+    let _ = std::fs::remove_dir_all(&dir);
+    Ok(())
+}
+
+/// 图片 --ocr 端到端（门控：READER_OCR_CACHE_DIR 指向完整 tiny 缓存才跑，CI 自动跳过）：
+/// 引擎真跑、退出 0、needs_ocr 标记保留（OCR 文本仍属不可靠，同 PDF 契约）。
+#[test]
+fn image_ocr_end_to_end_with_real_cache() -> TestResult {
+    let Some(cache) = std::env::var_os("READER_OCR_CACHE_DIR").map(PathBuf::from) else {
+        eprintln!("skip: READER_OCR_CACHE_DIR 未设（无本地模型缓存）");
+        return Ok(());
+    };
+    for name in ["tiny-det/model.safetensors", "tiny-rec/model.safetensors"] {
+        if !cache.join(name).is_file() {
+            eprintln!("skip: 缓存缺 {name}");
+            return Ok(());
+        }
+    }
+    let png = pdf_path("d43-ocr").with_extension("png");
+    make_test_png(&png)?;
+    reader()?
+        .args(["extract"])
+        .arg(&png)
+        .arg("--ocr")
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .env("READER_OCR_MODEL_SIZE", "tiny")
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .code(0)
+        .stdout(predicate::str::contains("== page 1 =="))
+        .stdout(predicate::str::contains("[needs_ocr: image]"))
+        .stderr(predicate::str::contains("已经 OCR 兜底"));
+    let _ = std::fs::remove_file(&png);
+    Ok(())
+}

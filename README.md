@@ -1,11 +1,11 @@
 # Reader
 
-Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB / Office / CSV 等 14 种格式，按页/节读、正则搜、目录批量搜；grep 语义退出码，Rust 单二进制。
+Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB / Office / CSV 等 14 种文档格式加图片（png / jpg 等 8 种），按页/节读、正则搜、目录批量搜、OCR 识图；grep 语义退出码，Rust 单二进制。
 
 [![CI](https://github.com/raystyle/reader_rs/actions/workflows/ci.yml/badge.svg)](https://github.com/raystyle/reader_rs/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-从本地 PDF、markdown 与 Office 家族文档读文本层，给 Agent 稳定可解析的输出。Rust 单二进制、单调用无交互；命令 `reader`（缩写 `rr`）。
+从本地 PDF、markdown、图片与 Office 家族文档读文本层，给 Agent 稳定可解析的输出。Rust 单二进制、单调用无交互；命令 `reader`（缩写 `rr`）。
 
 | 做什么 | 命令示例 |
 | --- | --- |
@@ -13,8 +13,8 @@ Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB 
 | 搜：字面、正则、目录批量 | `rr search ./材料 "配置" -C 2` |
 | 结构化提取：mq 表达式（jq 风格） | `reader query ./notes.md ".h2"` |
 
-- PDF 按页读；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 等 14 种格式按标题节读
-- 扫描件以 `needs_ocr` 检出，`--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2 MB 模型）
+- PDF 按页读；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 等 14 种格式按标题节读；图片文件（png / jpg / bmp / gif / webp / tiff 等 8 种扩展名）单图即单页
+- 扫描件与图片以 `needs_ocr` 检出，`--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2 MB 模型）
 - 行式标记、grep 语义退出码 0/1/2；`--format json` 包膜加 `--filter` 点路径裁剪、分页 `next_offset`
 - `--llms` 紧凑命令索引；`reader skill` 生成 SKILL.md 给编码 agent 自动发现
 
@@ -176,7 +176,7 @@ reader skill > SKILL.md
 
 ## 命令
 
-文档子命令三个：`search`（搜）、`extract`（取）与 `query`（mq 结构化提取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
+文档子命令三个：`search`（搜）、`extract`（取）与 `query`（mq 结构化提取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
 
 ### search 搜索
 
@@ -195,7 +195,7 @@ reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 | `--pages 范围` | 限定页/节（1 起），写法 `1-3,5`；仅单文件模式 |
 | `--format 形态` | `text`（行式，缺省）或 `json`（包膜） |
 | `--filter 路径` | 裁剪 JSON `data` 的点路径（如 `hits[].text`）；仅 `--format json` 下可用 |
-| `--ocr` | PDF 单文件 needs_ocr 页走 OCR 兜底（PP-OCRv6 tiny 首用下载约 6.2MB 模型进缓存目录；多核并行约 1-5 秒/页；可与 `--pages` 组合，仅对范围内 needs_ocr 页兜底；目录模式不可用） |
+| `--ocr` | PDF 与图片单文件 needs_ocr 页走 OCR 兜底（PP-OCRv6 tiny 首用下载约 6.2MB 模型进缓存目录；多核并行约 1-5 秒/页；可与 `--pages` 组合，仅对范围内 needs_ocr 页兜底；目录模式不可用） |
 | `--offline` | 禁模型下载（须与 `--ocr` 同用；模型未就位时报错） |
 
 输出格式（仿 grep，稳定可解析）：
@@ -206,7 +206,7 @@ reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 路径:单元:行号:命中行文本   目录批量模式（路径前缀；Windows 盘符冒号从右取三段解析）
 ```
 
-文档含文本层不可靠页（扫描件、编码问题，仅 PDF）时，stderr 额外出一条 `needs_ocr` 警示并列出页码；stdout 不混入提示。退出码：命中 0；无命中 1；出错（缺文件、坏参数、不支持的格式、目录无支持格式文件）2。
+文档含文本层不可靠页（扫描件、编码问题，及图片文件整页）时，stderr 额外出一条 `needs_ocr` 警示并列出页码；stdout 不混入提示。退出码：命中 0；无命中 1；出错（缺文件、坏参数、不支持的格式、目录无支持格式文件）2。
 
 示例（bash 与 pwsh 同形，Windows 路径换成反斜杠形态即可）：
 
@@ -232,9 +232,9 @@ reader extract <文件> [--pages 范围] [-o 输出文件]
 | `--filter 路径` | 裁剪 JSON `data` 的点路径（如 `units[].no`）；仅 `--format json` 下可用 |
 | `--offset N` | 跳过前 N 个单元（0 起；两形态同用），大文档分页读 |
 | `--limit M` | 最多输出 M 个单元；JSON 形态有剩余时 meta 带 `next_offset` 与 `cta` |
-| `--ocr` / `--offline` | 同 search：PDF needs_ocr 页 OCR 兜底回填正文（`needs_ocr` 标记保留） |
+| `--ocr` / `--offline` | 同 search：PDF 与图片的 needs_ocr 单元 OCR 兜底回填正文（`needs_ocr` 标记保留） |
 
-输出格式：按单元分节，节头为 `== page N ==`（PDF）、`== section N ==`（标题节）或 `== part N ==`（超过 200 行的单元按行分片：无标题整篇或超长节；P0010/P0011），随后为该单元的文本行；输出行为 markdown 形态（PDF 走 pdf-inspector 布局管线，anydoc 家族为 GFM：标题、表格、列表、代码块）。文本层不可靠页（扫描件、编码问题、乱码、空提取，仅 PDF）在节头后第一行给 `[needs_ocr: 原因]` 提示。退出码：成功 0，出错 2。
+输出格式：按单元分节，节头为 `== page N ==`（PDF 与图片）、`== section N ==`（标题节）或 `== part N ==`（超过 200 行的单元按行分片：无标题整篇或超长节；P0010/P0011），随后为该单元的文本行；输出行为 markdown 形态（PDF 走 pdf-inspector 布局管线，anydoc 家族为 GFM：标题、表格、列表、代码块）。文本层不可靠页（扫描件、编码问题、乱码、空提取，及图片文件）在节头后第一行给 `[needs_ocr: 原因]` 提示。退出码：成功 0，出错 2。
 
 示例：
 
@@ -291,10 +291,11 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 | Excel（.xls / .xlsx / .xlsm / .xlsb） | 标题节 | anydoc（表格通道） |
 | ODF 表格与演示（.ods / .odp） | 标题节 | anydoc |
 | CSV（.csv） | part 分片（200 行） | anydoc；无签名格式按扩展名识别；无标题格式天然走分片 |
+| 图片（.png / .jpg / .jpeg / .bmp / .gif / .webp / .tiff / .tif） | 页（单图即 page 1） | image crate 解码（内容嗅探、首帧、EXIF 方向、透明底合成白底）；无文本层恒标 `[needs_ocr: image]`，`--ocr` 识别（D43）；多帧动图取首帧 |
 
-选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 [S004-Word文档读取选型](docs/research/S004-Word文档读取选型-docx自解与doc直读双路线实测.md)，重构方案见 [P0009-anydoc统一文档引擎大重构](docs/proven/P0009-anydoc统一文档引擎大重构.md)。
+选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 [S004-Word文档读取选型](docs/research/S004-Word文档读取选型-docx自解与doc直读双路线实测.md)，重构方案见 [P0009-anydoc统一文档引擎大重构](docs/proven/P0009-anydoc统一文档引擎大重构.md)；图片支持零新依赖（image 0.25 已随 OCR 管线在依赖树），研究见 S009。
 
-边界：只读、不渲染、不编辑；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 单文件可加 `--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2MB 模型，多核约 1-5 秒/页，仍标 needs_ocr；P0014/P0018）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
+边界：只读、不渲染、不编辑；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 与图片单文件可加 `--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2MB 模型，多核约 1-5 秒/页，仍标 needs_ocr；P0014/P0018、D43）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
 
 ## 文档导航
 

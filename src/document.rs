@@ -38,9 +38,18 @@ pub struct OcrOpts {
     pub offline: bool,
 }
 
+/// 图片扩展名（常用八种，D43 用户裁定）：image crate 默认 features 已编入对应解码器
+/// （零新依赖）；多帧图（动图 GIF / WebP、多页 TIFF）只取首帧。
+const IMAGE_EXTS: [&str; 8] = ["png", "jpg", "jpeg", "bmp", "gif", "webp", "tiff", "tif"];
+
+/// 扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。
+pub fn is_image_ext(ext: &str) -> bool {
+    IMAGE_EXTS.contains(&ext)
+}
+
 /// 按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。
 /// PDF 直连 pdf-inspector 保页契约；anydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）
-/// 走统一引擎按标题分节（P0009）。
+/// 走统一引擎按标题分节（P0009）；图片文件无文本层，单图即单页（D43）。
 pub fn extract(
     path: &Path,
     filter: Option<&HashSet<u32>>,
@@ -53,11 +62,14 @@ pub fn extract(
     if ext == "md" || ext == "markdown" {
         return crate::anydoc::extract_markdown(path, filter);
     }
+    if is_image_ext(&ext) {
+        return extract_image(path, filter, ocr);
+    }
     if ::anydoc::Format::from_extension(&ext).is_some() {
         return crate::anydoc::extract_sections(path, filter);
     }
     Err(format!(
-        "不支持的格式 {}（{}）；当前支持 .pdf、markdown（.md/.markdown）与 anydoc 家族（.doc / .docx / .epub / .odt / .rtf / .ppt(x) / .xls(x) / .ods / .odp / .csv）",
+        "不支持的格式 {}（{}）；当前支持 .pdf、markdown（.md/.markdown）、图片（.png / .jpg / .jpeg / .bmp / .gif / .webp / .tiff / .tif）与 anydoc 家族（.doc / .docx / .epub / .odt / .rtf / .ppt(x) / .xls(x) / .ods / .odp / .csv）",
         if ext.is_empty() {
             "<无扩展名>"
         } else {
@@ -67,12 +79,37 @@ pub fn extract(
     ))
 }
 
+/// 图片文件提取（D43）：无文本层，单图即单页（page 1），单元恒带 `needs_ocr: image`
+/// 提示；`--ocr` 兜底回填 lines 后标记保留（OCR 文本仍属不可靠，同 PDF 契约）；
+/// `--pages` 过滤只认 1，过滤掉即空结果。
+fn extract_image(
+    path: &Path,
+    filter: Option<&HashSet<u32>>,
+    ocr: OcrOpts,
+) -> Result<Vec<TextUnit>, String> {
+    if filter.is_some_and(|set| !set.contains(&1)) {
+        return Ok(Vec::new());
+    }
+    let lines = if ocr.ocr {
+        crate::ocr::ocr_image(path, ocr.offline)?
+    } else {
+        Vec::new()
+    };
+    Ok(vec![TextUnit {
+        no: 1,
+        kind: UnitKind::Page,
+        lines,
+        needs_ocr: Some("image".to_string()),
+    }])
+}
+
 /// 扩展名是否命中支持面（分派与批量目录遍历共用同一真源；P0012）。
 pub fn is_supported(path: &Path) -> bool {
     let ext = ext_of(path);
     ext == "pdf"
         || ext == "md"
         || ext == "markdown"
+        || is_image_ext(&ext)
         || ::anydoc::Format::from_extension(&ext).is_some()
 }
 
