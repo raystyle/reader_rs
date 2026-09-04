@@ -1,9 +1,9 @@
 ---
 source: tests/corpus.rs
-assertion_line: 129
+assertion_line: 131
 expression: snap
 ---
 exit: 2
 --- stdout ---
 --- stderr ---
-reader: 无法解析文档 <repo>\tests/assets/anydoc\malformed/truncated--errors.docx: malformed document: not a readable zip archive: invalid Zip archive: Could not find EOCD
+reader: 无法解析文档 <fixture>: malformed document: not a readable zip archive: invalid Zip archive: Could not find EOCD

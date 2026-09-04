@@ -1,9 +1,9 @@
 ---
 source: tests/corpus.rs
-assertion_line: 129
+assertion_line: 131
 expression: snap
 ---
 exit: 2
 --- stdout ---
 --- stderr ---
-reader: 无法解析文档 <repo>\tests/assets/anydoc\malformed/encrypted--errors.odt: document is encrypted
+reader: 无法解析文档 <fixture>: document is encrypted

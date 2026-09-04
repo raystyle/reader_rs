@@ -23,9 +23,11 @@ fn fixture(rel: &str) -> PathBuf {
 }
 
 /// 一次 extract 的可快照面：退出码加 stdout 加 stderr（三者均确定性）。
-/// stderr 里的夹具绝对路径归一为 `<repo>`（仓根前缀随机器变，裸入快照 CI 必炸）。
+/// stderr 里的夹具路径整串归一为 `<fixture>`（只换仓根前缀会残留 OS 分隔符差异，
+/// 跨机快照必炸：Windows `\` 对 Unix `/`，CI 首跑实证）。
 fn extract_snapshot(rel: &str) -> TestResult<(i32, String)> {
-    let out = reader()?.args(["extract"]).arg(fixture(rel)).assert();
+    let path = fixture(rel);
+    let out = reader()?.args(["extract"]).arg(&path).assert();
     let output = out.get_output();
     let code = output.status.code().unwrap_or(-1);
     let text = format!(
@@ -33,7 +35,7 @@ fn extract_snapshot(rel: &str) -> TestResult<(i32, String)> {
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr),
     )
-    .replace(env!("CARGO_MANIFEST_DIR"), "<repo>");
+    .replace(&path.display().to_string(), "<fixture>");
     Ok((code, text))
 }
 

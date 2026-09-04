@@ -1,9 +1,9 @@
 ---
 source: tests/corpus.rs
-assertion_line: 129
+assertion_line: 131
 expression: snap
 ---
 exit: 2
 --- stdout ---
 --- stderr ---
-reader: 无法解析文档 <repo>\tests/assets/anydoc\malformed/truncated--errors.doc: malformed document: not an OLE2 compound file: Malformed FAT (FAT has 39 entries, but file has only 7 sectors)
+reader: 无法解析文档 <fixture>: malformed document: not an OLE2 compound file: Malformed FAT (FAT has 39 entries, but file has only 7 sectors)
