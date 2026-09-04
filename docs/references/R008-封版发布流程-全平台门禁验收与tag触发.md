@@ -1,11 +1,12 @@
 # R008-封版发布流程-全平台门禁验收与tag触发
 
-> 角色：**做事的流程**：从「Unreleased 有货」到「Release 资产验收」的封版发布操作手册，下次照着做。2026-09-03 用户裁定流程骨架：先本地全平台编译、全平台测试验收，后封版触发 GitHub Action 发布 release（PRD D41）；2026-09-03 D42 加镜像腿。
+> 角色：**做事的流程**：从「Unreleased 有货」到「Release 资产验收」的封版发布操作手册，下次照着做。2026-09-03 用户裁定流程骨架：先本地全平台编译、全平台测试验收，后封版触发 GitHub Action 发布 release（PRD D41）；2026-09-03 D42 加镜像腿；2026-09-04 D45 加版本分支模型（dev 与 main 状态隔离）。
 > 自动化事实：`\.github\workflows\release.yml` 由 `v*` tag 推送触发，五 job（windows msvc、linux gnu、linux musl、macOS 双架构）各带「tag 与 Cargo.toml 版本一致」闸，`--locked` 构建后打包 `reader` / `rr` 双名加 README、LICENSE、SKILL.md 与 `.sha256` 上传 Release；`mirror` job 随后把资产上 R2 桶 `reader/<version>/`（immutable 头）并最后传 `reader/latest.json`（max-age=60，清单即发布提交点），支持 `workflow_dispatch` 对历史 tag 演练 [实证: release.yml]。模型镜像走 `\.github\workflows\mirror-models.yml`（每周一 03:17 UTC 加手动 dispatch：HF 四仓校验后上桶 `models/` 并传 GitHub `models-v6` 兜底 release，恒 prerelease 防 `/releases/latest` 遮蔽）[实证: mirror-models.yml]。
 
 ## 一、前置裁定
 
 - **封版的定义：发布一个新版本**。版本号必前进（不存在不改版本号的封版）；封版件、tag 与 Release 资产同属一次发布，全平台验收绿是唯一放行条件。
+- **分支模型（D45，2026-09-04 用户裁定）**：`main` 为稳定主干与唯一发版源（tag 只在 main 打）；每个版本一条 `dev/v<版本>` 开发分支承载该版全部工作与验收，状态与 main 隔离；CI 对 `dev/**` 推送触发。验收全绿后 fast-forward 合并 main、main 上打 tag 触发发布、分支即删。发版窗口内 main 冻结（不直接提交，保 fast-forward 可达；确需动 main 先 rebase dev 线）。
 - Unreleased 有条目才封版；空则不发布。
 - 版本号：能力新增或行为变化取 `0.x.0`，修复取 `0.x.y`；与 ROADMAP 阶段对照。
 - 发布通道只走 stable（self update 同口径，不做自动更新）。
@@ -20,7 +21,7 @@
    - release 构建：`cargo build --release --locked`。
 2. **lan-mac 实机**（ssh `lan-mac`，仓 `~/reader_rs`）：`git pull --ff-only` 后门禁三件（`rustup run stable cargo ...` 与 CI 同通道）加 release 构建；OCR 真样本口径见 R005。
 3. **lan-linux 实机**（ssh `lan-linux`，仓 `~/reader_rs`）：同上，口径见 R004；默认工具链 1.97 曾对新依赖连爆 rustc ICE，一律 `rustup run stable` [实证: diary 2026-09-03 全平台实机回归节]。
-4. **CI**：main 推送后三系统 run 绿（fmt / clippy / test --locked）。
+4. **CI**：dev 分支（`dev/**`）与 main 推送后三系统 run 绿（fmt / clippy / test --locked）；dev 分支即版本分支的 CI 验收面。
 
 纪律：验收命令不接 `| tail` 之类管道（吞非零退出码，M006）；实机命令用阶段标记串（`&& echo STAGE-OK`）逐段确认。
 
@@ -30,13 +31,17 @@
 2. `CHANGELOG.md` `[Unreleased]` 节改 `[<版本>] - <日期>`，正文只留版本级里程碑（本文件头规则）。
 3. SKILL 重生：`cargo build --quiet` 后 bash 里 `./target/debug/reader.exe skill > SKILL.md`（Windows 显式 `.exe`：target 可能残留无扩展名旧 Linux 产物，且 PowerShell `>` 转 CRLF，M014；SKILL 含版本号；`cargo test` 不重建 target/debug 二进制，须先 build [实证: diary 2026-09-03 SKILL 重构节]）。
 4. insta 快照复审：`--llms` 快照含版本号，`cargo test --test snapshot` 出 `.snap.new`，逐个人工审后改名入库（insta 纪律，D34）。
-5. 门禁复跑（本机 cargo 三件加文档四件）全绿后一次提交：`chore: 封版 v<版本>`。
+5. 门禁复跑（本机 cargo 三件加文档四件）全绿后在 dev 分支一次提交：`chore: 封版 v<版本>`。
 
-## 四、tag 触发发布
+## 四、合并 main 与 tag 触发发布
 
 ```bash
+# dev 分支验收全绿后：fast-forward 合并 main、打 tag、推送（tag 推送即触发 release.yml）
+git checkout main
+git merge --ff-only dev/v<版本>
 git tag v<版本>
-git push origin main v<版本>     # tag 推送即触发 release.yml
+git push origin main v<版本>
+git branch -d dev/v<版本> && git push origin --delete dev/v<版本>   # 分支即删
 ```
 
 ## 五、发布验收

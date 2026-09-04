@@ -15,3 +15,7 @@ poc/**/target/
 poc/**/models/
 poc/**/out/
 poc/**/vendor*/
+
+# 工具运行时杂项
+.ohmyagents/
+.tools/__pycache__/
