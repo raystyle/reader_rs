@@ -35,3 +35,5 @@ D43 图片文件分析 加 D44 全格式冒烟覆盖（登记日 2026-09-04；�
 | 测试面扩充:官方语料全量 | 已完成 | 用户点名「测试文档与用例太少」;anydoc corpus 71 件入仓(镜像上游布局,含 malformed 负例与 abuse 滥用件);tests\corpus.rs 63 快照加负例加滥用断言(64 测 0.37s);smoke 路径随布局更新 | 2026-09-04 |
 | 测试面扩充:E:\ebook 主性能质量面 | 已完成(后被第 2 轮裁定替换) | 用户点名;`.tools\ebook-corpus.py`(scan/baseline/perf/verify 四模式)加 tests\ebook.rs gated 基线核验;manifest 钉 sha256 外部样本不入仓;PRD D46 | 2026-09-04 |
 | D46 第 2 轮:弃 ebook 改研究资料 | 已完成 | 用户裁定;机制平移改名 materials(`.tools\materials-corpus.py` 加 tests\materials.rs),默认根 E:\研究资料(575 件 5.4GB);ebook manifest 与基线删除 | 2026-09-04 |
+| D47 图片本体提取与元数据对齐 | 已完成 | S010 定界(只提取存储,模型理解已拒);figures 子命令四路(PDF 页渲染 PNG+图题对齐、md 引用、anydoc zip 内嵌件、图片文件);cli 4 例+单测 2 例;SKILL/README/AGENTS/introspect 同步;真机四路活体+研究资料页实测 | 2026-09-04 |
+| D47-T2 图表几何还原 PoC | 已完成 | poc\s010-chart-geometry:年份轴融合串切分与文本盒分离成立,数值配列两难点(变长小数粘串、双系列列偏移)未达精度;裁定暂不进主仓 | 2026-09-04 |

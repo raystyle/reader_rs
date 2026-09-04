@@ -16,4 +16,5 @@
 | 目录 | 对应研究 | 内容 | 状态 |
 | --- | --- | --- | --- |
 | `s006-ocr-mobile\` | S006 | hayro 渲染加 pure-onnx-ocr 跑 PP-OCRv5 mobile 的端到端 PoC（src 加 strip_value_info.py） | 已退役：P0014 转正后被 P0018 换引擎取代；vendor-poon 与 models 未入仓 |
+| `s010-chart-geometry\` | S010 | ppocr-rs polygon 盒子几何配对还原图表数据（对安全相似系统学.pdf 图1-1 实测；src 加 Cargo.toml 加 README） | 活跃（D47 T2 验证） |
 | （上游 clone 指针） | S008 | ppocr-rs 实测 clone（rev d07857c，BENCHMARK 与四配置对比）；源码不入仓，结论见 S008 | 已转正：P0018 入依赖树 |

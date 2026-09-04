@@ -44,6 +44,7 @@
 | `src\mirror.rs` | 镜像源链与清单（D42）：四包 pin 表（与 ppocr-rs rev 同步换，单测钉）、三级回退单件下载（`.part` 加校验加 rename）、只读 assess、latest.json 拉取解析；`READER_MIRROR` 覆盖基址 |
 | `src\selfupdate.rs` | self update（P0015、D42 加镜像通道）：镜像 latest.json 优先、GitHub API 加 gh api 兜底、版本判新、资产 sha256 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
 | `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤；图片拒入并指路 --ocr（D43） |
+| `src\figures.rs` | 图片本体导出与文本元数据对齐（D47）：PDF 页渲染 PNG（hayro，图题从页文本对齐）、md 引用复制、anydoc zip 内嵌件直读、图片文件自复制；`figure:` 行式与 json figures[]；不做图表模型理解（S010 T3 已拒） |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
 | `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；accept 为 cucumber BDD，场景 tests\features\，D33；smoke 自 D44 起全格式活体：现造 pdf/md/csv/epub 加 anydoc 官方语料九族；G006 载体规则） |
 | `tests\snapshot.rs` | 回归层 insta 输出快照（extract 全量、search 命中格式、--llms；快照在 tests\snapshots\，D34） |
@@ -128,6 +129,7 @@ reader_rs/
 | S007 | `S007-markdown支持选型-学习mq嵌mq-lang全引擎加零依赖分节.md` | markdown 支持选型（学习 mq，已落地 P0016） |
 | S008 | `S008-OCR质量升级-ppocr-rs的PP-OCRv6原生内核双优胜出现管线换引擎.md` | OCR 质量升级（v6 tiny 双优，已落地 P0018） |
 | S009 | `S009-图片文件支持-image直依赖零新增与OCR管线复用.md` | 图片文件支持（零新依赖复用 OCR 管线，四裁已落地 D43） |
+| S010 | `S010-图片本体处理-提取存储与文本元数据对齐.md` | 图片本体处理（提取存储与文本元数据对齐定界；T3 模型已拒；T1 落地 D47、T2 PoC poc\s010-chart-geometry） |
 
 ## 六、references：做事的流程
 

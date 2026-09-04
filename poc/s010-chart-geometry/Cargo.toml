@@ -1,0 +1,12 @@
+[package]
+name = "s010-chart-geometry"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# PoC 独立构建,依赖面与主仓同源同 rev(S010 纪律:零件复用主仓已实证版本)
+
+[dependencies]
+hayro = "0.7"
+ppocr-rs = { git = "https://github.com/weidix/ppocr-rs", rev = "d07857c35457f90bb8df92e245f614cdc3d5e236" }
+image = "0.25"
