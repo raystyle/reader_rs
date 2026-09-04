@@ -1,6 +1,6 @@
 # Reader
 
-Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB / Office / CSV 等 14 种文档格式加图片（png / jpg 等 8 种），按页/节读、正则搜、目录批量搜、OCR 识图；grep 语义退出码，Rust 单二进制。
+Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB / Office / CSV 等 14 种文档格式加图片（png / jpg 等 8 种），按页/节读、正则搜、目录批量搜、OCR 识图、图片本体与元数据一键导出；grep 语义退出码，Rust 单二进制。
 
 [![CI](https://github.com/raystyle/reader_rs/actions/workflows/ci.yml/badge.svg)](https://github.com/raystyle/reader_rs/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -178,7 +178,7 @@ reader skill > SKILL.md
 
 ## 命令
 
-文档子命令四个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）与 `figures`（图片本体导出）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
+文档子命令五个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）、`figures`（图片本体导出）与 `export`（一键完整提取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
 
 ### search 搜索
 
@@ -188,7 +188,7 @@ reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 
 | 参数 | 说明 |
 | --- | --- |
-| `<文件>` | 文档路径（.pdf 及 anydoc 家族，见「支持格式」） |
+| `<文件>` | 文档路径（全格式面：pdf、markdown、图片与 anydoc 家族，见「支持格式」） |
 | `<目录>` | 递归批量搜支持格式：text 命中行 `路径:单元:行号:文本`；json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped`；坏文件 stderr 跳过后继续；`--pages` 不可用 |
 | `<关键词>` | 字面匹配串；`--regex` 时按正则解释 |
 | `--regex` | 按正则匹配（regex crate 语法） |
@@ -227,7 +227,7 @@ reader extract <文件> [--pages 范围] [-o 输出文件]
 
 | 参数 | 说明 |
 | --- | --- |
-| `<文件>` | 文档路径（.pdf 及 anydoc 家族，见「支持格式」） |
+| `<文件>` | 文档路径（全格式面：pdf、markdown、图片与 anydoc 家族，见「支持格式」） |
 | `--pages 范围` | 限定页/节（1 起），写法 `1-3,5`；缺省全部 |
 | `-o`, `--out 文件` | 写入文件；缺省输出到 stdout |
 | `--format 形态` | `text`（行式，缺省）或 `json`（包膜） |
@@ -257,28 +257,6 @@ reader query <文件> <mq表达式> [--format text|json] [--filter 路径]
 ```bash
 reader query ./README.md ".h2"
 reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json --filter 'results[]'
-```
-
-## JSON 输出
-
-`--format json` 给 Agent 结构化包膜（compact 单行）：
-
-```text
-成功：{"ok":true,"data":<数据>,"meta":{"command":...,"duration_ms":...}}
-失败：{"ok":false,"error":"<原因>","meta":{...}}   # stdout 出包膜，stderr 仍出人读行，退出码不变
-```
-
-- search 的 `data`：`hits[]`（`unit` / `line` / `text` / `before[]` / `after[]`）加 `needs_ocr_units[]`（不可靠页序号）。无命中是 `ok:true` 加空 `hits`，退出码仍 1（`ok` 表执行成败，与命中有无分轨）。
-- extract 的 `data`：`units[]`（`kind` / `no` / `needs_ocr` / `lines[]`）。
-- query 的 `data`：`results[]`（mq 命中的 markdown 片段）加 `count`。
-- figures 的 `data`：`figures[]`（`kind` / `anchor` / `caption` / `context[]` / `file` / `bytes` / `format`）加 `count`。
-- 分页：`--offset/--limit` 后 meta 有剩余时附 `next_offset` 与 `cta`（下一条可直接执行的命令）。
-- `--filter` 点路径裁剪 `data`（包膜保留）：`hits[].text`（数组映射）、`units[0].lines`（下标）、`hits[].unit` 等键访问链；非法路径报错退出 2，不静默。
-
-```bash
-reader search ./doc.pdf "error" --format json
-reader search ./doc.pdf "error" --format json --filter 'hits[].unit'
-reader extract ./doc.pdf --format json --offset 0 --limit 20
 ```
 
 ### figures：图片本体导出与元数据对齐（D47）
@@ -320,6 +298,28 @@ reader search ./paper-export/ "certificate" -i
 # paper-export\pages\p0009.md:1:3:certificates
 ```
 
+## JSON 输出
+
+`--format json` 给 Agent 结构化包膜（compact 单行）：
+
+```text
+成功：{"ok":true,"data":<数据>,"meta":{"command":...,"duration_ms":...}}
+失败：{"ok":false,"error":"<原因>","meta":{...}}   # stdout 出包膜，stderr 仍出人读行，退出码不变
+```
+
+- search 的 `data`：`hits[]`（`unit` / `line` / `text` / `before[]` / `after[]`）加 `needs_ocr_units[]`（不可靠页序号）。无命中是 `ok:true` 加空 `hits`，退出码仍 1（`ok` 表执行成败，与命中有无分轨）。
+- extract 的 `data`：`units[]`（`kind` / `no` / `needs_ocr` / `lines[]`）。
+- query 的 `data`：`results[]`（mq 命中的 markdown 片段）加 `count`。
+- figures 的 `data`：`figures[]`（`kind` / `anchor` / `caption` / `context[]` / `file` / `bytes` / `format`）加 `count`。
+- 分页：`--offset/--limit` 后 meta 有剩余时附 `next_offset` 与 `cta`（下一条可直接执行的命令）。
+- `--filter` 点路径裁剪 `data`（包膜保留）：`hits[].text`（数组映射）、`units[0].lines`（下标）、`hits[].unit` 等键访问链；非法路径报错退出 2，不静默。
+
+```bash
+reader search ./doc.pdf "error" --format json
+reader search ./doc.pdf "error" --format json --filter 'hits[].unit'
+reader extract ./doc.pdf --format json --offset 0 --limit 20
+```
+
 ## 支持格式
 
 | 格式 | 单元 | 引擎与说明 |
@@ -337,7 +337,7 @@ reader search ./paper-export/ "certificate" -i
 
 选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 [S004-Word文档读取选型](docs/research/S004-Word文档读取选型-docx自解与doc直读双路线实测.md)，重构方案见 [P0009-anydoc统一文档引擎大重构](docs/proven/P0009-anydoc统一文档引擎大重构.md)；图片支持零新依赖（image 0.25 已随 OCR 管线在依赖树），研究见 S009。
 
-边界：只读、不渲染、不编辑；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 与图片单文件可加 `--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2MB 模型，多核约 1-5 秒/页，仍标 needs_ocr；P0014/P0018、D43）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
+边界：只读、不编辑（图片本体导出走 PDF 内嵌件直抽与扫描页渲染，D47）；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 与图片单文件可加 `--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2MB 模型，多核约 1-5 秒/页，仍标 needs_ocr；P0014/P0018、D43）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
 
 ## 文档导航
 
@@ -357,6 +357,7 @@ reader search ./paper-export/ "certificate" -i
 - [anydoc](https://crates.io/crates/anydoc)（firecrawl，MIT）：Word / EPUB / ODT / RTF / Office / CSV 家族统一文档引擎
 - [mq](https://github.com/harehare/mq)（harehare，MIT）：jq 风格 markdown 查询，`query` 子命令内核
 - [ppocr-rs](https://github.com/weidix/ppocr-rs) 与 [hayro](https://crates.io/crates/hayro)：OCR 兜底的原生 CPU 内核与 PDF 渲染；模型来自 [PaddlePaddle PP-OCRv6](https://huggingface.co/PaddlePaddle)
+- [lopdf](https://github.com/J-F-Liu/lopdf)：PDF 内嵌位图直抽（figures，D47）
 - [clap](https://github.com/clap-rs/clap) / [serde](https://serde.rs) / [ureq](https://github.com/algesten/ureq)：CLI、序列化与下载基建
 
 ## License
