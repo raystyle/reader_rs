@@ -22,6 +22,10 @@ reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json
 # 图片本体导出（与文本元数据对齐：锚/图题/上下文；交给多模态模型分析）
 reader figures ./scan.pdf --pages 12-32
 reader figures ./report.docx --format json --filter 'figures[].anchor'
+# 一键完整提取：文本+图片+对齐元数据落一目录；导出目录可直接 search 二次复用
+reader export ./paper.pdf
+reader export ./scan.pdf --pages 12-32 --ocr
+reader search ./paper-export/ "certificate"
 # 扫描件/乱码层 PDF 与图片文件：OCR 兜底（PDF 与图片单文件；首用下载约 6.2MB 模型）
 reader extract ./scan.pdf --ocr
 reader extract ./photo.jpg --ocr
@@ -45,5 +49,5 @@ reader self update
 
 - `reader --llms`：紧凑命令索引（省 token）。
 - `reader <子命令> --help`：该命令的全部参数与示例（如 `reader query --help`）。
-- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；figures `[--pages] [-o|--out] [--format] [--filter]`；self update `[--force]`；ocr init `[--size tiny|small] [--offline]`；ocr doctor 无参；ocr switch `<tiny|small>`。
+- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；figures `[--pages] [-o|--out] [--format] [--filter]`；export `[--pages] [-o|--out] [--ocr] [--offline]`；self update `[--force]`；ocr init `[--size tiny|small] [--offline]`；ocr doctor 无参；ocr switch `<tiny|small>`。
 - 完整说明见 README.md。

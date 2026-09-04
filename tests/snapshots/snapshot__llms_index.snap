@@ -7,7 +7,8 @@ reader v0.5.0 — Agent 原生文档阅读、搜索和提取工具（PDF 按页�
 reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径] [--ocr] [--offline]
 reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M] [--ocr] [--offline]
 reader query <文件> <mq表达式> [--format text|json] [--filter 路径] — mq 结构化提取（.h2/.code/.link/select 管道；全格式面转 markdown 后查询）
-reader figures <文件> [--pages 范围] [-o|--out 目录] [--format text|json] [--filter 路径] — 图片本体导出与文本元数据对齐（PDF 按页 PNG、md 图片引用、Office 家族内嵌件、图片文件；有图 0 / 无图 1 / 出错 2）
+reader figures <文件> [--pages 范围] [-o|--out 目录] [--format text|json] [--filter 路径] — 图片本体导出与文本元数据对齐（PDF 内嵌图直抽+扫描页渲染、md 图片引用、Office 家族内嵌件、图片文件；有图 0 / 无图 1 / 出错 2）
+reader export <文件> [--pages 范围] [-o|--out 目录] [--ocr] [--offline] — 一键完整提取：文本加图片加对齐元数据落一目录（text.md / text.json / pages/ 逐单元 / images/ / manifest.json）；导出目录可直接 search 二次复用（命中行带 pages/pNNNN.md 页锚）
 reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
 reader self update [--force] — 自升级（镜像 latest.json 优先、回退 GitHub Releases；资产 sha256 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 reader ocr init [--size tiny|small] [--offline] — 下载/修复 OCR 模型进缓存（镜像 到 HF 到 GitHub Releases 三级回退；--offline 只校验不下载）

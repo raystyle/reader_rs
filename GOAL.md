@@ -22,6 +22,7 @@
 
 | 日期 | 进展 |
 | --- | --- |
+| 2026-09-04 | **D47 第 3/4 轮:export 一键完整提取与 PDF 内嵌图直抽（用户点名）**:一键文本+图片+对齐元数据落一目录(text.md/text.json/pages/ 逐单元 markdown 支持 search 二次复用/images//manifest.json,`--pages` 指定页,`--ocr` 兜底);figures v1.1 内嵌位图 XObject 直抽(DCT jpg 原字节、Flate 按色彩空间 png,内联与引用两形态;扫描页才回退整页渲染);真机:certmitm 论文 28 件内嵌图、扫描书页渲染、EPUB 347 节 26 图 export 全通、二次搜索命中带页锚 |
 | 2026-09-04 | **D47 图片本体提取与元数据对齐落地（S010 定界）**：用户追问「图 1-1 呢」引出研究,两轮追问定界「只负责提取存储图片,和文本元数据对齐」(T3 模型理解已拒);`reader figures` 子命令四路(PDF 页渲染 PNG 加图题/上下文对齐、md 引用、anydoc zip 内嵌件、图片文件原字节),行式 `figure:` 与 json figures[];T2 几何还原 PoC 实测「机制可行数值配列不足」暂不进主仓(poc\s010-chart-geometry);单测 2 加 cli 4 例;真机四路加研究资料书页实测;AGENTS 边界与 README/SKILL/introspect/G006/INDEX 同步 |
 | 2026-09-04 | **D45 版本分支模型落地（用户裁定）**：`main` 稳定主干唯一发版源、`dev/v<版本>` 承载开发与验收（状态隔离）、CI 加 `dev/**` 触发、验收全绿 fast-forward 合并 main 打 tag 发布、发版窗口 main 冻结；AGENTS 规则 3、R008、PRD D45 同步；首条分支 `dev/v0.6.0` 承载 M017 加 D43 加 D44 分组提交 |
 | 2026-09-04 | **D43 / D44 实现与测试完成（待门禁收口）**：图片八扩展名进 extract / search（`ocr_image`：内容嗅探、首帧、EXIF 方向、alpha 白底；`build_engine` 抽出共用，PDF 行为零变化；query 拒图片指路 --ocr；本机 GDI+ 文字图端到端全识）；smoke 全格式活体落地（anydoc 官方 fixtures 九族入仓 `tests\assets\anydoc\`，ppt 二进制族与 xls / xlsb 变体零覆盖缺口消灭，5 项 0.3 秒全绿）；cli 集成图片 7 例、M017 回归 target；S009 落盘、PRD D43 / D44 已采纳、AGENTS 边界与 README / SKILL / introspect / G006 / INDEX 同步。另：D42 收尾 M017 修复（`download_file` 自建父目录）当日早间完成，红态实证复现 |

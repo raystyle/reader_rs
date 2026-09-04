@@ -13,6 +13,7 @@ Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB 
 | 搜：字面、正则、目录批量 | `rr search ./材料 "配置" -C 2` |
 | 结构化提取：mq 表达式（jq 风格） | `reader query ./notes.md ".h2"` |
 | 取图：图片本体导出与元数据对齐 | `reader figures ./scan.pdf --pages 12-32` |
+| 一键：文本+图片+元数据落一目录 | `reader export ./paper.pdf --ocr` |
 
 - PDF 按页读；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 等 14 种格式按标题节读；图片文件（png / jpg / bmp / gif / webp / tiff 等 8 种扩展名）单图即单页
 - 扫描件与图片以 `needs_ocr` 检出，`--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2 MB 模型）
@@ -286,9 +287,9 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 
 | 路径 | 行为 |
 | --- | --- |
-| PDF | 按页渲染 PNG（`--pages` 过滤；扫描书整页即图本体）；图题与上下文从页文本层对齐（扫描页无文本层则图题为空，配合 `--ocr` 文本可对） |
+| PDF | 优先内嵌位图直抽（DCT 原字节 jpg、Flate 按色彩空间解码 png；论文插图的正确本体）；页无内嵌图且是扫描页才回退整页渲染 PNG；图题与上下文从页文本层对齐 |
 | markdown | 解析 `![alt](path)` 引用并复制（悬空跳过；远程引用不抓取）；alt 即图题 |
-| anydoc 家族 | zip 直读内嵌图片部件原字节（锚为部件路径；legacy 二进制容器族 v1 无图可导） |
+| anydoc 家族 | zip 直读内嵌图片部件原字节（锚为部件路径；EPUB 封面与插图即此路；legacy 二进制容器族 v1 无图可导） |
 | 图片文件 | 本体即自身，原字节复制 |
 
 输出行式 `figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B`；退出码：有图 0 / 无图 1 / 出错 2。缺省输出目录 `<文件名>-figures/`。
@@ -296,6 +297,27 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 ```bash
 reader figures ./scan.pdf --pages 12-32
 reader figures ./report.docx --format json --filter 'figures[].anchor'
+```
+
+### export：一键完整提取（D47）
+
+`reader export <文件> [--pages] [--out DIR] [--ocr] [--offline]`：文本、图片与对齐元数据一次落一个目录
+
+```text
+<文件名>-export/
+  manifest.json   对齐索引：units（no/kind/needs_ocr/行数/page_file）与 figures（锚/图题/文件）
+  text.md         连续全文（extract text 同形态）        text.json  units 全量（机器用）
+  pages/p0001.md  逐单元文本（markdown，支持格式）
+  images/         图本体（figures 同源：PDF 内嵌图 / 扫描页渲染 / Office 内嵌件）
+```
+
+导出目录可直接 `search` 二次复用（pages/ 是 markdown，命中行带 `pages/p0012.md` 页锚即回原文档定位）：
+
+```bash
+reader export ./paper.pdf --ocr
+reader export ./book.epub --out ./book-everything
+reader search ./paper-export/ "certificate" -i
+# paper-export\pages\p0009.md:1:3:certificates
 ```
 
 ## 支持格式

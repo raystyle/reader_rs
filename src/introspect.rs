@@ -11,7 +11,8 @@ reader v{v} — Agent 原生文档阅读、搜索和提取工具（PDF 按页；
 reader search <文件|目录> <关键词> [--regex] [-i|--ignore-case] [-C|--context N] [--pages 范围] [--format text|json] [--filter 路径] [--ocr] [--offline]
 reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] [--filter 路径] [--offset N] [--limit M] [--ocr] [--offline]
 reader query <文件> <mq表达式> [--format text|json] [--filter 路径] — mq 结构化提取（.h2/.code/.link/select 管道；全格式面转 markdown 后查询）
-reader figures <文件> [--pages 范围] [-o|--out 目录] [--format text|json] [--filter 路径] — 图片本体导出与文本元数据对齐（PDF 按页 PNG、md 图片引用、Office 家族内嵌件、图片文件；有图 0 / 无图 1 / 出错 2）
+reader figures <文件> [--pages 范围] [-o|--out 目录] [--format text|json] [--filter 路径] — 图片本体导出与文本元数据对齐（PDF 内嵌图直抽+扫描页渲染、md 图片引用、Office 家族内嵌件、图片文件；有图 0 / 无图 1 / 出错 2）
+reader export <文件> [--pages 范围] [-o|--out 目录] [--ocr] [--offline] — 一键完整提取：文本加图片加对齐元数据落一目录（text.md / text.json / pages/ 逐单元 / images/ / manifest.json）；导出目录可直接 search 二次复用（命中行带 pages/pNNNN.md 页锚）
 reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
 reader self update [--force] — 自升级（镜像 latest.json 优先、回退 GitHub Releases；资产 sha256 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 reader ocr init [--size tiny|small] [--offline] — 下载/修复 OCR 模型进缓存（镜像 到 HF 到 GitHub Releases 三级回退；--offline 只校验不下载）
@@ -57,6 +58,10 @@ reader query ./notes.md \".[] | select(contains(\\\"配置\\\"))\" --format json
 # 图片本体导出（与文本元数据对齐：锚/图题/上下文；交给多模态模型分析）
 reader figures ./scan.pdf --pages 12-32
 reader figures ./report.docx --format json --filter 'figures[].anchor'
+# 一键完整提取：文本+图片+对齐元数据落一目录；导出目录可直接 search 二次复用
+reader export ./paper.pdf
+reader export ./scan.pdf --pages 12-32 --ocr
+reader search ./paper-export/ \"certificate\"
 # 扫描件/乱码层 PDF 与图片文件：OCR 兜底（PDF 与图片单文件；首用下载约 6.2MB 模型）
 reader extract ./scan.pdf --ocr
 reader extract ./photo.jpg --ocr
@@ -80,7 +85,7 @@ reader self update
 
 - `reader --llms`：紧凑命令索引（省 token）。
 - `reader <子命令> --help`：该命令的全部参数与示例（如 `reader query --help`）。
-- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；figures `[--pages] [-o|--out] [--format] [--filter]`；self update `[--force]`；ocr init `[--size tiny|small] [--offline]`；ocr doctor 无参；ocr switch `<tiny|small>`。
+- 参数速查：search `[--regex] [-i|--ignore-case] [-C|--context N] [--pages] [--format] [--filter] [--ocr] [--offline]`；extract `[--pages] [-o|--out] [--format] [--filter] [--offset] [--limit] [--ocr] [--offline]`；query `[--format] [--filter]`；figures `[--pages] [-o|--out] [--format] [--filter]`；export `[--pages] [-o|--out] [--ocr] [--offline]`；self update `[--force]`；ocr init `[--size tiny|small] [--offline]`；ocr doctor 无参；ocr switch `<tiny|small>`。
 - 完整说明见 README.md。
 "
     )

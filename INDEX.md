@@ -44,7 +44,7 @@
 | `src\mirror.rs` | 镜像源链与清单（D42）：四包 pin 表（与 ppocr-rs rev 同步换，单测钉）、三级回退单件下载（`.part` 加校验加 rename）、只读 assess、latest.json 拉取解析；`READER_MIRROR` 覆盖基址 |
 | `src\selfupdate.rs` | self update（P0015、D42 加镜像通道）：镜像 latest.json 优先、GitHub API 加 gh api 兜底、版本判新、资产 sha256 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
 | `src\query.rs` | mq 结构化提取（P0016）：格式转 markdown 文本（md 原文/anydoc GFM/PDF 管线）加 mq-lang eval，空渲染过滤；图片拒入并指路 --ocr（D43） |
-| `src\figures.rs` | 图片本体导出与文本元数据对齐（D47）：PDF 页渲染 PNG（hayro，图题从页文本对齐）、md 引用复制、anydoc zip 内嵌件直读、图片文件自复制；`figure:` 行式与 json figures[]；不做图表模型理解（S010 T3 已拒） |
+| `src\figures.rs` | 图片本体导出与文本元数据对齐（D47）：PDF 内嵌位图 XObject 直抽（DCT jpg 原字节 / Flate 按色彩空间解码 png；扫描页回退 hayro 整页渲染；图题从页文本对齐）、md 引用复制、anydoc zip 内嵌件直读、图片文件自复制；`figure:` 行式与 json figures[]；不做图表模型理解（S010 T3 已拒） |
 | `tests\cli.rs` | CLI 集成冒烟与正负例（夹具现造；legacy .doc 仓内资产） |
 | `tests\smoke.rs` / `regress.rs` / `accept.rs` | 冒烟/回归/验收三层 cargo 独立 test target（D31 第 2 轮；accept 为 cucumber BDD，场景 tests\features\，D33；smoke 自 D44 起全格式活体：现造 pdf/md/csv/epub 加 anydoc 官方语料九族；G006 载体规则） |
 | `tests\snapshot.rs` | 回归层 insta 输出快照（extract 全量、search 命中格式、--llms；快照在 tests\snapshots\，D34） |
@@ -54,6 +54,7 @@
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
 | `tests\assets\anydoc\` | anydoc 官方测试 fixtures 语料 71 件全量非 pdf corpus（firecrawl/anydoc@261fc25，MIT，镜像上游布局；含 malformed 负例与 abuse 滥用件；来源与 sha256 见目录内 README，D44 第 3 轮扩全量） |
 | `tests\assets\ocr-text.png` | 图片 OCR 端到端门控资产（GDI+ 现造 480x140 文字图 READER SMOKE 12345，tiny 档实测全识；D43） |
+| `tests\assets\tiny.jpg` | figures 内嵌图直抽测试资产（GDI+ 现造 4x4 JPEG，DCT 原字节断言用；D47） |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
 
 ```text

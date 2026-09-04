@@ -36,4 +36,5 @@ D43 图片文件分析 加 D44 全格式冒烟覆盖（登记日 2026-09-04；�
 | 测试面扩充:E:\ebook 主性能质量面 | 已完成(后被第 2 轮裁定替换) | 用户点名;`.tools\ebook-corpus.py`(scan/baseline/perf/verify 四模式)加 tests\ebook.rs gated 基线核验;manifest 钉 sha256 外部样本不入仓;PRD D46 | 2026-09-04 |
 | D46 第 2 轮:弃 ebook 改研究资料 | 已完成 | 用户裁定;机制平移改名 materials(`.tools\materials-corpus.py` 加 tests\materials.rs),默认根 E:\研究资料(575 件 5.4GB);ebook manifest 与基线删除 | 2026-09-04 |
 | D47 图片本体提取与元数据对齐 | 已完成 | S010 定界(只提取存储,模型理解已拒);figures 子命令四路(PDF 页渲染 PNG+图题对齐、md 引用、anydoc zip 内嵌件、图片文件);cli 4 例+单测 2 例;SKILL/README/AGENTS/introspect 同步;真机四路活体+研究资料页实测 | 2026-09-04 |
+| D47 第 3/4 轮:export 一键提取加内嵌图直抽 | 已完成 | 用户点名一键(文本+图片+元数据一目录或指定页,PDF 与 EPUB 都要)加导出目录二次搜索;figures v1.1 PDF 内嵌位图 XObject 直抽(DCT jpg 原字节/Flate 解码 png,XObject 内联与引用两形态);export 出 text.md/text.json/pages/ 逐单元/images//manifest.json;真机:论文 28 件内嵌图、EPUB 347 节 26 图、二次搜索页锚命中;cli 新 2 例 | 2026-09-04 |
 | D47-T2 图表几何还原 PoC | 已完成 | poc\s010-chart-geometry:年份轴融合串切分与文本盒分离成立,数值配列两难点(变长小数粘串、双系列列偏移)未达精度;裁定暂不进主仓 | 2026-09-04 |

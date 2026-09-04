@@ -153,6 +153,30 @@ enum Commands {
         #[arg(long)]
         filter: Option<String>,
     },
+    /// 一键完整提取：文本、图片与对齐元数据落一个目录（D47）；导出目录可直接 search 二次复用
+    #[command(after_long_help = "\
+示例:
+  reader export ./paper.pdf
+  reader export ./scan.pdf --pages 12-32 --ocr
+  reader export ./book.epub --out ./book-everything
+  # 二次复用：导出目录当语料搜（pages/ 逐单元文本，命中行带 p0012.md 前缀）
+  reader search ./paper-export/ \"certificate\"")]
+    Export {
+        /// 文档路径（全格式面；图片文件本体即自身）
+        file: PathBuf,
+        /// 限定页/单元范围（1 起），如 1-3,5
+        #[arg(long)]
+        pages: Option<String>,
+        /// 输出目录（缺省 <文件名>-export/）
+        #[arg(short, long)]
+        out: Option<PathBuf>,
+        /// 对 needs_ocr 页与图片走 OCR 兜底（文本回填，标记保留；首用下载约 6.2MB 模型）
+        #[arg(long)]
+        ocr: bool,
+        /// 禁模型下载（须与 --ocr 同用）
+        #[arg(long)]
+        offline: bool,
+    },
     /// 用 mq 表达式结构化提取文档（jq 风格：.h2 标题、.code 代码块、.link 链接、select 管道；命中退出 0，无命中退出 1，出错退出 2）
     #[command(after_long_help = "\
 示例:
@@ -238,6 +262,19 @@ pub fn run() -> i32 {
                 Ok(true) => 0,
                 Ok(false) => 1,
                 Err(err) => fail("figures", opts.format, err),
+            }
+        }
+        Some(Commands::Export {
+            file,
+            pages,
+            out,
+            ocr,
+            offline,
+        }) => {
+            let ocr = OcrOpts { ocr, offline };
+            match run_export(&file, pages, out, ocr) {
+                Ok(()) => 0,
+                Err(err) => fail("export", Format::Text, err),
             }
         }
         Some(Commands::Query {
@@ -461,20 +498,7 @@ fn run_extract(
         .collect();
     let next_offset = (offset + visible.len() < total).then_some(offset + visible.len());
     let content = match opts.format {
-        Format::Text => {
-            let mut buf = String::new();
-            for unit in &visible {
-                buf.push_str(&format!("== {} {} ==\n", unit.kind.label(), unit.no));
-                if let Some(reason) = &unit.needs_ocr {
-                    buf.push_str(&format!("[needs_ocr: {reason}]\n"));
-                }
-                for line in &unit.lines {
-                    buf.push_str(line);
-                    buf.push('\n');
-                }
-            }
-            buf
-        }
+        Format::Text => units_text(visible.iter().copied()),
         Format::Json => {
             let mut data =
                 json!({ "units": visible.iter().map(|u| unit_value(u)).collect::<Vec<_>>() });
@@ -510,6 +534,119 @@ fn check_filter(opts: &OutputOpts) -> Result<(), String> {
     if opts.filter.is_some() && opts.format != Format::Json {
         return Err("--filter 仅在 --format json 下可用".to_string());
     }
+    Ok(())
+}
+
+/// units 的 text 形态渲染（extract 与 export 的 text.md 共用）。
+fn units_text<'a>(units: impl IntoIterator<Item = &'a document::TextUnit>) -> String {
+    let mut buf = String::new();
+    for unit in units {
+        buf.push_str(&format!("== {} {} ==\n", unit.kind.label(), unit.no));
+        if let Some(reason) = &unit.needs_ocr {
+            buf.push_str(&format!("[needs_ocr: {reason}]\n"));
+        }
+        for line in &unit.lines {
+            buf.push_str(line);
+            buf.push('\n');
+        }
+    }
+    buf
+}
+
+/// export 子命令（D47 第 3 轮：一键完整提取）：文本（连续加逐单元）、图片与对齐
+/// manifest 落一个目录；pages/ 逐单元 markdown 让 `reader search <导出目录>` 直接
+/// 二次复用（md 是支持格式，命中行带 p0012.md 前缀即页锚）。
+fn run_export(
+    file: &Path,
+    pages: Option<String>,
+    out: Option<PathBuf>,
+    ocr: OcrOpts,
+) -> Result<(), String> {
+    let page_set = parse_optional_pages(pages)?;
+    check_ocr_opts(ocr)?;
+    let default_out = std::env::current_dir()
+        .unwrap_or_else(|_| PathBuf::from("."))
+        .join(format!(
+            "{}-export",
+            file.file_stem().and_then(|s| s.to_str()).unwrap_or("doc")
+        ));
+    let dir = out.unwrap_or(default_out);
+    let pages_dir = dir.join("pages");
+    let images_dir = dir.join("images");
+    std::fs::create_dir_all(&pages_dir)
+        .map_err(|e| format!("建目录失败 {}: {e}", pages_dir.display()))?;
+
+    let units = document::extract(file, page_set.as_ref(), ocr)?;
+    let figures = figures::extract_figures(file, page_set.as_ref(), &images_dir)?;
+
+    std::fs::write(dir.join("text.md"), units_text(units.iter()))
+        .map_err(|e| format!("写 text.md 失败: {e}"))?;
+    let units_json: Vec<Value> = units.iter().map(|u| unit_value(u)).collect();
+    std::fs::write(
+        dir.join("text.json"),
+        serde_json::to_string(&json!({ "units": units_json, "count": units.len() }))
+            .map_err(|e| format!("序列化 text.json 失败: {e}"))?,
+    )
+    .map_err(|e| format!("写 text.json 失败: {e}"))?;
+    let mut page_files = Vec::new();
+    for unit in &units {
+        let name = format!("p{:04}.md", unit.no);
+        let mut body = String::new();
+        if let Some(reason) = &unit.needs_ocr {
+            body.push_str(&format!("[needs_ocr: {reason}]\n"));
+        }
+        for line in &unit.lines {
+            body.push_str(line);
+            body.push('\n');
+        }
+        std::fs::write(pages_dir.join(&name), body)
+            .map_err(|e| format!("写 pages/{name} 失败: {e}"))?;
+        page_files.push(name);
+    }
+    let manifest = json!({
+        "file": file.display().to_string(),
+        "units": units.iter().enumerate().map(|(i, u)| json!({
+            "no": u.no,
+            "kind": u.kind.label(),
+            "needs_ocr": &u.needs_ocr,
+            "lines": u.lines.len(),
+            "page_file": &page_files[i],
+        })).collect::<Vec<_>>(),
+        "figures": figures.iter().map(|f| json!({
+            "kind": f.kind,
+            "anchor": f.anchor,
+            "caption": &f.caption,
+            "context": &f.context,
+            "file": f.file.file_name().and_then(|n| n.to_str()).unwrap_or(""),
+            "bytes": f.bytes,
+            "format": f.format,
+        })).collect::<Vec<_>>(),
+        "counts": { "units": units.len(), "figures": figures.len() },
+    });
+    std::fs::write(
+        dir.join("manifest.json"),
+        serde_json::to_string_pretty(&manifest)
+            .map_err(|e| format!("序列化 manifest 失败: {e}"))?,
+    )
+    .map_err(|e| format!("写 manifest.json 失败: {e}"))?;
+
+    println!(
+        "export: text {} ({} 单元)",
+        dir.join("text.md").display(),
+        units.len()
+    );
+    println!(
+        "export: pages {} ({} 件,search 二次复用:reader search {} 关键词)",
+        pages_dir.display(),
+        page_files.len(),
+        pages_dir.display()
+    );
+    println!(
+        "export: figures {} 件 -> {}",
+        figures.len(),
+        images_dir.display()
+    );
+    println!("export: manifest {}", dir.join("manifest.json").display());
     Ok(())
 }
 
