@@ -11,6 +11,10 @@
   gh/<包名>-<rev12>-<文件>  +  PP-OCRv6-LICENSE.txt / PP-OCRv6-NOTICE.txt
                                                      → gh release upload models-v6(恒 prerelease)
   upload.sh                                          → 上述 rclone 命令(调用方供 RCLONE_CONFIG_R2_* env)
+  skip(仅无变化时)                                   → 幂等闸标记:workflow 跳过上桶与 GitHub 兜底
+幂等(2026-09-04 用户裁定):清单核心(repo/rev/file/sha256/license,排除 mirrored_at)
+与远端 models/manifest.json 一致时零 HF 下载、零 R2 上传、零元数据变更;远端不可读
+(首跑 404 / 网络抖动)按有变化走全量,防误跳发布。
 
 事实源:模型清单取 raw.githubusercontent.com/weidix/ppocr-rs/<Cargo.toml 里的 rev>/models.json
 (单一事实源,rev 从 Cargo.toml 解析,与客户端 src/mirror.rs pin 表同源)。
@@ -42,6 +46,7 @@ MODELS_JSON_URL = "https://raw.githubusercontent.com/weidix/ppocr-rs/{rev}/model
 APACHE_URL = "https://www.apache.org/licenses/LICENSE-2.0.txt"
 HF_RESOLVE = "https://huggingface.co/{repo}/resolve/{rev}/{name}"
 HF_TREE = "https://huggingface.co/api/models/{repo}/tree/{rev}"
+MANIFEST_URL = "https://reader.ohmygh.com/models/manifest.json"
 WANT = ("tiny-det", "tiny-rec", "small-det", "small-rec")
 UA = "reader-mirror-models/0.1"
 RCLONE_IMMUTABLE = "Cache-Control: public, max-age=31536000, immutable"
@@ -89,6 +94,46 @@ def notice_text(repo: str, rev: str, date: str) -> str:
     )
 
 
+def manifest_core(models: list[dict]) -> list[dict]:
+    """清单核心(幂等比对键):排除 volatile 的 mirrored_at,只比内容身份字段。"""
+    core = [
+        {
+            "repo": m["repository"],
+            "rev": m["revision"],
+            "file": f["name"],
+            "sha256": f["sha256"],
+            "license": "Apache-2.0",
+        }
+        for m in models
+        for f in m["files"]
+    ]
+    return sorted(core, key=lambda e: (e["repo"], e["rev"], e["file"]))
+
+
+def remote_unchanged(expected_core: list[dict]) -> bool:
+    """幂等闸:远端清单核心与本地派生一致即无变化(远端不可读按有变化走全量,防误跳发布)。"""
+    try:
+        remote = json.loads(http_get(MANIFEST_URL, timeout=30))
+        remote_core = sorted(
+            [
+                {k: e.get(k) for k in ("repo", "rev", "file", "sha256", "license")}
+                for e in remote
+            ],
+            key=lambda e: (e.get("repo", ""), e.get("rev", ""), e.get("file", "")),
+        )
+    except Exception as exc:  # noqa: BLE001 计划内:首跑 404 / 网络抖动都按有变化走
+        print(f"WARN 远端清单不可读({exc}),按有变化走全量 staging")
+        return False
+    if remote_core == expected_core:
+        return True
+    diff = {json.dumps(e, sort_keys=True) for e in remote_core} ^ {
+        json.dumps(e, sort_keys=True) for e in expected_core
+    }
+    for line in sorted(diff)[:8]:
+        print(f"manifest-diff {line}")
+    return False
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="staging PP-OCRv6 四仓模型镜像上传树")
     ap.add_argument("--work", type=Path, default=None, help="工作目录(默认系统临时目录)")
@@ -134,6 +179,22 @@ def main() -> None:
 
     date = args.date or dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     work = args.work or Path(tempfile.mkdtemp(prefix="reader-mirror-models-"))
+
+    # 幂等闸(用户裁定 2026-09-04):清单核心与远端一致即零下载零上传零元数据变更,
+    # 写 no-op upload.sh 与 skip 标记,workflow 据此跳过上桶与 GitHub 兜底步。
+    if remote_unchanged(manifest_core(models)):
+        work.mkdir(parents=True, exist_ok=True)
+        (work / "skip").write_text("no-change\n", encoding="utf-8")
+        upload = work / "upload.sh"
+        upload.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            'echo "mirror-models: 清单与远端一致,跳过上传(幂等闸,零对象变更)"\n',
+            encoding="utf-8",
+        )
+        print(f"mirror-models: NO-CHANGE 零上传跳过(幂等闸) {work.resolve().as_posix()}")
+        return
+
     r2_models = work / "r2" / "models"
     gh_dir = work / "gh"
     gh_dir.mkdir(parents=True, exist_ok=True)

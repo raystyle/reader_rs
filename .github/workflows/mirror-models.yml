@@ -1,6 +1,9 @@
 # 模型镜像工作流(D42):按 Cargo.toml 钉的 ppocr-rs rev 从 models.json 取四仓清单,
 # HF 下载逐件 sha256 硬校验后上 R2 桶 models/ 路径(reader.ohmygh.com 镜像真身),
 # 同批件再传 GitHub Releases models-v6 tag 作客户端第三级兜底。
+# 幂等(2026-09-04 用户裁定):staging 阶段先比清单核心(排除 mirrored_at)与远端
+# models/manifest.json,一致即产出 skip 标记,上桶与 GitHub 兜底步整体跳过
+# (零 HF 下载、零 R2 上传与元数据变更);模型只在 ppocr-rs rev 变更时才真变。
 # 限制与入口:schedule 只在默认分支生效;仓库 60 天无活动自动停用 schedule 型触发;
 # 手动补跑:gh workflow run mirror-models.yml(或 Actions 页 Run workflow)。
 # models-v6 恒 prerelease:正式 release 会遮蔽 /releases/latest,让 self update 永远
@@ -38,6 +41,7 @@ jobs:
           uv run --script .tools/mirror-models.py --work "$RUNNER_TEMP/stage"
       - name: 上桶(manifest 最后传 = 发布提交点;首跑凭据传播延迟 401 重试勿判死)
         run: |
+          if [ -f "$RUNNER_TEMP/stage/skip" ]; then echo "幂等闸:no-change,跳过上桶"; exit 0; fi
           for i in 1 2 3; do
             if rclone lsf R2:reader-dl --max-depth 1 >/dev/null; then ok=1; break; fi
             echo "第 ${i} 次连桶失败(新 token 的 S3 凭据映射有 1 至 2 分钟传播延迟);60 秒后重试"
@@ -49,12 +53,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ -f "$RUNNER_TEMP/stage/skip" ]; then echo "幂等闸:no-change,跳过 GitHub 兜底"; exit 0; fi
           gh release create models-v6 --title models-v6 --prerelease \
             --notes "PP-OCRv6 tiny/small 四仓模型兜底资产(D42 客户端第三级回退;镜像真身 reader.ohmygh.com/models)" || true
           gh release upload models-v6 "$RUNNER_TEMP/stage/gh/"* --clobber
       - name: 验收(镜像对象与缓存头)
         run: |
           sleep 5
+          curl -fsSI "https://reader.ohmygh.com/models/manifest.json" | grep -i 'cache-control.*max-age=60'
+          if [ -f "$RUNNER_TEMP/stage/skip" ]; then echo "幂等闸:no-change,免对象抽验(零上传)"; exit 0; fi
           url=$(jq -r '.[0] | "https://reader.ohmygh.com/models/\(.repo)/\(.rev)/\(.file)"' "$RUNNER_TEMP/stage/r2/manifest-only/manifest.json")
           curl -fsSI "$url" | grep -i 'cache-control.*immutable'
-          curl -fsSI "https://reader.ohmygh.com/models/manifest.json" | grep -i 'cache-control.*max-age=60'

@@ -50,6 +50,7 @@
 | `tests\mirror.rs` | 回归层 mirror 公开 API 直测（本机一次性 HTTP 服务加合成 pin；READER_MIRROR env 变更需独立 target 隔离，下载器自建父目录回归，M017） |
 | `tests\assets\legacy.doc` | legacy Word 二进制测试资产（Word COM 现造，CI 无 Word 不能现造；P0009） |
 | `tests\assets\anydoc\` | anydoc 官方测试 fixtures 语料九件（firecrawl/anydoc@261fc25，MIT；ppt 二进制族与 xls / xlsb 变体；来源与 sha256 见目录内 README，D44） |
+| `tests\assets\ocr-text.png` | 图片 OCR 端到端门控资产（GDI+ 现造 480x140 文字图 READER SMOKE 12345，tiny 档实测全识；D43） |
 | `Cargo.toml` | package reader_rs；依赖 pin 与双 bin 定义 |
 
 ```text

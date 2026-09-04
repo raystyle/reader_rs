@@ -1356,6 +1356,43 @@ fn dies_ocr_init_offline_with_empty_cache() -> TestResult {
     Ok(())
 }
 
+/// `ocr init` 幂等回归（用户裁定 2026-09-04，镜像分发幂等看守）：完整缓存重复 init
+/// 零下载零缓存写——死镜像下任何下载尝试都会失败，双包 complete 且 verdict ok、
+/// 全程无 download 行即证明逐件有效跳过（不重下、不碰缓存件与标记）。
+/// 门控：READER_OCR_CACHE_DIR 指向完整 tiny 缓存才跑，CI 自动跳过。
+#[test]
+fn ocr_init_on_complete_cache_downloads_nothing() -> TestResult {
+    let Some(cache) = std::env::var_os("READER_OCR_CACHE_DIR").map(PathBuf::from) else {
+        eprintln!("skip: READER_OCR_CACHE_DIR 未设（无本地模型缓存）");
+        return Ok(());
+    };
+    for name in ["tiny-det/model.safetensors", "tiny-rec/model.safetensors"] {
+        if !cache.join(name).is_file() {
+            eprintln!("skip: 缓存缺 {name}");
+            return Ok(());
+        }
+    }
+    let out = reader()?
+        .args(["ocr", "init"])
+        .env("READER_OCR_CACHE_DIR", &cache)
+        .env("READER_OCR_MODEL_SIZE", "tiny")
+        .env("READER_MIRROR", "http://127.0.0.1:9")
+        .assert()
+        .code(0)
+        .get_output()
+        .stdout
+        .clone();
+    let stdout = String::from_utf8(out)?;
+    assert!(stdout.contains("ocr_init: tiny-det complete"), "{stdout}");
+    assert!(stdout.contains("ocr_init: tiny-rec complete"), "{stdout}");
+    assert!(stdout.contains("ocr_init: verdict ok"), "{stdout}");
+    assert!(
+        !stdout.contains("download"),
+        "完整缓存重复 init 不应出现任何下载行: {stdout}"
+    );
+    Ok(())
+}
+
 /// `ocr init --size` 非法值按旗标误用退出 2。
 #[test]
 fn dies_ocr_init_rejects_unknown_size() -> TestResult {
@@ -1700,7 +1737,8 @@ fn image_in_batch_directory_scanned_without_hits() -> TestResult {
 }
 
 /// 图片 --ocr 端到端（门控：READER_OCR_CACHE_DIR 指向完整 tiny 缓存才跑，CI 自动跳过）：
-/// 引擎真跑、退出 0、needs_ocr 标记保留（OCR 文本仍属不可靠，同 PDF 契约）。
+/// 引擎真跑出真文字（tests\assets\ocr-text.png 为 GDI+ 现造 480x140 文字图，内容
+/// READER SMOKE 12345，本机 tiny 档实测全识）、退出 0、needs_ocr 标记保留（同 PDF 契约）。
 #[test]
 fn image_ocr_end_to_end_with_real_cache() -> TestResult {
     let Some(cache) = std::env::var_os("READER_OCR_CACHE_DIR").map(PathBuf::from) else {
@@ -1713,8 +1751,7 @@ fn image_ocr_end_to_end_with_real_cache() -> TestResult {
             return Ok(());
         }
     }
-    let png = pdf_path("d43-ocr").with_extension("png");
-    make_test_png(&png)?;
+    let png = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/assets/ocr-text.png");
     reader()?
         .args(["extract"])
         .arg(&png)
@@ -1726,7 +1763,7 @@ fn image_ocr_end_to_end_with_real_cache() -> TestResult {
         .code(0)
         .stdout(predicate::str::contains("== page 1 =="))
         .stdout(predicate::str::contains("[needs_ocr: image]"))
-        .stderr(predicate::str::contains("已经 OCR 兜底"));
-    let _ = std::fs::remove_file(&png);
+        .stdout(predicate::str::contains("READER"))
+        .stdout(predicate::str::contains("12345"));
     Ok(())
 }
