@@ -581,7 +581,7 @@ fn run_export(
 
     std::fs::write(dir.join("text.md"), units_text(units.iter()))
         .map_err(|e| format!("写 text.md 失败: {e}"))?;
-    let units_json: Vec<Value> = units.iter().map(|u| unit_value(u)).collect();
+    let units_json: Vec<Value> = units.iter().map(unit_value).collect();
     std::fs::write(
         dir.join("text.json"),
         serde_json::to_string(&json!({ "units": units_json, "count": units.len() }))
