@@ -2,9 +2,12 @@
 
 本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
 
-## [Unreleased]
+## [0.7.0] - 2026-09-16
 
-- **Breaking：`skill` 子命令与仓根 SKILL.md 退役（REQ-052，用户裁定 2026-09-16）**：`--llms` 即 agent 说明书唯一面（紧凑索引吸收 figures 行式、export 摘要行、ocr 子命令前缀 token 表三件机器契约）；漂移守卫二（SKILL.md 字节一致断言）随文件退役，守卫一改单面（clap 命令树旗标全覆盖 `--llms`）并新增 skill 退位断言；发布资产不再附 SKILL.md。契约破裂，semver major，版本号封版时定。
+> skill 退役版（dev/v0.7.0 承载，REQ-053）：`--llms` 承接 agent 说明书，契约破裂取 0.x.0（semver major 判据）。
+
+- **Breaking：`skill` 子命令与仓根 SKILL.md 退役（REQ-052，用户裁定 2026-09-16）**：`--llms` 即 agent 说明书唯一面（紧凑索引吸收 figures 行式、export 摘要行、ocr 子命令前缀 token 表三件机器契约）；漂移守卫二（SKILL.md 字节一致断言）随文件退役，守卫一改单面（clap 命令树旗标全覆盖 `--llms`）并新增 skill 退位断言；发布资产不再附 SKILL.md。
+- **统一分发体系接入收口（REQ-050）**：omc catalog pin 节滚跟进发版、fleet 域 env.ohmygh.com 三平台资产加边车在线、ark 五端四机 install / update / status / doctor 回执全绿、self update 与 ark update 双通道并存同 digest 判据互证；二进制行为零变化（流程与验收面里程碑）。
 
 ## [0.6.1] - 2026-09-16
 
