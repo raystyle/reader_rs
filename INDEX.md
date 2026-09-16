@@ -41,7 +41,7 @@
 | `src\batch.rs` | 批量目录搜索（递归走查加两形态聚合；P0012） |
 | `src\search.rs` | 匹配器（字面/正则/忽略大小写）与命中收集 |
 | `src\output.rs` | JSON 包膜（ok/data/error 加 meta）、filter 点路径裁剪、cta 生成 |
-| `src\introspect.rs` | agent 自省：`--llms` 紧凑索引与 `skill` SKILL.md 生成（curated 文本） |
+| `src\introspect.rs` | agent 自省：`--llms` 紧凑索引（curated 文本，agent 说明书唯一面；skill 生成已退役 REQ-052） |
 | `src\ocr.rs` | OCR 兜底（P0014、P0018 换引擎、D42 源链、D43 图片）：hayro 渲染 needs_ocr 页与图片文件直解码（首帧、EXIF 方向、alpha 白底）加 ppocr-rs 原生 CPU 内核跑 PP-OCRv6；引擎构建共用 helper；首用三级回退预取（镜像到HF到GitHub，`mirror` 模块）、缓存先零网络探测；`ocr init / doctor / switch` 三子命令与档位三级（env > model-size 设置 > tiny）；`READER_OCR_CACHE_DIR` 覆盖缓存目录 |
 | `src\mirror.rs` | 镜像源链与清单（D42）：四包 pin 表（与 ppocr-rs rev 同步换，单测钉）、三级回退单件下载（`.part` 加校验加 rename）、只读 assess、latest.json 拉取解析；`READER_MIRROR` 覆盖基址 |
 | `src\selfupdate.rs` | self update（P0015、D42 加镜像通道）：镜像 latest.json 优先、GitHub API 加 gh api 兜底、版本判新、资产 sha256 校验、zip/tar.gz 解包、staged 加 rename 替换自身与兄弟 |
@@ -62,7 +62,7 @@
 ```text
 reader_rs/
   PRD.md / GOAL.md / PLAN.md / TODO.md / INDEX.md   四原语加总索引
-  AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md / SKILL.md
+  AGENTS.md / README.md / CHANGELOG.md / ROADMAP.md
   Cargo.toml / LICENSE / .rumdl.toml
   .tools\            自定义脚本工具（md 四件门禁加 make-scan-sample / ab_run / gen-latest-json / mirror-models / materials-corpus）
   poc\               研究原型产物（S 编号前缀子目录；产物与模型 gitignore）

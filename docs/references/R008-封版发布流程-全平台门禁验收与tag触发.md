@@ -1,7 +1,7 @@
 # R008-封版发布流程-全平台门禁验收与tag触发
 
 > 角色：**做事的流程**：从「Unreleased 有货」到「Release 资产验收」的封版发布操作手册，下次照着做。2026-09-03 用户裁定流程骨架：先本地全平台编译、全平台测试验收，后封版触发 GitHub Action 发布 release（PRD D41）；2026-09-03 D42 加镜像腿；2026-09-04 D45 加版本分支模型（dev 与 main 状态隔离）。
-> 自动化事实：`\.github\workflows\release.yml` 由 `v*` tag 推送触发，五 job（windows msvc、linux gnu、linux musl、macOS 双架构）各带「tag 与 Cargo.toml 版本一致」闸，`--locked` 构建后打包 `reader` / `rr` 双名加 README、LICENSE、SKILL.md 与 `.sha256` 上传 Release；`mirror` job 随后把资产上 R2 桶 `reader/<version>/`（immutable 头）并最后传 `reader/latest.json`（max-age=60，清单即发布提交点），支持 `workflow_dispatch` 对历史 tag 演练 [实证: release.yml]。模型镜像走 `\.github\workflows\mirror-models.yml`（每周一 03:17 UTC 加手动 dispatch：HF 四仓校验后上桶 `models/` 并传 GitHub `models-v6` 兜底 release，恒 prerelease 防 `/releases/latest` 遮蔽；幂等闸 2026-09-04 用户裁定：清单核心（repo / rev / file / sha256 / license，排除 mirrored_at）与远端 `models/manifest.json` 一致即整体跳过，零 HF 下载、零 R2 上传与元数据变更;模型只在 ppocr-rs rev 变更时才真变）[实证: mirror-models.yml 与 mirror-models.py NO-CHANGE 实跑]。
+> 自动化事实：`\.github\workflows\release.yml` 由 `v*` tag 推送触发，五 job（windows msvc、linux gnu、linux musl、macOS 双架构）各带「tag 与 Cargo.toml 版本一致」闸，`--locked` 构建后打包 `reader` / `rr` 双名加 README、LICENSE 与 `.sha256` 上传 Release（SKILL.md 已随 skill 退役不再打包，REQ-052）；`mirror` job 随后把资产上 R2 桶 `reader/<version>/`（immutable 头）并最后传 `reader/latest.json`（max-age=60，清单即发布提交点），支持 `workflow_dispatch` 对历史 tag 演练 [实证: release.yml]。模型镜像走 `\.github\workflows\mirror-models.yml`（每周一 03:17 UTC 加手动 dispatch：HF 四仓校验后上桶 `models/` 并传 GitHub `models-v6` 兜底 release，恒 prerelease 防 `/releases/latest` 遮蔽；幂等闸 2026-09-04 用户裁定：清单核心（repo / rev / file / sha256 / license，排除 mirrored_at）与远端 `models/manifest.json` 一致即整体跳过，零 HF 下载、零 R2 上传与元数据变更;模型只在 ppocr-rs rev 变更时才真变）[实证: mirror-models.yml 与 mirror-models.py NO-CHANGE 实跑]。
 
 ## 一、前置裁定
 
@@ -29,9 +29,8 @@
 
 1. `Cargo.toml` `version` 改目标版本号（release.yml 有 tag 一致性闸，不一致 job 直接红）。
 2. `CHANGELOG.md` `[Unreleased]` 节改 `[<版本>] - <日期>`，正文只留版本级里程碑（本文件头规则）。
-3. SKILL 重生：`cargo build --quiet` 后 bash 里 `./target/debug/reader.exe skill > SKILL.md`（Windows 显式 `.exe`：target 可能残留无扩展名旧 Linux 产物，且 PowerShell `>` 转 CRLF，M014；SKILL 含版本号；`cargo test` 不重建 target/debug 二进制，须先 build [实证: diary 2026-09-03 SKILL 重构节]）。
-4. insta 快照复审：`--llms` 快照含版本号，`cargo test --test snapshot` 出 `.snap.new`，逐个人工审后改名入库（insta 纪律，D34）。
-5. 门禁复跑（本机 cargo 三件加文档四件）全绿后在 dev 分支一次提交：`chore: 封版 v<版本>`。
+3. insta 快照复审：`--llms` 快照含版本号，`cargo test --test snapshot` 出 `.snap.new`，逐个人工审后改名入库（insta 纪律，D34；SKILL 重生步已随 skill 退役撤销，REQ-052）。
+4. 门禁复跑（本机 cargo 三件加文档四件加 aidoc check）全绿后在 dev 分支一次提交：`chore: 封版 v<版本>`。
 
 ## 四、合并 main 与 tag 触发发布
 
