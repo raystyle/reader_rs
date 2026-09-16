@@ -1,9 +1,9 @@
 ---
 id: REQ-050
 title: 接入统一分发体系omc-catalog与ark落地验收
-status: draft
+status: implemented
 priority: should
-trace: null
+trace: ohmycloud 5c8b53c（catalog-bump 节滚三平台 pin 0.6.1，catalog-lint 53 全过）；catalog-seed run 35071752768（seed 三件套绿，seed-assets 的 hst 三红属 hst 侧发布面非 reader，已飞轮派单 wT）；fleet 域 env.ohmygh.com/reader/0.6.1/ 三平台资产加边车在线且与 catalog pin 与自有镜像域三方 digest 全等 [实证: 2026-09-16 curl 对账]；五端 ark 回执（本端 WSL 加 Windows 宿主加 lan-mac 加 lan-ubuntu 加 lan-linux，reader 0.6.1 三态齐、self update 五端同报已最新、回归四探针 extract 加 search 命中加未中加 query 全绿、doctor 的 reader 面零红）
 ---
 
 # REQ-050:接入统一分发体系omc-catalog与ark落地验收
@@ -24,6 +24,14 @@ dev-evo 第六十四批确立统一分发体系（flow-release 第八节）：om
 
 待办件：
 
-- [ ] 接入面收口：omc catalog pin 节滚 v0.6.0 至 v0.6.1（digest 程序直写，catalog-lint 门禁，fleet 域播种后边车对账）
-- [ ] 落地面：五端回执，每端 ark catalog sync 加 query reader（解析 0.6.1）加 install 或 update 加 `reader --version` 加 doctor 零红
-- [ ] 自有链保留核对：reader.ohmygh.com 镜像腿与 self update 不退役（双通道镜像优先 GitHub 回退，与统一体系同构；v0.6.1 latest.json 已在线 [实证: 2026-09-16 镜像域边车四件可取]）
+- [x] 接入面收口：omc catalog pin 节滚 v0.6.0 至 v0.6.1（catalog-bump 程序直写，catalog-lint 53 全过；dispatch catalog-seed 后 fleet 域三平台边车对账全等 [实证: 2026-09-16 env.ohmygh.com 与 catalog pin 与镜像域三方全等]）
+- [x] 落地面：五端回执（本端 WSL 加 Windows 宿主加 lan-mac 加 lan-ubuntu 加 lan-linux；宿主走 127.0.0.1 回环 ssh、lan 三端 mesh ssh、裸端两台 fleet 域 bootstrap ark 1.2.3 过锚后 init）；每端 query 解析 0.6.1、install 或 update 落 0.6.1、`reader --version` 0.6.1、三态齐、doctor 的 reader 面零红（各端全局红为既有环境债，已飞轮派单 hst 与 ark 工位处置）[实证: 2026-09-16 五端回执]
+- [x] 自有链保留核对：reader.ohmygh.com 镜像腿与 self update 不退役；AB 双通道互证 = ark 装版（fleet 域）与 reader self update 判新（自有域 latest.json）五端同报 current 0.6.1 已是最新，判新互不干扰；回归四探针（extract 加 search 命中加未中加 query）五端全绿 [实证: 2026-09-16 五端探针退出码]
+
+## 发现与移交
+
+> 非本 REQ 阻塞项，均已有处置去向。
+
+- catalog-seed 的 seed-assets job 红 = hst 1.3.0 资产锚校验不过（边车缺失加 digest 与 pin 漂移，04:58Z 与 16:03Z 两轮同伤），属 hst 侧发布面，已 herdr 派单 hst 工位（wT）处置
+- lan-ubuntu 裸端 ark init 首同步撞旧 pin（CF 边缘缓存对覆写对象滞后族），resync 即愈；已派单 ark 工位（wS）研判 bootstrap 二次 sync 兜底
+- Windows 宿主 doctor 的 version-drift（claude/grok/git）与缺装清单已随单移交 ark 工位
