@@ -9,7 +9,7 @@
 - `cargo test --doc` doctest 示例冒烟（纯函数面在册示例）
 - 文档门禁四件：`rumdl check .` 加 `uv run --script .tools/md-char-scan.py` 加 `uv run --script .tools/md-heading-scan.py` 加 `uv run --script .tools/md-ref-scan.py`（文档结构变更末件必跑）
 - `cargo aidoc` 生成库面投影进 `docs/aidoc/`；`cargo aidoc --check --strict` 投影漂移门禁（改 pub 项或 `///` 后先 `cargo aidoc` 再同一次提交 docs/aidoc；tool-rust 强制口径：Rust 栈 aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005）
-- `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run /mnt/d/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节）
+- `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run /home/ray/repos/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节）
 - `cargo build --release --locked` 发布构建；命令面变化后 `./target/release/reader skill > SKILL.md` 重生并过快照审
 - 公开契约双面：CLI 面走 SKILL.md 加 tests/ 集成测试（`reader skill > SKILL.md` 再生 diff 即漂移门禁）；库面走 `///` 与类型签名加 `docs/aidoc/` 投影（missing_docs deny 强制）
 
@@ -49,4 +49,4 @@
 - 验收与运维脚本统一载体 pwsh（五端 7.6.6 在位，env-platform 第十一节）：新增验收与运维面脚本一律 pwsh 一份，不再各写 bash 加 cmd 加 zsh；既有 `.tools` PEP 723 Python 脚本（uv 运行时）按标准不强制迁移
 - 本仓开发侧 WSL `~/repos/reader_rs`（Windows 盘 `D:\reader_rs`）；md 与 Rust 源 UTF-8；Windows 兼容 5.1 的脚本带 UTF-8 BOM
 - 发布走 R008：tag 触发 release.yml（五平台资产加 sha256 边车）加镜像腿（mirror job 与 mirror-models.yml 周更）；模型与升级镜像 `reader.ohmygh.com` 归 ohmycloud 承载
-- dev-evo 标准权威在 `D:\ProjectEvo`（本仓文档体系 2026-09-16 全量迁移自旧四原语体系，映射口径见 docs/README）
+- dev-evo 标准权威在 `~/repos/ProjectEvo`（本仓文档体系 2026-09-16 全量迁移自旧四原语体系，映射口径见 docs/README）

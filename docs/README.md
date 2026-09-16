@@ -52,7 +52,7 @@ PRD 条目对应 REQ（编号连续性用 D 号即 REQ 号：D01 至 D47 历史�
 PE-11 历史档案豁免走 `PEVO_CHECK_ALLOW` 机制（分号分隔正则，匹配 `docs/` 下相对路径加行号，命中报 SKIP 带处数；根三件 AGENTS / README / CHANGELOG 永不受益）。本仓手写面存量禁字为零（G004 存量清零，D22）；唯一在册豁免正则是 `^docs/aidoc/`（cargo aidoc 渲染格式：条目分隔符 em dash 无开关可改，漂移真门禁是 `cargo aidoc --check --strict`，rumdl 与 md-char-scan 同步整目录豁免），标准命令：
 
 ```bash
-PEVO_CHECK_ALLOW='^docs/aidoc/' uv run /mnt/d/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .
+PEVO_CHECK_ALLOW='^docs/aidoc/' uv run /home/ray/repos/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .
 ```
 
 日后历史档案留档面若新增禁字（历史不改写），按路径级豁免追加登记在册（只作用 `docs/` 档案，活跃面零容忍），例如 `PEVO_CHECK_ALLOW='^docs/aidoc/;^docs/proven/'`；正则口径与 scan 的 `PEVO_SCAN_ALLOW` 同一惯例。
