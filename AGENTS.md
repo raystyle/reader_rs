@@ -44,7 +44,7 @@
 ## 环境
 
 - 三平台矩阵（Windows / Linux / macOS，CI 三系统含 dev/** 推送触发）；Windows 优先验证
-- 四平台实机测试协议（ohmycloud 总台周知，用户宣言 2026-09-16）：lan-win（Windows 宿主加 WSL 总台）、lan-ubuntu（Linux NUC，全运行时）、lan-linux（Linux server）、lan-mac（macOS arm64）四端均可跑本仓验收；实机清单 R004（Linux 面，lan-ubuntu 与 lan-linux 同适用）与 R005（mac 面）；验收支撑按需向 ohmycloud 总台要端点，回执纪律照旧（conclusion 自取）
+- 全平台测试基建（原语五端4机，ohmycloud 总台周知，用户宣言 2026-09-16）：WSL 总台加 lan-win（Windows 宿主，与 WSL 同机两面）加 lan-ubuntu（Linux NUC，全运行时）加 lan-linux（Linux server）加 lan-mac（macOS arm64），五端跨四机均可跑本仓验收，lan-linux2 不在矩阵；实机清单 R004（Linux 面，lan-ubuntu 与 lan-linux 同适用）与 R005（mac 面）；验收支撑按需向 ohmycloud 总台要端点，回执纪律照旧（conclusion 自取）
 - 连接姿势（env-platform 第十节口径）：WSL 到宿主恒走 `127.0.0.1` 回环 ssh 加 interop 直调（powershell.exe），不走宿主 mesh IP（mirrored 网络共身份自连 RST 属结构性）；lan 三端 mesh 地址随时随地；连接问题先查姿势再查配置。多仓派单与回执走 herdr 飞轮协议（flow-flywheel.md，本仓工位实践即实证源）
 - 验收与运维脚本统一载体 pwsh（五端 7.6.6 在位，env-platform 第十一节）：新增验收与运维面脚本一律 pwsh 一份，不再各写 bash 加 cmd 加 zsh；既有 `.tools` PEP 723 Python 脚本（uv 运行时）按标准不强制迁移
 - 本仓开发侧 WSL `~/repos/reader_rs`（Windows 盘 `D:\reader_rs`）；md 与 Rust 源 UTF-8；Windows 兼容 5.1 的脚本带 UTF-8 BOM
