@@ -5,7 +5,7 @@
 ## Functions
 
 - `err_json` — 失败包膜串行化（compact 单行）。
-- `filter_value` — 点路径裁剪：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。
+- `filter_value` — 点路径裁剪 JSON 值：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。
 - `ok_json` — 成功包膜串行化（compact 单行，Agent 省 token）。
 - `ok_json_paged` — extract 分页成功包膜：有剩余页时 meta 带 next_offset 与 cta。
 

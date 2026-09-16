@@ -5,10 +5,16 @@ use pdf_inspector::extract_pages_markdown;
 use std::collections::HashSet;
 use std::path::Path;
 
-/// 提取指定页（`None` 为全部页，页码 1 起）为 markdown 行，行按阅读序排列；
-/// 文本层不可靠的页（扫描件、编码问题、乱码、空提取）带 `needs_ocr` 原因。
-/// `ocr.ocr` 为真时对 needs_ocr 页走 OCR 兜底回填 lines（P0014；`needs_ocr` 标记保留，
-/// OCR 文本仍属不可靠）。
+/// 提取指定页为 markdown 行,行按阅读序排列(pdf-inspector 布局管线)。
+///
+/// `pages` 为 `None` 时取全部页(页码 1 起);文本层不可靠的页(扫描件、编码问题、
+/// 乱码、空提取)带 `needs_ocr` 原因;`ocr.ocr` 为真时对 needs_ocr 页走 OCR 兜底
+/// 回填 lines(P0014;`needs_ocr` 标记保留,OCR 文本仍属不可靠)。
+///
+/// # Errors
+///
+/// PDF 读或解析失败(pdf-inspector 报错原文);`--ocr` 开启时模型未就位且
+/// offline、或渲染与推理失败;错误串带路径与页号(OCR 面)。
 pub fn extract_pages(
     path: &Path,
     pages: Option<&HashSet<u32>>,

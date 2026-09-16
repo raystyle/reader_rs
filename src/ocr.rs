@@ -13,8 +13,15 @@ use hayro::{render, RenderCache, RenderSettings};
 use ppocr_rs::{ModelAccess, ModelKind, ModelSize, ModelStore, OcrEngine, OcrOptions, RgbImage};
 use std::path::{Path, PathBuf};
 
-/// 对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。
-/// 模型缺失且 `offline` 为真时报错不下载。
+/// 对指定页做 OCR 兜底,返回页号与行级文本(阅读序,空行滤除)。
+///
+/// `page_nos` 为 1 起页号切片;模型缺失且 `offline` 为真时报错不下载;
+/// 缓存语义见模块头(三级回退、档位三级)。
+///
+/// # Errors
+///
+/// 模型未就位且 offline、缓存目录不可定位或不可写、引擎构建失败,
+/// 或页渲染与推理失败;错误串带页号与原因。
 pub fn ocr_pages(
     path: &Path,
     page_nos: &[u32],
@@ -149,9 +156,15 @@ fn ocr_options(size: ModelSize) -> OcrOptions {
     }
 }
 
-/// 图片文件 OCR（D43）：ImageReader 内容嗅探解码（多帧动图只取首帧，用户裁定 YAGNI；
-/// 默认 Limits 512MB 防解压炸弹）、EXIF 方向应用（jpeg / tiff / webp 携带时）、alpha
-/// 合成白底后 recognize，返回行级文本（阅读序，空行滤除）。
+/// 对图片文件整图 OCR,返回行级文本(阅读序,空行滤除;D43)。
+///
+/// ImageReader 内容嗅探解码(多帧动图只取首帧,用户裁定 YAGNI;默认 Limits 512MB
+/// 防解压炸弹)、EXIF 方向应用(jpeg / tiff / webp 携带时)、alpha 合成白底后 recognize。
+///
+/// # Errors
+///
+/// 读或嗅探或解码失败(路径不存在、非图片、损坏)、模型未就位且 offline、
+/// 引擎构建或推理失败;错误串带路径与原因。
 pub fn ocr_image(path: &Path, offline: bool) -> Result<Vec<String>, String> {
     use image::ImageDecoder;
     let reader = image::ImageReader::open(path)
@@ -305,9 +318,16 @@ pub struct OcrOutcome {
     pub healthy: bool,
 }
 
-/// `ocr init`：显式下载 / 修复档位双包进缓存。逐件有效跳过、缺损重下（三级回退），
-/// 末尾交 ppocr-rs `verify()` 全量校验并补缓存标记（表漂移当场红）。
-/// `--offline` 只校验不下载（语义对齐 `--ocr --offline`，零网络可测）。
+/// `ocr init`：显式下载 / 修复档位双包进缓存。
+///
+/// 逐件有效跳过、缺损重下（三级回退），末尾交 ppocr-rs `verify()` 全量校验
+/// 并补缓存标记（表漂移当场红）。`--offline` 只校验不下载（语义对齐
+/// `--ocr --offline`，零网络可测）；`size_arg` 为 `None` 时取当前档位。
+///
+/// # Errors
+///
+/// 缓存目录不可定位、档位参数非法、offline 且存在缺损件、下载三源全败,
+/// 或末尾全量校验不符;错误串带包名与原因。
 pub fn init_models(size_arg: Option<ModelSize>, offline: bool) -> Result<OcrOutcome, String> {
     let dir = cache_dir()?;
     let store = ModelStore::new(&dir);
@@ -370,9 +390,14 @@ pub fn init_models(size_arg: Option<ModelSize>, offline: bool) -> Result<OcrOutc
     Ok(OcrOutcome { lines, healthy: ok })
 }
 
-/// `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。两档四包逐包判定 +
-/// 设置文件与档位来源 + 镜像探活（信息行，不可达不影响判定：内网机离线可用即健康）。
-/// healthy = 当前档双包完整。
+/// `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。
+///
+/// 两档四包逐包判定 + 设置文件与档位来源 + 镜像探活（信息行，不可达不影响判定：
+/// 内网机离线可用即健康）。healthy = 当前档双包完整。
+///
+/// # Errors
+///
+/// 缓存目录或档位设置不可定位；包判定本身不失败（缺件损件落输出行）。
 pub fn doctor_models() -> Result<OcrOutcome, String> {
     let dir = cache_dir()?;
     let (size, source) = model_size_with_source()?;
@@ -419,8 +444,15 @@ pub fn doctor_models() -> Result<OcrOutcome, String> {
     Ok(OcrOutcome { lines, healthy })
 }
 
-/// `ocr switch <tiny|small>`：写档位设置文件并提示。只切换不自动下载（单调用完成
-/// 一件事）；env `READER_OCR_MODEL_SIZE` 已导出时警告本设置不生效（env 优先）。
+/// `ocr switch <tiny|small>`：写档位设置文件并提示，只切换不自动下载（单调用完成
+/// 一件事）。
+///
+/// env `READER_OCR_MODEL_SIZE` 已导出时警告本设置不生效（env 优先）；
+/// 目标档未就位则提示 `ocr init`（不改退出码）。
+///
+/// # Errors
+///
+/// 档位参数非法、缓存或设置路径不可定位、建设置目录或写档位文件失败。
 pub fn switch_model(target: ModelSize) -> Result<OcrOutcome, String> {
     let (current, _) = model_size_with_source()?;
     let path = settings_path()?;

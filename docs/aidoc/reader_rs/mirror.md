@@ -12,8 +12,8 @@ pin 表校验只是前置层(坏件不落缓存,免得离线解析当场才红)�
 
 - `assess_file` — 单件只读判定(init 逐件补齐与 doctor 都用;不写任何文件)。
 - `assess_package` — 只读评估一包四件(doctor 用;不建目录不写任何文件,ppocr-rs 的
-- `download_file` — 三级回退下载单件到 `dest`:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件
-- `fetch_latest_manifest` — 拉取并解析镜像升级清单(10s 全局超时;任何失败由调用方回退 GitHub 通道)。
+- `download_file` — 三级回退下载单件到 `dest`,返回命中的源。
+- `fetch_latest_manifest` — 拉取并解析镜像升级清单(10s 全局超时)。
 - `gh_asset_name` — GitHub 模型资产名:扁平 `<包名>-<rev 前 12>-<文件名>`;字符集只用
 - `gh_file_url` — GitHub 模型 tag 下载地址。
 - `hf_file_url` — HF 直连件地址(ppocr-rs 原生同款路径,302 到 CDN 由默认重定向跟)。

@@ -16,6 +16,7 @@
 ## Must
 
 - 改 pub 项：同步 `///` 与 doctest（missing_docs 是 deny，CI 必红），并 `cargo aidoc` 后与 `docs/aidoc/` 同一次提交
+- 契约注释守格式纪律（dev-evo 第六十批，tool-rust 与 base-projection 契约注释通用准则）：首句成句（做什么加何时用加边界，不以项名开头，细节隔空行）；返 `Result` 必 `# Errors`、可能 panic 必 `# Panics`、unsafe 项必 `# Safety` 列全 UB 前置（clippy missing_errors_doc 与 missing_panics_doc 与 missing_safety_doc 已开）；示例断言收尾，不执行块显式标注并注明原因
 - 命令面改动四处同步：README、SKILL.md 重生、`src/introspect.rs` curated 文本、`--help`（漂移守卫集成测试兜底）
 - 不可逆技术选择先立 `docs/adr/`；新需求先立 `docs/requirements/` REQ 再实现，实现后回填 trace（编号 D 号即 REQ 号口径：PRD 存量 D01 至 D47 留档，活跃队列已按 D 号转登记，新需求自 REQ-050 接编）
 - 事实性断言标六态（`[实证]` 至 `[直觉]`，规范见 G002）；实证滥用即未完成

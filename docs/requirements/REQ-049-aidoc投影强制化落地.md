@@ -22,3 +22,4 @@ dev-evo 第五十九批（tool-rust 引 ADR-0006）将 Rust 栈 aidoc 投影强�
 - [x] `cargo aidoc --check --strict` 入 AGENTS Commands 作漂移门禁
 - [x] 渲染格式禁字按 tool-rust 豁免实务：`PEVO_CHECK_ALLOW` 指 `docs/aidoc/` 在册（rumdl 与 md-char-scan 同步整目录豁免，G004 豁免区登记）
 - [x] doctest 补 3 例（parse_page_spec、is_image_ext、Matcher::is_match），`cargo test --doc` 转正为 Commands 在册门禁
+- [x] 第六十批格式纪律增量：`# Errors` 22 处与 `# Panics` 1 处补齐、clippy 开 missing_errors_doc 与 missing_panics_doc 与 missing_safety_doc、示例 `# Examples` 归位并补 filter_value 一例（断言收尾）、首段成句重排或补写 15 处；投影重生成同提交

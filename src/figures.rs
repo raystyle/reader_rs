@@ -59,7 +59,14 @@ fn is_caption_line(line: &str) -> bool {
     )
 }
 
-/// 提取图本体到 `out_dir`,按文档格式分派;`filter` 为 1 起页集合(仅 PDF 生效)。
+/// 提取图本体到 `out_dir`,按文档格式分派,返回对齐元数据的导出清单。
+///
+/// `filter` 为 1 起页集合(仅 PDF 生效)。
+///
+/// # Errors
+///
+/// 扩展名不在支持面、文档读或解析失败(PDF XObject / zip 部件 / md 引用),
+/// 或图本体落盘失败;错误串带路径与原因。
 pub fn extract_figures(
     path: &Path,
     filter: Option<&HashSet<u32>>,

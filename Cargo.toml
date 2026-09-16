@@ -88,3 +88,9 @@ lto = "thin"
 # dev-evo 强制口径（tool-rust）：公开契约以 /// 与类型签名为准，missing_docs 设 deny
 [lints.rust]
 missing_docs = "deny"
+
+# 第六十批格式纪律：返 Result 必 # Errors、可能 panic 必 # Panics、unsafe 必 # Safety
+[lints.clippy]
+missing_errors_doc = "deny"
+missing_panics_doc = "deny"
+missing_safety_doc = "deny"

@@ -7,5 +7,5 @@ mq 结构化提取（P0016；学习 harehare/mq，选型 S007）：全部支持�
 ## Functions
 
 - `run_query` — 跑 mq 表达式，返回非空渲染结果集（markdown 片段原文）。
-- `to_markdown` — 任意支持格式转 markdown 文本：md 读原文；PDF 走 pdf-inspector 布局管线；
+- `to_markdown` — 任意支持格式转 markdown 文本,供 mq 表达式求值消费。
 

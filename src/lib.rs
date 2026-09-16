@@ -806,6 +806,14 @@ fn parse_optional_pages(pages: Option<String>) -> Result<Option<HashSet<u32>>, S
 
 /// 解析页范围串（如 `1-3,5`）为 1 起页码集合。
 ///
+/// 段间逗号分隔、段内 `起-止` 闭区间；空白容忍。
+///
+/// # Errors
+///
+/// 段非正整数、页号为 0、或起页大于止页；错误串带原段。
+///
+/// # Examples
+///
 /// ```
 /// use reader_rs::parse_page_spec;
 /// let set = parse_page_spec("1-3,5").unwrap();

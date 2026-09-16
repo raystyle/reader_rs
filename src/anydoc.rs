@@ -6,7 +6,14 @@ use crate::document::{TextUnit, UnitKind};
 use std::collections::HashSet;
 use std::path::Path;
 
-/// 提取 anydoc 家族文档为分节单元（`filter` 为 1 起单元号集合，`None` 为全部）。
+/// 提取 anydoc 家族文档为分节单元。
+///
+/// `filter` 为 1 起单元号集合（`None` 为全部）。
+///
+/// # Errors
+///
+/// 读文件失败（IO、权限）、格式无法识别（魔数与扩展名都不中）或 anydoc 解析失败；
+/// 错误串带路径与原因。
 pub fn extract_sections(
     path: &Path,
     filter: Option<&HashSet<u32>>,
@@ -22,8 +29,14 @@ pub fn extract_sections(
     Ok(sections_to_units(sections, has_heading, filter))
 }
 
-/// 提取 markdown 原文文档（.md，P0016）：读 UTF-8 文本直接进同一条分节管线，
-/// 节语义与 anydoc 家族完全一致（section/part、`--pages`、分页全继承）。
+/// 提取 markdown 原文文档（.md，P0016）为分节单元。
+///
+/// 读 UTF-8 文本直接进与 anydoc 家族同一条分节管线：节语义完全一致
+/// （section/part、`--pages`、分页全继承）。
+///
+/// # Errors
+///
+/// 读文件失败或内容非 UTF-8；错误串带路径与原因。
 pub fn extract_markdown(
     path: &Path,
     filter: Option<&HashSet<u32>>,

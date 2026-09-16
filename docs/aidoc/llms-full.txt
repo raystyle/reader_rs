@@ -35,8 +35,8 @@ anydoc 统一引擎提取（P0009）：Word / EPUB / ODT / RTF / Office / CSV �
 
 ## Functions
 
-- `extract_markdown` — 提取 markdown 原文文档（.md，P0016）：读 UTF-8 文本直接进同一条分节管线，
-- `extract_sections` — 提取 anydoc 家族文档为分节单元（`filter` 为 1 起单元号集合，`None` 为全部）。
+- `extract_markdown` — 提取 markdown 原文文档（.md，P0016）为分节单元。
+- `extract_sections` — 提取 anydoc 家族文档为分节单元。
 
 
 <!-- reader_rs/batch.md -->
@@ -54,7 +54,7 @@ anydoc 统一引擎提取（P0009）：Word / EPUB / ODT / RTF / Office / CSV �
 
 ## Functions
 
-- `extract` — 按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。
+- `extract` — 按扩展名分派提取，返回统一文本单元。
 - `is_image_ext` — 扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。
 - `is_supported` — 扩展名是否命中支持面（分派与批量目录遍历共用同一真源；P0012）。
 
@@ -75,7 +75,7 @@ markdown 解析 `![alt](path)` 引用复制；anydoc 家族 zip 直读内嵌图�
 
 ## Functions
 
-- `extract_figures` — 提取图本体到 `out_dir`,按文档格式分派;`filter` 为 1 起页集合(仅 PDF 生效)。
+- `extract_figures` — 提取图本体到 `out_dir`,按文档格式分派,返回对齐元数据的导出清单。
 
 ## Types
 
@@ -110,8 +110,8 @@ pin 表校验只是前置层(坏件不落缓存,免得离线解析当场才红)�
 
 - `assess_file` — 单件只读判定(init 逐件补齐与 doctor 都用;不写任何文件)。
 - `assess_package` — 只读评估一包四件(doctor 用;不建目录不写任何文件,ppocr-rs 的
-- `download_file` — 三级回退下载单件到 `dest`:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件
-- `fetch_latest_manifest` — 拉取并解析镜像升级清单(10s 全局超时;任何失败由调用方回退 GitHub 通道)。
+- `download_file` — 三级回退下载单件到 `dest`,返回命中的源。
+- `fetch_latest_manifest` — 拉取并解析镜像升级清单(10s 全局超时)。
 - `gh_asset_name` — GitHub 模型资产名:扁平 `<包名>-<rev 前 12>-<文件名>`;字符集只用
 - `gh_file_url` — GitHub 模型 tag 下载地址。
 - `hf_file_url` — HF 直连件地址(ppocr-rs 原生同款路径,302 到 CDN 由默认重定向跟)。
@@ -151,11 +151,11 @@ ppocr-rs 内嵌钉死值全量 sha256 校验是终检闸。档位 tiny / small�
 
 ## Functions
 
-- `doctor_models` — `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。两档四包逐包判定 +
-- `init_models` — `ocr init`：显式下载 / 修复档位双包进缓存。逐件有效跳过、缺损重下（三级回退），
-- `ocr_image` — 图片文件 OCR（D43）：ImageReader 内容嗅探解码（多帧动图只取首帧，用户裁定 YAGNI；
-- `ocr_pages` — 对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。
-- `switch_model` — `ocr switch <tiny|small>`：写档位设置文件并提示。只切换不自动下载（单调用完成
+- `doctor_models` — `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。
+- `init_models` — `ocr init`：显式下载 / 修复档位双包进缓存。
+- `ocr_image` — 对图片文件整图 OCR,返回行级文本(阅读序,空行滤除;D43)。
+- `ocr_pages` — 对指定页做 OCR 兜底,返回页号与行级文本(阅读序,空行滤除)。
+- `switch_model` — `ocr switch <tiny|small>`：写档位设置文件并提示，只切换不自动下载（单调用完成
 
 ## Types
 
@@ -170,7 +170,7 @@ ppocr-rs 内嵌钉死值全量 sha256 校验是终检闸。档位 tiny / small�
 ## Functions
 
 - `err_json` — 失败包膜串行化（compact 单行）。
-- `filter_value` — 点路径裁剪：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。
+- `filter_value` — 点路径裁剪 JSON 值：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。
 - `ok_json` — 成功包膜串行化（compact 单行，Agent 省 token）。
 - `ok_json_paged` — extract 分页成功包膜：有剩余页时 meta 带 next_offset 与 cta。
 
@@ -188,7 +188,7 @@ PDF 页提取：包 pdf-inspector 的 markdown 布局管线（多栏阅读序、
 
 ## Functions
 
-- `extract_pages` — 提取指定页（`None` 为全部页，页码 1 起）为 markdown 行，行按阅读序排列；
+- `extract_pages` — 提取指定页为 markdown 行,行按阅读序排列(pdf-inspector 布局管线)。
 
 
 <!-- reader_rs/query.md -->
@@ -201,7 +201,7 @@ mq 结构化提取（P0016；学习 harehare/mq，选型 S007）：全部支持�
 ## Functions
 
 - `run_query` — 跑 mq 表达式，返回非空渲染结果集（markdown 片段原文）。
-- `to_markdown` — 任意支持格式转 markdown 文本：md 读原文；PDF 走 pdf-inspector 布局管线；
+- `to_markdown` — 任意支持格式转 markdown 文本,供 mq 表达式求值消费。
 
 
 <!-- reader_rs/search.md -->
@@ -216,7 +216,7 @@ mq 结构化提取（P0016；学习 harehare/mq，选型 S007）：全部支持�
 ## Types
 
 - `Hit` — 一次命中：单元序号（页/章）、单元内行号（均 1 起）、命中行文本与上下文。
-- `Matcher` — 行匹配器。
+- `Matcher` — 行匹配器：字面、正则与忽略大小写三种口径，[`search`] 的命中判定用。
 
 
 <!-- reader_rs/selfupdate.md -->

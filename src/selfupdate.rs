@@ -29,6 +29,10 @@ pub struct Outcome {
 }
 
 /// 本编译目标对应的 release 资产名（release.yml 矩阵命名约定）。
+///
+/// # Errors
+///
+/// 编译目标不在五平台 release 矩阵内（无对应资产可下载）。
 pub fn asset_target() -> Result<&'static str, String> {
     #[cfg(all(windows, target_arch = "x86_64"))]
     {
@@ -151,6 +155,15 @@ fn fetch_latest_from_github() -> Result<ReleaseInfo, String> {
 }
 
 /// `reader self update` 主流程。`force` 为真时版本相同也重装。
+///
+/// 只走 stable 通道,不做自动更新;查新先读镜像 latest.json,不可用回退
+/// GitHub API(匿名撞限流再回退 gh api)。
+///
+/// # Errors
+///
+/// 查新版失败(镜像与 GitHub 双通道都不可用,或清单形状不合法)、当前平台
+/// 无资产、资产 sha256 校验不符或缺失、下载解包失败、建临时目录或替换
+/// 自身失败;错误串带阶段与原因。
 pub fn self_update(force: bool) -> Result<Outcome, String> {
     let current = env!("CARGO_PKG_VERSION").to_string();
     let info = fetch_release_info()?;

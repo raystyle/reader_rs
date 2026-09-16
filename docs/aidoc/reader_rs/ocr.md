@@ -11,11 +11,11 @@ ppocr-rs 内嵌钉死值全量 sha256 校验是终检闸。档位 tiny / small�
 
 ## Functions
 
-- `doctor_models` — `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。两档四包逐包判定 +
-- `init_models` — `ocr init`：显式下载 / 修复档位双包进缓存。逐件有效跳过、缺损重下（三级回退），
-- `ocr_image` — 图片文件 OCR（D43）：ImageReader 内容嗅探解码（多帧动图只取首帧，用户裁定 YAGNI；
-- `ocr_pages` — 对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。
-- `switch_model` — `ocr switch <tiny|small>`：写档位设置文件并提示。只切换不自动下载（单调用完成
+- `doctor_models` — `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。
+- `init_models` — `ocr init`：显式下载 / 修复档位双包进缓存。
+- `ocr_image` — 对图片文件整图 OCR,返回行级文本(阅读序,空行滤除;D43)。
+- `ocr_pages` — 对指定页做 OCR 兜底,返回页号与行级文本(阅读序,空行滤除)。
+- `switch_model` — `ocr switch <tiny|small>`：写档位设置文件并提示，只切换不自动下载（单调用完成
 
 ## Types
 

@@ -3,7 +3,7 @@
 use crate::document::TextUnit;
 use regex::RegexBuilder;
 
-/// 行匹配器。
+/// 行匹配器：字面、正则与忽略大小写三种口径，[`search`] 的命中判定用。
 pub enum Matcher {
     /// 字面子串匹配。
     Plain {
@@ -17,7 +17,11 @@ pub enum Matcher {
 }
 
 impl Matcher {
-    /// 构造匹配器；`regex_mode` 时按正则解释（错误信息带原文）。
+    /// 构造匹配器；`regex_mode` 时按正则解释。
+    ///
+    /// # Errors
+    ///
+    /// `regex_mode` 且模式非法（regex crate 编译错误，信息带原文）。
     pub fn new(pattern: &str, regex_mode: bool, ignore_case: bool) -> Result<Self, String> {
         if regex_mode {
             RegexBuilder::new(pattern)
@@ -38,6 +42,8 @@ impl Matcher {
     }
 
     /// 行是否命中。
+    ///
+    /// # Examples
     ///
     /// ```
     /// # use reader_rs::search::Matcher;

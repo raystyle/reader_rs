@@ -42,6 +42,11 @@ pub struct ErrEnvelope {
 }
 
 /// 成功包膜串行化（compact 单行，Agent 省 token）。
+///
+/// # Errors
+///
+/// 序列化失败；实践中 `data` 已是合法 JSON `Value`，不会触发（签名保留 Result
+/// 与分页变体对齐）。
 pub fn ok_json(command: &'static str, started: Instant, data: Value) -> Result<String, String> {
     let env = OkEnvelope {
         ok: true,
@@ -62,6 +67,10 @@ pub fn err_json(command: &'static str, started: Instant, error: String) -> Strin
 }
 
 /// extract 分页成功包膜：有剩余页时 meta 带 next_offset 与 cta。
+///
+/// # Errors
+///
+/// 序列化失败；实践中 `data` 已是合法 JSON `Value`，不会触发（同 [`ok_json`]）。
 pub fn ok_json_paged(
     command: &'static str,
     started: Instant,
@@ -91,8 +100,24 @@ fn meta(
     }
 }
 
-/// 点路径裁剪：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。
-/// 非法路径（键不存在、对非数组用 `[]`）报错不静默。
+/// 点路径裁剪 JSON 值：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。
+///
+/// 非法路径报错不静默。
+///
+/// # Errors
+///
+/// 路径为空、键在对象上不存在、对非数组用 `[]`、下标非数字或越界；
+/// 错误串带路径与原因。
+///
+/// # Examples
+///
+/// ```
+/// # use serde_json::json;
+/// let data = json!({"hits": [{"unit": 1}, {"unit": 2}]});
+/// let out = reader_rs::output::filter_value(&data, "hits[].unit").unwrap();
+/// assert_eq!(out, json!([1, 2]));
+/// assert!(reader_rs::output::filter_value(&data, "nope").is_err());
+/// ```
 pub fn filter_value(root: &Value, path: &str) -> Result<Value, String> {
     let path = path.trim();
     if path.is_empty() {

@@ -4,8 +4,19 @@
 
 use std::path::Path;
 
-/// 任意支持格式转 markdown 文本：md 读原文；PDF 走 pdf-inspector 布局管线；
-/// anydoc 家族走统一引擎 GFM。
+/// 任意支持格式转 markdown 文本,供 mq 表达式求值消费。
+///
+/// md 读原文;PDF 走 pdf-inspector 布局管线;anydoc 家族走统一引擎 GFM。
+///
+/// # Errors
+///
+/// 读文件失败、格式不在支持面,或对应引擎解析失败;图片文件有专属指路错误
+/// (无文本层,提示改用 `extract --ocr`)。
+///
+/// # Panics
+///
+/// 仅当 anydoc `Format::from_extension` 与上方 `is_some` 前置判定不一致
+/// (上游版本漂移)时 panic;正常路径已被判定守住。
 pub fn to_markdown(path: &Path) -> Result<String, String> {
     let ext = path
         .extension()
@@ -57,6 +68,10 @@ pub fn to_markdown(path: &Path) -> Result<String, String> {
 }
 
 /// 跑 mq 表达式，返回非空渲染结果集（markdown 片段原文）。
+///
+/// # Errors
+///
+/// markdown 解析失败或 mq 表达式非法（引擎报错原文透传）。
 pub fn run_query(markdown: &str, expression: &str) -> Result<Vec<String>, String> {
     let input =
         mq_lang::parse_markdown_input(markdown).map_err(|e| format!("markdown 解析失败: {e}"))?;

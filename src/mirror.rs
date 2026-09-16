@@ -172,6 +172,10 @@ pub static PACKAGES: &[PackagePin] = &[
 ];
 
 /// 按档位与角色取包(tiny/small × det/rec 四包之外无分发)。
+///
+/// # Errors
+///
+/// 档位或角色组合不在分发面(只 tiny / small 两档);错误串点名请求的名。
 pub fn package_pin(size: ModelSize, kind: ModelKind) -> Result<&'static PackagePin, String> {
     let name = format!("{}-{}", size.as_str(), kind.as_str());
     PACKAGES
@@ -267,12 +271,18 @@ fn ua() -> String {
     concat!("reader/", env!("CARGO_PKG_VERSION")).to_string()
 }
 
-/// 三级回退下载单件到 `dest`:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件
-/// (bytes 加 sha256 对 pin 表校验通过才 rename 落盘),返回命中的源。
-/// 落盘前自建父目录(空缓存首用时包目录不存在,`fs::write` 对缺失目录是
-/// os error 3;`ocr init` 首版实测踩中,下载器不依赖调用方建目录)。
-/// 并发写不经 ppocr-rs 私有锁:单件 rename 原子,最坏并发方多做一次
-/// 全量哈希,无半损态。
+/// 三级回退下载单件到 `dest`,返回命中的源。
+///
+/// 源序:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件(bytes 加 sha256 对 pin 表
+/// 校验通过才 rename 落盘)。落盘前自建父目录(空缓存首用时包目录不存在,
+/// `fs::write` 对缺失目录是 os error 3;`ocr init` 首版实测踩中,下载器不依赖
+/// 调用方建目录)。并发写不经 ppocr-rs 私有锁:单件 rename 原子,最坏并发方
+/// 多做一次全量哈希,无半损态。
+///
+/// # Errors
+///
+/// 建包目录失败,或三源全部失败(网络不可达、bytes 或 sha256 校验不符、
+/// 落盘失败);错误串带末次源的失败原因。
 pub fn download_file(pin: &PackagePin, file: &FilePin, dest: &Path) -> Result<Source, String> {
     if let Some(parent) = dest.parent() {
         std::fs::create_dir_all(parent).map_err(|e| format!("建包目录失败: {e}"))?;
@@ -430,7 +440,13 @@ pub fn latest_json_url() -> String {
     format!("{}/reader/latest.json", mirror_base())
 }
 
-/// 拉取并解析镜像升级清单(10s 全局超时;任何失败由调用方回退 GitHub 通道)。
+/// 拉取并解析镜像升级清单(10s 全局超时)。
+///
+/// 任何失败由调用方回退 GitHub 通道,不重试。
+///
+/// # Errors
+///
+/// 请求失败或超时、响应读取失败、JSON 形状不合清单结构;错误串带原因。
 pub fn fetch_latest_manifest() -> Result<LatestManifest, String> {
     let url = latest_json_url();
     let mut resp = probe_agent()

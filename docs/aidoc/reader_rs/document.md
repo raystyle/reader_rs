@@ -4,7 +4,7 @@
 
 ## Functions
 
-- `extract` — 按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。
+- `extract` — 按扩展名分派提取，返回统一文本单元。
 - `is_image_ext` — 扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。
 - `is_supported` — 扩展名是否命中支持面（分派与批量目录遍历共用同一真源；P0012）。
 

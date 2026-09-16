@@ -10,12 +10,12 @@
     {
       "path": "reader_rs::anydoc::extract_markdown",
       "kind": "function",
-      "docs": "提取 markdown 原文文档（.md，P0016）：读 UTF-8 文本直接进同一条分节管线，\n节语义与 anydoc 家族完全一致（section/part、`--pages`、分页全继承）。"
+      "docs": "提取 markdown 原文文档（.md，P0016）为分节单元。\n\n读 UTF-8 文本直接进与 anydoc 家族同一条分节管线：节语义完全一致\n（section/part、`--pages`、分页全继承）。\n\n# Errors\n\n读文件失败或内容非 UTF-8；错误串带路径与原因。"
     },
     {
       "path": "reader_rs::anydoc::extract_sections",
       "kind": "function",
-      "docs": "提取 anydoc 家族文档为分节单元（`filter` 为 1 起单元号集合，`None` 为全部）。"
+      "docs": "提取 anydoc 家族文档为分节单元。\n\n`filter` 为 1 起单元号集合（`None` 为全部）。\n\n# Errors\n\n读文件失败（IO、权限）、格式无法识别（魔数与扩展名都不中）或 anydoc 解析失败；\n错误串带路径与原因。"
     },
     {
       "path": "reader_rs::batch",
@@ -50,12 +50,12 @@
     {
       "path": "reader_rs::document::extract",
       "kind": "function",
-      "docs": "按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。\nPDF 直连 pdf-inspector 保页契约；anydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）\n走统一引擎按标题分节（P0009）；图片文件无文本层，单图即单页（D43）。"
+      "docs": "按扩展名分派提取，返回统一文本单元。\n\n`filter` 为 1 起序号集合（`None` 为全部）。PDF 直连 pdf-inspector 保页契约；\nanydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）走统一引擎按标题分节（P0009）；\n图片文件无文本层，单图即单页（D43）。\n\n# Errors\n\n扩展名不在支持面，或分派后的对应引擎（pdf-inspector / anydoc / 图片解码）\n读或解析失败；错误串带路径与原因透传。"
     },
     {
       "path": "reader_rs::document::is_image_ext",
       "kind": "function",
-      "docs": "扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。\n\n```\nassert!(reader_rs::document::is_image_ext(\"png\"));\nassert!(!reader_rs::document::is_image_ext(\"pdf\"));\n```"
+      "docs": "扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。\n\n# Examples\n\n```\nassert!(reader_rs::document::is_image_ext(\"png\"));\nassert!(!reader_rs::document::is_image_ext(\"pdf\"));\n```"
     },
     {
       "path": "reader_rs::document::is_supported",
@@ -75,7 +75,7 @@
     {
       "path": "reader_rs::figures::extract_figures",
       "kind": "function",
-      "docs": "提取图本体到 `out_dir`,按文档格式分派;`filter` 为 1 起页集合(仅 PDF 生效)。"
+      "docs": "提取图本体到 `out_dir`,按文档格式分派,返回对齐元数据的导出清单。\n\n`filter` 为 1 起页集合(仅 PDF 生效)。\n\n# Errors\n\n扩展名不在支持面、文档读或解析失败(PDF XObject / zip 部件 / md 引用),\n或图本体落盘失败;错误串带路径与原因。"
     },
     {
       "path": "reader_rs::introspect",
@@ -155,12 +155,12 @@
     {
       "path": "reader_rs::mirror::download_file",
       "kind": "function",
-      "docs": "三级回退下载单件到 `dest`:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件\n(bytes 加 sha256 对 pin 表校验通过才 rename 落盘),返回命中的源。\n落盘前自建父目录(空缓存首用时包目录不存在,`fs::write` 对缺失目录是\nos error 3;`ocr init` 首版实测踩中,下载器不依赖调用方建目录)。\n并发写不经 ppocr-rs 私有锁:单件 rename 原子,最坏并发方多做一次\n全量哈希,无半损态。"
+      "docs": "三级回退下载单件到 `dest`,返回命中的源。\n\n源序:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件(bytes 加 sha256 对 pin 表\n校验通过才 rename 落盘)。落盘前自建父目录(空缓存首用时包目录不存在,\n`fs::write` 对缺失目录是 os error 3;`ocr init` 首版实测踩中,下载器不依赖\n调用方建目录)。并发写不经 ppocr-rs 私有锁:单件 rename 原子,最坏并发方\n多做一次全量哈希,无半损态。\n\n# Errors\n\n建包目录失败,或三源全部失败(网络不可达、bytes 或 sha256 校验不符、\n落盘失败);错误串带末次源的失败原因。"
     },
     {
       "path": "reader_rs::mirror::fetch_latest_manifest",
       "kind": "function",
-      "docs": "拉取并解析镜像升级清单(10s 全局超时;任何失败由调用方回退 GitHub 通道)。"
+      "docs": "拉取并解析镜像升级清单(10s 全局超时)。\n\n任何失败由调用方回退 GitHub 通道,不重试。\n\n# Errors\n\n请求失败或超时、响应读取失败、JSON 形状不合清单结构;错误串带原因。"
     },
     {
       "path": "reader_rs::mirror::gh_asset_name",
@@ -200,7 +200,7 @@
     {
       "path": "reader_rs::mirror::package_pin",
       "kind": "function",
-      "docs": "按档位与角色取包(tiny/small × det/rec 四包之外无分发)。"
+      "docs": "按档位与角色取包(tiny/small × det/rec 四包之外无分发)。\n\n# Errors\n\n档位或角色组合不在分发面(只 tiny / small 两档);错误串点名请求的名。"
     },
     {
       "path": "reader_rs::ocr",
@@ -215,27 +215,27 @@
     {
       "path": "reader_rs::ocr::doctor_models",
       "kind": "function",
-      "docs": "`ocr doctor`：只读诊断（不建目录、不写文件、不下载）。两档四包逐包判定 +\n设置文件与档位来源 + 镜像探活（信息行，不可达不影响判定：内网机离线可用即健康）。\nhealthy = 当前档双包完整。"
+      "docs": "`ocr doctor`：只读诊断（不建目录、不写文件、不下载）。\n\n两档四包逐包判定 + 设置文件与档位来源 + 镜像探活（信息行，不可达不影响判定：\n内网机离线可用即健康）。healthy = 当前档双包完整。\n\n# Errors\n\n缓存目录或档位设置不可定位；包判定本身不失败（缺件损件落输出行）。"
     },
     {
       "path": "reader_rs::ocr::init_models",
       "kind": "function",
-      "docs": "`ocr init`：显式下载 / 修复档位双包进缓存。逐件有效跳过、缺损重下（三级回退），\n末尾交 ppocr-rs `verify()` 全量校验并补缓存标记（表漂移当场红）。\n`--offline` 只校验不下载（语义对齐 `--ocr --offline`，零网络可测）。"
+      "docs": "`ocr init`：显式下载 / 修复档位双包进缓存。\n\n逐件有效跳过、缺损重下（三级回退），末尾交 ppocr-rs `verify()` 全量校验\n并补缓存标记（表漂移当场红）。`--offline` 只校验不下载（语义对齐\n`--ocr --offline`，零网络可测）；`size_arg` 为 `None` 时取当前档位。\n\n# Errors\n\n缓存目录不可定位、档位参数非法、offline 且存在缺损件、下载三源全败,\n或末尾全量校验不符;错误串带包名与原因。"
     },
     {
       "path": "reader_rs::ocr::ocr_image",
       "kind": "function",
-      "docs": "图片文件 OCR（D43）：ImageReader 内容嗅探解码（多帧动图只取首帧，用户裁定 YAGNI；\n默认 Limits 512MB 防解压炸弹）、EXIF 方向应用（jpeg / tiff / webp 携带时）、alpha\n合成白底后 recognize，返回行级文本（阅读序，空行滤除）。"
+      "docs": "对图片文件整图 OCR,返回行级文本(阅读序,空行滤除;D43)。\n\nImageReader 内容嗅探解码(多帧动图只取首帧,用户裁定 YAGNI;默认 Limits 512MB\n防解压炸弹)、EXIF 方向应用(jpeg / tiff / webp 携带时)、alpha 合成白底后 recognize。\n\n# Errors\n\n读或嗅探或解码失败(路径不存在、非图片、损坏)、模型未就位且 offline、\n引擎构建或推理失败;错误串带路径与原因。"
     },
     {
       "path": "reader_rs::ocr::ocr_pages",
       "kind": "function",
-      "docs": "对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。\n模型缺失且 `offline` 为真时报错不下载。"
+      "docs": "对指定页做 OCR 兜底,返回页号与行级文本(阅读序,空行滤除)。\n\n`page_nos` 为 1 起页号切片;模型缺失且 `offline` 为真时报错不下载;\n缓存语义见模块头(三级回退、档位三级)。\n\n# Errors\n\n模型未就位且 offline、缓存目录不可定位或不可写、引擎构建失败,\n或页渲染与推理失败;错误串带页号与原因。"
     },
     {
       "path": "reader_rs::ocr::switch_model",
       "kind": "function",
-      "docs": "`ocr switch <tiny|small>`：写档位设置文件并提示。只切换不自动下载（单调用完成\n一件事）；env `READER_OCR_MODEL_SIZE` 已导出时警告本设置不生效（env 优先）。"
+      "docs": "`ocr switch <tiny|small>`：写档位设置文件并提示，只切换不自动下载（单调用完成\n一件事）。\n\nenv `READER_OCR_MODEL_SIZE` 已导出时警告本设置不生效（env 优先）；\n目标档未就位则提示 `ocr init`（不改退出码）。\n\n# Errors\n\n档位参数非法、缓存或设置路径不可定位、建设置目录或写档位文件失败。"
     },
     {
       "path": "reader_rs::output",
@@ -265,22 +265,22 @@
     {
       "path": "reader_rs::output::filter_value",
       "kind": "function",
-      "docs": "点路径裁剪：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。\n非法路径（键不存在、对非数组用 `[]`）报错不静默。"
+      "docs": "点路径裁剪 JSON 值：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。\n\n非法路径报错不静默。\n\n# Errors\n\n路径为空、键在对象上不存在、对非数组用 `[]`、下标非数字或越界；\n错误串带路径与原因。\n\n# Examples\n\n```\n# use serde_json::json;\nlet data = json!({\"hits\": [{\"unit\": 1}, {\"unit\": 2}]});\nlet out = reader_rs::output::filter_value(&data, \"hits[].unit\").unwrap();\nassert_eq!(out, json!([1, 2]));\nassert!(reader_rs::output::filter_value(&data, \"nope\").is_err());\n```"
     },
     {
       "path": "reader_rs::output::ok_json",
       "kind": "function",
-      "docs": "成功包膜串行化（compact 单行，Agent 省 token）。"
+      "docs": "成功包膜串行化（compact 单行，Agent 省 token）。\n\n# Errors\n\n序列化失败；实践中 `data` 已是合法 JSON `Value`，不会触发（签名保留 Result\n与分页变体对齐）。"
     },
     {
       "path": "reader_rs::output::ok_json_paged",
       "kind": "function",
-      "docs": "extract 分页成功包膜：有剩余页时 meta 带 next_offset 与 cta。"
+      "docs": "extract 分页成功包膜：有剩余页时 meta 带 next_offset 与 cta。\n\n# Errors\n\n序列化失败；实践中 `data` 已是合法 JSON `Value`，不会触发（同 [`ok_json`]）。"
     },
     {
       "path": "reader_rs::parse_page_spec",
       "kind": "function",
-      "docs": "解析页范围串（如 `1-3,5`）为 1 起页码集合。\n\n```\nuse reader_rs::parse_page_spec;\nlet set = parse_page_spec(\"1-3,5\").unwrap();\nassert_eq!(set.len(), 4);\nassert!(set.contains(&2) && set.contains(&5));\nassert!(parse_page_spec(\"0\").is_err());\n```"
+      "docs": "解析页范围串（如 `1-3,5`）为 1 起页码集合。\n\n段间逗号分隔、段内 `起-止` 闭区间；空白容忍。\n\n# Errors\n\n段非正整数、页号为 0、或起页大于止页；错误串带原段。\n\n# Examples\n\n```\nuse reader_rs::parse_page_spec;\nlet set = parse_page_spec(\"1-3,5\").unwrap();\nassert_eq!(set.len(), 4);\nassert!(set.contains(&2) && set.contains(&5));\nassert!(parse_page_spec(\"0\").is_err());\n```"
     },
     {
       "path": "reader_rs::pdf",
@@ -290,7 +290,7 @@
     {
       "path": "reader_rs::pdf::extract_pages",
       "kind": "function",
-      "docs": "提取指定页（`None` 为全部页，页码 1 起）为 markdown 行，行按阅读序排列；\n文本层不可靠的页（扫描件、编码问题、乱码、空提取）带 `needs_ocr` 原因。\n`ocr.ocr` 为真时对 needs_ocr 页走 OCR 兜底回填 lines（P0014；`needs_ocr` 标记保留，\nOCR 文本仍属不可靠）。"
+      "docs": "提取指定页为 markdown 行,行按阅读序排列(pdf-inspector 布局管线)。\n\n`pages` 为 `None` 时取全部页(页码 1 起);文本层不可靠的页(扫描件、编码问题、\n乱码、空提取)带 `needs_ocr` 原因;`ocr.ocr` 为真时对 needs_ocr 页走 OCR 兜底\n回填 lines(P0014;`needs_ocr` 标记保留,OCR 文本仍属不可靠)。\n\n# Errors\n\nPDF 读或解析失败(pdf-inspector 报错原文);`--ocr` 开启时模型未就位且\noffline、或渲染与推理失败;错误串带路径与页号(OCR 面)。"
     },
     {
       "path": "reader_rs::query",
@@ -300,12 +300,12 @@
     {
       "path": "reader_rs::query::run_query",
       "kind": "function",
-      "docs": "跑 mq 表达式，返回非空渲染结果集（markdown 片段原文）。"
+      "docs": "跑 mq 表达式，返回非空渲染结果集（markdown 片段原文）。\n\n# Errors\n\nmarkdown 解析失败或 mq 表达式非法（引擎报错原文透传）。"
     },
     {
       "path": "reader_rs::query::to_markdown",
       "kind": "function",
-      "docs": "任意支持格式转 markdown 文本：md 读原文；PDF 走 pdf-inspector 布局管线；\nanydoc 家族走统一引擎 GFM。"
+      "docs": "任意支持格式转 markdown 文本,供 mq 表达式求值消费。\n\nmd 读原文;PDF 走 pdf-inspector 布局管线;anydoc 家族走统一引擎 GFM。\n\n# Errors\n\n读文件失败、格式不在支持面,或对应引擎解析失败;图片文件有专属指路错误\n(无文本层,提示改用 `extract --ocr`)。\n\n# Panics\n\n仅当 anydoc `Format::from_extension` 与上方 `is_some` 前置判定不一致\n(上游版本漂移)时 panic;正常路径已被判定守住。"
     },
     {
       "path": "reader_rs::run",
@@ -325,7 +325,7 @@
     {
       "path": "reader_rs::search::Matcher",
       "kind": "enum",
-      "docs": "行匹配器。"
+      "docs": "行匹配器：字面、正则与忽略大小写三种口径，[`search`] 的命中判定用。"
     },
     {
       "path": "reader_rs::search::search",
@@ -345,12 +345,12 @@
     {
       "path": "reader_rs::selfupdate::asset_target",
       "kind": "function",
-      "docs": "本编译目标对应的 release 资产名（release.yml 矩阵命名约定）。"
+      "docs": "本编译目标对应的 release 资产名（release.yml 矩阵命名约定）。\n\n# Errors\n\n编译目标不在五平台 release 矩阵内（无对应资产可下载）。"
     },
     {
       "path": "reader_rs::selfupdate::self_update",
       "kind": "function",
-      "docs": "`reader self update` 主流程。`force` 为真时版本相同也重装。"
+      "docs": "`reader self update` 主流程。`force` 为真时版本相同也重装。\n\n只走 stable 通道,不做自动更新;查新先读镜像 latest.json,不可用回退\nGitHub API(匿名撞限流再回退 gh api)。\n\n# Errors\n\n查新版失败(镜像与 GitHub 双通道都不可用,或清单形状不合法)、当前平台\n无资产、资产 sha256 校验不符或缺失、下载解包失败、建临时目录或替换\n自身失败;错误串带阶段与原因。"
     }
   ]
 }

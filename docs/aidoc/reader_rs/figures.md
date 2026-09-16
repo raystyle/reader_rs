@@ -7,7 +7,7 @@ markdown 解析 `![alt](path)` 引用复制；anydoc 家族 zip 直读内嵌图�
 
 ## Functions
 
-- `extract_figures` — 提取图本体到 `out_dir`,按文档格式分派;`filter` 为 1 起页集合(仅 PDF 生效)。
+- `extract_figures` — 提取图本体到 `out_dir`,按文档格式分派,返回对齐元数据的导出清单。
 
 ## Types
 

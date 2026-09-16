@@ -53,6 +53,8 @@ const IMAGE_EXTS: [&str; 8] = ["png", "jpg", "jpeg", "bmp", "gif", "webp", "tiff
 
 /// 扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。
 ///
+/// # Examples
+///
 /// ```
 /// assert!(reader_rs::document::is_image_ext("png"));
 /// assert!(!reader_rs::document::is_image_ext("pdf"));
@@ -61,9 +63,16 @@ pub fn is_image_ext(ext: &str) -> bool {
     IMAGE_EXTS.contains(&ext)
 }
 
-/// 按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。
-/// PDF 直连 pdf-inspector 保页契约；anydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）
-/// 走统一引擎按标题分节（P0009）；图片文件无文本层，单图即单页（D43）。
+/// 按扩展名分派提取，返回统一文本单元。
+///
+/// `filter` 为 1 起序号集合（`None` 为全部）。PDF 直连 pdf-inspector 保页契约；
+/// anydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）走统一引擎按标题分节（P0009）；
+/// 图片文件无文本层，单图即单页（D43）。
+///
+/// # Errors
+///
+/// 扩展名不在支持面，或分派后的对应引擎（pdf-inspector / anydoc / 图片解码）
+/// 读或解析失败；错误串带路径与原因透传。
 pub fn extract(
     path: &Path,
     filter: Option<&HashSet<u32>>,
