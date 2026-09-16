@@ -9,7 +9,7 @@
 - 文档门禁四件：`rumdl check .` 加 `uv run --script .tools/md-char-scan.py` 加 `uv run --script .tools/md-heading-scan.py` 加 `uv run --script .tools/md-ref-scan.py`（文档结构变更末件必跑）
 - `uv run /mnt/d/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .` dev-evo 骨架合规自检（存量禁字豁免机制与口径见 docs/README 地图存量禁字债节）
 - `cargo build --release --locked` 发布构建；命令面变化后 `./target/release/reader skill > SKILL.md` 重生并过快照审
-- 裁定：库面未发布（crates.io 属 REQ-024 候选）且源码无 doctest 用例，`cargo test --doc` 与 missing_docs 不适用；公开行为契约走 SKILL.md 加 tests/ 集成测试承载
+- 裁定：库面未发布（crates.io 属 REQ-024 候选）且源码无 doctest 用例，`cargo test --doc` 与 missing_docs 不适用（对齐 base-projection「无自有 API 面项目」范式：公开契约为字节确定性产物）；公开契约走 SKILL.md 加 tests/ 集成测试承载，`reader skill > SKILL.md` 再生 diff 即漂移门禁
 
 ## Must
 

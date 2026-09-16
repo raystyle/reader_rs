@@ -20,6 +20,8 @@
 | `../CHANGELOG.md` 加 `../ROADMAP.md` | 版本成果与阶段 | 查历史与进度 |
 | `../SKILL.md` | agent 命令契约（`reader skill` 生成物，漂移守卫） | 查命令面 |
 
+> 三栈投影裁定（2026-09-16，对齐 dev-evo base-projection「无自有 API 面项目」范式）：本仓无自有 API 面（库未发布、契约在 CLI 命令与输出），aidoc 等文档投影整栈不适用；公开契约走 SKILL.md 字节确定性产物，`reader skill > SKILL.md` 再生 diff 为漂移门禁（构建门禁已进 AGENTS Commands 在册）。
+
 ## 历史体系
 
 > 迁移留档，指针有效。
