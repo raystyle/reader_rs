@@ -44,6 +44,7 @@
 
 - 三平台矩阵（Windows / Linux / macOS，CI 三系统含 dev/** 推送触发）；Windows 优先验证
 - 四平台实机测试协议（ohmycloud 总台周知，用户宣言 2026-09-16）：lan-win（Windows 宿主加 WSL 总台）、lan-ubuntu（Linux NUC，全运行时）、lan-linux（Linux server）、lan-mac（macOS arm64）四端均可跑本仓验收；实机清单 R004（Linux 面，lan-ubuntu 与 lan-linux 同适用）与 R005（mac 面）；验收支撑按需向 ohmycloud 总台要端点，回执纪律照旧（conclusion 自取）
+- 连接姿势（env-platform 第十节口径）：WSL 到宿主恒走 `127.0.0.1` 回环 ssh 加 interop 直调（powershell.exe），不走宿主 mesh IP（mirrored 网络共身份自连 RST 属结构性）；lan 三端 mesh 地址随时随地；连接问题先查姿势再查配置。多仓派单与回执走 herdr 飞轮协议（flow-flywheel.md，本仓工位实践即实证源）
 - 本仓开发侧 WSL `/mnt/d/reader_rs`（Windows 盘 `D:\reader_rs`）；md 与 Rust 源 UTF-8；Windows 兼容 5.1 的脚本带 UTF-8 BOM
 - 发布走 R008：tag 触发 release.yml（五平台资产加 sha256 边车）加镜像腿（mirror job 与 mirror-models.yml 周更）；模型与升级镜像 `reader.ohmygh.com` 归 ohmycloud 承载
 - dev-evo 标准权威在 `D:\ProjectEvo`（本仓文档体系 2026-09-16 全量迁移自旧四原语体系，映射口径见 docs/README）
