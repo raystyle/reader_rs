@@ -2,6 +2,15 @@
 
 本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
 
+## [0.6.1] - 2026-09-16
+
+> 治理面版本（dev-evo 终态对齐攒批，REQ-051）：文档体系、契约注释纪律与协作协议，二进制行为零变化（patch 判据）。
+
+- **dev-evo 文档体系全量迁移与终态对齐（REQ-048，第六十一至六十四批）**：AGENTS 重写五节合同；PRD 队列按 D 号即 REQ 号转 REQ（现 REQ-023 至 REQ-051 在册）；ADR 择要五件；docs/README 地图承接 INDEX；四原语迁移注记留档；退役篇零引用。
+- **aidoc 投影强制化（REQ-049，ADR-0005）**：missing_docs 设 deny（`///` 全覆盖 57 处补齐）；契约注释格式纪律（`# Errors` 22 处、`# Panics` 1 处、clippy 三 lint、首句成句、示例断言收尾，doctest 3 至 4 例）；`docs/aidoc/` 17 件投影进 Git，`cargo aidoc --check --strict` 漂移门禁；渲染禁字豁免在册。
+- **协作与验收协议（第六十三、六十四批）**：四平台实机测试协议入环境节（lan-win / lan-ubuntu / lan-linux / lan-mac）；连接姿势口径（WSL 回环加 interop）；pwsh 统一验收载体（五端 7.6.6）；版本载体唯一权威 Cargo.toml；分发接入意向 REQ-050。
+- **全平台验收**：v0.6.0 后治理批五路实机验收绿（WSL、Windows 宿主、lan-mac、lan-ubuntu、CI 三系统）。
+
 ## [0.6.0] - 2026-09-04
 
 > dev/v0.6.0 分支(D45 分支模型首跑):图片文件支持、图片本体与一键提取、测试面大扩、镜像幂等。
