@@ -23,6 +23,7 @@
 - 踩坑当场记 `docs/diary/`（过程留痕）或立 ADR（被否决的选择也是决策）；`docs/mistakes/` M 编号体系留档不再接编
 - 一事一提交（feat/docs/fix/chore/test 前缀加中文描述）；每次提交 diary 当天记钩子
 - 版本分支模型（D45）：版本工作落 `dev/v<版本>` 分支承载与验收，全绿后 fast-forward 合并 main 打 tag 发布；main 唯一发版源，发版窗口冻结
+- 版本载体唯一权威 `Cargo.toml`（单包 version 一处，flow-release 第七节）：SKILL.md 版本行与 Cargo.lock 是生成投影随封版重生，CHANGELOG 是历史记录非载体；载体外版本号即第二真相，发现即清理；semver 判据（文档批与修复取 patch、能力新增取 minor、契约破裂取 major）写进封版 REQ 不凭感觉
 
 ## Must not
 
@@ -45,6 +46,7 @@
 - 三平台矩阵（Windows / Linux / macOS，CI 三系统含 dev/** 推送触发）；Windows 优先验证
 - 四平台实机测试协议（ohmycloud 总台周知，用户宣言 2026-09-16）：lan-win（Windows 宿主加 WSL 总台）、lan-ubuntu（Linux NUC，全运行时）、lan-linux（Linux server）、lan-mac（macOS arm64）四端均可跑本仓验收；实机清单 R004（Linux 面，lan-ubuntu 与 lan-linux 同适用）与 R005（mac 面）；验收支撑按需向 ohmycloud 总台要端点，回执纪律照旧（conclusion 自取）
 - 连接姿势（env-platform 第十节口径）：WSL 到宿主恒走 `127.0.0.1` 回环 ssh 加 interop 直调（powershell.exe），不走宿主 mesh IP（mirrored 网络共身份自连 RST 属结构性）；lan 三端 mesh 地址随时随地；连接问题先查姿势再查配置。多仓派单与回执走 herdr 飞轮协议（flow-flywheel.md，本仓工位实践即实证源）
+- 验收与运维脚本统一载体 pwsh（五端 7.6.6 在位，env-platform 第十一节）：新增验收与运维面脚本一律 pwsh 一份，不再各写 bash 加 cmd 加 zsh；既有 `.tools` PEP 723 Python 脚本（uv 运行时）按标准不强制迁移
 - 本仓开发侧 WSL `/mnt/d/reader_rs`（Windows 盘 `D:\reader_rs`）；md 与 Rust 源 UTF-8；Windows 兼容 5.1 的脚本带 UTF-8 BOM
 - 发布走 R008：tag 触发 release.yml（五平台资产加 sha256 边车）加镜像腿（mirror job 与 mirror-models.yml 周更）；模型与升级镜像 `reader.ohmygh.com` 归 ohmycloud 承载
 - dev-evo 标准权威在 `D:\ProjectEvo`（本仓文档体系 2026-09-16 全量迁移自旧四原语体系，映射口径见 docs/README）
