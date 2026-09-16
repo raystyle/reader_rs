@@ -17,7 +17,9 @@ OCR 管线（P0014 / P0018 / D42）只吃 PDF：hayro 渲染 needs_ocr 页为位
 
 ## 现状或实测
 
-### 端到端（本机，2026-09-04）
+### 端到端
+
+> 本机实测 2026-09-04。
 
 - GDI+ 现造 480x140 文字图 `READER SMOKE 12345`：`reader extract target/ocr-text.png --ocr` 完整识别出该行，`[needs_ocr: image]` 标记保留，退出 0。
 - 无 `--ocr`：`== page 1 ==` 加 `[needs_ocr: image]` 提示；`search` 无命中退出 1 加 stderr 提示；`--pages 2` 空结果；批量目录含图片进扫描面不报错、目录 `--ocr` 仍按契约拒绝。

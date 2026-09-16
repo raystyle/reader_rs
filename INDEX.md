@@ -2,6 +2,8 @@
 
 > 角色：全仓**唯一索引**：只做定位：编号表、目录结构、代码文件位置。搜索方法见 `AGENTS.md` 四、文档索引。规则权威源见 `AGENTS.md`；命名与编号规则见 `docs\guide\G001-文档标准细则-命名写作规范与rumdl检查.md`。
 
+> 迁移注记（2026-09-16）：索引职责由 `docs\README.md` 地图承接（dev-evo 体系，ADR 与 REQ 索引在 `docs\adr\` 与 `docs\requirements\`）；本文件迁移期保留，编号表与代码文件位置表仍有效，新文档不再登记。
+
 ## 一、编号体系
 
 **前缀定位**：`P`（proven，已完成 plan 归档，4 位）；`S`（research，研究原型过程，3 位）；`R`（references，做事的流程，3 位）；`G`（guide，做事的规范，3 位）；`M`（mistakes，分类文件 M1xx、行级错误 M0xx 全局递增不复用）。根目录四原语：`PRD`（需求清单）/ `GOAL`（目标与达成标准）/ `PLAN`（当前目标规划）/ `TODO`（进度清单）。

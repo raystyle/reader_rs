@@ -17,3 +17,7 @@ enabled = false
 
 [MD036]
 enabled = false
+
+# dev-evo ADR/REQ 模板带 YAML title，正文 h1 是文件题（不视为重复顶级）
+[MD025]
+front_matter_title = ""

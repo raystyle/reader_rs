@@ -42,6 +42,8 @@ macOS / Linux 接管开发与测试：GitHub Actions 三系统矩阵跑门禁三
 
 OCR 模型与 self update 走自有镜像 `reader.ohmygh.com`（R2 自定义域）：模型三级回退（镜像 到 HF 直连 到 GitHub `models-v6`）、`ocr init / doctor / switch` 三件套、self update 先读 `latest.json`、CI 镜像腿（release mirror job 加 mirror-models 周更,幂等闸）。**2026-09-03 达成**（v0.5.0,D42/ISSUE #1）。
 
-## 阶段 7：图片与一键提取面（进行中）
+## 阶段 7：图片与一键提取面
+
+> 已达成（2026-09-04，v0.6.0）。
 
 图片文件进格式面（D43）、图片本体导出与元数据对齐加一键完整提取（D47 figures/export,S010 定界）、测试面大扩（D44 官方语料全量 + D46 研究资料基线）、版本分支模型（D45 dev/main）。**2026-09-04 达成**(v0.6.0,D45 分支模型首跑:dev 承载 23 件提交,四路验收绿后 FF 合并 main 打 tag)。

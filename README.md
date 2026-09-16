@@ -259,7 +259,9 @@ reader query ./README.md ".h2"
 reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json --filter 'results[]'
 ```
 
-### figures：图片本体导出与元数据对齐（D47）
+### figures：图片本体导出与元数据对齐
+
+> D47 落地；S010 定界。
 
 把文档里的图片本体落盘，并与文本元数据对齐（定位回文档的锚、图题候选、图题后上下文行）；图表理解交给调用方的多模态模型（reader 不载模型，S010 定界）。
 
@@ -277,7 +279,9 @@ reader figures ./scan.pdf --pages 12-32
 reader figures ./report.docx --format json --filter 'figures[].anchor'
 ```
 
-### export：一键完整提取（D47）
+### export：一键完整提取
+
+> D47 第 3/4 轮点名落地。
 
 `reader export <文件> [--pages] [--out DIR] [--ocr] [--offline]`：文本、图片与对齐元数据一次落一个目录
 
@@ -341,13 +345,13 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 
 ## 文档导航
 
-项目协作文档（贡献者向）：[AGENTS.md](AGENTS.md) 协作规则最高约束；[INDEX.md](INDEX.md) 全仓索引；[PRD.md](PRD.md) / [GOAL.md](GOAL.md) / [PLAN.md](PLAN.md) / [TODO.md](TODO.md) 四原语；[CHANGELOG.md](CHANGELOG.md) 与 [ROADMAP.md](ROADMAP.md) 版本与路线；深文档六目录（proven / diary / research / references / guide / mistakes）经 [INDEX.md](INDEX.md) 进。
+项目协作文档（贡献者向）：[AGENTS.md](AGENTS.md) 五节协作合同（Commands / Must / Must not / Read first / 环境）；[docs/README.md](docs/README.md) 全仓文档地图（承接旧索引职责）；需求队列 [docs/requirements](docs/requirements/README.md) 与架构决策 [docs/adr](docs/adr/README.md)；[CHANGELOG.md](CHANGELOG.md) 与 [ROADMAP.md](ROADMAP.md) 版本与路线；研究档案 [docs/research](docs/research/README.md) 与过程日记 docs/diary。旧体系四原语（[PRD.md](PRD.md) / [GOAL.md](GOAL.md) / [PLAN.md](PLAN.md) / [TODO.md](TODO.md)）与 [INDEX.md](INDEX.md) 为迁移留档（2026-09-16 起不再更新，各顶部有迁移注记）。
 
 ## 贡献与支持
 
-- 提问、报错与功能建议：开 [GitHub Issue](https://github.com/raystyle/reader_rs/issues)。
-- 协作规则（四原语、工作规则、文档体系）：见 [AGENTS.md](AGENTS.md)。
-- 接受 PR：一次提交只做一件事；改动须过门禁（cargo 三件加文档四件，清单见 [AGENTS.md](AGENTS.md) 二节）。
+- 提问、报错与功能建议：开 [GitHub Issue](https://github.com/raystyle/reader_rs/issues)；新需求先在 [docs/requirements](docs/requirements/README.md) 立 REQ。
+- 协作规则（五节合同、文档体系）：见 [AGENTS.md](AGENTS.md)。
+- 接受 PR：一次提交只做一件事；改动须过门禁（cargo 三件加文档四件，清单见 [AGENTS.md](AGENTS.md) Commands 节）。
 
 ## 致谢
 
