@@ -15,7 +15,7 @@ OCR 兜底识图（`--ocr`，PP-OCRv6 三级回退源链）、图片本体导出
 - [`batch`](batch.md): 批量目录搜索（P0012）：递归走目录、逐文件 search、聚合 text/json 输出。
 - [`document`](document.md): 格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。
 - [`figures`](figures.md): 图片本体导出与文本元数据对齐（D47；S010 定界：只负责提取存储，理解归调用方 Agent）。
-- [`introspect`](introspect.md): Agent 自省与发现（P0007）：`--llms` 紧凑索引与 `skill` 子命令的 SKILL.md 生成。
+- [`introspect`](introspect.md): Agent 自省与发现（P0007）：`--llms` 紧凑索引，agent 说明书唯一面。
 - [`mirror`](mirror.md): 镜像源链与镜像清单(D42):OCR 模型三级回退下载(镜像 到 HF 直连 到 GitHub
 - [`ocr`](ocr.md): OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链、D43 图片文件）：needs_ocr 页经
 - [`output`](output.md): 输出层：JSON 包膜（ok/data/error 加 meta）与 filter 点路径裁剪。设计依据 S002（P0006）。

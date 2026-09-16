@@ -54,7 +54,7 @@ struct SearchOpts {
     about = "Agent 原生文档阅读、搜索和提取工具（PDF 按页；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 按节）"
 )]
 struct Cli {
-    /// 输出紧凑命令索引（agent 发现用；skill 子命令给长形态 SKILL.md）
+    /// 输出紧凑命令索引（agent 发现与接入的说明书）
     #[arg(long)]
     llms: bool,
     #[command(subcommand)]
@@ -135,8 +135,6 @@ enum Commands {
         #[arg(long)]
         offline: bool,
     },
-    /// 生成 SKILL.md（agent 发现与接入文档；--llms 给紧凑索引）
-    Skill,
     /// 提取图片本体并与文本元数据对齐（PDF 按页渲染 PNG、markdown 图片引用、Office 家族内嵌件、图片文件；有图退出 0，无图 1，出错 2）
     #[command(after_long_help = "\
 示例:
@@ -252,10 +250,6 @@ pub fn run() -> i32 {
         return 0;
     }
     match cli.command {
-        Some(Commands::Skill) => {
-            print!("{}", introspect::skill_md());
-            0
-        }
         Some(Commands::Figures {
             file,
             pages,

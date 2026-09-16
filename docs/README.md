@@ -18,12 +18,11 @@
 | `diary/` | YYYY-MM-DD 一天一篇过程与自省 | 查当天做了什么 |
 | `research/` 加 README | SNNN 研究档案（六态标注） | 找为什么时 |
 | `../CHANGELOG.md` 加 `../ROADMAP.md` | 版本成果与阶段 | 查历史与进度 |
-| `../SKILL.md` | agent 命令契约（`reader skill` 生成物，漂移守卫） | 查命令面 |
 | `aidoc/` | 库面 API 投影（llms.txt 入口加分模块 md 加 api JSON，cargo aidoc 生成物进 Git） | 查库 API 时 |
 
-> 三栈投影（2026-09-16 撤换当日早间的「无自有 API 面」不适用裁定：dev-evo 第五十九批 tool-rust 强制口径，aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005、REQ-049）：库面公开契约以 `///` 与类型签名为准，missing_docs 设 deny（Cargo.toml lints）；`docs/aidoc/` 全部生成物进 Git，漂移真门禁为 `cargo aidoc --check --strict`；CLI 面契约另走 SKILL.md 字节确定性产物加漂移守卫（`reader skill > SKILL.md` 再生 diff）。
+> 三栈投影（2026-09-16 撤换当日早间的「无自有 API 面」不适用裁定：dev-evo 第五十九批 tool-rust 强制口径，aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005、REQ-049）：库面公开契约以 `///` 与类型签名为准，missing_docs 设 deny（Cargo.toml lints）；`docs/aidoc/` 全部生成物进 Git，漂移真门禁为 `cargo aidoc --check --strict`；CLI 面契约另走 `--llms` 运行时断言（clap 命令树旗标全覆盖，tests/cli.rs 漂移守卫）。
 
-> agent CLI 面对照（2026-09-16，tool-cli-agents 十一节输出面增量，第六十一批终态对齐）：发现通道已落（`reader skill` 生成根 SKILL.md 加 `--llms` 紧凑索引，双漂移守卫；MCP 通道在册 REQ-023）；输出信封已落（`{ok,data,meta}` 包膜，错误信封 `{ok:false,error,meta}` 加退出码 0/1/2）；CTA 已落（分页 meta 带 `next_offset` 与 `cta`）；单元级分页已落（`--offset/--limit` 加 `--filter` 点路径、数组映射、下标）。裁定不适用三件：token 计量与 token 分页（token 口径随模型族漂移，reader 无模型知识，职责归调用方；单元级分页已是稳定子集取回）；错误信封 typed 错误码与 retryable 字段（本地只读 CLI 错误确定性高、无重试消费者；错误分类需求实名时走 REQ-036）；TTY 探测输出分叉（单形态行式输出人机两用，stderr 人读行已分流）。
+> agent CLI 面对照（2026-09-16，tool-cli-agents 十一节输出面增量，第六十一批终态对齐）：发现通道已落（`--llms` 紧凑索引为 agent 说明书唯一面，skill 子命令与仓根 SKILL.md 已退役（2026-09-16 用户裁定），clap 命令树覆盖断言兜漂移；MCP 通道在册 REQ-023）；输出信封已落（`{ok,data,meta}` 包膜，错误信封 `{ok:false,error,meta}` 加退出码 0/1/2）；CTA 已落（分页 meta 带 `next_offset` 与 `cta`）；单元级分页已落（`--offset/--limit` 加 `--filter` 点路径、数组映射、下标）。裁定不适用三件：token 计量与 token 分页（token 口径随模型族漂移，reader 无模型知识，职责归调用方；单元级分页已是稳定子集取回）；错误信封 typed 错误码与 retryable 字段（本地只读 CLI 错误确定性高、无重试消费者；错误分类需求实名时走 REQ-036）；TTY 探测输出分叉（单形态行式输出人机两用，stderr 人读行已分流）。
 
 ## 历史体系
 

@@ -9,7 +9,6 @@ reader extract <文件> [--pages 范围] [-o|--out 文件] [--format text|json] 
 reader query <文件> <mq表达式> [--format text|json] [--filter 路径] — mq 结构化提取（.h2/.code/.link/select 管道；全格式面转 markdown 后查询）
 reader figures <文件> [--pages 范围] [-o|--out 目录] [--format text|json] [--filter 路径] — 图片本体导出与文本元数据对齐（PDF 内嵌图直抽+扫描页渲染、md 图片引用、Office 家族内嵌件、图片文件；有图 0 / 无图 1 / 出错 2）
 reader export <文件> [--pages 范围] [-o|--out 目录] [--ocr] [--offline] — 一键完整提取：文本加图片加对齐元数据落一目录（text.md / text.json / pages/ 逐单元 / images/ / manifest.json）；导出目录可直接 search 二次复用（命中行带 pages/pNNNN.md 页锚）
-reader skill — 输出 SKILL.md（本索引的长形态，含输出契约与示例）
 reader self update [--force] — 自升级（镜像 latest.json 优先、回退 GitHub Releases；资产 sha256 校验后替换自身与兄弟二进制；GH_TOKEN 注入认证，限流回退 gh api）
 reader ocr init [--size tiny|small] [--offline] — 下载/修复 OCR 模型进缓存（镜像 到 HF 到 GitHub Releases 三级回退；--offline 只校验不下载）
 reader ocr doctor — 诊断本地 OCR 模型就位情况（只读；退出码 0 为当前档双包完整 / 1 为有缺损；镜像探活为信息行）
@@ -18,4 +17,7 @@ reader --llms — 本索引
 退出码: 0 成功或命中 / 1 无命中（仅 search） / 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）
 输出 text: 命中行 单元:行号:文本；上下文 单元-行号-文本；extract 节头 == page N ==、== section N == 或 == part N ==（超 200 行单元按行分片）；目录批量模式命中行前缀 路径:
 输出 json: {"ok":bool,"data":...,"meta":{command,duration_ms[,next_offset,cta]}}；--filter 点路径裁剪 data（如 hits[].text）
+figures 行式: figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B
+export 摘要行: export: text/pages/figures/manifest <路径>
+ocr 子命令行式: ocr_init: / ocr_doctor: / ocr_switch: 前缀、ASCII token 前置（ok / missing / corrupt / download mirror|huggingface|github / verdict）；doctor 退出码 0 双包完整 / 1 有缺损；init / switch 失败 2
 不可靠页: 扫描件、编码问题页与图片文件以 needs_ocr 提示（extract 节头后提示行，search 走 stderr）；--ocr 对 PDF 与图片单文件兜底识别（首用下载约 6.2MB 模型，多核并行约 1-5 秒/页（PP-OCRv6 tiny，P0018）；--offline 禁下载）

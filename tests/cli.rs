@@ -1068,43 +1068,38 @@ fn llms_outputs_compact_index() -> TestResult {
         .success()
         .stdout(predicate::str::contains("reader search"))
         .stdout(predicate::str::contains("reader extract"))
-        .stdout(predicate::str::contains("reader skill"))
+        .stdout(predicate::str::contains("figures 行式"))
+        .stdout(predicate::str::contains("ocr 子命令行式"))
         .stdout(predicate::str::contains("退出码"));
     Ok(())
 }
 
+/// skill 子命令退役（2026-09-16 用户裁定）：`--llms` 是 agent 说明书唯一面，
+/// skill 应成 unrecognized 子命令。
 #[test]
-fn skill_outputs_skill_md() -> TestResult {
-    // 结构锚定 2026-09-03 重构后的三节式（常用例子加输出契约加渐进引导）
+fn skill_subcommand_retired() -> TestResult {
     reader()?
         .arg("skill")
         .assert()
-        .success()
-        .stdout(predicate::str::starts_with("---\nname: reader"))
-        .stdout(predicate::str::contains("## 常用例子"))
-        .stdout(predicate::str::contains("## 输出契约"))
-        .stdout(predicate::str::contains("## 渐进深入"))
-        .stdout(predicate::str::contains("--offset"));
+        .failure()
+        .stderr(predicate::str::contains("unrecognized subcommand"));
     Ok(())
 }
 
-/// 漂移守卫一：clap 命令树的每个 long 旗标（含组子命令二层，如 ocr init --size、
-/// self update --force）都必须出现在 --llms 与 skill 输出里（期望值来自 clap 命令树
+/// 漂移守卫：clap 命令树的每个 long 旗标（含组子命令二层，如 ocr init --size、
+/// self update --force）都必须出现在 --llms 输出里（期望值来自 clap 命令树
 /// 本身，独立于 curated 文本；新增参数漏登记会当场红）。
 #[test]
-fn introspection_texts_cover_all_clap_flags() -> TestResult {
+fn llms_covers_all_clap_flags() -> TestResult {
     let cmd = reader_rs::command_tree();
     let llms = reader_rs::introspect::llms_text();
-    let skill = reader_rs::introspect::skill_md();
     let mut missing = Vec::new();
     let mut check = |long: &str, scope: &str| {
         if long == "help" || long == "version" {
             return;
         }
-        for (name, text) in [("--llms", &llms), ("skill", &skill)] {
-            if !text.contains(&format!("--{long}")) {
-                missing.push(format!("{scope} --{long} 未见于 {name}"));
-            }
+        if !llms.contains(&format!("--{long}")) {
+            missing.push(format!("{scope} --{long} 未见于 --llms"));
         }
     };
     for arg in cmd.get_arguments() {
@@ -1127,15 +1122,6 @@ fn introspection_texts_cover_all_clap_flags() -> TestResult {
         }
     }
     assert!(missing.is_empty(), "旗标漂移:\n{}", missing.join("\n"));
-    Ok(())
-}
-
-/// 漂移守卫二：仓根 SKILL.md 与 `reader skill` 运行时输出逐字节一致。
-#[test]
-fn committed_skill_md_matches_runtime_output() -> TestResult {
-    let committed =
-        std::fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("SKILL.md"))?;
-    assert_eq!(committed, reader_rs::introspect::skill_md());
     Ok(())
 }
 

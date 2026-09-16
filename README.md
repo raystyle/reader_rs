@@ -18,13 +18,13 @@ Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB 
 - PDF 按页读；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 等 14 种格式按标题节读；图片文件（png / jpg / bmp / gif / webp / tiff 等 8 种扩展名）单图即单页
 - 扫描件与图片以 `needs_ocr` 检出，`--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2 MB 模型）
 - 行式标记、grep 语义退出码 0/1/2；`--format json` 包膜加 `--filter` 点路径裁剪、分页 `next_offset`
-- `--llms` 紧凑命令索引；`reader skill` 生成 SKILL.md 给编码 agent 自动发现
+- `--llms` 紧凑命令索引（agent 说明书）
 
 ## 全平台安装
 
 前置：Rust 工具链（1.88+，推荐 <https://rustup.rs>）。支持 Windows / macOS / Linux，CI 三系统门禁见 [.github/workflows/ci.yml](.github/workflows/ci.yml)。
 
-预编译二进制（无 Rust 工具链时用）：[GitHub Releases](https://github.com/raystyle/reader_rs/releases) 页按平台取资产，解压即得 `reader` 与 `rr`（Windows 为 `.exe`），同附 README、LICENSE、SKILL.md 与 `.sha256` 校验文件：
+预编译二进制（无 Rust 工具链时用）：[GitHub Releases](https://github.com/raystyle/reader_rs/releases) 页按平台取资产，解压即得 `reader` 与 `rr`（Windows 为 `.exe`），同附 README、LICENSE 与 `.sha256` 校验文件：
 
 | 资产 | 平台 |
 | --- | --- |
@@ -156,29 +156,20 @@ reader extract ./scan.pdf --ocr --offline --pages 1
 ```bash
 reader extract ./doc.pdf --pages 1-3   # PDF 按页读文本
 rr search ./report.docx "摘要" -C 2    # Word 按节搜词，带上下文
-reader skill > SKILL.md                # 生成 agent 自述，放项目根即被发现
+reader --llms                          # agent 说明书（紧凑命令索引）
 ```
 
-## Agent 发现与 SKILL 安装
+## Agent 发现
 
-面向编码 agent 的自省接口：
+面向编码 agent 的自省接口是 `--llms` 旗标：输出紧凑命令索引（每命令一行、含旗标面、退出码与输出契约、figures/export/ocr 行式），单次调用即得完整说明书；集成测试守卫 clap 命令树旗标全覆盖 `--llms` 输出，防漂移。
 
 ```bash
-reader --llms     # 紧凑命令索引（省 token 形态）
-reader skill      # 输出 SKILL.md 全文（frontmatter + 命令 + 输出契约 + 退出码 + 示例）
+reader --llms
 ```
-
-把 SKILL 装给 agent（项目根目录放一份，多数编码 agent 会自动发现）：
-
-```bash
-reader skill > SKILL.md
-```
-
-仓根已提交一份 [SKILL.md](SKILL.md)，与运行时输出逐字节一致（集成测试做漂移守卫）；升级版本后用上面命令刷新即可。
 
 ## 命令
 
-文档子命令五个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）、`figures`（图片本体导出）与 `export`（一键完整提取）；外加发现接口 `skill` 子命令与 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
+文档子命令五个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）、`figures`（图片本体导出）与 `export`（一键完整提取）；外加发现接口 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
 
 ### search 搜索
 

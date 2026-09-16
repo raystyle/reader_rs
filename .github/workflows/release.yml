@@ -54,7 +54,7 @@ jobs:
         run: |
           $stage = "reader-${env:GITHUB_REF_NAME}-${{ matrix.target }}"
           New-Item -ItemType Directory $stage | Out-Null
-          Copy-Item "target\${{ matrix.target }}\release\reader.exe", "target\${{ matrix.target }}\release\rr.exe", README.md, LICENSE, SKILL.md $stage
+          Copy-Item "target\${{ matrix.target }}\release\reader.exe", "target\${{ matrix.target }}\release\rr.exe", README.md, LICENSE $stage
           Compress-Archive $stage "$stage.zip"
           (Get-FileHash "$stage.zip" -Algorithm SHA256).Hash.ToLower() + "  $stage.zip" | Out-File -Encoding ascii "$stage.zip.sha256"
       - name: 打包 tar.gz(macOS / Linux)
@@ -63,7 +63,7 @@ jobs:
         run: |
           stage="reader-${GITHUB_REF_NAME}-${{ matrix.target }}"
           mkdir "$stage"
-          cp "target/${{ matrix.target }}/release/reader" "target/${{ matrix.target }}/release/rr" README.md LICENSE SKILL.md "$stage"/
+          cp "target/${{ matrix.target }}/release/reader" "target/${{ matrix.target }}/release/rr" README.md LICENSE "$stage"/
           tar -czf "$stage.tar.gz" "$stage"
           shasum -a 256 "$stage.tar.gz" > "$stage.tar.gz.sha256"
       - name: 上传 release 资产
