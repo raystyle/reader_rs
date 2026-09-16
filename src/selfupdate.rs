@@ -20,8 +20,11 @@ const DOWNLOAD_LIMIT: u64 = 128 * 1024 * 1024;
 pub struct Outcome {
     /// current：已是最新；updated：已替换
     pub action: &'static str,
+    /// 当前版本。
     pub current: String,
+    /// 查得的最新版本。
     pub latest: String,
+    /// 已替换的二进制路径（reader 与 rr 双名）。
     pub replaced: Vec<PathBuf>,
 }
 

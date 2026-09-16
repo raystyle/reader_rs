@@ -19,8 +19,9 @@
 | `research/` 加 README | SNNN 研究档案（六态标注） | 找为什么时 |
 | `../CHANGELOG.md` 加 `../ROADMAP.md` | 版本成果与阶段 | 查历史与进度 |
 | `../SKILL.md` | agent 命令契约（`reader skill` 生成物，漂移守卫） | 查命令面 |
+| `aidoc/` | 库面 API 投影（llms.txt 入口加分模块 md 加 api JSON，cargo aidoc 生成物进 Git） | 查库 API 时 |
 
-> 三栈投影裁定（2026-09-16，对齐 dev-evo base-projection「无自有 API 面项目」范式）：本仓无自有 API 面（库未发布、契约在 CLI 命令与输出），aidoc 等文档投影整栈不适用；公开契约走 SKILL.md 字节确定性产物，`reader skill > SKILL.md` 再生 diff 为漂移门禁（构建门禁已进 AGENTS Commands 在册）。
+> 三栈投影（2026-09-16 撤换当日早间的「无自有 API 面」不适用裁定：dev-evo 第五十九批 tool-rust 强制口径，aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005、REQ-049）：库面公开契约以 `///` 与类型签名为准，missing_docs 设 deny（Cargo.toml lints）；`docs/aidoc/` 全部生成物进 Git，漂移真门禁为 `cargo aidoc --check --strict`；CLI 面契约另走 SKILL.md 字节确定性产物加漂移守卫（`reader skill > SKILL.md` 再生 diff）。
 
 ## 历史体系
 
@@ -46,10 +47,10 @@ PRD 条目对应 REQ（编号连续性用 D 号即 REQ 号：D01 至 D47 历史�
 
 ### 存量禁字债口径
 
-PE-11 历史档案豁免走 `PEVO_CHECK_ALLOW` 机制（分号分隔正则，匹配 `docs/` 下相对路径加行号，命中报 SKIP 带处数；根三件 AGENTS / README / CHANGELOG 永不受益）。本仓存量禁字为零（G004 存量清零，D22），当前无需豁免正则，标准命令直跑：
+PE-11 历史档案豁免走 `PEVO_CHECK_ALLOW` 机制（分号分隔正则，匹配 `docs/` 下相对路径加行号，命中报 SKIP 带处数；根三件 AGENTS / README / CHANGELOG 永不受益）。本仓手写面存量禁字为零（G004 存量清零，D22）；唯一在册豁免正则是 `^docs/aidoc/`（cargo aidoc 渲染格式：条目分隔符 em dash 无开关可改，漂移真门禁是 `cargo aidoc --check --strict`，rumdl 与 md-char-scan 同步整目录豁免），标准命令：
 
 ```bash
-uv run /mnt/d/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .
+PEVO_CHECK_ALLOW='^docs/aidoc/' uv run /mnt/d/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .
 ```
 
-日后历史档案留档面若新增禁字（历史不改写），按路径级豁免登记在册（只作用 `docs/` 档案，活跃面零容忍），例如 `PEVO_CHECK_ALLOW='^docs/proven/'`；正则口径与 scan 的 `PEVO_SCAN_ALLOW` 同一惯例。
+日后历史档案留档面若新增禁字（历史不改写），按路径级豁免追加登记在册（只作用 `docs/` 档案，活跃面零容忍），例如 `PEVO_CHECK_ALLOW='^docs/aidoc/;^docs/proven/'`；正则口径与 scan 的 `PEVO_SCAN_ALLOW` 同一惯例。

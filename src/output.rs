@@ -7,10 +7,14 @@ use std::time::Instant;
 /// 包膜 meta：`command` 与 `duration_ms` 稳定字段；extract 分页有剩余时附 `next_offset` 与 `cta`。
 #[derive(Serialize)]
 pub struct Meta {
+    /// 命令名。
     pub command: &'static str,
+    /// 耗时毫秒。
     pub duration_ms: u128,
+    /// 分页有剩余时的下一段 offset。
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_offset: Option<usize>,
+    /// 下一条可直接执行的命令。
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cta: Option<String>,
 }
@@ -18,16 +22,22 @@ pub struct Meta {
 /// 成功包膜 `{ok:true, data, meta}`；`data` 先落 `Value`，便于 filter 裁剪后入膜。
 #[derive(Serialize)]
 pub struct OkEnvelope {
+    /// 恒 true。
     pub ok: bool,
+    /// 载荷（filter 裁剪后）。
     pub data: Value,
+    /// 元信息。
     pub meta: Meta,
 }
 
 /// 失败包膜 `{ok:false, error, meta}`（stdout 补充通道；stderr 人读行另出，见 lib.rs）。
 #[derive(Serialize)]
 pub struct ErrEnvelope {
+    /// 恒 false。
     pub ok: bool,
+    /// 失败原因。
     pub error: String,
+    /// 元信息。
     pub meta: Meta,
 }
 

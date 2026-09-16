@@ -1,3 +1,6 @@
+//! 薄壳入口：`reader` 与 `rr` 双 bin 共用（D02，同一 `src/main.rs` 两个名字）。
+//! 命令定义与分发在库面 [`reader_rs::run`]；此处只做 Unix SIGPIPE 处置后转交退出码。
+
 fn main() {
     // M007：Rust 默认忽略 SIGPIPE，管道读者早退（如 `reader … | head`）时 println! 会
     // panic（exit 101）且喷 stderr；恢复默认处置后按 Unix 惯例被信号静默终止（同

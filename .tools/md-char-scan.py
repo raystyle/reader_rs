@@ -7,7 +7,9 @@
 先掩掉豁免区（围栏代码块、行内代码、链接目标、裸 URL），再逐字符扫描四类
 P0 禁令：破折号、箭头、emoji 与装饰符号、非法全角与智能引号。
 
-用法：uv run --script .tools/md-char-scan.py [路径...]（缺省全仓 markdown，跳过 .git/target/vendor/.tools）
+用法：uv run --script .tools/md-char-scan.py [路径...]（缺省全仓 markdown，跳过 .git/target/vendor/.tools/aidoc 目录）
+生成物豁免（在册）：docs/aidoc/ 是 cargo aidoc 渲染产物（条目分隔符 em dash 无开关可改），
+漂移真门禁是 cargo aidoc --check --strict；源头能改的一律改源头，不为生成物开口子。
 基线：.tools/md-char-baseline.txt 每行一个仓内相对路径（正斜杠），列出的存量文件整体豁免
 （渐进清理制：文件清干净即从基线除名；新文件一律须过检）。
 退出码：0 无违规；1 有违规。
@@ -28,7 +30,7 @@ CJK_OK = set("，。：；？！、（）《》「」『』·")
 INLINE_CODE = re.compile(r"`[^`]*`")
 LINK_TARGET = re.compile(r"\]\([^)]*\)")
 BARE_URL = re.compile(r"https?://\S+")
-SKIP_DIRS = ('.git', 'target', 'node_modules', '.tools', 'vendor', '.rumdl_cache')
+SKIP_DIRS = ('.git', 'target', 'node_modules', '.tools', 'vendor', '.rumdl_cache', 'aidoc')
 
 
 def mask(line):

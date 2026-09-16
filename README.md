@@ -345,7 +345,7 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 
 ## 文档导航
 
-项目协作文档（贡献者向）：[AGENTS.md](AGENTS.md) 五节协作合同（Commands / Must / Must not / Read first / 环境）；[docs/README.md](docs/README.md) 全仓文档地图（承接旧索引职责）；需求队列 [docs/requirements](docs/requirements/README.md) 与架构决策 [docs/adr](docs/adr/README.md)；[CHANGELOG.md](CHANGELOG.md) 与 [ROADMAP.md](ROADMAP.md) 版本与路线；研究档案 [docs/research](docs/research/README.md) 与过程日记 docs/diary。旧体系四原语（[PRD.md](PRD.md) / [GOAL.md](GOAL.md) / [PLAN.md](PLAN.md) / [TODO.md](TODO.md)）与 [INDEX.md](INDEX.md) 为迁移留档（2026-09-16 起不再更新，各顶部有迁移注记）。
+项目协作文档（贡献者向）：[AGENTS.md](AGENTS.md) 五节协作合同（Commands / Must / Must not / Read first / 环境）；[docs/README.md](docs/README.md) 全仓文档地图（承接旧索引职责）；需求队列 [docs/requirements](docs/requirements/README.md) 与架构决策 [docs/adr](docs/adr/README.md)；库 API 投影 docs/aidoc（[llms.txt](docs/aidoc/llms.txt) 入口，cargo aidoc 生成物）；[CHANGELOG.md](CHANGELOG.md) 与 [ROADMAP.md](ROADMAP.md) 版本与路线；研究档案 [docs/research](docs/research/README.md) 与过程日记 docs/diary。旧体系四原语（[PRD.md](PRD.md) / [GOAL.md](GOAL.md) / [PLAN.md](PLAN.md) / [TODO.md](TODO.md)）与 [INDEX.md](INDEX.md) 为迁移留档（2026-09-16 起不再更新，各顶部有迁移注记）。
 
 ## 贡献与支持
 

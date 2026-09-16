@@ -84,3 +84,7 @@ harness = false
 [profile.release]
 strip = "symbols"
 lto = "thin"
+
+# dev-evo 强制口径（tool-rust）：公开契约以 /// 与类型签名为准，missing_docs 设 deny
+[lints.rust]
+missing_docs = "deny"

@@ -1,0 +1,356 @@
+{
+  "crate": "reader_rs",
+  "version": "0.6.0",
+  "items": [
+    {
+      "path": "reader_rs::anydoc",
+      "kind": "module",
+      "docs": "anydoc 统一引擎提取（P0009）：Word / EPUB / ODT / RTF / Office / CSV 家族出 GFM markdown，\n按顶层标题分节映射 `TextUnit`。PDF 例外——走 `pdf.rs` 直连 pdf-inspector 保页契约\n（anydoc 自身对 PDF 也直连 pdf-inspector 绕过文档模型，架构同构）。"
+    },
+    {
+      "path": "reader_rs::anydoc::extract_markdown",
+      "kind": "function",
+      "docs": "提取 markdown 原文文档（.md，P0016）：读 UTF-8 文本直接进同一条分节管线，\n节语义与 anydoc 家族完全一致（section/part、`--pages`、分页全继承）。"
+    },
+    {
+      "path": "reader_rs::anydoc::extract_sections",
+      "kind": "function",
+      "docs": "提取 anydoc 家族文档为分节单元（`filter` 为 1 起单元号集合，`None` 为全部）。"
+    },
+    {
+      "path": "reader_rs::batch",
+      "kind": "module",
+      "docs": "批量目录搜索（P0012）：递归走目录、逐文件 search、聚合 text/json 输出。\n单文件 search 的输出与退出码契约不变；目录模式命中行带路径前缀，坏文件 stderr 跳过后继续。\n天花板：顺序遍历不并发；符号链接跟随（依赖文件系统无环）；needs_ocr 走 stderr 不进 json。"
+    },
+    {
+      "path": "reader_rs::command_tree",
+      "kind": "function",
+      "docs": "暴露 clap 命令树（tests 的旗标漂移守卫用；P0007）。"
+    },
+    {
+      "path": "reader_rs::document",
+      "kind": "module",
+      "docs": "格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。"
+    },
+    {
+      "path": "reader_rs::document::OcrOpts",
+      "kind": "struct",
+      "docs": "OCR 兜底选项（P0014）：`ocr` 开兜底、`offline` 禁模型下载；仅对 PDF 的 needs_ocr 页生效。"
+    },
+    {
+      "path": "reader_rs::document::TextUnit",
+      "kind": "struct",
+      "docs": "一个文本单元。`no` 为 1 起序号（PDF 页码 / 其余格式节序），`lines` 按阅读序排列；\n`needs_ocr` 为 `Some(原因)` 表示该单元文本层不可靠（扫描件、编码问题、乱码、空提取）。"
+    },
+    {
+      "path": "reader_rs::document::UnitKind",
+      "kind": "enum",
+      "docs": "文本单元种类，决定输出分节标记（`== page N ==` / `== section N ==` / `== part N ==`）。"
+    },
+    {
+      "path": "reader_rs::document::extract",
+      "kind": "function",
+      "docs": "按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。\nPDF 直连 pdf-inspector 保页契约；anydoc 家族（Word / EPUB / ODT / RTF / Office / CSV）\n走统一引擎按标题分节（P0009）；图片文件无文本层，单图即单页（D43）。"
+    },
+    {
+      "path": "reader_rs::document::is_image_ext",
+      "kind": "function",
+      "docs": "扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。\n\n```\nassert!(reader_rs::document::is_image_ext(\"png\"));\nassert!(!reader_rs::document::is_image_ext(\"pdf\"));\n```"
+    },
+    {
+      "path": "reader_rs::document::is_supported",
+      "kind": "function",
+      "docs": "扩展名是否命中支持面（分派与批量目录遍历共用同一真源；P0012）。"
+    },
+    {
+      "path": "reader_rs::figures",
+      "kind": "module",
+      "docs": "图片本体导出与文本元数据对齐（D47；S010 定界：只负责提取存储，理解归调用方 Agent）。\n四路分派：PDF 按页渲染 PNG（扫描书页即图本体，图题与上下文从页文本层对齐）；\nmarkdown 解析 `![alt](path)` 引用复制；anydoc 家族 zip 直读内嵌图片部件（原字节）；\n图片文件本体即自身。输出行式清单与 json 包膜，退出码 0 有图 / 1 无图 / 2 出错。"
+    },
+    {
+      "path": "reader_rs::figures::FigureOut",
+      "kind": "struct",
+      "docs": "一件导出的图本体：kind 加锚定位回文档，caption 加 context 是与文本元数据的对齐面。"
+    },
+    {
+      "path": "reader_rs::figures::extract_figures",
+      "kind": "function",
+      "docs": "提取图本体到 `out_dir`,按文档格式分派;`filter` 为 1 起页集合(仅 PDF 生效)。"
+    },
+    {
+      "path": "reader_rs::introspect",
+      "kind": "module",
+      "docs": "Agent 自省与发现（P0007）：`--llms` 紧凑索引与 `skill` 子命令的 SKILL.md 生成。\n文本为 curated 内容（含退出码、输出契约等 clap 不知道的语义）；\n漂移由 tests\\cli.rs 双守卫兜底：clap 命令树旗标全覆盖断言 + 仓根 SKILL.md 逐字节一致断言。"
+    },
+    {
+      "path": "reader_rs::introspect::llms_text",
+      "kind": "function",
+      "docs": "`reader --llms`：紧凑命令索引（agent 发现用，单行一句、稳定可解析）。"
+    },
+    {
+      "path": "reader_rs::introspect::skill_md",
+      "kind": "function",
+      "docs": "`reader skill`：生成 SKILL.md（仓根提交同名文件，漂移由测试守卫）。\n风格（2026-09-03 用户裁定）：常用例子为主体，细节渐进引导到 `--help` 与 `--llms`，\n不做全量参数文档（全量面在 `--help` 与 README）。"
+    },
+    {
+      "path": "reader_rs::mirror",
+      "kind": "module",
+      "docs": "镜像源链与镜像清单(D42):OCR 模型三级回退下载(镜像 到 HF 直连 到 GitHub\nReleases 模型 tag)与 self update 的 latest.json 通道共用面。裁决与规范见\nISSUE #1(ohmycloud S009):清单只发一份(镜像侧为真),兜底只兜资产可用性,\n两渠道资产共用同一 sha256(源=ppocr-rs 内嵌钉死值)。\n接入形态为预取入缓存目录:ppocr-rs 公开的 `resolve_pair(Offline)`/`verify()`\n会按其内嵌 models.json 全量 sha256 校验并补缓存标记,是最终校验闸;本模块的\npin 表校验只是前置层(坏件不落缓存,免得离线解析当场才红)。"
+    },
+    {
+      "path": "reader_rs::mirror::FilePin",
+      "kind": "struct",
+      "docs": "模型包钉死件:名字、字节数、sha256(值抄 ppocr-rs models.json @ PPOCR_RS_REV)。"
+    },
+    {
+      "path": "reader_rs::mirror::FileState",
+      "kind": "enum",
+      "docs": "单件只读判定:文件不存在为 Missing;存在但字节或 sha256 不符为 Corrupt。"
+    },
+    {
+      "path": "reader_rs::mirror::LatestManifest",
+      "kind": "struct",
+      "docs": "latest.json 清单(Tauri v2 形状;platforms key 即 selfupdate 的资产目标三元组)。"
+    },
+    {
+      "path": "reader_rs::mirror::LatestPlatform",
+      "kind": "struct",
+      "docs": "latest.json 单平台条目(signature 解析不验,minisign 首轮不上,字段保留)。"
+    },
+    {
+      "path": "reader_rs::mirror::PACKAGES",
+      "kind": "static",
+      "docs": "两档四包(tiny/small 是 v6 档位;medium 不分发)。顺序即 doctor 报告序。"
+    },
+    {
+      "path": "reader_rs::mirror::PPOCR_RS_REV",
+      "kind": "constant",
+      "docs": "ppocr-rs 依赖钉死的 git rev(Cargo.toml)。pin 表抄自该 rev 的 models.json,\n升 rev 必须同步换表(单测 pins_match_pinned_ppocr_rs_rev 钉住)。"
+    },
+    {
+      "path": "reader_rs::mirror::PackagePin",
+      "kind": "struct",
+      "docs": "模型包钉死元数据:缓存目录名(`<size>-<kind>`)、HF 源仓与 revision。"
+    },
+    {
+      "path": "reader_rs::mirror::PackageVerdict",
+      "kind": "enum",
+      "docs": "包级只读判定(取首个问题件点名);`root` 为缓存根。"
+    },
+    {
+      "path": "reader_rs::mirror::Source",
+      "kind": "enum",
+      "docs": "下载命中源(输出契约 `download mirror|huggingface|github` 的 token)。"
+    },
+    {
+      "path": "reader_rs::mirror::assess_file",
+      "kind": "function",
+      "docs": "单件只读判定(init 逐件补齐与 doctor 都用;不写任何文件)。"
+    },
+    {
+      "path": "reader_rs::mirror::assess_package",
+      "kind": "function",
+      "docs": "只读评估一包四件(doctor 用;不建目录不写任何文件,ppocr-rs 的\n`verify()` 有建目录/取锁/写标记副作用,诊断禁用)。"
+    },
+    {
+      "path": "reader_rs::mirror::download_file",
+      "kind": "function",
+      "docs": "三级回退下载单件到 `dest`:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件\n(bytes 加 sha256 对 pin 表校验通过才 rename 落盘),返回命中的源。\n落盘前自建父目录(空缓存首用时包目录不存在,`fs::write` 对缺失目录是\nos error 3;`ocr init` 首版实测踩中,下载器不依赖调用方建目录)。\n并发写不经 ppocr-rs 私有锁:单件 rename 原子,最坏并发方多做一次\n全量哈希,无半损态。"
+    },
+    {
+      "path": "reader_rs::mirror::fetch_latest_manifest",
+      "kind": "function",
+      "docs": "拉取并解析镜像升级清单(10s 全局超时;任何失败由调用方回退 GitHub 通道)。"
+    },
+    {
+      "path": "reader_rs::mirror::gh_asset_name",
+      "kind": "function",
+      "docs": "GitHub 模型资产名:扁平 `<包名>-<rev 前 12>-<文件名>`;字符集只用\n`[A-Za-z0-9._-]`(GitHub 对特殊字符自动改名),带短 rev 免得同 tag 下\nrev 更替时旧兜底件被 clobber;与 self update 的 `reader-v<版本>-<目标>`\n命名不相交。"
+    },
+    {
+      "path": "reader_rs::mirror::gh_file_url",
+      "kind": "function",
+      "docs": "GitHub 模型 tag 下载地址。"
+    },
+    {
+      "path": "reader_rs::mirror::hf_file_url",
+      "kind": "function",
+      "docs": "HF 直连件地址(ppocr-rs 原生同款路径,302 到 CDN 由默认重定向跟)。"
+    },
+    {
+      "path": "reader_rs::mirror::latest_json_url",
+      "kind": "function",
+      "docs": "镜像升级清单地址:`<mirror>/reader/latest.json`。"
+    },
+    {
+      "path": "reader_rs::mirror::mirror_base",
+      "kind": "function",
+      "docs": "镜像基址:env `READER_MIRROR` 覆盖(测试与自建源用),去尾斜杠。"
+    },
+    {
+      "path": "reader_rs::mirror::mirror_file_url",
+      "kind": "function",
+      "docs": "镜像件地址:`<mirror>/models/<repo>/<rev>/<file>`(ISSUE #1 路径规范)。"
+    },
+    {
+      "path": "reader_rs::mirror::package_dir",
+      "kind": "function",
+      "docs": "包在缓存根下的目录(`<root>/<size>-<kind>`,与 ppocr-rs 布局一致)。"
+    },
+    {
+      "path": "reader_rs::mirror::package_pin",
+      "kind": "function",
+      "docs": "按档位与角色取包(tiny/small × det/rec 四包之外无分发)。"
+    },
+    {
+      "path": "reader_rs::ocr",
+      "kind": "module",
+      "docs": "OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链、D43 图片文件）：needs_ocr 页经\nhayro 渲染为位图，图片文件直接解码（image crate，首帧语义），ppocr-rs 原生 CPU 内核跑\nPP-OCRv6（S008 裁决 tiny 质量与速度双优；0.8 秒/页量级、S006 掉字点全修）。模型由\nppocr ModelStore 管理（缓存目录与 offline 语义与 P0014 一致）；\nD42 后首用下载走三级回退（镜像 到 HF 直连 到 GitHub Releases 模型 tag，`mirror` 模块），\nppocr-rs 内嵌钉死值全量 sha256 校验是终检闸。档位 tiny / small：env\n`READER_OCR_MODEL_SIZE`（A/B 跑批器用，最高）> `ocr switch` 设置文件 > 默认 tiny；\n`ocr init` / `ocr doctor` / `ocr switch` 三子命令实现在本模块（D42 用户点名）。"
+    },
+    {
+      "path": "reader_rs::ocr::OcrOutcome",
+      "kind": "struct",
+      "docs": "ocr 三子命令的输出结果：`lines` 是 stdout 稳定行（ASCII token 前置，lib.rs 逐行打出），\n`healthy` 决定退出码（doctor：当前档双包完整；init：全包就位；switch：恒真）。"
+    },
+    {
+      "path": "reader_rs::ocr::doctor_models",
+      "kind": "function",
+      "docs": "`ocr doctor`：只读诊断（不建目录、不写文件、不下载）。两档四包逐包判定 +\n设置文件与档位来源 + 镜像探活（信息行，不可达不影响判定：内网机离线可用即健康）。\nhealthy = 当前档双包完整。"
+    },
+    {
+      "path": "reader_rs::ocr::init_models",
+      "kind": "function",
+      "docs": "`ocr init`：显式下载 / 修复档位双包进缓存。逐件有效跳过、缺损重下（三级回退），\n末尾交 ppocr-rs `verify()` 全量校验并补缓存标记（表漂移当场红）。\n`--offline` 只校验不下载（语义对齐 `--ocr --offline`，零网络可测）。"
+    },
+    {
+      "path": "reader_rs::ocr::ocr_image",
+      "kind": "function",
+      "docs": "图片文件 OCR（D43）：ImageReader 内容嗅探解码（多帧动图只取首帧，用户裁定 YAGNI；\n默认 Limits 512MB 防解压炸弹）、EXIF 方向应用（jpeg / tiff / webp 携带时）、alpha\n合成白底后 recognize，返回行级文本（阅读序，空行滤除）。"
+    },
+    {
+      "path": "reader_rs::ocr::ocr_pages",
+      "kind": "function",
+      "docs": "对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。\n模型缺失且 `offline` 为真时报错不下载。"
+    },
+    {
+      "path": "reader_rs::ocr::switch_model",
+      "kind": "function",
+      "docs": "`ocr switch <tiny|small>`：写档位设置文件并提示。只切换不自动下载（单调用完成\n一件事）；env `READER_OCR_MODEL_SIZE` 已导出时警告本设置不生效（env 优先）。"
+    },
+    {
+      "path": "reader_rs::output",
+      "kind": "module",
+      "docs": "输出层：JSON 包膜（ok/data/error 加 meta）与 filter 点路径裁剪。设计依据 S002（P0006）。"
+    },
+    {
+      "path": "reader_rs::output::ErrEnvelope",
+      "kind": "struct",
+      "docs": "失败包膜 `{ok:false, error, meta}`（stdout 补充通道；stderr 人读行另出，见 lib.rs）。"
+    },
+    {
+      "path": "reader_rs::output::Meta",
+      "kind": "struct",
+      "docs": "包膜 meta：`command` 与 `duration_ms` 稳定字段；extract 分页有剩余时附 `next_offset` 与 `cta`。"
+    },
+    {
+      "path": "reader_rs::output::OkEnvelope",
+      "kind": "struct",
+      "docs": "成功包膜 `{ok:true, data, meta}`；`data` 先落 `Value`，便于 filter 裁剪后入膜。"
+    },
+    {
+      "path": "reader_rs::output::err_json",
+      "kind": "function",
+      "docs": "失败包膜串行化（compact 单行）。"
+    },
+    {
+      "path": "reader_rs::output::filter_value",
+      "kind": "function",
+      "docs": "点路径裁剪：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。\n非法路径（键不存在、对非数组用 `[]`）报错不静默。"
+    },
+    {
+      "path": "reader_rs::output::ok_json",
+      "kind": "function",
+      "docs": "成功包膜串行化（compact 单行，Agent 省 token）。"
+    },
+    {
+      "path": "reader_rs::output::ok_json_paged",
+      "kind": "function",
+      "docs": "extract 分页成功包膜：有剩余页时 meta 带 next_offset 与 cta。"
+    },
+    {
+      "path": "reader_rs::parse_page_spec",
+      "kind": "function",
+      "docs": "解析页范围串（如 `1-3,5`）为 1 起页码集合。\n\n```\nuse reader_rs::parse_page_spec;\nlet set = parse_page_spec(\"1-3,5\").unwrap();\nassert_eq!(set.len(), 4);\nassert!(set.contains(&2) && set.contains(&5));\nassert!(parse_page_spec(\"0\").is_err());\n```"
+    },
+    {
+      "path": "reader_rs::pdf",
+      "kind": "module",
+      "docs": "PDF 页提取：包 pdf-inspector 的 markdown 布局管线（多栏阅读序、needs_ocr 检出）。"
+    },
+    {
+      "path": "reader_rs::pdf::extract_pages",
+      "kind": "function",
+      "docs": "提取指定页（`None` 为全部页，页码 1 起）为 markdown 行，行按阅读序排列；\n文本层不可靠的页（扫描件、编码问题、乱码、空提取）带 `needs_ocr` 原因。\n`ocr.ocr` 为真时对 needs_ocr 页走 OCR 兜底回填 lines（P0014；`needs_ocr` 标记保留，\nOCR 文本仍属不可靠）。"
+    },
+    {
+      "path": "reader_rs::query",
+      "kind": "module",
+      "docs": "mq 结构化提取（P0016；学习 harehare/mq，选型 S007）：全部支持格式转 markdown 文本后\n跑 mq 表达式（jq 风格节点选择器与管道）。引擎嵌 mq-lang 全量；非匹配节点产空渲染，\n过滤空串即得干净结果（S007 PoC 实证）。"
+    },
+    {
+      "path": "reader_rs::query::run_query",
+      "kind": "function",
+      "docs": "跑 mq 表达式，返回非空渲染结果集（markdown 片段原文）。"
+    },
+    {
+      "path": "reader_rs::query::to_markdown",
+      "kind": "function",
+      "docs": "任意支持格式转 markdown 文本：md 读原文；PDF 走 pdf-inspector 布局管线；\nanydoc 家族走统一引擎 GFM。"
+    },
+    {
+      "path": "reader_rs::run",
+      "kind": "function",
+      "docs": "CLI 入口：返回进程退出码。"
+    },
+    {
+      "path": "reader_rs::search",
+      "kind": "module",
+      "docs": "搜索层：匹配器（字面 / 正则 / 忽略大小写）与命中收集。"
+    },
+    {
+      "path": "reader_rs::search::Hit",
+      "kind": "struct",
+      "docs": "一次命中：单元序号（页/章）、单元内行号（均 1 起）、命中行文本与上下文。"
+    },
+    {
+      "path": "reader_rs::search::Matcher",
+      "kind": "enum",
+      "docs": "行匹配器。"
+    },
+    {
+      "path": "reader_rs::search::search",
+      "kind": "function",
+      "docs": "在所有文本单元的重建行中搜索，`context` 为前后各带的上下文行数。"
+    },
+    {
+      "path": "reader_rs::selfupdate",
+      "kind": "module",
+      "docs": "self update（P0015；D42 加镜像通道）：`reader self update` 先读镜像\n`reader.ohmygh.com/reader/latest.json`（Tauri v2 形状加 sha256；signature 字段\n解析不验，minisign 首轮不上），任何失败回退 GitHub Releases API（403 限流再回退\ngh api）。模式参考 ohmyenv-rs selfupdate.rs 与 ohmyagents-rs update.rs：\n版本判新（stable 资产是压缩包，digest 与 exe 哈希不可比）、资产 sha256 钉死校验、\nstaged 加 rename 原子替换（Windows 运行中 exe 可改名不可删）。\n边界：只 stable 通道（无 dev/git）；只显式命令不自动更新。"
+    },
+    {
+      "path": "reader_rs::selfupdate::Outcome",
+      "kind": "struct",
+      "docs": "升级结果（lib.rs 拼稳定输出行用）。"
+    },
+    {
+      "path": "reader_rs::selfupdate::asset_target",
+      "kind": "function",
+      "docs": "本编译目标对应的 release 资产名（release.yml 矩阵命名约定）。"
+    },
+    {
+      "path": "reader_rs::selfupdate::self_update",
+      "kind": "function",
+      "docs": "`reader self update` 主流程。`force` 为真时版本相同也重装。"
+    }
+  ]
+}

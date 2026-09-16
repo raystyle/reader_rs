@@ -299,7 +299,9 @@ fn prefetch_pair(dir: &Path, size: ModelSize) -> bool {
 /// ocr 三子命令的输出结果：`lines` 是 stdout 稳定行（ASCII token 前置，lib.rs 逐行打出），
 /// `healthy` 决定退出码（doctor：当前档双包完整；init：全包就位；switch：恒真）。
 pub struct OcrOutcome {
+    /// stdout 稳定行（ASCII token 前置）。
     pub lines: Vec<String>,
+    /// 退出码健康位。
     pub healthy: bool,
 }
 

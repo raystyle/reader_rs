@@ -39,16 +39,23 @@ fn mirror_base_from(env: Option<String>) -> String {
 
 /// 模型包钉死件:名字、字节数、sha256(值抄 ppocr-rs models.json @ PPOCR_RS_REV)。
 pub struct FilePin {
+    /// 文件名
     pub name: &'static str,
+    /// 字节数
     pub bytes: u64,
+    /// sha256(十六进制小写)
     pub sha256: &'static str,
 }
 
 /// 模型包钉死元数据:缓存目录名(`<size>-<kind>`)、HF 源仓与 revision。
 pub struct PackagePin {
+    /// 缓存目录名(`<size>-<kind>`)
     pub name: &'static str,
+    /// HF 源仓
     pub repo: &'static str,
+    /// 源 revision
     pub revision: &'static str,
+    /// 包内钉死件
     pub files: &'static [FilePin],
 }
 
@@ -216,12 +223,16 @@ pub fn gh_file_url(pin: &PackagePin, file: &FilePin) -> String {
 /// 下载命中源(输出契约 `download mirror|huggingface|github` 的 token)。
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Source {
+    /// 自有镜像(reader.ohmygh.com,R2 自定义域)
     Mirror,
+    /// HuggingFace 直连
     HuggingFace,
+    /// GitHub Releases models-v6 tag(恒 prerelease)
     Github,
 }
 
 impl Source {
+    /// 输出契约 token(`mirror` / `huggingface` / `github`)
     pub fn as_str(self) -> &'static str {
         match self {
             Source::Mirror => "mirror",
@@ -328,14 +339,18 @@ fn fetch_to_part(url: &str, file: &FilePin, dest: &Path) -> Result<(), String> {
 /// 单件只读判定:文件不存在为 Missing;存在但字节或 sha256 不符为 Corrupt。
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum FileState {
+    /// 就位且 sha256 校验过
     Ok,
+    /// 不存在
     Missing,
+    /// 字节或 sha256 不符
     Corrupt,
 }
 
 /// 包级只读判定(取首个问题件点名);`root` 为缓存根。
 #[derive(Debug, Eq, PartialEq)]
 pub enum PackageVerdict {
+    /// 全件就位
     Ok,
     /// 缺件(点名第一个缺的)。
     Missing(String),
@@ -390,17 +405,23 @@ fn sha256_file(path: &Path) -> String {
 /// latest.json 单平台条目(signature 解析不验,minisign 首轮不上,字段保留)。
 #[derive(Debug, Deserialize)]
 pub struct LatestPlatform {
+    /// 资产下载地址
     pub url: String,
+    /// 资产 sha256
     pub sha256: String,
+    /// minisign 签名(首轮不上,保留字段)
     pub signature: Option<String>,
 }
 
 /// latest.json 清单(Tauri v2 形状;platforms key 即 selfupdate 的资产目标三元组)。
 #[derive(Debug, Deserialize)]
 pub struct LatestManifest {
+    /// 广告版本号
     pub version: String,
+    /// 发布日期(未消费)
     #[allow(dead_code)]
     pub pub_date: Option<String>,
+    /// 平台 key 到条目(key 即资产目标三元组)
     pub platforms: std::collections::BTreeMap<String, LatestPlatform>,
 }
 

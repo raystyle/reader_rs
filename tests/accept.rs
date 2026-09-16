@@ -6,6 +6,7 @@
 use cucumber::{then, when, World};
 use std::path::PathBuf;
 
+/// cucumber 世界态：一步执行 reader 后捕获的退出码与两路输出（后续步骤断言用）。
 #[derive(Debug, Default, World)]
 pub struct AcceptWorld {
     code: i32,

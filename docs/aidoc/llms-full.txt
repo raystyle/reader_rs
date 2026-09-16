@@ -1,0 +1,242 @@
+<!-- reader_rs/index.md -->
+# reader_rs 0.6.0
+
+Reader：Agent 原生文档阅读、搜索和提取工具。为 Agent 管线设计的 Rust 单二进制 CLI
+（`reader` 与 `rr` 双名，同一 `main` 薄壳）：从本地 PDF、markdown、图片与 anydoc 家族
+（Word 含 legacy .doc、EPUB、ODT、RTF、Office、CSV 等 14 种格式）读文本层。
+能力面：按页/节读（extract）、字面与正则搜加目录批量（search）、mq 结构化提取（query）、
+OCR 兜底识图（`--ocr`，PP-OCRv6 三级回退源链）、图片本体导出与一键完整提取（figures/export）。
+输出契约：行式标记、grep 语义退出码 0/1/2、`--format json` 包膜加 `--filter` 裁剪，
+机器可读优先于人类美观。本文件承载 CLI 定义与 `run()` 分发；各模块以
+`document::TextUnit` 为统一文本单元。
+
+## Modules
+
+- [`anydoc`](anydoc.md): anydoc 统一引擎提取（P0009）：Word / EPUB / ODT / RTF / Office / CSV 家族出 GFM markdown，
+- [`batch`](batch.md): 批量目录搜索（P0012）：递归走目录、逐文件 search、聚合 text/json 输出。
+- [`document`](document.md): 格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。
+- [`figures`](figures.md): 图片本体导出与文本元数据对齐（D47；S010 定界：只负责提取存储，理解归调用方 Agent）。
+- [`introspect`](introspect.md): Agent 自省与发现（P0007）：`--llms` 紧凑索引与 `skill` 子命令的 SKILL.md 生成。
+- [`mirror`](mirror.md): 镜像源链与镜像清单(D42):OCR 模型三级回退下载(镜像 到 HF 直连 到 GitHub
+- [`ocr`](ocr.md): OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链、D43 图片文件）：needs_ocr 页经
+- [`output`](output.md): 输出层：JSON 包膜（ok/data/error 加 meta）与 filter 点路径裁剪。设计依据 S002（P0006）。
+- [`pdf`](pdf.md): PDF 页提取：包 pdf-inspector 的 markdown 布局管线（多栏阅读序、needs_ocr 检出）。
+- [`query`](query.md): mq 结构化提取（P0016；学习 harehare/mq，选型 S007）：全部支持格式转 markdown 文本后
+- [`search`](search.md): 搜索层：匹配器（字面 / 正则 / 忽略大小写）与命中收集。
+- [`selfupdate`](selfupdate.md): self update（P0015；D42 加镜像通道）：`reader self update` 先读镜像
+
+
+<!-- reader_rs/anydoc.md -->
+# reader_rs::anydoc
+
+anydoc 统一引擎提取（P0009）：Word / EPUB / ODT / RTF / Office / CSV 家族出 GFM markdown，
+按顶层标题分节映射 `TextUnit`。PDF 例外——走 `pdf.rs` 直连 pdf-inspector 保页契约
+（anydoc 自身对 PDF 也直连 pdf-inspector 绕过文档模型，架构同构）。
+
+## Functions
+
+- `extract_markdown` — 提取 markdown 原文文档（.md，P0016）：读 UTF-8 文本直接进同一条分节管线，
+- `extract_sections` — 提取 anydoc 家族文档为分节单元（`filter` 为 1 起单元号集合，`None` 为全部）。
+
+
+<!-- reader_rs/batch.md -->
+# reader_rs::batch
+
+批量目录搜索（P0012）：递归走目录、逐文件 search、聚合 text/json 输出。
+单文件 search 的输出与退出码契约不变；目录模式命中行带路径前缀，坏文件 stderr 跳过后继续。
+天花板：顺序遍历不并发；符号链接跟随（依赖文件系统无环）；needs_ocr 走 stderr 不进 json。
+
+
+<!-- reader_rs/document.md -->
+# reader_rs::document
+
+格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。
+
+## Functions
+
+- `extract` — 按扩展名分派提取；`filter` 为 1 起序号集合（`None` 为全部）。
+- `is_image_ext` — 扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。
+- `is_supported` — 扩展名是否命中支持面（分派与批量目录遍历共用同一真源；P0012）。
+
+## Types
+
+- `OcrOpts` — OCR 兜底选项（P0014）：`ocr` 开兜底、`offline` 禁模型下载；仅对 PDF 的 needs_ocr 页生效。
+- `TextUnit` — 一个文本单元。`no` 为 1 起序号（PDF 页码 / 其余格式节序），`lines` 按阅读序排列；
+- `UnitKind` — 文本单元种类，决定输出分节标记（`== page N ==` / `== section N ==` / `== part N ==`）。
+
+
+<!-- reader_rs/figures.md -->
+# reader_rs::figures
+
+图片本体导出与文本元数据对齐（D47；S010 定界：只负责提取存储，理解归调用方 Agent）。
+四路分派：PDF 按页渲染 PNG（扫描书页即图本体，图题与上下文从页文本层对齐）；
+markdown 解析 `![alt](path)` 引用复制；anydoc 家族 zip 直读内嵌图片部件（原字节）；
+图片文件本体即自身。输出行式清单与 json 包膜，退出码 0 有图 / 1 无图 / 2 出错。
+
+## Functions
+
+- `extract_figures` — 提取图本体到 `out_dir`,按文档格式分派;`filter` 为 1 起页集合(仅 PDF 生效)。
+
+## Types
+
+- `FigureOut` — 一件导出的图本体：kind 加锚定位回文档，caption 加 context 是与文本元数据的对齐面。
+
+
+<!-- reader_rs/introspect.md -->
+# reader_rs::introspect
+
+Agent 自省与发现（P0007）：`--llms` 紧凑索引与 `skill` 子命令的 SKILL.md 生成。
+文本为 curated 内容（含退出码、输出契约等 clap 不知道的语义）；
+漂移由 tests\cli.rs 双守卫兜底：clap 命令树旗标全覆盖断言 + 仓根 SKILL.md 逐字节一致断言。
+
+## Functions
+
+- `llms_text` — `reader --llms`：紧凑命令索引（agent 发现用，单行一句、稳定可解析）。
+- `skill_md` — `reader skill`：生成 SKILL.md（仓根提交同名文件，漂移由测试守卫）。
+
+
+<!-- reader_rs/mirror.md -->
+# reader_rs::mirror
+
+镜像源链与镜像清单(D42):OCR 模型三级回退下载(镜像 到 HF 直连 到 GitHub
+Releases 模型 tag)与 self update 的 latest.json 通道共用面。裁决与规范见
+ISSUE #1(ohmycloud S009):清单只发一份(镜像侧为真),兜底只兜资产可用性,
+两渠道资产共用同一 sha256(源=ppocr-rs 内嵌钉死值)。
+接入形态为预取入缓存目录:ppocr-rs 公开的 `resolve_pair(Offline)`/`verify()`
+会按其内嵌 models.json 全量 sha256 校验并补缓存标记,是最终校验闸;本模块的
+pin 表校验只是前置层(坏件不落缓存,免得离线解析当场才红)。
+
+## Functions
+
+- `assess_file` — 单件只读判定(init 逐件补齐与 doctor 都用;不写任何文件)。
+- `assess_package` — 只读评估一包四件(doctor 用;不建目录不写任何文件,ppocr-rs 的
+- `download_file` — 三级回退下载单件到 `dest`:镜像 到 HF 到 GitHub;逐源经 `.part` 临时件
+- `fetch_latest_manifest` — 拉取并解析镜像升级清单(10s 全局超时;任何失败由调用方回退 GitHub 通道)。
+- `gh_asset_name` — GitHub 模型资产名:扁平 `<包名>-<rev 前 12>-<文件名>`;字符集只用
+- `gh_file_url` — GitHub 模型 tag 下载地址。
+- `hf_file_url` — HF 直连件地址(ppocr-rs 原生同款路径,302 到 CDN 由默认重定向跟)。
+- `latest_json_url` — 镜像升级清单地址:`<mirror>/reader/latest.json`。
+- `mirror_base` — 镜像基址:env `READER_MIRROR` 覆盖(测试与自建源用),去尾斜杠。
+- `mirror_file_url` — 镜像件地址:`<mirror>/models/<repo>/<rev>/<file>`(ISSUE #1 路径规范)。
+- `package_dir` — 包在缓存根下的目录(`<root>/<size>-<kind>`,与 ppocr-rs 布局一致)。
+- `package_pin` — 按档位与角色取包(tiny/small × det/rec 四包之外无分发)。
+
+## Types
+
+- `FilePin` — 模型包钉死件:名字、字节数、sha256(值抄 ppocr-rs models.json @ PPOCR_RS_REV)。
+- `FileState` — 单件只读判定:文件不存在为 Missing;存在但字节或 sha256 不符为 Corrupt。
+- `LatestManifest` — latest.json 清单(Tauri v2 形状;platforms key 即 selfupdate 的资产目标三元组)。
+- `LatestPlatform` — latest.json 单平台条目(signature 解析不验,minisign 首轮不上,字段保留)。
+- `PackagePin` — 模型包钉死元数据:缓存目录名(`<size>-<kind>`)、HF 源仓与 revision。
+- `PackageVerdict` — 包级只读判定(取首个问题件点名);`root` 为缓存根。
+- `Source` — 下载命中源(输出契约 `download mirror|huggingface|github` 的 token)。
+
+## Constants
+
+- `PACKAGES` — 两档四包(tiny/small 是 v6 档位;medium 不分发)。顺序即 doctor 报告序。
+- `PPOCR_RS_REV` — ppocr-rs 依赖钉死的 git rev(Cargo.toml)。pin 表抄自该 rev 的 models.json,
+
+
+<!-- reader_rs/ocr.md -->
+# reader_rs::ocr
+
+OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链、D43 图片文件）：needs_ocr 页经
+hayro 渲染为位图，图片文件直接解码（image crate，首帧语义），ppocr-rs 原生 CPU 内核跑
+PP-OCRv6（S008 裁决 tiny 质量与速度双优；0.8 秒/页量级、S006 掉字点全修）。模型由
+ppocr ModelStore 管理（缓存目录与 offline 语义与 P0014 一致）；
+D42 后首用下载走三级回退（镜像 到 HF 直连 到 GitHub Releases 模型 tag，`mirror` 模块），
+ppocr-rs 内嵌钉死值全量 sha256 校验是终检闸。档位 tiny / small：env
+`READER_OCR_MODEL_SIZE`（A/B 跑批器用，最高）> `ocr switch` 设置文件 > 默认 tiny；
+`ocr init` / `ocr doctor` / `ocr switch` 三子命令实现在本模块（D42 用户点名）。
+
+## Functions
+
+- `doctor_models` — `ocr doctor`：只读诊断（不建目录、不写文件、不下载）。两档四包逐包判定 +
+- `init_models` — `ocr init`：显式下载 / 修复档位双包进缓存。逐件有效跳过、缺损重下（三级回退），
+- `ocr_image` — 图片文件 OCR（D43）：ImageReader 内容嗅探解码（多帧动图只取首帧，用户裁定 YAGNI；
+- `ocr_pages` — 对 `page_nos`（1 起）做 OCR 兜底，返回页号与行级文本（阅读序，空行滤除）。
+- `switch_model` — `ocr switch <tiny|small>`：写档位设置文件并提示。只切换不自动下载（单调用完成
+
+## Types
+
+- `OcrOutcome` — ocr 三子命令的输出结果：`lines` 是 stdout 稳定行（ASCII token 前置，lib.rs 逐行打出），
+
+
+<!-- reader_rs/output.md -->
+# reader_rs::output
+
+输出层：JSON 包膜（ok/data/error 加 meta）与 filter 点路径裁剪。设计依据 S002（P0006）。
+
+## Functions
+
+- `err_json` — 失败包膜串行化（compact 单行）。
+- `filter_value` — 点路径裁剪：键访问（`a.b`）、数组映射（`hits[].text`）、下标（`units[0].lines`）。
+- `ok_json` — 成功包膜串行化（compact 单行，Agent 省 token）。
+- `ok_json_paged` — extract 分页成功包膜：有剩余页时 meta 带 next_offset 与 cta。
+
+## Types
+
+- `ErrEnvelope` — 失败包膜 `{ok:false, error, meta}`（stdout 补充通道；stderr 人读行另出，见 lib.rs）。
+- `Meta` — 包膜 meta：`command` 与 `duration_ms` 稳定字段；extract 分页有剩余时附 `next_offset` 与 `cta`。
+- `OkEnvelope` — 成功包膜 `{ok:true, data, meta}`；`data` 先落 `Value`，便于 filter 裁剪后入膜。
+
+
+<!-- reader_rs/pdf.md -->
+# reader_rs::pdf
+
+PDF 页提取：包 pdf-inspector 的 markdown 布局管线（多栏阅读序、needs_ocr 检出）。
+
+## Functions
+
+- `extract_pages` — 提取指定页（`None` 为全部页，页码 1 起）为 markdown 行，行按阅读序排列；
+
+
+<!-- reader_rs/query.md -->
+# reader_rs::query
+
+mq 结构化提取（P0016；学习 harehare/mq，选型 S007）：全部支持格式转 markdown 文本后
+跑 mq 表达式（jq 风格节点选择器与管道）。引擎嵌 mq-lang 全量；非匹配节点产空渲染，
+过滤空串即得干净结果（S007 PoC 实证）。
+
+## Functions
+
+- `run_query` — 跑 mq 表达式，返回非空渲染结果集（markdown 片段原文）。
+- `to_markdown` — 任意支持格式转 markdown 文本：md 读原文；PDF 走 pdf-inspector 布局管线；
+
+
+<!-- reader_rs/search.md -->
+# reader_rs::search
+
+搜索层：匹配器（字面 / 正则 / 忽略大小写）与命中收集。
+
+## Functions
+
+- `search` — 在所有文本单元的重建行中搜索，`context` 为前后各带的上下文行数。
+
+## Types
+
+- `Hit` — 一次命中：单元序号（页/章）、单元内行号（均 1 起）、命中行文本与上下文。
+- `Matcher` — 行匹配器。
+
+
+<!-- reader_rs/selfupdate.md -->
+# reader_rs::selfupdate
+
+self update（P0015；D42 加镜像通道）：`reader self update` 先读镜像
+`reader.ohmygh.com/reader/latest.json`（Tauri v2 形状加 sha256；signature 字段
+解析不验，minisign 首轮不上），任何失败回退 GitHub Releases API（403 限流再回退
+gh api）。模式参考 ohmyenv-rs selfupdate.rs 与 ohmyagents-rs update.rs：
+版本判新（stable 资产是压缩包，digest 与 exe 哈希不可比）、资产 sha256 钉死校验、
+staged 加 rename 原子替换（Windows 运行中 exe 可改名不可删）。
+边界：只 stable 通道（无 dev/git）；只显式命令不自动更新。
+
+## Functions
+
+- `asset_target` — 本编译目标对应的 release 资产名（release.yml 矩阵命名约定）。
+- `self_update` — `reader self update` 主流程。`force` 为真时版本相同也重装。
+
+## Types
+
+- `Outcome` — 升级结果（lib.rs 拼稳定输出行用）。
+
+

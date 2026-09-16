@@ -8,3 +8,4 @@
 | ADR-0002 | accepted | anydoc统一文档引擎与PDF直连双轨 | 承接 P0009 / S004 |
 | ADR-0003 | accepted | OCR兜底纯Rust管线ppocr-rs跑PP-OCRv6 | 承接 P0014 / P0017 / P0018、S006 / S008 |
 | ADR-0004 | accepted | 模型与升级自维护镜像三级回退 | 承接 D42 / ISSUE #1 |
+| ADR-0005 | accepted | aidoc投影强制化与不适用裁定撤换 | 撤换 2026-09-16 早间「无自有 API 面」裁定；REQ-049 |

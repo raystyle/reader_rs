@@ -5,11 +5,19 @@ use regex::RegexBuilder;
 
 /// 行匹配器。
 pub enum Matcher {
-    Plain { needle: String, ignore_case: bool },
+    /// 字面子串匹配。
+    Plain {
+        /// 模式串（`ignore_case` 时预折叠小写）。
+        needle: String,
+        /// 忽略大小写。
+        ignore_case: bool,
+    },
+    /// 正则匹配（regex crate 语法）。
     Regex(regex::Regex),
 }
 
 impl Matcher {
+    /// 构造匹配器；`regex_mode` 时按正则解释（错误信息带原文）。
     pub fn new(pattern: &str, regex_mode: bool, ignore_case: bool) -> Result<Self, String> {
         if regex_mode {
             RegexBuilder::new(pattern)
@@ -29,6 +37,14 @@ impl Matcher {
         }
     }
 
+    /// 行是否命中。
+    ///
+    /// ```
+    /// # use reader_rs::search::Matcher;
+    /// let m = Matcher::new("配置", false, false).unwrap();
+    /// assert!(m.is_match("环境配置说明"));
+    /// assert!(!m.is_match("安装"));
+    /// ```
     pub fn is_match(&self, line: &str) -> bool {
         match self {
             Matcher::Plain {
@@ -48,10 +64,15 @@ impl Matcher {
 
 /// 一次命中：单元序号（页/章）、单元内行号（均 1 起）、命中行文本与上下文。
 pub struct Hit {
+    /// 单元序号（页/节，1 起）。
     pub unit: u32,
+    /// 单元内行号（1 起）。
     pub line_no: usize,
+    /// 命中行文本。
     pub text: String,
+    /// 前置上下文（行号，文本）。
     pub before: Vec<(usize, String)>,
+    /// 后置上下文（行号，文本）。
     pub after: Vec<(usize, String)>,
 }
 

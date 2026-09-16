@@ -1,5 +1,11 @@
-//! Reader：Agent 原生文档阅读、搜索和提取工具（PDF 按页；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 按标题节）。
-//! 薄壳在 `src\main.rs`；本文件承载 CLI 定义、`run()` 分发与页/节范围解析。
+//! Reader：Agent 原生文档阅读、搜索和提取工具。为 Agent 管线设计的 Rust 单二进制 CLI
+//! （`reader` 与 `rr` 双名，同一 `main` 薄壳）：从本地 PDF、markdown、图片与 anydoc 家族
+//! （Word 含 legacy .doc、EPUB、ODT、RTF、Office、CSV 等 14 种格式）读文本层。
+//! 能力面：按页/节读（extract）、字面与正则搜加目录批量（search）、mq 结构化提取（query）、
+//! OCR 兜底识图（`--ocr`，PP-OCRv6 三级回退源链）、图片本体导出与一键完整提取（figures/export）。
+//! 输出契约：行式标记、grep 语义退出码 0/1/2、`--format json` 包膜加 `--filter` 裁剪，
+//! 机器可读优先于人类美观。本文件承载 CLI 定义与 `run()` 分发；各模块以
+//! `document::TextUnit` 为统一文本单元。
 
 pub mod anydoc;
 pub mod batch;
@@ -799,6 +805,14 @@ fn parse_optional_pages(pages: Option<String>) -> Result<Option<HashSet<u32>>, S
 }
 
 /// 解析页范围串（如 `1-3,5`）为 1 起页码集合。
+///
+/// ```
+/// use reader_rs::parse_page_spec;
+/// let set = parse_page_spec("1-3,5").unwrap();
+/// assert_eq!(set.len(), 4);
+/// assert!(set.contains(&2) && set.contains(&5));
+/// assert!(parse_page_spec("0").is_err());
+/// ```
 pub fn parse_page_spec(spec: &str) -> Result<HashSet<u32>, String> {
     let mut set = HashSet::new();
     for part in spec.split(',') {

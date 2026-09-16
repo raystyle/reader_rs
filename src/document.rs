@@ -6,22 +6,29 @@ use std::path::Path;
 /// 一个文本单元。`no` 为 1 起序号（PDF 页码 / 其余格式节序），`lines` 按阅读序排列；
 /// `needs_ocr` 为 `Some(原因)` 表示该单元文本层不可靠（扫描件、编码问题、乱码、空提取）。
 pub struct TextUnit {
+    /// 1 起序号（PDF 页码 / 其余格式节序）。
     pub no: u32,
+    /// 单元种类（决定输出分节标记）。
     pub kind: UnitKind,
+    /// 按阅读序排列的文本行。
     pub lines: Vec<String>,
+    /// `Some(原因)` 表示文本层不可靠（扫描件、编码问题、乱码、空提取、图片）。
     pub needs_ocr: Option<String>,
 }
 
 /// 文本单元种类，决定输出分节标记（`== page N ==` / `== section N ==` / `== part N ==`）。
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum UnitKind {
+    /// PDF 页与图片文件（单图即 page 1，D43）。
     Page,
+    /// 标题节（markdown 与 anydoc 家族，P0009）。
     Section,
     /// 无标题文档与超长节的固定行分片（P0010、P0011）。
     Part,
 }
 
 impl UnitKind {
+    /// 输出分节标记 token（`page` / `section` / `part`）。
     pub fn label(self) -> &'static str {
         match self {
             UnitKind::Page => "page",
@@ -34,7 +41,9 @@ impl UnitKind {
 /// OCR 兜底选项（P0014）：`ocr` 开兜底、`offline` 禁模型下载；仅对 PDF 的 needs_ocr 页生效。
 #[derive(Clone, Copy, Default)]
 pub struct OcrOpts {
+    /// 开 OCR 兜底。
     pub ocr: bool,
+    /// 禁模型下载（模型未就位时报错）。
     pub offline: bool,
 }
 
@@ -43,6 +52,11 @@ pub struct OcrOpts {
 const IMAGE_EXTS: [&str; 8] = ["png", "jpg", "jpeg", "bmp", "gif", "webp", "tiff", "tif"];
 
 /// 扩展名是否图片面（分派、批量遍历与 query 的专属错误共用；D43）。
+///
+/// ```
+/// assert!(reader_rs::document::is_image_ext("png"));
+/// assert!(!reader_rs::document::is_image_ext("pdf"));
+/// ```
 pub fn is_image_ext(ext: &str) -> bool {
     IMAGE_EXTS.contains(&ext)
 }

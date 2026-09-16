@@ -4,17 +4,20 @@
 
 ## Commands
 
-- `cargo fmt --all -- --check` 加 `cargo clippy --all-targets -- -D warnings` 提交前必跑（CI 三系统同口径）
+- `cargo fmt --all -- --check` 加 `cargo clippy --all-targets -- -D warnings` 提交前必跑（CI 三系统同口径；missing_docs 是 deny，缺 `///` 即红）
 - `cargo test --locked` 全量测试（单元加集成，六层体系见 G006）
+- `cargo test --doc` doctest 示例冒烟（纯函数面在册示例）
 - 文档门禁四件：`rumdl check .` 加 `uv run --script .tools/md-char-scan.py` 加 `uv run --script .tools/md-heading-scan.py` 加 `uv run --script .tools/md-ref-scan.py`（文档结构变更末件必跑）
-- `uv run /mnt/d/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .` dev-evo 骨架合规自检（存量禁字豁免机制与口径见 docs/README 地图存量禁字债节）
+- `cargo aidoc` 生成库面投影进 `docs/aidoc/`；`cargo aidoc --check --strict` 投影漂移门禁（改 pub 项或 `///` 后先 `cargo aidoc` 再同一次提交 docs/aidoc；tool-rust 强制口径：Rust 栈 aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005）
+- `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run /mnt/d/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节）
 - `cargo build --release --locked` 发布构建；命令面变化后 `./target/release/reader skill > SKILL.md` 重生并过快照审
-- 裁定：库面未发布（crates.io 属 REQ-024 候选）且源码无 doctest 用例，`cargo test --doc` 与 missing_docs 不适用（对齐 base-projection「无自有 API 面项目」范式：公开契约为字节确定性产物）；公开契约走 SKILL.md 加 tests/ 集成测试承载，`reader skill > SKILL.md` 再生 diff 即漂移门禁
+- 公开契约双面：CLI 面走 SKILL.md 加 tests/ 集成测试（`reader skill > SKILL.md` 再生 diff 即漂移门禁）；库面走 `///` 与类型签名加 `docs/aidoc/` 投影（missing_docs deny 强制）
 
 ## Must
 
+- 改 pub 项：同步 `///` 与 doctest（missing_docs 是 deny，CI 必红），并 `cargo aidoc` 后与 `docs/aidoc/` 同一次提交
 - 命令面改动四处同步：README、SKILL.md 重生、`src/introspect.rs` curated 文本、`--help`（漂移守卫集成测试兜底）
-- 不可逆技术选择先立 `docs/adr/`；新需求先立 `docs/requirements/` REQ 再实现，实现后回填 trace（编号 D 号即 REQ 号口径：PRD 存量 D01 至 D47 留档，活跃队列已按 D 号转登记，新需求自 REQ-049 接编）
+- 不可逆技术选择先立 `docs/adr/`；新需求先立 `docs/requirements/` REQ 再实现，实现后回填 trace（编号 D 号即 REQ 号口径：PRD 存量 D01 至 D47 留档，活跃队列已按 D 号转登记，新需求自 REQ-050 接编）
 - 事实性断言标六态（`[实证]` 至 `[直觉]`，规范见 G002）；实证滥用即未完成
 - 踩坑当场记 `docs/diary/`（过程留痕）或立 ADR（被否决的选择也是决策）；`docs/mistakes/` M 编号体系留档不再接编
 - 一事一提交（feat/docs/fix/chore/test 前缀加中文描述）；每次提交 diary 当天记钩子
@@ -22,14 +25,15 @@
 
 ## Must not
 
-- 手改生成物（SKILL.md、`--llms` 与 `skill` 的 curated 输出面）
-- 另写第二真相（测试规范唯一权威在 G005/G006，封版流程在 R008，选型细则在 R002）
-- emoji、破折号、Unicode 箭头、智能引号、全角字母数字（G004 四类禁字，豁免区外零容忍）
+- 手改生成物（SKILL.md、`--llms` 与 `skill` 的 curated 输出面、`docs/aidoc/` 整目录）
+- 另写第二真相（测试规范唯一权威在 G005/G006，封版流程在 R008，选型细则在 R002；库 API 叙述以 `///` 为准不另写 API.md）
+- emoji、破折号、Unicode 箭头、智能引号、全角字母数字（G004 四类禁字，豁免区外零容忍；`docs/aidoc/` 渲染格式走在册豁免）
 - 未经指示推远端或做 git 变更；在 main 上直接开发版本工作或打未经合并的 tag
 - Windows 侧默认 powershell.exe 5.1；sed 批改中文与反斜杠路径（用 `.tools/md-replace.py`）
 
 ## Read first
 
+- 库 API 面：`docs/aidoc/llms.txt`（Agent 入口索引）到 `docs/aidoc/reader_rs/<模块>.md`，仍不确定再开源码 `///`
 - 文档地图：`docs/README.md`（全仓索引，承接旧 INDEX 职责）；需求与队列：`docs/requirements/README.md`；架构决策：`docs/adr/README.md`
 - 做事的流程：`docs/references/`（R002 选型双通道、R007 五步工作流、R008 封版发布）；为什么：`docs/research/S00x`
 - 规范与禁令：`docs/guide/`（G001 命名写作、G002 六态、G004 禁字、G005/G006 测试、G007 工程基线、G008 README 规范）

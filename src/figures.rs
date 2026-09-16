@@ -20,6 +20,7 @@ pub struct FigureOut {
     pub context: Vec<String>,
     /// 落盘路径
     pub file: PathBuf,
+    /// 字节数
     pub bytes: u64,
     /// 图片格式(png / jpg 等,按落盘扩展名)
     pub format: String,
