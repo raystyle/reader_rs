@@ -69,3 +69,4 @@ trace: src/lib.rs（apply_help_face 全树帮助面模板加裸调用全貌形 e
 - 标准原文：project-evo cli-docs SKILL.md 加 references 三件（readme-standard、agent-face、templates）
 - 帮助面模板机制：`command_tree()` 套 `apply_help_face` 递归模板，`run()` 经同树解析，解析错误与 --help 面同源；快照与守卫均自该树派生
 - 候选（触发再动）：CTA 块形升级（需 meta.cta 形变，随下次契约批）；`--schema` 引入（需活树派生 args 与 options 面，output 面单源方案先立）
+- 验收回填（2026-09-18）：tag v0.8.0（49f7ab8），release run 35261890302 六 job 绿，资产 10 件，发行件裸调用 exit 0 实证；批次内顺带修 tests/issue.rs env 串染挂死（缺陷 #13，dev/v0.8.0 fc2ffa5）
