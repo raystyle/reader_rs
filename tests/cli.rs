@@ -665,11 +665,8 @@ fn dies_bad_page_spec() -> TestResult {
     Ok(())
 }
 
-#[test]
-fn dies_no_args() -> TestResult {
-    reader()?.assert().failure();
-    Ok(())
-}
+// 旧 dies_no_args（裸调用退出 2）随 cli-docs 裸调用面标准改全貌形退出 0 退役，
+// 契约由 bare_invocation_full_help_exit_zero 承载
 
 #[test]
 fn epub_search_finds_keyword_with_section() -> TestResult {
@@ -1160,6 +1157,36 @@ fn llms_json_machine_form_covers_tree() -> TestResult {
         }
     }
     assert_eq!(commands.len(), leaf_count, "叶数与活树全等");
+    Ok(())
+}
+
+/// 裸调用面（cli-docs 乙面第五件）：无参运行不弹交互不纯报错，全貌形帮助走
+/// stdout 且含 `--llms` 发现指引，退出恒 0。
+#[test]
+fn bare_invocation_full_help_exit_zero() -> TestResult {
+    reader()?
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Usage:"))
+        .stdout(predicate::str::contains("--llms"));
+    Ok(())
+}
+
+/// 帮助面头行（cli-docs 乙面第三节首件）：根与叶同形 `路径@版本`，版本编译期
+/// 自 Cargo.toml 注入（与 `--version`、`--llms` 手册同源，禁手写）。
+#[test]
+fn help_face_header_injects_name_version() -> TestResult {
+    let v = env!("CARGO_PKG_VERSION");
+    reader()?
+        .arg("--help")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!("reader@{v}")));
+    reader()?
+        .args(["search", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!("reader search@{v}")));
     Ok(())
 }
 

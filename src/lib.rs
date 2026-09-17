@@ -21,7 +21,7 @@ pub mod query;
 pub mod search;
 pub mod selfupdate;
 
-use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
+use clap::{CommandFactory, FromArgMatches, Parser, Subcommand, ValueEnum};
 use document::OcrOpts;
 use serde_json::{json, Value};
 use std::collections::HashSet;
@@ -312,7 +312,9 @@ enum IssueCommands {
 
 /// CLI 入口：返回进程退出码。
 pub fn run() -> i32 {
-    let cli = Cli::parse();
+    // 经 command_tree 解析（而非 Cli::parse）：--help 与解析错误的面走已套
+    // `名@版本` 头行模板的同一棵树，三面同源
+    let cli = Cli::from_arg_matches(&command_tree().get_matches()).unwrap_or_else(|e| e.exit());
     if cli.json && !cli.llms {
         eprintln!("reader: --json 仅与 --llms 同用（命令级 JSON 输出走 --format json）");
         return 2;
@@ -488,10 +490,12 @@ pub fn run() -> i32 {
                 Err(err) => fail("extract", opts.format, err),
             }
         }
-        // 裸 reader（无子命令无旗标）：帮助走 stderr，退出 2（保持 clap 必填子命令时的语义）
+        // 裸 reader（无子命令无旗标）：全貌形帮助走 stdout，退出 0（cli-docs 裸调用面
+        // 标准：无参是导航事件非错误，帮助体含 --llms 发现指引；组子命令缺叶仍走
+        // clap 错误路径退出 2，不在此列）
         None => {
-            eprintln!("{}", Cli::command().render_help());
-            2
+            println!("{}", command_tree().render_help());
+            0
         }
     }
 }
@@ -518,9 +522,27 @@ fn emit_ocr(out: ocr::OcrOutcome, code_when_unhealthy: i32) -> i32 {
     }
 }
 
-/// 暴露 clap 命令树（tests 的旗标漂移守卫用；P0007）。
+/// 帮助面头行注入 `路径@版本 描述`（cli-docs 帮助面节序首件；版本编译期自
+/// Cargo.toml 注入，禁手写，与 `--version`、`--llms` 手册同源）。递归全树同形：
+/// 根为 `reader@<版本>`，子命令带父路径（如 `reader self update@<版本>`）。
+fn apply_help_face(cmd: &mut clap::Command, path: &str) {
+    // help_template 是消费式 builder：mem::take 原地换回，免 clone
+    *cmd = std::mem::take(cmd).help_template(format!(
+        "{path}@{} {{about}}\n\n{{usage-heading}} {{usage}}\n\n{{all-args}}{{after-help}}",
+        env!("CARGO_PKG_VERSION")
+    ));
+    for sub in cmd.get_subcommands_mut() {
+        let name = sub.get_name().to_string();
+        apply_help_face(sub, &format!("{path} {name}"));
+    }
+}
+
+/// 暴露 clap 命令树（tests 的旗标漂移守卫用；P0007）；已套帮助面模板
+/// （头行 `路径@版本`，见 [`apply_help_face`]），裸调用帮助与守卫共用此树。
 pub fn command_tree() -> clap::Command {
-    Cli::command()
+    let mut cmd = Cli::command();
+    apply_help_face(&mut cmd, "reader");
+    cmd
 }
 
 fn run_search(

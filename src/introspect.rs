@@ -3,10 +3,9 @@
 //! 承载退出码、行式契约与 env 等 clap 不知道的语义），`--llms --json` 出机器形态。
 //! 漂移由 tests/cli.rs 守卫兜底：clap 命令树旗标全覆盖 `--llms` 输出断言。
 
-use clap::CommandFactory;
 use serde_json::json;
 
-use crate::Cli;
+use crate::command_tree;
 
 /// 通用旗标（多命令共享，单列一节；叶子行只列特有旗标，省行数）。
 const GLOBAL_FLAGS: [&str; 2] = ["format", "filter"];
@@ -114,7 +113,7 @@ fn collect(cmd: &clap::Command, prefix: &str, out: &mut Vec<Leaf>) {
 
 fn leaves() -> Vec<Leaf> {
     let mut out = Vec::new();
-    collect(&Cli::command(), "", &mut out);
+    collect(&command_tree(), "", &mut out);
     out
 }
 
@@ -168,6 +167,7 @@ pub fn llms_text() -> String {
     s.push_str("## 退出码与输出契约\n");
     s.push('\n');
     s.push_str("- 退出码：0 成功或命中 / 1 无命中（search；issue list 空、show 不存在同）/ 2 出错（stderr 人读行；--format json 时 stdout 另出错误包膜）\n");
+    s.push_str("- 裸调用：无参运行出帮助面（stdout 全貌形，含 --llms 指引），退出 0，不弹交互\n");
     s.push_str("- json 包膜：{\"ok\":bool,\"data\":...,\"meta\":{command,duration_ms[,next_offset,cta]}}\n");
     s.push_str("- text 行式：命中行 单元:行号:文本；extract 节头 == page N == / == section N == / == part N ==（超 200 行单元按行分片）；目录批量命中行前缀 路径:\n");
     s.push_str("- figures 行式：figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B；export 摘要行：export: text/pages/figures/manifest <路径>\n");

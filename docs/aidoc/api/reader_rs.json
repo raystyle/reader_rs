@@ -25,7 +25,7 @@
     {
       "path": "reader_rs::command_tree",
       "kind": "function",
-      "docs": "暴露 clap 命令树（tests 的旗标漂移守卫用；P0007）。"
+      "docs": "暴露 clap 命令树（tests 的旗标漂移守卫用；P0007）；已套帮助面模板\n（头行 `路径@版本`，见 [`apply_help_face`]），裸调用帮助与守卫共用此树。"
     },
     {
       "path": "reader_rs::document",
