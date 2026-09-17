@@ -75,7 +75,7 @@ file target/x86_64-apple-darwin/release/reader    # 预期 Mach-O 64-bit executa
 ## 六、验收记录与上报
 
 - 全绿：结果回填本文「验收记录」节（一行带日期与退出码），mac 接管开发即就位；v0.2.1 tag 发版待用户确认，不阻塞本清单。
-- 有红：现象与输出贴 `docs\mistakes\` 对应分类接编 MNNN，或回报 Linux/Windows 侧协同定位。
+- 有红：现象与输出立 ADR 或记 `docs/diary/` 沉淀，或回报 Linux/Windows 侧协同定位。
 
 ## 验收记录
 

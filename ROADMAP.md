@@ -1,6 +1,6 @@
 # ROADMAP
 
-项目全局路线：**大里程碑**。状态：`未开始` / `进行中` / `已完成` / `挂起`。细碎轨迹见 `docs\diary\YYYY-MM-DD-*.md`。方案详情见 `docs\proven\PNNNN-*.md`。
+项目全局路线：**大里程碑**。状态：`未开始` / `进行中` / `已完成` / `挂起`。细碎轨迹见 `docs/diary/YYYY-MM-DD-*.md`。决策择要见 `docs/adr/`，需求登记见 `docs/requirements/`。
 
 ## 阶段总览
 

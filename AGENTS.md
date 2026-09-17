@@ -9,7 +9,7 @@
 - `cargo test --doc` doctest 示例冒烟（纯函数面在册示例）
 - 文档门禁四件：`rumdl check .` 加 `uv run --script .tools/md-char-scan.py` 加 `uv run --script .tools/md-heading-scan.py` 加 `uv run --script .tools/md-ref-scan.py`（文档结构变更末件必跑）
 - `cargo aidoc` 生成库面投影进 `docs/aidoc/`；`cargo aidoc --check --strict` 投影漂移门禁（改 pub 项或 `///` 后先 `cargo aidoc` 再同一次提交 docs/aidoc；tool-rust 强制口径：Rust 栈 aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005）
-- `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run /home/ray/repos/ProjectEvo/plugins/project-evo/skills/dev-evo/scripts/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节）
+- `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run ~/.claude/plugins/marketplaces/project-evo/plugins/evo-adr/skills/code-kit/scripts/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节）
 - `cargo build --release --locked` 发布构建
 - 公开契约双面：CLI 面走 `--llms`（curated agent 说明书）加 tests/ 集成测试（clap 命令树旗标全覆盖 `--llms` 断言即漂移门禁）；库面走 `///` 与类型签名加 `docs/aidoc/` 投影（missing_docs deny 强制）
 
@@ -20,7 +20,7 @@
 - 命令面改动三处同步：README、`src/introspect.rs` curated 文本、`--help`（漂移守卫集成测试与 `--llms` 快照兜底）
 - 不可逆技术选择先立 `docs/adr/`；新需求先立 `docs/requirements/` REQ 再实现，实现后回填 trace（编号 D 号即 REQ 号口径：PRD 存量 D01 至 D47 留档，活跃队列已按 D 号转登记，新需求自 REQ-050 接编）
 - 事实性断言标六态（`[实证]` 至 `[直觉]`，规范见 G002）；实证滥用即未完成
-- 踩坑当场记 `docs/diary/`（过程留痕）或立 ADR（被否决的选择也是决策）；`docs/mistakes/` M 编号体系留档不再接编
+- 踩坑当场记 `docs/diary/`（过程留痕）或立 ADR（被否决的选择也是决策）；旧 mistakes 档案已融入 ADR-0006 清退
 - 一事一提交（feat/docs/fix/chore/test 前缀加中文描述）；每次提交 diary 当天记钩子
 - 版本分支模型（D45）：版本工作落 `dev/v<版本>` 分支承载与验收，全绿后 fast-forward 合并 main 打 tag 发布；main 唯一发版源，发版窗口冻结
 - 版本载体唯一权威 `Cargo.toml`（单包 version 一处，flow-release 第七节）：Cargo.lock 是生成投影随封版重生，CHANGELOG 是历史记录非载体；载体外版本号即第二真相，发现即清理；semver 判据（文档批与修复取 patch、能力新增取 minor、契约破裂取 major）写进封版 REQ 不凭感觉
@@ -39,7 +39,7 @@
 - 文档地图：`docs/README.md`（全仓索引，承接旧 INDEX 职责）；需求与队列：`docs/requirements/README.md`；架构决策：`docs/adr/README.md`
 - 做事的流程：`docs/references/`（R002 选型双通道、R007 五步工作流、R008 封版发布）；为什么：`docs/research/S00x`
 - 规范与禁令：`docs/guide/`（G001 命名写作、G002 六态、G004 禁字、G005/G006 测试、G007 工程基线、G008 README 规范）
-- 代码定位：`INDEX.md` 代码文件位置表（迁移期保留仍有效）加 `rg` / `ast-grep`；旧三节协作规则全文：`docs/guides/agents-legacy-three-sections.md`
+- 代码定位：docs/README 代码文件位置表（原 INDEX 承接面）加 `rg` / `ast-grep`；旧三节协作规则全文：`docs/guides/agents-legacy-three-sections.md`
 
 ## 环境
 
@@ -49,4 +49,4 @@
 - 验收与运维脚本统一载体 pwsh（五端 7.6.6 在位，env-platform 第十一节）：新增验收与运维面脚本一律 pwsh 一份，不再各写 bash 加 cmd 加 zsh；既有 `.tools` PEP 723 Python 脚本（uv 运行时）按标准不强制迁移
 - 本仓开发侧 WSL `~/repos/reader_rs`（Windows 盘 `D:\reader_rs`）；md 与 Rust 源 UTF-8；Windows 兼容 5.1 的脚本带 UTF-8 BOM
 - 发布走 R008：tag 触发 release.yml（五平台资产加 sha256 边车）加镜像腿（mirror job 与 mirror-models.yml 周更）；模型与升级镜像 `reader.ohmygh.com` 归 ohmycloud 承载
-- dev-evo 标准权威在 `~/repos/ProjectEvo`（本仓文档体系 2026-09-16 全量迁移自旧四原语体系，映射口径见 docs/README）
+- 本仓文档体系 2026-09-16 全量迁移自旧四原语体系（dev-evo 标准由 skill 按需加载，不落本仓路径），映射口径见 docs/README

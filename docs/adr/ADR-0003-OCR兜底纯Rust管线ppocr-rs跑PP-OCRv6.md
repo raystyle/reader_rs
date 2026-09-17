@@ -14,7 +14,7 @@ tags: [OCR, 依赖]
 
 ## Context
 
-扫描件与图片文件无文本层，需要 OCR 兜底。约束：纯 Rust 单二进制、musl 静态可发、不外挂运行时。选型与换引擎全过程见 `../research/S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` 与 `../research/S008-OCR质量升级-ppocr-rs的PP-OCRv6原生内核双优胜出现管线换引擎.md`，方案全文见 `../proven/P0014-OCR兜底落地.md`、`../proven/P0017-OCR性能优化-宽度分组分批加组间并行.md`、`../proven/P0018-OCR换引擎ppocr-rs.md`。
+扫描件与图片文件无文本层，需要 OCR 兜底。约束：纯 Rust 单二进制、musl 静态可发、不外挂运行时。选型与换引擎全过程见 `../research/S006-内嵌OCR选型-纯Rust管线hayro加pure-onnx-ocr实测可行.md` 与 `../research/S008-OCR质量升级-ppocr-rs的PP-OCRv6原生内核双优胜出现管线换引擎.md`；落地与换引擎决策择要即本篇（原 P0014 / P0017 / P0018 方案档案已清退，见 ADR-0006）。
 
 ## Decision
 

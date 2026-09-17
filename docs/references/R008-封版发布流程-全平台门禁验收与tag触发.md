@@ -10,6 +10,7 @@
 - Unreleased 有条目才封版；空则不发布。
 - 版本号：能力新增或行为变化取 `0.x.0`，修复取 `0.x.y`；与 ROADMAP 阶段对照。
 - 发布通道只走 stable（self update 同口径，不做自动更新）。
+- CI 矩阵选 runner 标签前先查 GitHub 支持列表：退役 runner 的症状是 job 永久 queued 而非报错（macos-13 教训）；异架构资产优先在在役 runner 交叉编译（Intel mac 资产在 ARM runner 交叉出）。[经验: 原 P0008 方案档案与 M004，ADR-0006]
 
 ## 二、全平台门禁与验收
 

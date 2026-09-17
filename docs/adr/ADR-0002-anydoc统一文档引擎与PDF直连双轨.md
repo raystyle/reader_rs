@@ -14,7 +14,7 @@ tags: [架构, 格式面]
 
 ## Context
 
-格式面从 2 种扩到 14 种时，备选是逐格式各接一个 crate 或统一引擎。选型双路线实测（docx 自解丢实体 vs anydoc 保真含 legacy .doc 直读）见 `../research/S004-Word文档读取选型-docx自解与doc直读双路线实测.md`，重构方案全文见 `../proven/P0009-anydoc统一文档引擎大重构.md`。
+格式面从 2 种扩到 14 种时，备选是逐格式各接一个 crate 或统一引擎。选型双路线实测（docx 自解丢实体 vs anydoc 保真含 legacy .doc 直读）见 `../research/S004-Word文档读取选型-docx自解与doc直读双路线实测.md`；重构决策择要即本篇（原 P0009 方案档案已清退，见 ADR-0006）。
 
 ## Decision
 

@@ -8,39 +8,38 @@
 
 | 位置 | 命名模式 | 说明 |
 | --- | --- | --- |
-| 根目录 | `INDEX.md` | 文档总索引（编号即定位；唯一索引，不另设清单） |
-| 根目录 | `GOAL.md` / `PLAN.md` / `TODO.md` | 任务目标管理 / 当前目标方案 / 进度清单 |
 | 根目录 | `AGENTS.md` / `CHANGELOG.md` / `ROADMAP.md` / `README.md` | 项目级文档（工具约定大写） |
-| `docs\proven\` | `PNNNN-动词短语.md` | 已完成状态的 plan 归档（P 加 4 位递增，不复用） |
-| `docs\diary\` | `YYYY-MM-DD-主题.md` | 项目日记（**一天一篇**；写当天全部工作的总结与自省：概貌、关键裁决、得失；不写工作细节，细节进方案与研究） |
-| `docs\research\` | `SNNN-博客式长标题.md` | 研究原型过程（为什么；六态对齐）；写作规范见 `docs\guide\G002-研究标准细则-结构与六态标记.md` |
-| `docs\references\` | `RNNN-博客式长标题.md` | 开发测试参考（要做什么怎么做；规则完整内容、工作流程、经验教训的正面沉淀，六态溯源） |
-| `docs\guide\` | `GNNN-博客式长标题.md` | 元规范（怎么写文档、怎么做研究、怎么推进工作流） |
-| `docs\guide\` | `template.md` | 方案模板（不编号） |
-| `docs\mistakes\` | `M1NN-主题短语-错误.md` | 错误速查分类文件（出错怎么纠；经验教训的反面沉淀，与 references 互补） |
+| `docs/adr/` | `ADR-NNNN-短名.md` | 架构决策记录（ADR 加 4 位递增，不复用） |
+| `docs/requirements/` | `REQ-NNN-短名.md` | 需求登记（REQ 加 3 位递增，不复用） |
+| `docs/diary/` | `YYYY-MM-DD-主题.md` | 项目日记（**一天一篇**；写当天全部工作的总结与自省：概貌、关键裁决、得失；不写工作细节，细节进 ADR、REQ 与研究） |
+| `docs/research/` | `SNNN-博客式长标题.md` | 研究原型过程（为什么；六态对齐）；写作规范见 `docs/guide/G002-研究标准细则-结构与六态标记.md` |
+| `docs/references/` | `RNNN-博客式长标题.md` | 开发测试参考（要做什么怎么做；规则完整内容、工作流程、经验教训的正面沉淀，六态溯源） |
+| `docs/guide/` | `GNNN-博客式长标题.md` | 元规范（怎么写文档、怎么做研究、怎么推进工作流） |
+| `docs/guide/` | `template.md` | 方案模板退役指路（不编号） |
 
 规则细项：
 
 - 禁止模糊词（`misc` / `other` / `temp` / `new`）
-- 编号前缀全局唯一且不复用：`P`（proven，4 位）、`S`（research，3 位）、`R`（references，3 位）、`G`（guide，3 位）、`M`（mistakes：分类文件 M1xx，行级错误 M0xx 按首次踩时间递增）
-- 新文档落位后登记 `INDEX.md` 对应节；编号接当前最大号
-- 特殊名固定大写：`INDEX` / `GOAL` / `PLAN` / `TODO`；小写固定：`template`
-- `docs\proven\` 只放 `PNNNN` 方案；当天流水账不进 proven
+- 编号前缀全局唯一且不复用：`ADR`（adr，4 位）、`REQ`（requirements，3 位）、`S`（research，3 位）、`R`（references，3 位）、`G`（guide，3 位）；旧 `P` / `M` / `D` 编号已随档案清退停用（2026-09-17，ADR-0006），仅作历史沿革标签
+- 新文档落位后登记对应索引（docs/README 地图与 adr、requirements、research 各 README）；编号接当前最大号
+- 特殊名固定大写：`AGENTS` / `README` / `CHANGELOG` / `ROADMAP`；小写固定：`template`
+- 当天流水账不进 ADR 与 REQ，进 `docs/diary/`
 
 ## 二、写作规范
 
 - **树形结构**（人工）：节点加子项，禁止整段混杂叙述
 - **标题干净**（人工）：不带括号、不喊口号、不用破折号；解释放标题下一行引用 `>`
 - **正文标准**（人工 + 自动）：中文为主；命令与专有名词原文；不用 emoji 与箭头
-- **事实性断言**（强制，AGENTS 写研究与测试文档规则）：研究与测试文档的事实性断言必须标六态（实证 / 推断 / 经验 / 记忆 / 假设 / 直觉），标准见 `docs\guide\G002-研究标准细则-结构与六态标记.md`；不标或实证滥用即视为未完成
+- **事实性断言**（强制，AGENTS 写研究与测试文档规则）：研究与测试文档的事实性断言必须标六态（实证 / 推断 / 经验 / 记忆 / 假设 / 直觉），标准见 `docs/guide/G002-研究标准细则-结构与六态标记.md`；不标或实证滥用即视为未完成
 
 ## 三、检查与修正
 
 | 检查 | 命令 |
 | --- | --- |
 | 全仓扫描 | `rumdl check .` |
-| 标题括号机检 | `uv run --script .tools\md-heading-scan.py` |
-| 引用断链机检 | `uv run --script .tools\md-ref-scan.py` |
+| 标题括号机检 | `uv run --script .tools/md-heading-scan.py` |
+| 禁用字符机检 | `uv run --script .tools/md-char-scan.py` |
+| 引用断链机检 | `uv run --script .tools/md-ref-scan.py` |
 | 自动修正 | `rumdl check --fix .` |
 | 纯格式化 | `rumdl fmt .` |
 

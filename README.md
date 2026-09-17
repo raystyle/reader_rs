@@ -180,7 +180,7 @@ reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
 | 参数 | 说明 |
 | --- | --- |
 | `<文件>` | 文档路径（全格式面：pdf、markdown、图片与 anydoc 家族，见「支持格式」） |
-| `<目录>` | 递归批量搜支持格式：text 命中行 `路径:单元:行号:文本`；json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped`；坏文件 stderr 跳过后继续；`--pages` 不可用 |
+| `<目录>` | 递归批量搜支持格式：text 命中行 `路径:单元:行号:文本`；json `hits[]` 带 `file` 字段加 `files.scanned / files.skipped`，`needs_ocr` 逐文件 stderr 警示有意不进 `data`（与单文件形态分叉）；坏文件 stderr 跳过后继续；`--pages` 不可用 |
 | `<关键词>` | 字面匹配串；`--regex` 时按正则解释 |
 | `--regex` | 按正则匹配（regex crate 语法） |
 | `-i`, `--ignore-case` | 忽略大小写 |
@@ -308,6 +308,7 @@ reader search ./paper-export/ "certificate" -i
 - figures 的 `data`：`figures[]`（`kind` / `anchor` / `caption` / `context[]` / `file` / `bytes` / `format`）加 `count`。
 - 分页：`--offset/--limit` 后 meta 有剩余时附 `next_offset` 与 `cta`（下一条可直接执行的命令）。
 - `--filter` 点路径裁剪 `data`（包膜保留）：`hits[].text`（数组映射）、`units[0].lines`（下标）、`hits[].unit` 等键访问链；非法路径报错退出 2，不静默。
+- 字段顺序契约只约束顶层包膜（typed 声明序 `ok` / `data` / `meta`）；`data` 内键为字母序。compact 单行 UTF-8 原样输出（不转 `\uXXXX`），token 经济。
 
 ```bash
 reader search ./doc.pdf "error" --format json
@@ -330,13 +331,13 @@ reader extract ./doc.pdf --format json --offset 0 --limit 20
 | CSV（.csv） | part 分片（200 行） | anydoc；无签名格式按扩展名识别；无标题格式天然走分片 |
 | 图片（.png / .jpg / .jpeg / .bmp / .gif / .webp / .tiff / .tif） | 页（单图即 page 1） | image crate 解码（内容嗅探、首帧、EXIF 方向、透明底合成白底）；无文本层恒标 `[needs_ocr: image]`，`--ocr` 识别（D43）；多帧动图取首帧 |
 
-选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 [S004-Word文档读取选型](docs/research/S004-Word文档读取选型-docx自解与doc直读双路线实测.md)，重构方案见 [P0009-anydoc统一文档引擎大重构](docs/proven/P0009-anydoc统一文档引擎大重构.md)；图片支持零新依赖（image 0.25 已随 OCR 管线在依赖树），研究见 S009。
+选型：anydoc 0.2.4（firecrawl，MIT），双通道核实与保真实测见 [S004-Word文档读取选型](docs/research/S004-Word文档读取选型-docx自解与doc直读双路线实测.md)，重构决策见 [ADR-0002](docs/adr/ADR-0002-anydoc统一文档引擎与PDF直连双轨.md)；图片支持零新依赖（image 0.25 已随 OCR 管线在依赖树），研究见 S009。
 
-边界：只读、不编辑（图片本体导出走 PDF 内嵌件直抽与扫描页渲染，D47）；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 与图片单文件可加 `--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2MB 模型，多核约 1-5 秒/页，仍标 needs_ocr；P0014/P0018、D43）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）。
+边界：只读、不编辑（图片本体导出走 PDF 内嵌件直抽与扫描页渲染，D47）；扫描件与编码问题页检出后以 `[needs_ocr]` 提示，PDF 与图片单文件可加 `--ocr` 兜底识别（PP-OCRv6 tiny，首用下载约 6.2MB 模型，多核约 1-5 秒/页，仍标 needs_ocr；P0014/P0018、D43）。文本质量承诺面向英文与中文内容。分节口径：超过 200 行的单元（无标题整篇或超长节）按行分片为 part，单元号全局连续（P0010/P0011）；真实文档的手动加粗不伪造为标题（anydoc 忠实输出 bold 原样），此类文档整篇即一个单元走 part。
 
 ## 文档导航
 
-项目协作文档（贡献者向）：[AGENTS.md](AGENTS.md) 五节协作合同（Commands / Must / Must not / Read first / 环境）；[docs/README.md](docs/README.md) 全仓文档地图（承接旧索引职责）；需求队列 [docs/requirements](docs/requirements/README.md) 与架构决策 [docs/adr](docs/adr/README.md)；库 API 投影 docs/aidoc（[llms.txt](docs/aidoc/llms.txt) 入口，cargo aidoc 生成物）；[CHANGELOG.md](CHANGELOG.md) 与 [ROADMAP.md](ROADMAP.md) 版本与路线；研究档案 [docs/research](docs/research/README.md) 与过程日记 docs/diary。旧体系四原语（[PRD.md](PRD.md) / [GOAL.md](GOAL.md) / [PLAN.md](PLAN.md) / [TODO.md](TODO.md)）与 [INDEX.md](INDEX.md) 为迁移留档（2026-09-16 起不再更新，各顶部有迁移注记）。
+项目协作文档（贡献者向）：[AGENTS.md](AGENTS.md) 五节协作合同（Commands / Must / Must not / Read first / 环境）；[docs/README.md](docs/README.md) 全仓文档地图（承接旧索引职责，含代码文件位置表）；需求队列 [docs/requirements](docs/requirements/README.md) 与架构决策 [docs/adr](docs/adr/README.md)；库 API 投影 docs/aidoc（[llms.txt](docs/aidoc/llms.txt) 入口，cargo aidoc 生成物）；[CHANGELOG.md](CHANGELOG.md) 与 [ROADMAP.md](ROADMAP.md) 版本与路线；研究档案 [docs/research](docs/research/README.md) 与过程日记 docs/diary。旧体系四原语与总索引已于 2026-09-17 清退，存量知识融入 [ADR-0006](docs/adr/ADR-0006-历史档案清退与知识融入.md)（全文历史见 git）。
 
 ## 贡献与支持
 

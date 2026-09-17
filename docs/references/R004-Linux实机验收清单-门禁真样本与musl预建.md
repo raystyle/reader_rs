@@ -78,7 +78,7 @@ ldd target/x86_64-unknown-linux-musl/release/reader   # 预期 not a dynamic exe
 ## 六、验收记录与上报
 
 - 全绿：结果回填本文「验收记录」节（一行带日期与退出码），P0011 / P0012 的跨平台对账即闭环；v0.2.1 tag 可发（P0013 验收转为 release 首跑五 job 绿）。
-- 有红：现象与输出贴 `docs\mistakes\` 对应分类接编 MNNN，或直接回报 Windows 侧协同定位。
+- 有红：现象与输出立 ADR 或记 `docs/diary/` 沉淀，或直接回报 Windows 侧协同定位。
 
 ## 验收记录
 

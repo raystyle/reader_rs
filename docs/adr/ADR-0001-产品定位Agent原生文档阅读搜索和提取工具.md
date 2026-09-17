@@ -14,7 +14,7 @@ tags: [定位]
 
 ## Context
 
-首版只有 PDF search / extract 最小闭环，定位未定型。备选：面向人的通用文档阅读器、面向 Agent 管线的只读文本层工具。定位展开与边界全文见 `../proven/P0002-项目重新定位-Agent原生文档阅读搜索和提取工具.md` 与 `../references/R001-项目定位-Agent原生文档阅读搜索和提取工具.md`。
+首版只有 PDF search / extract 最小闭环，定位未定型。备选：面向人的通用文档阅读器、面向 Agent 管线的只读文本层工具。定位展开与边界全文见 `../references/R001-项目定位-Agent原生文档阅读搜索和提取工具.md`（原 P0002 方案档案已清退，见 ADR-0006）。
 
 ## Decision
 
