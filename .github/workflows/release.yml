@@ -155,8 +155,10 @@ jobs:
       - name: 资产上桶(immutable;首跑凭据传播延迟 401 重试勿判死)
         run: |
           version="${TAG#v}"
+          # --ignore-times 强制重传:存量同内容覆盖 PUT 会丢 --header-upload 头(D42 在册坑族第三例,
+          # 2026-09-17 演练实证;同修法见 mirror-models.py upload.sh)
           for i in 1 2 3; do
-            if rclone copy "$RUNNER_TEMP/dist" "R2:reader-dl/reader/${version}" \
+            if rclone copy -v --ignore-times "$RUNNER_TEMP/dist" "R2:reader-dl/reader/${version}" \
                  --header-upload "Cache-Control: public, max-age=31536000, immutable"; then
               ok=1; break
             fi
@@ -167,9 +169,10 @@ jobs:
       - name: latest.json 最后传(max-age=60)
         run: |
           # 单件不走 copyto:rclone 对 R2 的 copyto 触发 HeadBucket 加 CreateBucket,桶级 token 403(实测)
+          # --ignore-times 强制重传:同内容覆盖 PUT 会丢 --header-upload 头(2026-09-17 演练实证)
           mkdir "$RUNNER_TEMP/latest-only"
           mv "$RUNNER_TEMP/latest.json" "$RUNNER_TEMP/latest-only/"
-          rclone copy "$RUNNER_TEMP/latest-only" "R2:reader-dl/reader" \
+          rclone copy -v --ignore-times "$RUNNER_TEMP/latest-only" "R2:reader-dl/reader" \
             --header-upload "Cache-Control: public, max-age=60"
       - name: 清点报数与零上传红灯
         run: |
