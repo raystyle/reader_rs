@@ -1125,6 +1125,44 @@ fn llms_covers_all_clap_flags() -> TestResult {
     Ok(())
 }
 
+/// `--llms --json` 机器形：合法 JSON，commands 叶数组与活命令树同覆盖
+/// （REQ-057 三面统一；路径含每叶，旗标名取自树）。
+#[test]
+fn llms_json_machine_form_covers_tree() -> TestResult {
+    let stdout = stdout_of(reader()?.args(["--llms", "--json"]))?;
+    let v: serde_json::Value =
+        serde_json::from_str(stdout.trim()).map_err(|e| format!("机器形应为合法 JSON: {e}"))?;
+    assert_eq!(v["name"], "reader", "name 面");
+    assert!(v["version"].is_string(), "version 面");
+    let commands = v["commands"].as_array().expect("commands 数组");
+    let cmd = reader_rs::command_tree();
+    let mut leaf_count = 0usize;
+    for sub in cmd.get_subcommands().filter(|s| s.get_name() != "help") {
+        let nested: Vec<_> = sub
+            .get_subcommands()
+            .filter(|s| s.get_name() != "help")
+            .collect();
+        if nested.is_empty() {
+            leaf_count += 1;
+            let hit = commands
+                .iter()
+                .any(|c| c["path"].as_str().unwrap_or("") == sub.get_name());
+            assert!(hit, "机器形缺叶 {}", sub.get_name());
+        } else {
+            for n in &nested {
+                leaf_count += 1;
+                let want = format!("{} {}", sub.get_name(), n.get_name());
+                let hit = commands
+                    .iter()
+                    .any(|c| c["path"].as_str().unwrap_or("") == want);
+                assert!(hit, "机器形缺叶 {want}");
+            }
+        }
+    }
+    assert_eq!(commands.len(), leaf_count, "叶数与活树全等");
+    Ok(())
+}
+
 /// help 的 examples 节（S002 结论 7：examples 是 agent 读帮助的关键节）。
 #[test]
 fn search_help_contains_examples() -> TestResult {

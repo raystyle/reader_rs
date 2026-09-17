@@ -12,6 +12,7 @@ pub mod batch;
 pub mod document;
 pub mod figures;
 pub mod introspect;
+pub mod issue;
 pub mod mirror;
 pub mod ocr;
 pub mod output;
@@ -54,9 +55,12 @@ struct SearchOpts {
     about = "Agent 原生文档阅读、搜索和提取工具（PDF 按页；markdown 与 Word / EPUB / ODT / RTF / Office / CSV 按节）"
 )]
 struct Cli {
-    /// 输出紧凑命令索引（agent 发现与接入的说明书）
+    /// 输出紧凑命令手册（agent 发现与接入的说明书；命令表自活命令树渲染）
     #[arg(long)]
     llms: bool,
+    /// 与 --llms 同用出机器形态 JSON（命令级 JSON 输出走各命令 --format json）
+    #[arg(long)]
+    json: bool,
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -71,8 +75,10 @@ enum Commands {
   reader search ./docs \"配置\" --format json --filter 'hits[].file'")]
     Search {
         /// 文档或目录路径（.pdf、.md/.markdown、图片（.png/.jpg/.bmp/.gif/.webp/.tiff 等）及 Word / EPUB / ODT / RTF / Office / CSV 家族；目录递归批量搜）
+        #[arg(value_name = "文件或目录")]
         file: PathBuf,
         /// 关键词；`--regex` 时按正则解释
+        #[arg(value_name = "关键词或正则")]
         pattern: String,
         /// 按正则匹配
         #[arg(long)]
@@ -81,10 +87,10 @@ enum Commands {
         #[arg(short = 'i', long)]
         ignore_case: bool,
         /// 命中行前后各带 N 行上下文
-        #[arg(short = 'C', long, default_value_t = 0)]
+        #[arg(short = 'C', long, default_value_t = 0, value_name = "N")]
         context: usize,
         /// 限定页/节范围（1 起），如 1-3,5
-        #[arg(long)]
+        #[arg(long, value_name = "范围")]
         pages: Option<String>,
         /// 输出形态：text（行式，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
@@ -109,12 +115,13 @@ enum Commands {
   reader extract ./report.docx --format json --offset 0 --limit 5")]
     Extract {
         /// 文档路径（.pdf、.md/.markdown、图片（.png/.jpg/.bmp/.gif/.webp/.tiff 等）及 Word / EPUB / ODT / RTF / Office / CSV 家族）
+        #[arg(value_name = "文件")]
         file: PathBuf,
         /// 限定页/节范围（1 起），如 1-3,5
-        #[arg(long)]
+        #[arg(long, value_name = "范围")]
         pages: Option<String>,
         /// 写入文件（缺省输出到 stdout）
-        #[arg(short, long)]
+        #[arg(short, long, value_name = "文件")]
         out: Option<PathBuf>,
         /// 输出形态：text（行式，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
@@ -123,10 +130,10 @@ enum Commands {
         #[arg(long)]
         filter: Option<String>,
         /// 跳过前 N 个单元（0 起，两形态同用）
-        #[arg(long, default_value_t = 0)]
+        #[arg(long, default_value_t = 0, value_name = "N")]
         offset: usize,
         /// 最多输出 M 个单元
-        #[arg(long)]
+        #[arg(long, value_name = "M")]
         limit: Option<usize>,
         /// 对 needs_ocr 页与图片文件走 OCR 兜底（PDF 与图片单文件；首用下载约 6.2MB 模型，多核并行约 1-5 秒/页）
         #[arg(long)]
@@ -143,12 +150,13 @@ enum Commands {
   reader figures ./photo.jpg --out ./shots")]
     Figures {
         /// 文档路径（.pdf、.md/.markdown、图片与 anydoc 家族；扫描书整页即图本体）
+        #[arg(value_name = "文件")]
         file: PathBuf,
         /// 限定页范围（仅 PDF），如 1-3,5
-        #[arg(long)]
+        #[arg(long, value_name = "范围")]
         pages: Option<String>,
         /// 输出目录（缺省 <文件名>-figures/）
-        #[arg(short, long)]
+        #[arg(short, long, value_name = "目录")]
         out: Option<PathBuf>,
         /// 输出形态：text（行式，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
@@ -167,12 +175,13 @@ enum Commands {
   reader search ./paper-export/ \"certificate\"")]
     Export {
         /// 文档路径（全格式面；图片文件本体即自身）
+        #[arg(value_name = "文件")]
         file: PathBuf,
         /// 限定页/单元范围（1 起），如 1-3,5
-        #[arg(long)]
+        #[arg(long, value_name = "范围")]
         pages: Option<String>,
         /// 输出目录（缺省 <文件名>-export/）
-        #[arg(short, long)]
+        #[arg(short, long, value_name = "目录")]
         out: Option<PathBuf>,
         /// 对 needs_ocr 页与图片走 OCR 兜底（文本回填，标记保留；首用下载约 6.2MB 模型）
         #[arg(long)]
@@ -189,8 +198,10 @@ enum Commands {
   reader query ./notes.md \".[] | select(contains(\\\"关键词\\\"))\" --filter 'results[]'")]
     Query {
         /// 文档路径（.md/.markdown 原文、.pdf 及 anydoc 家族转 markdown 后查询；图片无文本层不支持）
+        #[arg(value_name = "文件")]
         file: PathBuf,
         /// mq 表达式（完整语法见 mqlang.org）
+        #[arg(value_name = "mq表达式")]
         expression: String,
         /// 输出形态：text（markdown 片段，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
@@ -210,6 +221,16 @@ enum Commands {
         #[command(subcommand)]
         command: OcrCommands,
     },
+    /// 统一 issue 入口（issues.ohmygh.com，总台 REQ-057 契约）：new 一键提交（自动带 tool=reader 与版本/平台/主机名），list 集中列表，show 单条详情
+    #[command(after_long_help = "\
+示例:
+  reader issue new \"search 中文关键词误报\" --body \"现象与复现步骤\"
+  reader issue list --tool reader --status open
+  reader issue show 12")]
+    Issue {
+        #[command(subcommand)]
+        command: IssueCommands,
+    },
 }
 
 #[derive(Subcommand)]
@@ -227,7 +248,7 @@ enum OcrCommands {
     /// 下载/修复模型进缓存（镜像 到 HF 到 GitHub 三级回退；缺省档位取 env > switch 设置 > tiny）
     Init {
         /// 指定档位（tiny / small；缺省取当前档）
-        #[arg(long)]
+        #[arg(long, value_name = "tiny或small")]
         size: Option<String>,
         /// 只校验不下载（缓存件无效时报错，零网络）
         #[arg(long)]
@@ -238,15 +259,70 @@ enum OcrCommands {
     /// 切换模型档位并持久化（env READER_OCR_MODEL_SIZE 优先于本设置）
     Switch {
         /// 目标档位（tiny / small）
+        #[arg(value_name = "tiny或small")]
         size: String,
+    },
+}
+
+#[derive(Subcommand)]
+enum IssueCommands {
+    /// 一键提交缺陷反馈（自动带 tool=reader、版本、平台、主机名；每 IP 10 条/时；成功 0 / 出错 2）
+    New {
+        /// 标题（1 至 200 字）
+        #[arg(value_name = "标题")]
+        title: String,
+        /// 正文（至多 20000 字；缺省空）
+        #[arg(long, value_name = "正文")]
+        body: Option<String>,
+        /// 输出形态：text（行式，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+    },
+    /// 集中列表（新到旧；有行 0 / 空 1 / 出错 2）
+    List {
+        /// 按工具名过滤（缺省不过滤；如 reader）
+        #[arg(long, value_name = "名")]
+        tool: Option<String>,
+        /// 按状态过滤（open / closed）
+        #[arg(long, value_name = "open或closed")]
+        status: Option<String>,
+        /// 最多 N 条（1 至 100）
+        #[arg(long, default_value_t = 50, value_name = "N")]
+        limit: u32,
+        /// 输出形态：text（行式，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+        /// 裁剪 JSON data 的点路径（如 issues[].title）；仅 --format json 下可用
+        #[arg(long)]
+        filter: Option<String>,
+    },
+    /// 单条详情（存在 0 / 不存在 1 / 出错 2）
+    Show {
+        /// issue 编号
+        #[arg(value_name = "编号")]
+        id: u64,
+        /// 输出形态：text（行式，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+        /// 裁剪 JSON data 的点路径（如 issue.title）；仅 --format json 下可用
+        #[arg(long)]
+        filter: Option<String>,
     },
 }
 
 /// CLI 入口：返回进程退出码。
 pub fn run() -> i32 {
     let cli = Cli::parse();
+    if cli.json && !cli.llms {
+        eprintln!("reader: --json 仅与 --llms 同用（命令级 JSON 输出走 --format json）");
+        return 2;
+    }
     if cli.llms {
-        print!("{}", introspect::llms_text());
+        if cli.json {
+            print!("{}", introspect::llms_json());
+        } else {
+            print!("{}", introspect::llms_text());
+        }
         return 0;
     }
     match cli.command {
@@ -336,6 +412,38 @@ pub fn run() -> i32 {
                 },
                 Err(err) => fail("ocr switch", Format::Text, err),
             },
+        },
+        Some(Commands::Issue { command }) => match command {
+            IssueCommands::New {
+                title,
+                body,
+                format,
+            } => match run_issue_new(&title, body.as_deref().unwrap_or(""), format) {
+                Ok(()) => 0,
+                Err(err) => fail("issue new", format, err),
+            },
+            IssueCommands::List {
+                tool,
+                status,
+                limit,
+                format,
+                filter,
+            } => {
+                let opts = OutputOpts { format, filter };
+                match run_issue_list(tool.as_deref(), status.as_deref(), limit, &opts) {
+                    Ok(hit) if hit => 0,
+                    Ok(_) => 1,
+                    Err(err) => fail("issue list", opts.format, err),
+                }
+            }
+            IssueCommands::Show { id, format, filter } => {
+                let opts = OutputOpts { format, filter };
+                match run_issue_show(id, &opts) {
+                    Ok(found) if found => 0,
+                    Ok(_) => 1,
+                    Err(err) => fail("issue show", opts.format, err),
+                }
+            }
         },
         Some(Commands::Search {
             file,
@@ -732,6 +840,75 @@ fn run_query(file: &Path, expression: &str, opts: &OutputOpts) -> Result<bool, S
         }
     }
     Ok(!results.is_empty())
+}
+
+fn run_issue_new(title: &str, body: &str, format: Format) -> Result<(), String> {
+    let started = Instant::now();
+    let r = issue::file_new(title, body)?;
+    match format {
+        Format::Text => println!("issue: filed #{} {}", r.id, r.url),
+        Format::Json => println!(
+            "{}",
+            output::ok_json("issue new", started, json!({ "id": r.id, "url": r.url }))?
+        ),
+    }
+    Ok(())
+}
+
+fn run_issue_list(
+    tool: Option<&str>,
+    status: Option<&str>,
+    limit: u32,
+    opts: &OutputOpts,
+) -> Result<bool, String> {
+    let started = Instant::now();
+    check_filter(opts)?;
+    let rows = issue::list(tool, status, limit)?;
+    match opts.format {
+        Format::Text => {
+            for r in &rows {
+                println!(
+                    "#{} {} {} {} {} {}",
+                    r.id, r.status, r.tool, r.version, r.created_at, r.title
+                );
+            }
+        }
+        Format::Json => {
+            let mut data = json!({ "issues": rows, "count": rows.len() });
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
+            println!("{}", output::ok_json("issue list", started, data)?);
+        }
+    }
+    Ok(!rows.is_empty())
+}
+
+fn run_issue_show(id: u64, opts: &OutputOpts) -> Result<bool, String> {
+    let started = Instant::now();
+    check_filter(opts)?;
+    let Some(r) = issue::show(id)? else {
+        return Ok(false);
+    };
+    match opts.format {
+        Format::Text => {
+            println!("issue: #{} [{}] {} {}", r.id, r.status, r.tool, r.version);
+            println!("title: {}", r.title);
+            println!("platform: {}", r.platform);
+            println!("host: {}", r.host);
+            println!("created: {}", r.created_at);
+            println!("body:");
+            println!("{}", r.body);
+        }
+        Format::Json => {
+            let mut data = json!({ "issue": r });
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
+            println!("{}", output::ok_json("issue show", started, data)?);
+        }
+    }
+    Ok(true)
 }
 
 /// search 的 data 树：hits 加 needs_ocr_units（不可靠页序号）。

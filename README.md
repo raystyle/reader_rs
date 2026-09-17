@@ -7,6 +7,10 @@ Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB 
 
 从本地 PDF、markdown、图片与 Office 家族文档读文本层，给 Agent 稳定可解析的输出。Rust 单二进制、单调用无交互；命令 `reader`（缩写 `rr`）。
 
+## 项目介绍
+
+Reader 是为 Agent 管线设计的文档读取面：解决"多格式文档的文本层不稳定、不好解析"问题，输出行式标记、grep 语义退出码与 JSON 包膜，让 agent 单调用拿到可靠文本。面向两类用户：编码 agent（经 `--llms` 手册接入）与做文献、资料处理的工程师。仓间分工：ark 管五端安装与版本分发（`ark install reader`），omc 管舰队治理与镜像域运维，reader 专注文档文本层读取、搜索与提取，不做渲染与编辑。
+
 | 做什么 | 命令示例 |
 | --- | --- |
 | 读：按页或标题节取正文 | `reader extract ./doc.pdf --pages 1-3` |
@@ -20,7 +24,9 @@ Agent 原生文档阅读、搜索与提取 CLI：PDF / Word（含 .doc）/ EPUB 
 - 行式标记、grep 语义退出码 0/1/2；`--format json` 包膜加 `--filter` 点路径裁剪、分页 `next_offset`
 - `--llms` 紧凑命令索引（agent 说明书）
 
-## 全平台安装
+## 部署
+
+### 全平台安装
 
 前置：Rust 工具链（1.88+，推荐 <https://rustup.rs>）。支持 Windows / macOS / Linux，CI 三系统门禁见 [.github/workflows/ci.yml](.github/workflows/ci.yml)。
 
@@ -57,7 +63,7 @@ reader --version
 reader --help
 ```
 
-## 升级
+### 升级
 
 自升级（推荐）：
 
@@ -75,7 +81,9 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 
 手动升级：到 [GitHub Releases](https://github.com/raystyle/reader_rs/releases) 取新平台资产，`.sha256` 校验后解压覆盖（资产内含 `reader` 与 `rr` 双名）。
 
-## 配置与管理
+## 配置
+
+### 配置与管理
 
 环境变量（均有缺省，不配即用）：
 
@@ -85,6 +93,7 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 | `READER_MIRROR` | 分发镜像基址（模型下载与 self update 查新） | `https://reader.ohmygh.com` |
 | `READER_OCR_CACHE_DIR` | 覆盖 OCR 模型缓存目录 | 平台缓存目录（见下表） |
 | `READER_OCR_MODEL_SIZE` | OCR 模型档位临时覆盖（A/B 对比用），优先于 `ocr switch` 设置 | 未设（取 `ocr switch` 设置，再缺省 `tiny`） |
+| `READER_ISSUES_API` | issue 统一入口基址（测试与灰度用） | `https://issues.ohmygh.com` |
 
 **OCR 模型档位**（`READER_OCR_MODEL_SIZE`，缺省 `tiny`）：
 
@@ -101,7 +110,7 @@ reader ocr init --size small            # 预下载该档模型进缓存
 READER_OCR_MODEL_SIZE=small reader extract ./scan.pdf --ocr   # 环境变量临时覆盖（优先于 switch 设置）
 ```
 
-### 模型来源与手动部署
+#### 模型来源与手动部署
 
 来源三级回退（国内机器首用不再卡 HF）：镜像 `reader.ohmygh.com`（R2 自定义域）到 HuggingFace 直连（[PaddlePaddle/PP-OCRv6_tiny_det_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_safetensors) 与 [PP-OCRv6_tiny_rec_safetensors](https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_rec_safetensors)，small 档同系两仓；ppocr-rs 钉 revision 与逐件 sha256）到 GitHub Releases `models-v6` 资产。首用 `--ocr` 或 `ocr init` 时按链下载约 6.2 MB（small 档约 31 MB），逐件 sha256 校验落缓存，ppocr-rs 内嵌钉死值全量校验兜底。
 
@@ -149,7 +158,9 @@ reader extract ./scan.pdf --ocr --offline --pages 1
 
 卸载：预编译安装删除 `reader` 与 `rr` 两个二进制与缓存目录即可；cargo 安装用 `cargo uninstall reader_rs` 一并移除双名。
 
-## 快速开始
+## 使用方法
+
+### 快速开始
 
 装好后先跑三条（bash 与 pwsh 同形，文件换成自己的）：
 
@@ -159,19 +170,21 @@ rr search ./report.docx "摘要" -C 2    # Word 按节搜词，带上下文
 reader --llms                          # agent 说明书（紧凑命令索引）
 ```
 
-## Agent 发现
+### Agent 发现
 
-面向编码 agent 的自省接口是 `--llms` 旗标：输出紧凑命令索引（每命令一行、含旗标面、退出码与输出契约、figures/export/ocr 行式），单次调用即得完整说明书；集成测试守卫 clap 命令树旗标全覆盖 `--llms` 输出，防漂移。
+面向编码 agent 的自省接口是 `--llms` 旗标：裸出 markdown 紧凑手册（命令表自活 clap 命令树渲染、零手维护；含通用旗标、常用例、退出码与输出契约），`--llms --json` 出机器形态 JSON（name/version/commands 叶数组）；集成测试守卫 clap 命令树旗标全覆盖 `--llms` 输出，防漂移。agent 使用中发现缺陷，一行反馈（自动带版本、平台、主机名）：
 
 ```bash
 reader --llms
+reader --llms --json
+reader issue new "search 中文关键词误报" --body "现象与复现步骤"
 ```
 
-## 命令
+### 命令
 
-文档子命令五个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）、`figures`（图片本体导出）与 `export`（一键完整提取）；外加发现接口 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
+文档子命令五个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）、`figures`（图片本体导出）与 `export`（一键完整提取）；外加发现接口 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）与 `issue` 缺陷反馈（见下节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
 
-### search 搜索
+#### search 搜索
 
 ```text
 reader search <文件|目录> <关键词> [--regex] [-i] [-C N] [--pages 范围]
@@ -210,7 +223,7 @@ rr search ./report.docx "配置"
 rr search ./材料 "代理" --format json --filter 'hits[].file'
 ```
 
-### extract 提取
+#### extract 提取
 
 ```text
 reader extract <文件> [--pages 范围] [-o 输出文件]
@@ -237,7 +250,7 @@ reader extract ./doc.pdf --pages 1-3,5
 rr extract ./report.docx -o report.txt
 ```
 
-### query 结构化提取
+#### query 结构化提取
 
 ```text
 reader query <文件> <mq表达式> [--format text|json] [--filter 路径]
@@ -250,7 +263,7 @@ reader query ./README.md ".h2"
 reader query ./notes.md ".[] | select(contains(\"配置\"))" --format json --filter 'results[]'
 ```
 
-### figures：图片本体导出与元数据对齐
+#### figures：图片本体导出与元数据对齐
 
 > D47 落地；S010 定界。
 
@@ -270,7 +283,7 @@ reader figures ./scan.pdf --pages 12-32
 reader figures ./report.docx --format json --filter 'figures[].anchor'
 ```
 
-### export：一键完整提取
+#### export：一键完整提取
 
 > D47 第 3/4 轮点名落地。
 
@@ -293,7 +306,19 @@ reader search ./paper-export/ "certificate" -i
 # paper-export\pages\p0009.md:1:3:certificates
 ```
 
-## JSON 输出
+#### issue：缺陷反馈
+
+统一 issue 入口（总台 issues.ohmygh.com，每 IP 10 条/时）：`new` 一键提交自动带上下文（tool=reader 恒定、版本、平台、主机名），`list` / `show` 读面（详情页在回执 url）。
+
+```bash
+reader issue new "search 中文关键词误报" --body "现象与复现步骤"
+reader issue list --tool reader --status open
+reader issue show 12
+```
+
+回执行 `issue: filed #12 https://issues.ohmygh.com/i/12`；list 行式 `#<id> <status> <tool> <version> <created> <标题>`；list 空退出 1、show 不存在退出 1、出错 2。标题 1 至 200 字、正文至多 20000 字（客户端先校验）；基址可由 `READER_ISSUES_API` 覆盖。
+
+### JSON 输出
 
 `--format json` 给 Agent 结构化包膜（compact 单行）：
 
@@ -316,7 +341,7 @@ reader search ./doc.pdf "error" --format json --filter 'hits[].unit'
 reader extract ./doc.pdf --format json --offset 0 --limit 20
 ```
 
-## 支持格式
+### 支持格式
 
 | 格式 | 单元 | 引擎与说明 |
 | --- | --- | --- |

@@ -1,11 +1,12 @@
 # reader_rs::introspect
 
-Agent 自省与发现（P0007）：`--llms` 紧凑索引，agent 说明书唯一面。
-文本为 curated 内容（含退出码、输出契约等 clap 不知道的语义）；
-漂移由 tests\cli.rs 守卫兜底：clap 命令树旗标全覆盖断言（skill 长形态与仓根
-SKILL.md 已于 2026-09-16 用户裁定退役，`--help` 与 README 承接渐进深入）。
+Agent 自省与发现（P0007；三面统一批 REQ-057 对齐总台 REQ-060）：`--llms` 旗标
+裸出 markdown 紧凑手册（命令表自活 clap 命令树渲染，零手维护双份；curated 段
+承载退出码、行式契约与 env 等 clap 不知道的语义），`--llms --json` 出机器形态。
+漂移由 tests/cli.rs 守卫兜底：clap 命令树旗标全覆盖 `--llms` 输出断言。
 
 ## Functions
 
-- `llms_text` — `reader --llms`：紧凑命令索引（agent 发现用，单行一句、稳定可解析）。
+- `llms_json` — `reader --llms --json`：机器形态（结构对齐族标准：name、version、description、
+- `llms_text` — `reader --llms`：markdown 紧凑手册（命令表自活命令树渲染；总长目标至多 120 行）。
 

@@ -11,7 +11,7 @@
 - `cargo aidoc` 生成库面投影进 `docs/aidoc/`；`cargo aidoc --check --strict` 投影漂移门禁（改 pub 项或 `///` 后先 `cargo aidoc` 再同一次提交 docs/aidoc；tool-rust 强制口径：Rust 栈 aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005）
 - `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run ~/.claude/plugins/marketplaces/project-evo/plugins/evo-adr/skills/code-kit/scripts/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节）
 - `cargo build --release --locked` 发布构建
-- 公开契约双面：CLI 面走 `--llms`（curated agent 说明书）加 tests/ 集成测试（clap 命令树旗标全覆盖 `--llms` 断言即漂移门禁）；库面走 `///` 与类型签名加 `docs/aidoc/` 投影（missing_docs deny 强制）
+- 公开契约双面：CLI 面走 `--llms`（markdown 紧凑手册，命令表自活 clap 树渲染零手维护；`--llms --json` 出机器形态 JSON，REQ-057 三面统一）加 tests/ 集成测试（clap 命令树旗标全覆盖 `--llms` 断言即漂移门禁）；库面走 `///` 与类型签名加 `docs/aidoc/` 投影（missing_docs deny 强制）
 
 ## Must
 
@@ -21,6 +21,7 @@
 - 不可逆技术选择先立 `docs/adr/`；新需求先立 `docs/requirements/` REQ 再实现，实现后回填 trace（编号 D 号即 REQ 号口径：PRD 存量 D01 至 D47 留档，活跃队列已按 D 号转登记，新需求自 REQ-050 接编）
 - 事实性断言标六态（`[实证]` 至 `[直觉]`，规范见 G002）；实证滥用即未完成
 - 踩坑当场记 `docs/diary/`（过程留痕）或立 ADR（被否决的选择也是决策）；旧 mistakes 档案已融入 ADR-0006 清退
+- 遇缺陷当场一键反馈：`reader issue new "<标题>" --body "<现象与复现>"`（自动带 tool=reader 与版本/平台/主机名，统一入口 issues.ohmygh.com，REQ-056）；读面 `issue list` / `issue show`
 - 一事一提交（feat/docs/fix/chore/test 前缀加中文描述）；每次提交 diary 当天记钩子
 - 版本分支模型（D45）：版本工作落 `dev/v<版本>` 分支承载与验收，全绿后 fast-forward 合并 main 打 tag 发布；main 唯一发版源，发版窗口冻结
 - 版本载体唯一权威 `Cargo.toml`（单包 version 一处，flow-release 第七节）：Cargo.lock 是生成投影随封版重生，CHANGELOG 是历史记录非载体；载体外版本号即第二真相，发现即清理；semver 判据（文档批与修复取 patch、能力新增取 minor、契约破裂取 major）写进封版 REQ 不凭感觉

@@ -29,7 +29,7 @@ serde_json = "1"
 hayro = "0.7"
 ppocr-rs = { git = "https://github.com/weidix/ppocr-rs", rev = "d07857c35457f90bb8df92e245f614cdc3d5e236" }
 # 模型首用下载与 self update（P0015）：纯 Rust 加 rustls 默认，守纯 Rust 与 musl 静态边界
-ureq = "3"
+ureq = { version = "3", features = ["json"] }
 # self update 资产 SHA-256 钉死校验（P0015）
 sha2 = "0.10"
 # hayro 位图到引擎的内存传递
