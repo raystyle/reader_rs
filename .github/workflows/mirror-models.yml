@@ -24,9 +24,11 @@ jobs:
     env:
       RCLONE_CONFIG_R2_TYPE: s3
       RCLONE_CONFIG_R2_PROVIDER: Cloudflare
-      RCLONE_CONFIG_R2_ENDPOINT: https://f2291a7e3896188d96bdf27e40e1027b.r2.cloudflarestorage.com
+      RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
       RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      # 桶级 token 无建桶权,禁 HeadBucket 预检(否则 403,M015)
+      RCLONE_CONFIG_R2_NO_CHECK_BUCKET: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5

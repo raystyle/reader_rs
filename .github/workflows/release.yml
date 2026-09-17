@@ -56,7 +56,9 @@ jobs:
           New-Item -ItemType Directory $stage | Out-Null
           Copy-Item "target\${{ matrix.target }}\release\reader.exe", "target\${{ matrix.target }}\release\rr.exe", README.md, LICENSE $stage
           Compress-Archive $stage "$stage.zip"
-          (Get-FileHash "$stage.zip" -Algorithm SHA256).Hash.ToLower() + "  $stage.zip" | Out-File -Encoding ascii "$stage.zip.sha256"
+          # 边车 LF 落盘(sha256sum 原生格式;Out-File 默认 CRLF,消费侧剥 \r 属历史兼容,正源改单行 LF)
+          $hash = (Get-FileHash "$stage.zip" -Algorithm SHA256).Hash.ToLower()
+          [IO.File]::WriteAllText("$PWD/$stage.zip.sha256", "$hash  $stage.zip`n")
       - name: 打包 tar.gz(macOS / Linux)
         if: runner.os != 'Windows'
         shell: bash
@@ -66,12 +68,47 @@ jobs:
           cp "target/${{ matrix.target }}/release/reader" "target/${{ matrix.target }}/release/rr" README.md LICENSE "$stage"/
           tar -czf "$stage.tar.gz" "$stage"
           shasum -a 256 "$stage.tar.gz" > "$stage.tar.gz.sha256"
+      - name: 解包冒烟(Windows zip,原生 msvc 跑 --version 对 tag)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $stage = "reader-${env:GITHUB_REF_NAME}-${{ matrix.target }}"
+          $smoke = "$env:RUNNER_TEMP\smoke"
+          Expand-Archive "$stage.zip" -DestinationPath $smoke -Force
+          $out = & "$smoke\$stage\reader.exe" --version
+          $expected = "reader $($env:GITHUB_REF_NAME.Substring(1))"
+          if ($out -ne $expected) { Write-Host "::error::解包冒烟不过 '$out' != '$expected'"; exit 1 }
+          Write-Host "解包冒烟过: $out"
+      - name: 解包冒烟(macOS / Linux tar.gz;Intel mac 交叉件按 Rosetta 在否降级 file 判形)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          stage="reader-${GITHUB_REF_NAME}-${{ matrix.target }}"
+          mkdir -p "$RUNNER_TEMP/smoke"
+          tar -xzf "$stage.tar.gz" -C "$RUNNER_TEMP/smoke"
+          bin="$RUNNER_TEMP/smoke/$stage/reader"
+          expected="reader ${GITHUB_REF_NAME#v}"
+          if [ "${{ matrix.target }}" = "x86_64-apple-darwin" ]; then
+            if arch -x86_64 /usr/bin/true 2>/dev/null; then
+              bin="arch -x86_64 $bin"
+            else
+              # Intel runner 已退役(M004),Rosetta 缺席时按 R005 口径以 file 判形为准
+              echo "::warning::Rosetta 缺席,x86_64 冒烟降级 file 判形"
+              file "$bin" | grep -q "x86_64" || { echo "::error::file 判形不过"; exit 1; }
+              echo "file 判形过: $(file "$bin")"
+              exit 0
+            fi
+          fi
+          out="$($bin --version)"
+          if [ "$out" != "$expected" ]; then echo "::error::解包冒烟不过 '$out' != '$expected'"; exit 1; fi
+          echo "解包冒烟过: $out"
       - name: 上传 release 资产
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --generate-notes || true
+          # --latest 直发钉回(禁 draft;五 job 竞态下首个 create,其余容忍已存在;末尾 mirror 的 edit --latest 双保险保留)
+          gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --generate-notes --latest || true
           gh release upload "${GITHUB_REF_NAME}" "reader-${GITHUB_REF_NAME}-${{ matrix.target }}."* --clobber
 
   # 镜像腿(D42):release 资产与 .sha256 边车上 R2 桶 reader/<version>/(immutable 头),
@@ -86,9 +123,11 @@ jobs:
       TAG: ${{ inputs.tag || github.ref_name }}
       RCLONE_CONFIG_R2_TYPE: s3
       RCLONE_CONFIG_R2_PROVIDER: Cloudflare
-      RCLONE_CONFIG_R2_ENDPOINT: https://f2291a7e3896188d96bdf27e40e1027b.r2.cloudflarestorage.com
+      RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
       RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      # 桶级 token 无建桶权,禁 HeadBucket 预检(否则 403,M015;隔离目录 copy 手法并存)
+      RCLONE_CONFIG_R2_NO_CHECK_BUCKET: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -132,6 +171,19 @@ jobs:
           mv "$RUNNER_TEMP/latest.json" "$RUNNER_TEMP/latest-only/"
           rclone copy "$RUNNER_TEMP/latest-only" "R2:reader-dl/reader" \
             --header-upload "Cache-Control: public, max-age=60"
+      - name: 清点报数与零上传红灯
+        run: |
+          version="${TAG#v}"
+          n_dist=$(ls -1 "$RUNNER_TEMP/dist" | wc -l)
+          n_r2=$(rclone lsf "R2:reader-dl/reader/${version}" | wc -l)
+          echo "版本段对象 r2=${n_r2} / dist=${n_dist}(五包加边车)"
+          [ "${n_r2}" -ge 1 ] || { echo "::error::版本段零对象(半失败红灯)"; exit 1; }
+          diff <(ls -1 "$RUNNER_TEMP/dist" | sort) <(rclone lsf "R2:reader-dl/reader/${version}" | sort) \
+            || { echo "::error::版本段对象清单与 dist 不等(半失败红灯)"; exit 1; }
+          sleep 5
+          curl -fsSI "https://reader.ohmygh.com/reader/latest.json" | grep -i 'cache-control.*max-age=60' \
+            || { echo "::error::latest.json 头抽验不过"; exit 1; }
+          echo "零上传红灯过:版本段 ${n_r2} 件全等,latest.json 头在位"
       - name: 本 tag 钉回 latest(防遮蔽双保险)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
