@@ -6,8 +6,20 @@
 use reader_rs::issue::{file_new, list, show};
 use std::io::{Read, Write};
 use std::net::TcpListener;
+use std::sync::{Mutex, MutexGuard, OnceLock};
 
 type TestResult<T = ()> = Result<T, Box<dyn std::error::Error>>;
+
+/// 本 target 内串行锁：`READER_ISSUES_API` 是进程级 env，`#[test]` 并行线程会
+/// 互染端口（后设者覆盖先设者，先设者的一次性服务 `accept` 永等即挂死；
+/// 2026-09-18 lan-mac 实机验收首跑实证，本机与 CI 过往绿属调度侥幸）。
+/// 动 env 的测试都经 [`with_api`]，取锁后全段串行。
+fn env_serial_lock() -> MutexGuard<'static, ()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(()))
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+}
 
 /// 一次性 HTTP 服务：读完请求（头加 Content-Length 体）后回固定状态与 JSON 体，
 /// 返回捕获的原始请求（断言提交体与查询串用）。
@@ -58,6 +70,7 @@ fn with_api<T>(
     body: &str,
     f: impl FnOnce() -> T,
 ) -> (String, T) {
+    let _serial = env_serial_lock();
     let listener = TcpListener::bind("127.0.0.1:0").expect("绑定");
     let port = listener.local_addr().expect("端口").port();
     std::env::set_var("READER_ISSUES_API", format!("http://127.0.0.1:{port}"));
