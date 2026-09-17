@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-09-18
+
+> cli-docs 采纳轮（REQ-058，dev/v0.8.0 承载）：裸调用退出码行为变化取 0.x.0；issue 集成与 `--llms` 三面统一（REQ-056/057）随版发布。
+
 - **cli-docs 细标精对齐（REQ-058，总台 2026-09-18 采纳轮）**：帮助面头行全树注入 `路径@版本`（版本自 Cargo.toml 编译期单源，守卫测试断言根与叶）；裸调用面改全貌形（无参运行帮助体走 stdout 含 `--llms` 指引，退出 0；旧 stderr 加退出 2 退役，行为变化取 0.x.0）；甲乙两面逐件对照表与裁剪理由在册（REQ-058）；README 部署节补三平台 sha256 校验命令块。
 - **`issue` 子命令：统一缺陷反馈入口（REQ-056，总台 REQ-057 契约）**：`issue new` 一键提交（自动带 tool=reader 与版本/平台/主机名；客户端先校验 title 1 至 200、body 20000）、`issue list`（过滤参数加行式）、`issue show`；`--format json` 包膜与 `--filter` 裁剪（list/show）；`READER_ISSUES_API` 覆盖基址；ureq 启 json feature（零新增依赖）。
 - **`--llms` 三面统一（REQ-057，总台 REQ-060 标准）**：裸出 markdown 紧凑手册（47 行，预算 120；命令表三列自活 clap 命令树 DFS 渲染、零手维护双份；参数命名单源化 clap value_name）、`--llms --json` 机器形态（name/version/globalFlags/commands 叶数组）、README 四节重排（项目介绍/部署/配置/使用方法）。

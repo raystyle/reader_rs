@@ -1,6 +1,6 @@
 {
   "crate": "reader_rs",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "items": [
     {
       "path": "reader_rs::anydoc",
