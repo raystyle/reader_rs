@@ -40,6 +40,14 @@ Reader 是为 Agent 管线设计的文档读取面：解决"多格式文档的�
 | `reader-v<版本>-aarch64-apple-darwin.tar.gz` | macOS Apple 芯片 |
 | `reader-v<版本>-x86_64-apple-darwin.tar.gz` | macOS Intel |
 
+下载后先校验边车再解压（`.sha256` 与资产同 Release 提供）：
+
+```bash
+sha256sum -c reader-v<版本>-x86_64-unknown-linux-gnu.tar.gz.sha256
+# macOS：shasum -a 256 -c <资产>.sha256
+# Windows（PowerShell）：Get-FileHash <资产> -Algorithm SHA256，值对照 .sha256 文件
+```
+
 从源码安装（`reader` 与 `rr` 两个命令一起装）：
 
 ```bash

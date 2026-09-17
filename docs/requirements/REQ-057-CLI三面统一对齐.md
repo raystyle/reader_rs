@@ -24,5 +24,5 @@ trace: src/introspect.rs（活树渲染手册与机器形；clap value_name 单�
 
 ## Notes
 
-- 细标（README 与 JSON 协议的仓无关 SKILL）总台定稿广播后按标精对齐（更正单第二条）
+- 细标（README 与 JSON 协议的仓无关 SKILL）总台定稿广播后按标精对齐（更正单第二条）：已按 cli-docs 细标落地（REQ-058，2026-09-18）
 - issue 面回执见 REQ-056（实弹 #9 与 #10）
