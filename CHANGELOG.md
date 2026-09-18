@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-09-18
+
+> 家族自更新统一标准版（REQ-059，总台采纳轮）：自更新面能力新增与行为增强取 minor（R008 判据）。
+
+- **家族自更新统一标准对齐（REQ-059，总台 2026-09-18 采纳轮，标准 = browse REQ-005 加 build-release 公共契约第六节）**：`self update` 双通道整对回落（镜像通道任一步传输失败整对切 GitHub，digest 锚不符硬拒不回落）；判新三态（本地领先报 `local_newer` 不动）；自替换三步舞（pid 备份、入位、`--version` 自证五次重试，证败回滚复核终态，受阻报自救路径）；exe 旁更新锁（create_new 加死 pid 收割）加陈旧收割；暂存落 exe 同目录防 EXDEV；ark 管理布局（`ark-managed` 落痕或用户面 bin 链接入口）拦截走 `ark update reader`；`GITHUB_TOKEN` 别名与无资产平台源码 CTA。形状差异（latest.json 聚合清单对 stable 滚动段）列档 REQ-059。
+
 ## [0.8.1] - 2026-09-18
 
 > 补封版（总台纠错单 2026-09-18 即办令）：release 锚重定至 main 头。#13 修复（fc2ffa5，tests/issue.rs 串行锁）经 `git merge-base --is-ancestor` 与 tag 树核验实在 v0.8.0 内（总台核验的 a103980 为发行后验收回填头，非修复头）；本版代码面与 0.8.0 零差，随版携带发行验收回填与 diary（8b02d64、a103980 两笔 docs），为舰队 catalog pin 与镜像 release 件提供无歧义锚点。

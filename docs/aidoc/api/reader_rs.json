@@ -1,6 +1,6 @@
 {
   "crate": "reader_rs",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "items": [
     {
       "path": "reader_rs::anydoc",
@@ -375,7 +375,7 @@
     {
       "path": "reader_rs::selfupdate",
       "kind": "module",
-      "docs": "self update（P0015；D42 加镜像通道）：`reader self update` 先读镜像\n`reader.ohmygh.com/reader/latest.json`（Tauri v2 形状加 sha256；signature 字段\n解析不验，minisign 首轮不上），任何失败回退 GitHub Releases API（403 限流再回退\ngh api）。模式参考 ohmyenv-rs selfupdate.rs 与 ohmyagents-rs update.rs：\n版本判新（stable 资产是压缩包，digest 与 exe 哈希不可比）、资产 sha256 钉死校验、\nstaged 加 rename 原子替换（Windows 运行中 exe 可改名不可删）。\n边界：只 stable 通道（无 dev/git）；只显式命令不自动更新。"
+      "docs": "self update（P0015；D42 镜像通道；家族自更新统一标准批 REQ-059 对齐\nbuild-release 公共契约第六节与 browse REQ-005 口径）：双通道成对回落\n（镜像 latest.json 通道任一步传输失败，整对回落 GitHub；digest 锚不符\n属安全问题硬拒不回落）、semver 只升不降（本地领先报 local_newer 不动）、\n自替换三步舞（旧件挪 pid 备份、新件入位、`--version` 自证五次重试防杀软\n瞬时锁；证败回滚并复核终态，回滚受阻报自救路径）、exe 旁更新锁（create_new\n语义加 pid 陈旧收割）加暂存落 exe 同目录（防跨文件系统 rename）、ark 管理\n布局拦截走 ark 单通道。镜像通道锚源是 latest.json 内嵌 sha256（Tauri 形状，\n与 browse 的 `.sha256` 边车是键形差异，判据同为 digest 锚硬校验）。\n边界：只 stable 通道（无 dev/git）；只显式命令不自动更新。"
     },
     {
       "path": "reader_rs::selfupdate::Outcome",
@@ -385,12 +385,12 @@
     {
       "path": "reader_rs::selfupdate::asset_target",
       "kind": "function",
-      "docs": "本编译目标对应的 release 资产名（release.yml 矩阵命名约定）。\n\n# Errors\n\n编译目标不在五平台 release 矩阵内（无对应资产可下载）。"
+      "docs": "本编译目标对应的 release 资产名（release.yml 矩阵命名约定）。\n\n# Errors\n\n编译目标不在五平台 release 矩阵内（无对应资产可下载；错误带源码安装出口）。"
     },
     {
       "path": "reader_rs::selfupdate::self_update",
       "kind": "function",
-      "docs": "`reader self update` 主流程。`force` 为真时版本相同也重装。\n\n只走 stable 通道,不做自动更新;查新先读镜像 latest.json,不可用回退\nGitHub API(匿名撞限流再回退 gh api)。\n\n# Errors\n\n查新版失败(镜像与 GitHub 双通道都不可用,或清单形状不合法)、当前平台\n无资产、资产 sha256 校验不符或缺失、下载解包失败、建临时目录或替换\n自身失败;错误串带阶段与原因。"
+      "docs": "`reader self update` 主流程（家族自更新统一标准件）。\n\nark 管理布局先拦（走 ark 单通道）；exe 旁更新锁加陈旧收割；双通道成对\n取件（镜像 latest.json 优先整对回落 GitHub，digest 锚硬校验）；semver\n只升不降（本地领先报 local_newer 不动，`force` 跳过判新重装）；暂存落\nexe 同目录，替换走三步舞（备份、入位、`--version` 自证五次重试，证败\n回滚复核）。只走 stable 通道，不做自动更新。\n\n# Errors\n\nark 管理或另一升级在跑（带 CTA）；双通道查新或下载皆失败；digest 校验\n不符（硬拒）；平台无资产；解包或替换失败（含自证失败已回滚与回滚受阻\n带自救路径）；错误串带阶段与原因。"
     }
   ]
 }

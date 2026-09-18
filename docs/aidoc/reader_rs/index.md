@@ -1,4 +1,4 @@
-# reader_rs 0.8.1
+# reader_rs 0.9.0
 
 Reader：Agent 原生文档阅读、搜索和提取工具。为 Agent 管线设计的 Rust 单二进制 CLI
 （`reader` 与 `rr` 双名，同一 `main` 薄壳）：从本地 PDF、markdown、图片与 anydoc 家族
@@ -23,5 +23,5 @@ OCR 兜底识图（`--ocr`，PP-OCRv6 三级回退源链）、图片本体导出
 - [`pdf`](pdf.md): PDF 页提取：包 pdf-inspector 的 markdown 布局管线（多栏阅读序、needs_ocr 检出）。
 - [`query`](query.md): mq 结构化提取（P0016；学习 harehare/mq，选型 S007）：全部支持格式转 markdown 文本后
 - [`search`](search.md): 搜索层：匹配器（字面 / 正则 / 忽略大小写）与命中收集。
-- [`selfupdate`](selfupdate.md): self update（P0015；D42 加镜像通道）：`reader self update` 先读镜像
+- [`selfupdate`](selfupdate.md): self update（P0015；D42 镜像通道；家族自更新统一标准批 REQ-059 对齐
 
