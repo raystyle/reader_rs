@@ -235,9 +235,9 @@ enum Commands {
 
 #[derive(Subcommand)]
 enum SelfCommands {
-    /// 升级到最新正式版（已最新时明示；--force 同版本重装）
+    /// 升级到最新正式版（已最新或本地领先时明示；--force 同版本重装；semver 只升不降）
     Update {
-        /// 版本相同也强制重装
+        /// 版本相同也强制重装（不用于降级：本地领先时加 --force 仍不动）
         #[arg(long)]
         force: bool,
     },

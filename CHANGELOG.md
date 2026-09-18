@@ -8,7 +8,7 @@
 
 > 家族自更新统一标准版（REQ-059，总台采纳轮）：自更新面能力新增与行为增强取 minor（R008 判据）。
 
-- **家族自更新统一标准对齐（REQ-059，总台 2026-09-18 采纳轮，标准 = browse REQ-005 加 build-release 公共契约第六节）**：`self update` 双通道整对回落（镜像通道任一步传输失败整对切 GitHub，digest 锚不符硬拒不回落）；判新三态（本地领先报 `local_newer` 不动）；自替换三步舞（pid 备份、入位、`--version` 自证五次重试，证败回滚复核终态，受阻报自救路径）；exe 旁更新锁（create_new 加死 pid 收割）加陈旧收割；暂存落 exe 同目录防 EXDEV；ark 管理布局（`ark-managed` 落痕或用户面 bin 链接入口）拦截走 `ark update reader`；`GITHUB_TOKEN` 别名与无资产平台源码 CTA。形状差异（latest.json 聚合清单对 stable 滚动段）列档 REQ-059。
+- **家族自更新统一标准对齐（REQ-059，总台 2026-09-18 采纳轮，标准 = browse REQ-005 加 build-release 公共契约第六节）**：`self update` 双通道整对回落（镜像通道任一步传输失败整对切 GitHub，digest 锚不符硬拒不回落）；判新三态（本地领先报 `local_newer` 不动，`--force` 只豁免同版本重装不用于降级）；自替换三步舞（pid 备份、入位、`--version` 自证五次重试，证败回滚复核终态，受阻报自救路径）；exe 旁更新锁（create_new 加死 pid 收割）加陈旧收割（备份只在二进制在位时清，缺位即中断升级救援副本保留并指路复原）；暂存落 exe 同目录防 EXDEV；ark 管理布局（`ark-managed` 落痕或用户面 bin 链接入口，Windows 含 USERPROFILE 与双侧 canonicalize）拦截走 `ark update reader`；`GITHUB_TOKEN` 别名与无资产平台源码 CTA。形状差异（latest.json 聚合清单对 stable 滚动段）列档 REQ-059。评审轮（herdr codex 逐行核）F1 加 G1 至 G5 修复随批。
 
 ## [0.8.1] - 2026-09-18
 

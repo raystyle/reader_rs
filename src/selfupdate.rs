@@ -142,7 +142,7 @@ fn fetch_channels() -> Result<(ReleaseInfo, Vec<u8>), String> {
     let sha = format!("{:x}", Sha256::digest(&blob));
     if sha != info.sha256 {
         return Err(format!(
-            "资产 {} 校验失败（硬拒不回落）: 期望 {} 实得 {sha}；下一步：重试一次，仍失败反馈 reader issue new",
+            "资产 {} 校验失败（硬拒不回落）: 期望 {} 实得 {sha}；下一步：重试一次（镜像同源重取仍是同一份件；如需另一副本走 GitHub Releases 手动下载校验），仍失败反馈 reader issue new",
             info.asset_name, info.sha256
         ));
     }
@@ -250,26 +250,26 @@ pub fn self_update(force: bool) -> Result<Outcome, String> {
 
     let (info, blob) = fetch_channels()?;
     let latest = info.version;
-    if !force {
-        match freshness(&latest, &current) {
-            Freshness::Current => {
-                return Ok(Outcome {
-                    action: "current",
-                    current,
-                    latest,
-                    replaced: Vec::new(),
-                })
-            }
-            Freshness::LocalNewer => {
-                return Ok(Outcome {
-                    action: "local_newer",
-                    current,
-                    latest,
-                    replaced: Vec::new(),
-                })
-            }
-            Freshness::Update => {}
+    // 判新恒走（评审 G2）：force 只豁免「同版本跳过」（同版本重装），
+    // 本地领先即便 force 也不降级
+    match freshness(&latest, &current) {
+        Freshness::Current if !force => {
+            return Ok(Outcome {
+                action: "current",
+                current,
+                latest,
+                replaced: Vec::new(),
+            })
         }
+        Freshness::LocalNewer => {
+            return Ok(Outcome {
+                action: "local_newer",
+                current,
+                latest,
+                replaced: Vec::new(),
+            })
+        }
+        Freshness::Current | Freshness::Update => {}
     }
 
     let stage = dir.join(format!(".reader-selfupd-{}", std::process::id()));
@@ -452,6 +452,8 @@ fn ark_managed_signal(exe: &Path) -> Option<String> {
             return Some(format!("落痕 {}", marker.display()));
         }
     }
+    // 两侧都走 canonicalize：Windows 的 \\?\ 前缀与大小写形态直比会假阴性（评审 G3）
+    let exe_canon = exe.canonicalize().unwrap_or_else(|_| exe.to_path_buf());
     let faces = vec![exe.parent().map(Path::to_path_buf), home_local_bin()];
     faces
         .into_iter()
@@ -461,7 +463,9 @@ fn ark_managed_signal(exe: &Path) -> Option<String> {
         .filter_map(|p| {
             let t = std::fs::read_link(&p).ok()?;
             match t.canonicalize() {
-                Ok(cwd) if exe == cwd => Some(format!("链接 {} -> {}", p.display(), t.display())),
+                Ok(cwd) if exe_canon == cwd => {
+                    Some(format!("链接 {} -> {}", p.display(), t.display()))
+                }
                 _ => None,
             }
         })
@@ -469,7 +473,9 @@ fn ark_managed_signal(exe: &Path) -> Option<String> {
 }
 
 fn home_local_bin() -> Option<PathBuf> {
+    // Windows 无 HOME，回退 USERPROFILE（评审 G3）
     std::env::var_os("HOME")
+        .or_else(|| std::env::var_os("USERPROFILE"))
         .map(PathBuf::from)
         .map(|h| h.join(".local").join("bin"))
 }
@@ -552,8 +558,10 @@ fn acquire_lock(exe: &Path) -> Result<LockGuard, String> {
 }
 
 /// 陈旧收割（持锁后调用，锁保证无并发升级，残留皆为死进程所留）：清 exe
-/// 目录内 `.reader-selfupd-*` 暂存目录与 `.<bin>.new-` / `.old-` / `.bak-`
-/// 前缀散件。返回收割件数。
+/// 目录内 `.reader-selfupd-*` 暂存目录与 `.<bin>.new-` / `.old-` 前缀散件；
+/// `.<bin>.bak-` 备份是中断升级（备份已挪出而新件未入位的窗口）的唯一可
+/// 恢复副本，只在对应二进制在位时才视为陈旧垃圾收割，缺位即保留并指路复原。
+/// 返回收割件数。
 fn sweep_stale(dir: &Path) -> usize {
     let bins = if cfg!(windows) {
         ["reader.exe", "rr.exe"]
@@ -571,13 +579,31 @@ fn sweep_stale(dir: &Path) -> usize {
             if std::fs::remove_dir_all(&path).is_ok() {
                 n += 1;
             }
-        } else if bins.iter().any(|b| {
-            fname.starts_with(&format!(".{b}.new-"))
-                || fname.starts_with(&format!(".{b}.old-"))
-                || fname.starts_with(&format!(".{b}.bak-"))
-        }) && std::fs::remove_file(&path).is_ok()
+        } else if bins
+            .iter()
+            .any(|b| fname.starts_with(&format!(".{b}.new-")))
         {
-            n += 1;
+            // 暂存草稿：不是任何在位件的副本，恒可收割
+            if std::fs::remove_file(&path).is_ok() {
+                n += 1;
+            }
+        } else if let Some(b) = bins.iter().find(|b| {
+            fname.starts_with(&format!(".{b}.old-")) || fname.starts_with(&format!(".{b}.bak-"))
+        }) {
+            // old（旧版残舞）与 bak（本批三步舞）都可能握有唯一可恢复副本：
+            // 二进制在位才视为陈旧垃圾，缺位保留并指路复原
+            if dir.join(b).is_file() {
+                if std::fs::remove_file(&path).is_ok() {
+                    n += 1;
+                }
+            } else {
+                eprintln!(
+                    "reader: 检测到旧件备份 {}，对应二进制缺位（疑似中断升级）；已保留，可手动复原 mv {} {}",
+                    path.display(),
+                    path.display(),
+                    dir.join(b).display()
+                );
+            }
         }
     }
     if n > 0 {
@@ -626,15 +652,8 @@ fn rollback_and_verify(exe: &Path, bak: &Path, new_bin: &Path) -> Result<(), Str
 /// 备份或入位失败（入位失败臂已回滚复核）；自证失败且回滚成功；回滚自身
 /// 失败（错误带备份与新件路径及手动复原命令）。
 fn swap_and_proof(exe: &Path, new_bin: &Path, expect_version: &str) -> Result<(), String> {
-    let bak = bak_path(exe);
-    let _ = std::fs::remove_file(&bak); // 上轮残留（sweep 已清，双保险）
-    std::fs::rename(exe, &bak).map_err(|e| {
-        format!(
-            "备份旧件失败（{} -> {}）: {e}",
-            exe.display(),
-            bak.display()
-        )
-    })?;
+    // chmod 先于备份挪位：夹在两 rename 间失败会把安装位打空（评审 G1），
+    // 挪前只动暂存草稿，失败零影响
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
@@ -644,6 +663,15 @@ fn swap_and_proof(exe: &Path, new_bin: &Path, expect_version: &str) -> Result<()
         perm.set_mode(0o755);
         std::fs::set_permissions(new_bin, perm).map_err(|e| format!("chmod 755 失败: {e}"))?;
     }
+    let bak = bak_path(exe);
+    let _ = std::fs::remove_file(&bak); // 上轮残留（sweep 已清，双保险）
+    std::fs::rename(exe, &bak).map_err(|e| {
+        format!(
+            "备份旧件失败（{} -> {}）: {e}",
+            exe.display(),
+            bak.display()
+        )
+    })?;
     if let Err(e) = std::fs::rename(new_bin, exe) {
         rollback_and_verify(exe, &bak, new_bin)?;
         return Err(format!("新件入位失败（已回滚并复核在位）: {e}"));
@@ -707,6 +735,9 @@ fn replace_all(bins: &[PathBuf], exe: &Path, latest: &str) -> Result<Vec<PathBuf
                 Ok(()) => replaced.push(sibling_path),
                 Err(e) => eprintln!("reader: 兄弟二进制 {sibling} 替换失败（不影响自身升级）: {e}"),
             }
+        } else {
+            // 资产缺兄弟件（评审 G4）：明示跳过，不无声少报
+            eprintln!("reader: 资产中无兄弟二进制 {sibling}，跳过其替换");
         }
     }
     Ok(replaced)
@@ -840,8 +871,8 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
     }
 
-    /// 陈旧收割：只清本工具升级面残留（暂存目录与 .new/.old/.bak 散件），
-    /// 不动正经文件与别家前缀。
+    /// 陈旧收割：暂存目录与 new 草稿恒清；old/bak 只在对应二进制在位时清
+    /// （缺位即中断升级的唯一可恢复副本，保留）；不动正经文件与别家前缀。
     #[test]
     fn sweep_stale_harvests_only_upgrade_leftovers() {
         let dir = std::env::temp_dir().join(format!("reader-sweep-test-{}", std::process::id()));
@@ -863,14 +894,19 @@ mod tests {
         ] {
             std::fs::write(dir.join(&f), b"x").unwrap();
         }
-        // 保留件：正经二进制与无关隐藏件
+        // 保留件：正经二进制、无关隐藏件、rr 缺位下的 bak（中断升级救援副本，评审 F1）
         std::fs::write(dir.join(r), b"real").unwrap();
         std::fs::write(dir.join(".other.new-1"), b"x").unwrap();
+        std::fs::write(dir.join(format!(".{rr}.bak-777")), b"rescue").unwrap();
 
         let n = sweep_stale(&dir);
-        assert_eq!(n, 5, "暂存目录加四散件");
+        assert_eq!(n, 5, "暂存目录加在位 bin 的三散件加 rr 草稿");
         assert!(dir.join(r).is_file(), "正经二进制不动");
         assert!(dir.join(".other.new-1").is_file(), "别家前缀不动");
+        assert!(
+            dir.join(format!(".{rr}.bak-777")).is_file(),
+            "缺位 bin 的 bak 是唯一救援副本，不收割"
+        );
         assert!(!dir.join(".reader-selfupd-111").exists(), "暂存目录已清");
         let _ = std::fs::remove_dir_all(&dir);
     }
