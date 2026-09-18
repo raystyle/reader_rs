@@ -79,7 +79,7 @@ reader --help
 reader self update [--force]
 ```
 
-从镜像 `reader.ohmygh.com/reader/latest.json` 查新版并下载本平台资产（国内可达；`READER_MIRROR` 可覆盖基址），sha256 钉死校验后替换当前运行的二进制与同目录兄弟（`reader` / `rr` 双名一次替换）；已最新时明示。`--force` 同版本重装。镜像不可用时自动回退 GitHub API：默认匿名（有配额），撞限流 403 再回退 `gh api`（用本机 gh CLI 登录态），配 `GH_TOKEN` 可提高配额。只走 stable 通道，不做自动更新。
+从镜像 `reader.ohmygh.com/reader/latest.json` 查新版并下载本平台资产（国内可达；`READER_MIRROR` 可覆盖基址）。家族自更新统一标准件（REQ-059，对齐 build-release 公共契约第六节）：双通道整对回落（镜像通道查新或下载任一步失败，整对切 GitHub Releases，防判新与下载混源）；sha256 锚校验不符属安全问题硬拒不回落；semver 只升不降，本地领先报 `local_newer` 不动（如确要回退走 GitHub Releases 手动装）；`--force` 同版本重装。替换三步舞：旧件挪 pid 备份、新件入位（暂存落 exe 同目录防跨文件系统 rename）、`--version` 自证五次重试（防杀软瞬时锁），证败回滚并复核终态；全程持更新锁（create_new 加 pid 陈旧收割）防并行互踩；`reader` / `rr` 双名一次替换。ark 管理的安装（exe 同目录 `ark-managed` 落痕或用户面 bin 链接入口）会拦截自更新并指路 `ark update reader`。镜像回落 GitHub 后默认匿名（有配额），撞限流 403 再回退 `gh api`（用本机 gh CLI 登录态），配 `GH_TOKEN` 或 `GITHUB_TOKEN` 可提高配额。只走 stable 通道，不做自动更新。
 
 源码安装的升级：重跑安装命令加 `--force`：
 

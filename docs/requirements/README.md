@@ -1,6 +1,6 @@
 # Requirements 索引
 
-> 需求登记：新需求先立 REQ 再实现，实现后回填 trace（测试或验收命令）。新建拷 0000-template.md，编号接当前最大号。状态 draft 到 implemented 到 rejected。编号承接旧 PRD D 号口径（D 号即 REQ 号）：D01 至 D47 历史清单已随旧四原语清退（2026-09-17，ADR-0006，git 历史可查）；活跃队列 D23 至 D26 与 D36 至 D39 已按原 D 号转登记为 REQ-023 至 REQ-026 与 REQ-036 至 REQ-039；迁移本身立 REQ-048，aidoc 强制化落地立 REQ-049，分发接入立 REQ-050，封版 0.6.1 立 REQ-051，skill 退役立 REQ-052，封版 0.7.0 立 REQ-053，档案清退立 REQ-054，发布护栏批 1 立 REQ-055，issue 集成立 REQ-056，CLI 三面统一立 REQ-057，cli-docs 细标精对齐立 REQ-058，此后新需求自 REQ-059 接编，三位连续不复用。
+> 需求登记：新需求先立 REQ 再实现，实现后回填 trace（测试或验收命令）。新建拷 0000-template.md，编号接当前最大号。状态 draft 到 implemented 到 rejected。编号承接旧 PRD D 号口径（D 号即 REQ 号）：D01 至 D47 历史清单已随旧四原语清退（2026-09-17，ADR-0006，git 历史可查）；活跃队列 D23 至 D26 与 D36 至 D39 已按原 D 号转登记为 REQ-023 至 REQ-026 与 REQ-036 至 REQ-039；迁移本身立 REQ-048，aidoc 强制化落地立 REQ-049，分发接入立 REQ-050，封版 0.6.1 立 REQ-051，skill 退役立 REQ-052，封版 0.7.0 立 REQ-053，档案清退立 REQ-054，发布护栏批 1 立 REQ-055，issue 集成立 REQ-056，CLI 三面统一立 REQ-057，cli-docs 细标精对齐立 REQ-058，家族自更新统一标准对齐立 REQ-059，此后新需求自 REQ-060 接编，三位连续不复用。
 
 | id | 状态 | 优先级 | 标题 | trace |
 |---|---|---|---|---|
@@ -23,3 +23,4 @@
 | REQ-056 | implemented | must | issue命令集成统一入口 | 实弹 #9 加 #10（list/show/API 三方可见）；契约 = ohmycloud REQ-057 |
 | REQ-057 | implemented | must | CLI三面统一对齐 | --llms 活树渲染手册加 --json 机器形；README 四节重排；标准 = ohmycloud REQ-060 |
 | REQ-058 | implemented | must | cli-docs细标精对齐 | 帮助面头行名@版本全树注入；裸调用全貌形退出 0；对照表与裁剪理由在册 |
+| REQ-059 | implemented | must | 家族自更新统一标准对齐 | 双通道整对回落；digest 硬拒；local_newer；三步舞自证回滚；锁加收割；ark 让位；差异表在册 |
