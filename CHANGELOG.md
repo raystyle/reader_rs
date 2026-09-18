@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-09-18
+
+> 补封版（总台纠错单 2026-09-18 即办令）：release 锚重定至 main 头。#13 修复（fc2ffa5，tests/issue.rs 串行锁）经 `git merge-base --is-ancestor` 与 tag 树核验实在 v0.8.0 内（总台核验的 a103980 为发行后验收回填头，非修复头）；本版代码面与 0.8.0 零差，随版携带发行验收回填与 diary（8b02d64、a103980 两笔 docs），为舰队 catalog pin 与镜像 release 件提供无歧义锚点。
+
 ## [0.8.0] - 2026-09-18
 
 > cli-docs 采纳轮（REQ-058，dev/v0.8.0 承载）：裸调用退出码行为变化取 0.x.0；issue 集成与 `--llms` 三面统一（REQ-056/057）随版发布。
