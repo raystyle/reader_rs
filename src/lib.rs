@@ -210,7 +210,7 @@ enum Commands {
         #[arg(long)]
         filter: Option<String>,
     },
-    /// 自升级（镜像 latest.json 优先，回退 GitHub Releases；校验后替换自身与兄弟二进制）
+    /// 自升级（镜像通道优先整对回落 GitHub；digest 硬校验；本地领先不动；替换后 --version 自证，证败回滚）
     #[command(name = "self")]
     SelfCmd {
         #[command(subcommand)]
@@ -375,6 +375,10 @@ pub fn run() -> i32 {
                 match outcome.action {
                     "current" => println!(
                         "self_update: current {}（latest {}，已是最新）",
+                        outcome.current, outcome.latest
+                    ),
+                    "local_newer" => println!(
+                        "self_update: local_newer 本地 {} 领先 latest {}，不动（semver 只升不降；如确要回退走 GitHub Releases 手动装）",
                         outcome.current, outcome.latest
                     ),
                     _ => {
