@@ -2,7 +2,7 @@
 
 > Reader：Agent 原生文档阅读、搜索和提取工具。为 Agent 管线设计的 Rust 单二进制 CLI
 
-## reader_rs 0.9.0
+## reader_rs 0.9.1
 
 - [reader_rs overview](reader_rs/index.md): Reader：Agent 原生文档阅读、搜索和提取工具。为 Agent 管线设计的 Rust 单二进制 CLI
 - [reader_rs::anydoc](reader_rs/anydoc.md): anydoc 统一引擎提取（P0009）：Word / EPUB / ODT / RTF / Office / CSV 家族出 GFM markdown，
