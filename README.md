@@ -324,7 +324,7 @@ reader issue list --tool reader --status open
 reader issue show 12
 ```
 
-回执行 `issue: filed #12 https://issues.ohmygh.com/i/12`；list 行式 `#<id> <status> <tool> <version> <created> <标题>`；list 空退出 1、show 不存在退出 1、出错 2。标题 1 至 200 字、正文至多 20000 字（客户端先校验）；基址可由 `READER_ISSUES_API` 覆盖。
+回执行 `issue: filed #12 https://issues.ohmygh.com/i/12`；list 行式 `#<id> <status> <tool> <version> <created> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），返回条数打满上限时 stderr 提示可能截断（`--status` / `--tool` 收窄或网页面看全量），json 形态的 `count` 是本次返回条数非在册总数；list 空退出 1、show 不存在退出 1、出错 2。标题 1 至 200 字、正文至多 20000 字（客户端先校验）；基址可由 `READER_ISSUES_API` 覆盖。
 
 ### JSON 输出
 

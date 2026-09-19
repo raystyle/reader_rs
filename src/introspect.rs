@@ -171,7 +171,7 @@ pub fn llms_text() -> String {
     s.push_str("- json 包膜：{\"ok\":bool,\"data\":...,\"meta\":{command,duration_ms[,next_offset,cta]}}\n");
     s.push_str("- text 行式：命中行 单元:行号:文本；extract 节头 == page N == / == section N == / == part N ==（超 200 行单元按行分片）；目录批量命中行前缀 路径:\n");
     s.push_str("- figures 行式：figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B；export 摘要行：export: text/pages/figures/manifest <路径>\n");
-    s.push_str("- issue 行式：new 回执行 issue: filed #<id> <url>；list 行 #<id> <status> <tool> <version> <created> <标题>；show 头行 issue: #<id> [<status>] <tool> <version> 加字段行与 body\n");
+    s.push_str("- issue 行式：new 回执行 issue: filed #<id> <url>；list 行 #<id> <status> <tool> <version> <created> <标题>（--limit 缺省与上限 100，打满即 stderr 截断提示；json count 是本次返回条数非在册总数）；show 头行 issue: #<id> [<status>] <tool> <version> 加字段行与 body\n");
     s.push_str("- ocr 子命令行式：ocr_init: / ocr_doctor: / ocr_switch: 前缀、ASCII token 前置（ok / missing / corrupt / download mirror|huggingface|github / verdict）；doctor 退出码 0 双包完整 / 1 有缺损\n");
     s.push_str("- env：READER_MIRROR（镜像基址）、READER_OCR_CACHE_DIR、READER_OCR_MODEL_SIZE、READER_ISSUES_API（issue 基址）、GH_TOKEN（self update 配额）\n");
     s.push_str("- 不可靠页：扫描件、编码问题页与图片以 needs_ocr 提示；--ocr 对 PDF 与图片兜底识别（首用下载约 6.2MB 模型，多核约 1-5 秒/页）；--offline 禁下载\n");

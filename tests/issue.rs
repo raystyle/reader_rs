@@ -196,3 +196,45 @@ fn show_found_and_missing() {
     );
     assert!(out.expect("404 应成功归 None").is_none());
 }
+
+/// 饱和截断提示（上游缺陷档案 #52 同型修复，CLI 面）：返回条数打满夹取后
+/// 上限时 stderr 出提示行（stdout 行式照常）；`--limit 1` 配恰好 1 条在册
+/// 同提示属语义正确（无法区分还有没有更多）。不满上限不出提示。
+#[test]
+fn list_saturation_hint_cli_face() {
+    use predicates::prelude::*; // .not() 布尔扩展
+    let _serial = env_serial_lock();
+    let one_row = r#"{"ok":true,"count":1,"issues":[{"id":12,"tool":"reader","title":"误报","version":"0.9.0","platform":"x86_64-linux","host":"h","status":"open","ip":"1.2.3.4","created_at":"2026-09-19T00:00:00Z"}]}"#;
+    // 打满：limit 1 对 1 条
+    let listener = TcpListener::bind("127.0.0.1:0").expect("绑定");
+    let port = listener.local_addr().expect("端口").port();
+    std::env::set_var("READER_ISSUES_API", format!("http://127.0.0.1:{port}"));
+    let owned = one_row.to_string();
+    let handle =
+        std::thread::spawn(move || serve_once(listener, 200, "OK", owned).expect("服务线程应过"));
+    assert_cmd::Command::cargo_bin("reader")
+        .expect("bin 在位")
+        .args(["issue", "list", "--limit", "1"])
+        .assert()
+        .success()
+        .stdout(predicates::str::contains("#12"))
+        .stderr(predicates::str::contains("返回条数已达上限 1（可能截断）"));
+    let _ = handle.join();
+    std::env::remove_var("READER_ISSUES_API");
+
+    // 不满：limit 5 对 1 条，无提示
+    let listener = TcpListener::bind("127.0.0.1:0").expect("绑定");
+    let port = listener.local_addr().expect("端口").port();
+    std::env::set_var("READER_ISSUES_API", format!("http://127.0.0.1:{port}"));
+    let owned = one_row.to_string();
+    let handle =
+        std::thread::spawn(move || serve_once(listener, 200, "OK", owned).expect("服务线程应过"));
+    assert_cmd::Command::cargo_bin("reader")
+        .expect("bin 在位")
+        .args(["issue", "list", "--limit", "5"])
+        .assert()
+        .success()
+        .stderr(predicates::str::contains("可能截断").not());
+    let _ = handle.join();
+    std::env::remove_var("READER_ISSUES_API");
+}

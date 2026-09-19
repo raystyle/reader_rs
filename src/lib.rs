@@ -278,7 +278,7 @@ enum IssueCommands {
         #[arg(long, value_enum, default_value_t = Format::Text)]
         format: Format,
     },
-    /// 集中列表（新到旧；有行 0 / 空 1 / 出错 2）
+    /// 集中列表（新到旧；json 的 count 与返回条数是本次返回面非在册总数；有行 0 / 空 1 / 出错 2）
     List {
         /// 按工具名过滤（缺省不过滤；如 reader）
         #[arg(long, value_name = "名")]
@@ -286,8 +286,8 @@ enum IssueCommands {
         /// 按状态过滤（open / closed）
         #[arg(long, value_name = "open或closed")]
         status: Option<String>,
-        /// 最多 N 条（1 至 100）
-        #[arg(long, default_value_t = 50, value_name = "N")]
+        /// 最多 N 条（1 至 100，缺省 100 即服务端上限；返回条数打满上限时 stderr 提示可能截断）
+        #[arg(long, default_value_t = 100, value_name = "N")]
         limit: u32,
         /// 输出形态：text（行式，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
@@ -890,6 +890,15 @@ fn run_issue_list(
     let started = Instant::now();
     check_filter(opts)?;
     let rows = issue::list(tool, status, limit)?;
+    // 饱和截断提示（上游缺陷档案 #52 同型修复）：返回条数打满夹取后上限即可能
+    // 截断（新到旧，更旧条目隐形），stderr 一行指路；恰好等量在册也提示，语义
+    // 正确（无法区分还有没有更多）。stdout 保纯数据，两形态同示。
+    if rows.len() as u32 == limit.clamp(1, 100) {
+        eprintln!(
+            "reader: 返回条数已达上限 {}（可能截断）；--status 或 --tool 过滤收窄，或网页面 issues.ohmygh.com 看全量",
+            limit.clamp(1, 100)
+        );
+    }
     match opts.format {
         Format::Text => {
             for r in &rows {
