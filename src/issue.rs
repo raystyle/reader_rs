@@ -207,13 +207,30 @@ pub fn file_new(title: &str, body: &str) -> Result<FiledReceipt, String> {
     serde_json::from_value::<FiledReceipt>(v).map_err(|e| format!("回执形状不对: {e}"))
 }
 
-/// 列表（新到旧）：GET /api/issues?tool=&status=&limit=（limit 夹取 1 至 100）。
-/// 空列表是合法结果（调用方退出 1）。
+/// 列表页（新到旧）：返回行与服务端 `has_more`（仅带 `before` 的请求回执携带，
+/// 指示更早是否仍有条目；不带 `before` 的旧形回执无此字段，归 `None`）。
+#[derive(Debug)]
+pub struct ListPage {
+    /// 本次返回的 issue 行（新到旧）。
+    pub rows: Vec<IssueRow>,
+    /// 更早是否仍有条目；旧形回执无此字段。
+    pub has_more: Option<bool>,
+}
+
+/// 列表（新到旧）：GET /api/issues?tool=&status=&limit=&before=（limit 夹取
+/// 1 至 100；`before` 是 keyset 游标，取该 id 之前更早的一页，非法值服务端
+/// 回 400 透传归因，#53 家族统一件）。空列表是合法结果（调用方退出 1）。
 ///
 /// # Errors
 ///
-/// 网络不可达、HTTP 错误或回执形状不对时返回人读错误（退出 2）。
-pub fn list(tool: Option<&str>, status: Option<&str>, limit: u32) -> Result<Vec<IssueRow>, String> {
+/// 网络不可达、HTTP 错误（含 before 非法 400）或回执形状不对时返回人读错误
+/// （退出 2）。
+pub fn list(
+    tool: Option<&str>,
+    status: Option<&str>,
+    limit: u32,
+    before: Option<u64>,
+) -> Result<ListPage, String> {
     let mut req = agent()
         .get(format!("{}/api/issues", api_base()))
         .query("limit", limit.clamp(1, 100).to_string());
@@ -222,6 +239,9 @@ pub fn list(tool: Option<&str>, status: Option<&str>, limit: u32) -> Result<Vec<
     }
     if let Some(s) = status {
         req = req.query("status", s);
+    }
+    if let Some(b) = before {
+        req = req.query("before", b.to_string());
     }
     let mut resp = req
         .call()
@@ -235,7 +255,12 @@ pub fn list(tool: Option<&str>, status: Option<&str>, limit: u32) -> Result<Vec<
         .get("issues")
         .cloned()
         .ok_or_else(|| "回执缺 issues 数组".to_string())?;
-    serde_json::from_value::<Vec<IssueRow>>(issues).map_err(|e| format!("回执形状不对: {e}"))
+    let rows = serde_json::from_value::<Vec<IssueRow>>(issues)
+        .map_err(|e| format!("回执形状不对: {e}"))?;
+    Ok(ListPage {
+        rows,
+        has_more: v.get("has_more").and_then(|b| b.as_bool()),
+    })
 }
 
 /// 单条详情：GET /api/issues/<id>；404 归 `Ok(None)`（调用方退出 1）。

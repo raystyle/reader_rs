@@ -152,28 +152,50 @@ fn list_passes_filters_and_parses_rows() -> TestResult {
         200,
         "OK",
         r#"{"ok":true,"count":1,"issues":[{"id":12,"tool":"reader","title":"误报","version":"0.7.0","platform":"x86_64-linux","host":"h","status":"open","ip":"1.2.3.4","created_at":"2026-09-17T00:00:00Z"}]}"#,
-        || list(Some("reader"), Some("open"), 5),
+        || list(Some("reader"), Some("open"), 5, None),
     );
     assert!(captured.starts_with("GET /api/issues"), "路径: {captured}");
     assert!(captured.contains("tool=reader"), "tool 过滤: {captured}");
     assert!(captured.contains("status=open"), "status 过滤: {captured}");
     assert!(captured.contains("limit=5"), "limit 透传: {captured}");
-    let rows = out.expect("应成功");
-    assert_eq!(rows.len(), 1);
-    assert_eq!(rows[0].title, "误报");
+    assert!(
+        !captured.contains("before="),
+        "无游标不带 before: {captured}"
+    );
+    let page = out.expect("应成功");
+    assert_eq!(page.rows.len(), 1);
+    assert_eq!(page.rows[0].title, "误报");
     assert_eq!(
-        rows[0].ip, "1.2.3.4",
+        page.rows[0].ip, "1.2.3.4",
         "ip 可读（仅服务端审计，不透出序列化）"
     );
+    assert_eq!(page.has_more, None, "旧形回执无 has_more 归 None");
+    Ok(())
+}
+
+/// #53 keyset 游标：before 透传进查询串；带 before 的回执 has_more 被解析。
+#[test]
+fn list_before_cursor_passthrough_and_has_more() -> TestResult {
+    let (captured, out) = with_api(
+        200,
+        "OK",
+        r#"{"ok":true,"count":1,"has_more":true,"issues":[{"id":50,"tool":"reader","title":"翻页","version":"0.9.0","platform":"x86_64-linux","host":"h","status":"open","ip":"1.2.3.4","created_at":"2026-09-19T00:00:00Z"}]}"#,
+        || list(None, None, 3, Some(51)),
+    );
+    assert!(captured.contains("before=51"), "游标透传: {captured}");
+    assert!(captured.contains("limit=3"), "limit 透传: {captured}");
+    let page = out.expect("应成功");
+    assert_eq!(page.rows[0].id, 50);
+    assert_eq!(page.has_more, Some(true), "has_more 解析");
     Ok(())
 }
 
 #[test]
 fn list_empty_is_ok_not_error() {
     let (_, out) = with_api(200, "OK", r#"{"ok":true,"count":0,"issues":[]}"#, || {
-        list(None, None, 50)
+        list(None, None, 50, None)
     });
-    assert!(out.expect("空列表应成功").is_empty());
+    assert!(out.expect("空列表应成功").rows.is_empty());
 }
 
 #[test]
@@ -197,15 +219,16 @@ fn show_found_and_missing() {
     assert!(out.expect("404 应成功归 None").is_none());
 }
 
-/// 饱和截断提示（上游缺陷档案 #52 同型修复，CLI 面）：返回条数打满夹取后
-/// 上限时 stderr 出提示行（stdout 行式照常）；`--limit 1` 配恰好 1 条在册
-/// 同提示属语义正确（无法区分还有没有更多）。不满上限不出提示。
+/// 饱和截断提示（#52 修复随 #53 家族统一，CLI 面）：旧形回执（无 before）打满
+/// 上限出双出口提示行（过滤收窄加 --before 翻页）；带 before 的回执走 has_more
+/// 精确判定（true 出「更早仍有条目」行且 json 面透出，false 无提示）；旧形不满
+/// 上限不出提示。
 #[test]
 fn list_saturation_hint_cli_face() {
     use predicates::prelude::*; // .not() 布尔扩展
     let _serial = env_serial_lock();
     let one_row = r#"{"ok":true,"count":1,"issues":[{"id":12,"tool":"reader","title":"误报","version":"0.9.0","platform":"x86_64-linux","host":"h","status":"open","ip":"1.2.3.4","created_at":"2026-09-19T00:00:00Z"}]}"#;
-    // 打满：limit 1 对 1 条
+    // 旧形打满：limit 1 对 1 条，双出口提示（含 --before 出口）
     let listener = TcpListener::bind("127.0.0.1:0").expect("绑定");
     let port = listener.local_addr().expect("端口").port();
     std::env::set_var("READER_ISSUES_API", format!("http://127.0.0.1:{port}"));
@@ -218,11 +241,12 @@ fn list_saturation_hint_cli_face() {
         .assert()
         .success()
         .stdout(predicates::str::contains("#12"))
-        .stderr(predicates::str::contains("返回条数已达上限 1（可能截断）"));
+        .stderr(predicates::str::contains("返回条数已达上限 1（可能截断）"))
+        .stderr(predicates::str::contains("--before <id> 翻更早一页"));
     let _ = handle.join();
     std::env::remove_var("READER_ISSUES_API");
 
-    // 不满：limit 5 对 1 条，无提示
+    // 旧形不满：limit 5 对 1 条，无提示
     let listener = TcpListener::bind("127.0.0.1:0").expect("绑定");
     let port = listener.local_addr().expect("端口").port();
     std::env::set_var("READER_ISSUES_API", format!("http://127.0.0.1:{port}"));
@@ -235,6 +259,26 @@ fn list_saturation_hint_cli_face() {
         .assert()
         .success()
         .stderr(predicates::str::contains("可能截断").not());
+    let _ = handle.join();
+    std::env::remove_var("READER_ISSUES_API");
+
+    // 带 before：has_more 精确判定（true 出翻页行；json 面透出 has_more）
+    let more_row = r#"{"ok":true,"count":1,"has_more":true,"issues":[{"id":50,"tool":"reader","title":"翻页","version":"0.9.0","platform":"x86_64-linux","host":"h","status":"open","ip":"1.2.3.4","created_at":"2026-09-19T00:00:00Z"}]}"#;
+    let listener = TcpListener::bind("127.0.0.1:0").expect("绑定");
+    let port = listener.local_addr().expect("端口").port();
+    std::env::set_var("READER_ISSUES_API", format!("http://127.0.0.1:{port}"));
+    let owned = more_row.to_string();
+    let handle =
+        std::thread::spawn(move || serve_once(listener, 200, "OK", owned).expect("服务线程应过"));
+    assert_cmd::Command::cargo_bin("reader")
+        .expect("bin 在位")
+        .args([
+            "issue", "list", "--limit", "3", "--before", "51", "--format", "json",
+        ])
+        .assert()
+        .success()
+        .stdout(predicates::str::contains("\"has_more\":true"))
+        .stderr(predicates::str::contains("更早仍有条目（has_more）"));
     let _ = handle.join();
     std::env::remove_var("READER_ISSUES_API");
 }

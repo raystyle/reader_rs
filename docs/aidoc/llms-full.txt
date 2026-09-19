@@ -110,7 +110,7 @@ issue 域（总台统一入口 issues.ohmygh.com，ohmycloud REQ-057 契约对�
 
 - `build_report` — 构建提交体并做客户端先校验：tool 形 `^[a-z][a-z0-9_-]{0,31}$`、title trim 后
 - `file_new` — 提交一条 issue（tool=reader、上下文自动）：POST /api/issues，期望 201 {ok,id,url}。
-- `list` — 列表（新到旧）：GET /api/issues?tool=&status=&limit=（limit 夹取 1 至 100）。
+- `list` — 列表（新到旧）：GET /api/issues?tool=&status=&limit=&before=（limit 夹取
 - `show` — 单条详情：GET /api/issues/<id>；404 归 `Ok(None)`（调用方退出 1）。
 
 ## Types
@@ -118,6 +118,7 @@ issue 域（总台统一入口 issues.ohmygh.com，ohmycloud REQ-057 契约对�
 - `FiledReceipt` — 提交回执（201 {ok,id,url} 的有效载荷）。
 - `IssueReport` — 提交体（字段序即 POST JSON 序，契约 {tool,title,body,version,platform,host}）。
 - `IssueRow` — 一条 issue（list 无 body、show 有；ip 属服务端审计面，不透出到输出）。
+- `ListPage` — 列表页（新到旧）：返回行与服务端 `has_more`（仅带 `before` 的请求回执携带，
 
 
 <!-- reader_rs/mirror.md -->

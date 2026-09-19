@@ -20,7 +20,7 @@ PDF 按页；markdown 与 anydoc 家族（Word/EPUB/ODT/RTF/Office/CSV）按标�
 | ocr doctor | 诊断本地 OCR 模型就位情况（只读；退出码 0 为当前档双包完整，1 为有缺损） |  |
 | ocr switch <tiny或small> | 切换模型档位并持久化（env READER_OCR_MODEL_SIZE 优先于本设置） |  |
 | issue new <标题> | 一键提交缺陷反馈（自动带 tool=reader、版本、平台、主机名；每 IP 10 条/时；成功 0 / 出错 2） | --body <正文> |
-| issue list | 集中列表（新到旧；json 的 count 与返回条数是本次返回面非在册总数；有行 0 / 空 1 / 出错 2） | --tool <名> --status <open或closed> --limit <N> |
+| issue list | 集中列表（新到旧；json 的 count 与返回条数是本次返回面非在册总数；有行 0 / 空 1 / 出错 2） | --tool <名> --status <open或closed> --limit <N> --before <id> |
 | issue show <编号> | 单条详情（存在 0 / 不存在 1 / 出错 2） |  |
 
 ## 通用旗标
@@ -47,7 +47,7 @@ reader issue new "缺陷标题" --body "现象与复现"
 - json 包膜：{"ok":bool,"data":...,"meta":{command,duration_ms[,next_offset,cta]}}
 - text 行式：命中行 单元:行号:文本；extract 节头 == page N == / == section N == / == part N ==（超 200 行单元按行分片）；目录批量命中行前缀 路径:
 - figures 行式：figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B；export 摘要行：export: text/pages/figures/manifest <路径>
-- issue 行式：new 回执行 issue: filed #<id> <url>；list 行 #<id> <status> <tool> <version> <created> <标题>（--limit 缺省与上限 100，打满即 stderr 截断提示；json count 是本次返回条数非在册总数）；show 头行 issue: #<id> [<status>] <tool> <version> 加字段行与 body
+- issue 行式：new 回执行 issue: filed #<id> <url>；list 行 #<id> <status> <tool> <version> <created> <标题>（--limit 缺省与上限 100，打满即 stderr 截断提示双出口；--before <id> keyset 游标翻更早一页，json 面透出 has_more；count 是本次返回条数非在册总数）；show 头行 issue: #<id> [<status>] <tool> <version> 加字段行与 body
 - ocr 子命令行式：ocr_init: / ocr_doctor: / ocr_switch: 前缀、ASCII token 前置（ok / missing / corrupt / download mirror|huggingface|github / verdict）；doctor 退出码 0 双包完整 / 1 有缺损
 - env：READER_MIRROR（镜像基址）、READER_OCR_CACHE_DIR、READER_OCR_MODEL_SIZE、READER_ISSUES_API（issue 基址）、GH_TOKEN（self update 配额）
 - 不可靠页：扫描件、编码问题页与图片以 needs_ocr 提示；--ocr 对 PDF 与图片兜底识别（首用下载约 6.2MB 模型，多核约 1-5 秒/页）；--offline 禁下载

@@ -113,6 +113,11 @@
       "docs": "一条 issue（list 无 body、show 有；ip 属服务端审计面，不透出到输出）。"
     },
     {
+      "path": "reader_rs::issue::ListPage",
+      "kind": "struct",
+      "docs": "列表页（新到旧）：返回行与服务端 `has_more`（仅带 `before` 的请求回执携带，\n指示更早是否仍有条目；不带 `before` 的旧形回执无此字段，归 `None`）。"
+    },
+    {
       "path": "reader_rs::issue::build_report",
       "kind": "function",
       "docs": "构建提交体并做客户端先校验：tool 形 `^[a-z][a-z0-9_-]{0,31}$`、title trim 后\n1 至 200 字、body 至多 20000 字；version 截断 40、platform 与 host 截断 64。\n版本、平台、主机名自动取自报值（tool 保留入参以便他仓复用）。\n\n# Errors\n\ntool 不合形、标题 trim 后为空或超 200 字、正文超 20000 字时返回人读错误（调用方退出 2）。"
@@ -125,7 +130,7 @@
     {
       "path": "reader_rs::issue::list",
       "kind": "function",
-      "docs": "列表（新到旧）：GET /api/issues?tool=&status=&limit=（limit 夹取 1 至 100）。\n空列表是合法结果（调用方退出 1）。\n\n# Errors\n\n网络不可达、HTTP 错误或回执形状不对时返回人读错误（退出 2）。"
+      "docs": "列表（新到旧）：GET /api/issues?tool=&status=&limit=&before=（limit 夹取\n1 至 100；`before` 是 keyset 游标，取该 id 之前更早的一页，非法值服务端\n回 400 透传归因，#53 家族统一件）。空列表是合法结果（调用方退出 1）。\n\n# Errors\n\n网络不可达、HTTP 错误（含 before 非法 400）或回执形状不对时返回人读错误\n（退出 2）。"
     },
     {
       "path": "reader_rs::issue::show",

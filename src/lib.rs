@@ -289,6 +289,9 @@ enum IssueCommands {
         /// 最多 N 条（1 至 100，缺省 100 即服务端上限；返回条数打满上限时 stderr 提示可能截断）
         #[arg(long, default_value_t = 100, value_name = "N")]
         limit: u32,
+        /// keyset 游标：取该 id 之前更早的一页（响应带 has_more；json 面随 data 透出）
+        #[arg(long, value_name = "id")]
+        before: Option<u64>,
         /// 输出形态：text（行式，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
         format: Format,
@@ -432,11 +435,12 @@ pub fn run() -> i32 {
                 tool,
                 status,
                 limit,
+                before,
                 format,
                 filter,
             } => {
                 let opts = OutputOpts { format, filter };
-                match run_issue_list(tool.as_deref(), status.as_deref(), limit, &opts) {
+                match run_issue_list(tool.as_deref(), status.as_deref(), limit, before, &opts) {
                     Ok(hit) if hit => 0,
                     Ok(_) => 1,
                     Err(err) => fail("issue list", opts.format, err),
@@ -885,23 +889,32 @@ fn run_issue_list(
     tool: Option<&str>,
     status: Option<&str>,
     limit: u32,
+    before: Option<u64>,
     opts: &OutputOpts,
 ) -> Result<bool, String> {
     let started = Instant::now();
     check_filter(opts)?;
-    let rows = issue::list(tool, status, limit)?;
-    // 饱和截断提示（上游缺陷档案 #52 同型修复）：返回条数打满夹取后上限即可能
-    // 截断（新到旧，更旧条目隐形），stderr 一行指路；恰好等量在册也提示，语义
-    // 正确（无法区分还有没有更多）。stdout 保纯数据，两形态同示。
-    if rows.len() as u32 == limit.clamp(1, 100) {
-        eprintln!(
-            "reader: 返回条数已达上限 {}（可能截断）；--status 或 --tool 过滤收窄，或网页面 issues.ohmygh.com 看全量",
-            limit.clamp(1, 100)
-        );
+    let page = issue::list(tool, status, limit, before)?;
+    // 截断提示双出口（#52 修复随 #53 家族统一）：带 before 时服务端回 has_more
+    // 精确判定；不带 before 的旧形回执无此字段，退回「打满夹取后上限」启发式
+    // （恰好等量在册也提示，语义正确）。stdout 保纯数据，两形态同示。
+    match page.has_more {
+        Some(true) => eprintln!(
+            "reader: 更早仍有条目（has_more）；--before <id> 翻更早一页，或 --status / --tool 过滤收窄"
+        ),
+        Some(false) => {}
+        None => {
+            if page.rows.len() as u32 == limit.clamp(1, 100) {
+                eprintln!(
+                    "reader: 返回条数已达上限 {}（可能截断）；--status 或 --tool 过滤收窄，或 --before <id> 翻更早一页（网页面 issues.ohmygh.com 可看全量）",
+                    limit.clamp(1, 100)
+                );
+            }
+        }
     }
     match opts.format {
         Format::Text => {
-            for r in &rows {
+            for r in &page.rows {
                 println!(
                     "#{} {} {} {} {} {}",
                     r.id, r.status, r.tool, r.version, r.created_at, r.title
@@ -909,14 +922,18 @@ fn run_issue_list(
             }
         }
         Format::Json => {
-            let mut data = json!({ "issues": rows, "count": rows.len() });
+            // has_more 仅带 before 的回执携带（#53）；透出供 agent 精确判翻页
+            let mut data = json!({ "issues": page.rows, "count": page.rows.len() });
+            if let Some(more) = page.has_more {
+                data["has_more"] = json!(more);
+            }
             if let Some(path) = opts.filter.as_deref() {
                 data = output::filter_value(&data, path)?;
             }
             println!("{}", output::ok_json("issue list", started, data)?);
         }
     }
-    Ok(!rows.is_empty())
+    Ok(!page.rows.is_empty())
 }
 
 fn run_issue_show(id: u64, opts: &OutputOpts) -> Result<bool, String> {
