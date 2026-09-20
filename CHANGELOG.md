@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-09-20
+
+> ledger 账本集成版（REQ-060，总台令）：issue 面切 ledger.ohmygh.com（命令族契约变化与能力新增取 minor）。
+
+- **ledger 账本集成：issue 与 artifact 命令族（REQ-060，承接 ohmycloud REQ-063；issue 面切 ledger.ohmygh.com，替代旧 issues.ohmygh.com 面）**：写入走 Ed25519 五头签名（签名基七行逐字同构服务端验签，公钥 JWK 与 kid 内置 CLI，私钥环境或本地密档不进仓不进 argv）；`issue new`（kind=bug|improvement 加验收判据）、`issue list`（家族翻页：limit 100 加 before 游标加 has_more 加 count 语义）、`issue show`（投影加时间线）、`issue close`（result 引 digest 加 status done 两连发）；`artifact publish`（15 kind 面，digest 恒为正文或记录哈希）、`artifact attest` / `artifact promote` / `artifact list`（current 投影）；发送体即签名体（ureq send_json pretty 形坑以回归测试钉死）；`READER_ISSUES_API` 面随旧服务退役，新 env 面 `READER_LEDGER` 加 `READER_LEDGER_KEY`(_FILE)。
+
 ## [0.9.1] - 2026-09-19
 
 > issue 客户端家族标准批（总台令收口，上游档案 #52 与 #53；代码面 f7f3569 加 de2aff9 随版）：小版本判据。

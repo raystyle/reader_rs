@@ -1,5 +1,5 @@
 <!-- reader_rs/index.md -->
-# reader_rs 0.9.1
+# reader_rs 0.10.0
 
 Reader：Agent 原生文档阅读、搜索和提取工具。为 Agent 管线设计的 Rust 单二进制 CLI
 （`reader` 与 `rr` 双名，同一 `main` 薄壳）：从本地 PDF、markdown、图片与 anydoc 家族
