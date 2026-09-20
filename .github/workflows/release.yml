@@ -44,6 +44,16 @@ jobs:
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: sudo apt-get update && sudo apt-get install -y musl-tools
       - uses: Swatinem/rust-cache@v2
+      # 私有 git 依赖（ledger-rs 等）拉取凭据：token 走仓库 secret（站侧自灌，
+      # 值不经对话）；空则跳过（无私有 git 依赖时无需此步）
+      - name: 私有 git 依赖凭据
+        shell: bash
+        env:
+          PRIVATE_GIT_TOKEN: ${{ secrets.PRIVATE_GIT_TOKEN }}
+        run: |
+          if [ -n "$PRIVATE_GIT_TOKEN" ]; then
+            git config --global url."https://x-access-token:${PRIVATE_GIT_TOKEN}@github.com/".insteadOf "https://github.com/"
+          fi
       - name: 校验 tag 与 Cargo.toml 版本一致
         shell: bash
         run: grep -q "^version = \"${GITHUB_REF_NAME#v}\"$" Cargo.toml
