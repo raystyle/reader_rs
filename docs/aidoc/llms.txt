@@ -10,7 +10,7 @@
 - [reader_rs::document](reader_rs/document.md): 格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。
 - [reader_rs::figures](reader_rs/figures.md): 图片本体导出与文本元数据对齐（D47；S010 定界：只负责提取存储，理解归调用方 Agent）。
 - [reader_rs::introspect](reader_rs/introspect.md): Agent 自省与发现（P0007；三面统一批 REQ-057 对齐总台 REQ-060）：`--llms` 旗标
-- [reader_rs::issue](reader_rs/issue.md): issue 域（总台统一入口 issues.ohmygh.com，ohmycloud REQ-057 契约对齐）：
+- [reader_rs::ledger](reader_rs/ledger.md): ledger.ohmygh.com 客户端（REQ-063 Phase 3 仓内集成，替代 issues.ohmygh.com
 - [reader_rs::mirror](reader_rs/mirror.md): 镜像源链与镜像清单(D42):OCR 模型三级回退下载(镜像 到 HF 直连 到 GitHub
 - [reader_rs::ocr](reader_rs/ocr.md): OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链、D43 图片文件）：needs_ocr 页经
 - [reader_rs::output](reader_rs/output.md): 输出层：JSON 包膜（ok/data/error 加 meta）与 filter 点路径裁剪。设计依据 S002（P0006）。

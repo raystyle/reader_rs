@@ -93,49 +93,134 @@
       "docs": "`reader --llms`：markdown 紧凑手册（命令表自活命令树渲染；总长目标至多 120 行）。"
     },
     {
-      "path": "reader_rs::issue",
+      "path": "reader_rs::ledger",
       "kind": "module",
-      "docs": "issue 域（总台统一入口 issues.ohmygh.com，ohmycloud REQ-057 契约对齐）：\n`new` 一键提交（自动带 tool=reader 与版本、平台、主机名）、`list` 集中列表（新到旧）、\n`show` 单条详情。提交面每 IP 10 条/时（HTTP 429），读面匿名 GET；基址可由\n`READER_ISSUES_API` 覆盖（测试与灰度）。HTTP 走 ureq（全局超时 20 秒，4xx/5xx\n不转传输错误、按状态码分流），JSON 走 serde_json；不新增依赖。"
+      "docs": "ledger.ohmygh.com 客户端（REQ-063 Phase 3 仓内集成，替代 issues.ohmygh.com\n旧面，REQ-056 的 issue 功能迁入本账本）：仓级公共账本双层 append-only，\nissue 流管义务（开单加事件加投影）、artifact 流即共享库本体（publish 加\nattest 加 promote）。写入五头必签：Idempotency-Key 加 X-Key-Id 加\nX-Timestamp（正负 60 秒窗）加 X-Nonce（10 分钟不重）加 X-Signature；签名基\n= v1/POST/路径/时间戳/nonce/幂等键/body sha256 各行换行连，Ed25519 私钥签，\n签名 base64url。读面沿 REQ-057 家族形：limit 缺省 100 加 before 游标加\nhas_more 加 count 语义（本次返回条数）。私钥运行时从环境\n`READER_LEDGER_KEY`（base64url seed）或本地密档读（`READER_LEDGER_KEY_FILE`\n覆写路径，缺省 `~/.config/reader/ledger-key`），不进仓不进 argv。"
     },
     {
-      "path": "reader_rs::issue::FiledReceipt",
+      "path": "reader_rs::ledger::ARTIFACT_KINDS",
+      "kind": "constant",
+      "docs": "artifact kind 面（服务端契约 15 值同集）。"
+    },
+    {
+      "path": "reader_rs::ledger::ATTEST_TYPES",
+      "kind": "constant",
+      "docs": "artifact 事件面（promote 单列命令，其余走 attest --type）。"
+    },
+    {
+      "path": "reader_rs::ledger::ArtifactPublished",
       "kind": "struct",
-      "docs": "提交回执（201 {ok,id,url} 的有效载荷）。"
+      "docs": "publish 回执。"
     },
     {
-      "path": "reader_rs::issue::IssueReport",
+      "path": "reader_rs::ledger::ArtifactRow",
       "kind": "struct",
-      "docs": "提交体（字段序即 POST JSON 序，契约 {tool,title,body,version,platform,host}）。"
+      "docs": "产物列表行。"
     },
     {
-      "path": "reader_rs::issue::IssueRow",
+      "path": "reader_rs::ledger::DEFAULT_BASE",
+      "kind": "constant",
+      "docs": "账本缺省基址（`READER_LEDGER` 覆盖，测试与灰度用）。"
+    },
+    {
+      "path": "reader_rs::ledger::ISSUE_KINDS",
+      "kind": "constant",
+      "docs": "issue kind 面（服务端契约同值）。"
+    },
+    {
+      "path": "reader_rs::ledger::IssueDetail",
       "kind": "struct",
-      "docs": "一条 issue（list 无 body、show 有；ip 属服务端审计面，不透出到输出）。"
+      "docs": "issue 详情（投影加开单验收面加原始时间线）。"
     },
     {
-      "path": "reader_rs::issue::ListPage",
+      "path": "reader_rs::ledger::IssueOpened",
       "kind": "struct",
-      "docs": "列表页（新到旧）：返回行与服务端 `has_more`（仅带 `before` 的请求回执携带，\n指示更早是否仍有条目；不带 `before` 的旧形回执无此字段，归 `None`）。"
+      "docs": "开单回执（issue 号与首事件 seq）。"
     },
     {
-      "path": "reader_rs::issue::build_report",
-      "kind": "function",
-      "docs": "构建提交体并做客户端先校验：tool 形 `^[a-z][a-z0-9_-]{0,31}$`、title trim 后\n1 至 200 字、body 至多 20000 字；version 截断 40、platform 与 host 截断 64。\n版本、平台、主机名自动取自报值（tool 保留入参以便他仓复用）。\n\n# Errors\n\ntool 不合形、标题 trim 后为空或超 200 字、正文超 20000 字时返回人读错误（调用方退出 2）。"
+      "path": "reader_rs::ledger::IssuePage",
+      "kind": "struct",
+      "docs": "列表页（家族翻页形）。"
     },
     {
-      "path": "reader_rs::issue::file_new",
-      "kind": "function",
-      "docs": "提交一条 issue（tool=reader、上下文自动）：POST /api/issues，期望 201 {ok,id,url}。\n\n# Errors\n\n网络不可达、HTTP 4xx/5xx（429 限速、400 校验不过等）或回执形状不对时返回人读错误（退出 2）。"
+      "path": "reader_rs::ledger::IssueRow",
+      "kind": "struct",
+      "docs": "列表行（服务端投影字段同形；`hasResult` 服务端为驼峰）。"
     },
     {
-      "path": "reader_rs::issue::list",
-      "kind": "function",
-      "docs": "列表（新到旧）：GET /api/issues?tool=&status=&limit=&before=（limit 夹取\n1 至 100；`before` 是 keyset 游标，取该 id 之前更早的一页，非法值服务端\n回 400 透传归因，#53 家族统一件）。空列表是合法结果（调用方退出 1）。\n\n# Errors\n\n网络不可达、HTTP 错误（含 before 非法 400）或回执形状不对时返回人读错误\n（退出 2）。"
+      "path": "reader_rs::ledger::KEY_ID",
+      "kind": "constant",
+      "docs": "本仓 key_id（kid）= sha256hex(规范化 JWK：键序字母的紧凑 JSON)。"
     },
     {
-      "path": "reader_rs::issue::show",
+      "path": "reader_rs::ledger::PUBLIC_JWK",
+      "kind": "constant",
+      "docs": "本仓公钥 JWK（身份分发面：CLI 自带验签材料，总台账本 pubkeys 表同形登记；\n2026-09-20 生成，对应私钥在提交侧密档）。"
+    },
+    {
+      "path": "reader_rs::ledger::REPO_ID",
+      "kind": "constant",
+      "docs": "账本仓标识（规范化 remote；URL 路径原样嵌入，含斜杠）。"
+    },
+    {
+      "path": "reader_rs::ledger::artifact_attest",
       "kind": "function",
-      "docs": "单条详情：GET /api/issues/<id>；404 归 `Ok(None)`（调用方退出 1）。\n\n# Errors\n\n网络不可达、404 以外的 HTTP 错误或回执形状不对时返回人读错误（退出 2）。"
+      "docs": "产物事件（attest/promote 等）：POST /repos/:repo/artifacts/:id/attestations。\n\n# Errors\n\ntype 不在面、artifact 不存在（404）、验签/配额/网络错误时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::artifact_list",
+      "kind": "function",
+      "docs": "产物列表：GET /repos/:repo/artifacts?current=&env=（可按 name/kind 过滤）。\n\n# Errors\n\n网络不可达或回执形状不对时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::artifact_publish",
+      "kind": "function",
+      "docs": "登记产物：POST /repos/:repo/artifacts {name, kind, digest, version?, git_range?, deps[]}。\n库一律收信息体（digest 恒为正文或记录哈希）；同 digest 重复登记服务端 409。\n\n# Errors\n\nname/kind/digest 校验不过、私钥不可得、同 digest 已登记（409）、验签/配额/\n网络错误时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::issue_close",
+      "kind": "function",
+      "docs": "关单链：先 result 事件（引用 digest，关单判据）再 status done；返回两事件 seq。\n\n# Errors\n\n同 [`issue_event`] 两步各自错误面。"
+    },
+    {
+      "path": "reader_rs::ledger::issue_event",
+      "kind": "function",
+      "docs": "追加 issue 事件：POST /repos/:repo/issues/:n/events {type, payload, body}。\n服务端约束：status 的 payload.to 须在状态面；done 须先有 result 事件。\n\n# Errors\n\ntype 不在面、issue 不存在（404）、验签/配额/网络错误时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::issue_list",
+      "kind": "function",
+      "docs": "列表（新到旧）：GET /repos/:repo/issues?limit=&before=&more=1。\nlimit 夹取 1 至 100（缺省 100）；恒带 more=1 索取 has_more。\n\n# Errors\n\n网络不可达或回执形状不对时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::issue_new",
+      "kind": "function",
+      "docs": "开单：POST /repos/:repo/issues {title, kind, acceptance, body}。\n客户端先校验（title trim 后 1 至 200 字、kind 面），服务端同则兜底。\n\n# Errors\n\n校验不过、私钥不可得、网络或服务端错误（401/429/5xx 等）时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::issue_show",
+      "kind": "function",
+      "docs": "单条详情：GET /repos/:repo/issues/:n（投影加时间线）；404 归 `Ok(None)`。\n\n# Errors\n\n网络不可达或回执形状不对时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::kid_of_jwk",
+      "kind": "function",
+      "docs": "从 JWK 文本推 kid：取 kty/crv/x 三键按字母序紧凑序列化后 sha256hex。\n（键序 crv < kty < x 恰为字母序；对账 [`KEY_ID`] 用，单测断言一致。）\n\n# Errors\n\nJWK 文本非合法 JSON 或缺 kty/crv/x 任一键时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::load_signing_key",
+      "kind": "function",
+      "docs": "读 Ed25519 私钥（32 字节 seed）：环境 `READER_LEDGER_KEY`（base64url）优先，\n次走本地密档（`READER_LEDGER_KEY_FILE` 路径，缺省 `~/.config/reader/ledger-key`，\n首行 base64url seed）。密档不进仓不进 argv。\n\n# Errors\n\n环境与密档都取不到、内容非 32 字节 seed 时返回人读错误。"
+    },
+    {
+      "path": "reader_rs::ledger::signature_base",
+      "kind": "function",
+      "docs": "签名基（服务端 verifyEd25519 逐字同构）：七行换行连。"
+    },
+    {
+      "path": "reader_rs::ledger::valid_digest",
+      "kind": "function",
+      "docs": "digest 形校验：`sha256:` 加 64 位小写 hex（服务端契约同则 `[0-9a-f]{64}`）。"
     },
     {
       "path": "reader_rs::mirror",

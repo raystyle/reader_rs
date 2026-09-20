@@ -101,7 +101,9 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 | `READER_MIRROR` | 分发镜像基址（模型下载与 self update 查新） | `https://reader.ohmygh.com` |
 | `READER_OCR_CACHE_DIR` | 覆盖 OCR 模型缓存目录 | 平台缓存目录（见下表） |
 | `READER_OCR_MODEL_SIZE` | OCR 模型档位临时覆盖（A/B 对比用），优先于 `ocr switch` 设置 | 未设（取 `ocr switch` 设置，再缺省 `tiny`） |
-| `READER_ISSUES_API` | issue 统一入口基址（测试与灰度用） | `https://issues.ohmygh.com` |
+| `READER_LEDGER` | 仓级公共账本基址（issue 与 artifact 面，测试与灰度用） | `https://ledger.ohmygh.com` |
+| `READER_LEDGER_KEY` | 账本 Ed25519 私钥（base64url seed；不进仓不进 argv） | 未设（走本地密档） |
+| `READER_LEDGER_KEY_FILE` | 账本私钥密档路径 | `~/.config/reader/ledger-key` |
 
 **OCR 模型档位**（`READER_OCR_MODEL_SIZE`，缺省 `tiny`）：
 
@@ -185,7 +187,7 @@ reader --llms                          # agent 说明书（紧凑命令索引）
 ```bash
 reader --llms
 reader --llms --json
-reader issue new "search 中文关键词误报" --body "现象与复现步骤"
+reader issue new "search 中文关键词误报" --acceptance "复现与修复判据"
 ```
 
 ### 命令
@@ -314,17 +316,19 @@ reader search ./paper-export/ "certificate" -i
 # paper-export\pages\p0009.md:1:3:certificates
 ```
 
-#### issue：缺陷反馈
+#### issue 与 artifact：仓级公共账本
 
-统一 issue 入口（总台 issues.ohmygh.com，每 IP 10 条/时）：`new` 一键提交自动带上下文（tool=reader 恒定、版本、平台、主机名），`list` / `show` 读面（详情页在回执 url）。
+issue 与产物面走仓级公共账本 ledger.ohmygh.com（REQ-063，真源替代旧 issues.ohmygh.com 面）：`issue new` 开单（kind 分 BUG 错误任务与改进优化任务，必带验收判据；关单须 result 事件引 digest）、`issue list` / `issue show` 读面、`issue close` 关单两连发；`artifact publish` 登记产物进共享库（digest 恒为正文或记录哈希，库不收二进制实体）、`artifact attest` / `artifact promote` 验证与晋级、`artifact list` 检索。写入走 Ed25519 五头签名（私钥 `READER_LEDGER_KEY` 或本地密档 `~/.config/reader/ledger-key`，不进仓不进 argv）。
 
 ```bash
-reader issue new "search 中文关键词误报" --body "现象与复现步骤"
-reader issue list --tool reader --status open
-reader issue show 12
+reader issue new "search 中文关键词误报" --kind bug --acceptance "复现与修复判据"
+reader issue list --limit 20 --before 5
+reader issue close 3 --digest sha256:<64hex>
+reader artifact publish "S010 图表理解定界" --kind research --digest sha256:<64hex>
+reader artifact list --current
 ```
 
-回执行 `issue: filed #12 https://issues.ohmygh.com/i/12`；list 行式 `#<id> <status> <tool> <version> <created> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），返回条数打满上限时 stderr 提示可能截断（`--status` / `--tool` 收窄或 `--before <id>` 翻更早一页，网页面可看全量），`--before <id>` 是 keyset 游标（取该 id 之前更早一页，带游标的回执含 `has_more` 且 json 面随 data 透出，非法值服务端回 400），json 形态的 `count` 是本次返回条数非在册总数；list 空退出 1、show 不存在退出 1、出错 2。标题 1 至 200 字、正文至多 20000 字（客户端先校验）；基址可由 `READER_ISSUES_API` 覆盖。
+issue 回执行 `issue: opened #<n> seq <seq> kind <kind>` 加详情页链；list 行式 `#<n> <status> <kind> <assignee|-> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），`--before <id>` 是 keyset 游标（带游标的回执含 `has_more` 且 json 面随 data 透出），json 形态的 `count` 是本次返回条数非在册总数，更早仍有条目时 stderr 提示翻页；close 回执行 `issue: closed #<n> (result seq <a>, status seq <b>)`；artifact 回执行 `artifact: published <id> <kind> <名>` 加 digest 行与 `artifact: <type> <id> seq <seq>`。list 空、show 不存在退出 1，出错 2；配额 per-key 50 条/UTC 日（读面免签不受限）；基址可由 `READER_LEDGER` 覆盖。
 
 ### JSON 输出
 

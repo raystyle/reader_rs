@@ -17,7 +17,7 @@ OCR 兜底识图（`--ocr`，PP-OCRv6 三级回退源链）、图片本体导出
 - [`document`](document.md): 格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。
 - [`figures`](figures.md): 图片本体导出与文本元数据对齐（D47；S010 定界：只负责提取存储，理解归调用方 Agent）。
 - [`introspect`](introspect.md): Agent 自省与发现（P0007；三面统一批 REQ-057 对齐总台 REQ-060）：`--llms` 旗标
-- [`issue`](issue.md): issue 域（总台统一入口 issues.ohmygh.com，ohmycloud REQ-057 契约对齐）：
+- [`ledger`](ledger.md): ledger.ohmygh.com 客户端（REQ-063 Phase 3 仓内集成，替代 issues.ohmygh.com
 - [`mirror`](mirror.md): 镜像源链与镜像清单(D42):OCR 模型三级回退下载(镜像 到 HF 直连 到 GitHub
 - [`ocr`](ocr.md): OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链、D43 图片文件）：needs_ocr 页经
 - [`output`](output.md): 输出层：JSON 包膜（ok/data/error 加 meta）与 filter 点路径裁剪。设计依据 S002（P0006）。
@@ -97,28 +97,53 @@ Agent 自省与发现（P0007；三面统一批 REQ-057 对齐总台 REQ-060）�
 - `llms_text` — `reader --llms`：markdown 紧凑手册（命令表自活命令树渲染；总长目标至多 120 行）。
 
 
-<!-- reader_rs/issue.md -->
-# reader_rs::issue
+<!-- reader_rs/ledger.md -->
+# reader_rs::ledger
 
-issue 域（总台统一入口 issues.ohmygh.com，ohmycloud REQ-057 契约对齐）：
-`new` 一键提交（自动带 tool=reader 与版本、平台、主机名）、`list` 集中列表（新到旧）、
-`show` 单条详情。提交面每 IP 10 条/时（HTTP 429），读面匿名 GET；基址可由
-`READER_ISSUES_API` 覆盖（测试与灰度）。HTTP 走 ureq（全局超时 20 秒，4xx/5xx
-不转传输错误、按状态码分流），JSON 走 serde_json；不新增依赖。
+ledger.ohmygh.com 客户端（REQ-063 Phase 3 仓内集成，替代 issues.ohmygh.com
+旧面，REQ-056 的 issue 功能迁入本账本）：仓级公共账本双层 append-only，
+issue 流管义务（开单加事件加投影）、artifact 流即共享库本体（publish 加
+attest 加 promote）。写入五头必签：Idempotency-Key 加 X-Key-Id 加
+X-Timestamp（正负 60 秒窗）加 X-Nonce（10 分钟不重）加 X-Signature；签名基
+= v1/POST/路径/时间戳/nonce/幂等键/body sha256 各行换行连，Ed25519 私钥签，
+签名 base64url。读面沿 REQ-057 家族形：limit 缺省 100 加 before 游标加
+has_more 加 count 语义（本次返回条数）。私钥运行时从环境
+`READER_LEDGER_KEY`（base64url seed）或本地密档读（`READER_LEDGER_KEY_FILE`
+覆写路径，缺省 `~/.config/reader/ledger-key`），不进仓不进 argv。
 
 ## Functions
 
-- `build_report` — 构建提交体并做客户端先校验：tool 形 `^[a-z][a-z0-9_-]{0,31}$`、title trim 后
-- `file_new` — 提交一条 issue（tool=reader、上下文自动）：POST /api/issues，期望 201 {ok,id,url}。
-- `list` — 列表（新到旧）：GET /api/issues?tool=&status=&limit=&before=（limit 夹取
-- `show` — 单条详情：GET /api/issues/<id>；404 归 `Ok(None)`（调用方退出 1）。
+- `artifact_attest` — 产物事件（attest/promote 等）：POST /repos/:repo/artifacts/:id/attestations。
+- `artifact_list` — 产物列表：GET /repos/:repo/artifacts?current=&env=（可按 name/kind 过滤）。
+- `artifact_publish` — 登记产物：POST /repos/:repo/artifacts {name, kind, digest, version?, git_range?, deps[]}。
+- `issue_close` — 关单链：先 result 事件（引用 digest，关单判据）再 status done；返回两事件 seq。
+- `issue_event` — 追加 issue 事件：POST /repos/:repo/issues/:n/events {type, payload, body}。
+- `issue_list` — 列表（新到旧）：GET /repos/:repo/issues?limit=&before=&more=1。
+- `issue_new` — 开单：POST /repos/:repo/issues {title, kind, acceptance, body}。
+- `issue_show` — 单条详情：GET /repos/:repo/issues/:n（投影加时间线）；404 归 `Ok(None)`。
+- `kid_of_jwk` — 从 JWK 文本推 kid：取 kty/crv/x 三键按字母序紧凑序列化后 sha256hex。
+- `load_signing_key` — 读 Ed25519 私钥（32 字节 seed）：环境 `READER_LEDGER_KEY`（base64url）优先，
+- `signature_base` — 签名基（服务端 verifyEd25519 逐字同构）：七行换行连。
+- `valid_digest` — digest 形校验：`sha256:` 加 64 位小写 hex（服务端契约同则 `[0-9a-f]{64}`）。
 
 ## Types
 
-- `FiledReceipt` — 提交回执（201 {ok,id,url} 的有效载荷）。
-- `IssueReport` — 提交体（字段序即 POST JSON 序，契约 {tool,title,body,version,platform,host}）。
-- `IssueRow` — 一条 issue（list 无 body、show 有；ip 属服务端审计面，不透出到输出）。
-- `ListPage` — 列表页（新到旧）：返回行与服务端 `has_more`（仅带 `before` 的请求回执携带，
+- `ArtifactPublished` — publish 回执。
+- `ArtifactRow` — 产物列表行。
+- `IssueDetail` — issue 详情（投影加开单验收面加原始时间线）。
+- `IssueOpened` — 开单回执（issue 号与首事件 seq）。
+- `IssuePage` — 列表页（家族翻页形）。
+- `IssueRow` — 列表行（服务端投影字段同形；`hasResult` 服务端为驼峰）。
+
+## Constants
+
+- `ARTIFACT_KINDS` — artifact kind 面（服务端契约 15 值同集）。
+- `ATTEST_TYPES` — artifact 事件面（promote 单列命令，其余走 attest --type）。
+- `DEFAULT_BASE` — 账本缺省基址（`READER_LEDGER` 覆盖，测试与灰度用）。
+- `ISSUE_KINDS` — issue kind 面（服务端契约同值）。
+- `KEY_ID` — 本仓 key_id（kid）= sha256hex(规范化 JWK：键序字母的紧凑 JSON)。
+- `PUBLIC_JWK` — 本仓公钥 JWK（身份分发面：CLI 自带验签材料，总台账本 pubkeys 表同形登记；
+- `REPO_ID` — 账本仓标识（规范化 remote；URL 路径原样嵌入，含斜杠）。
 
 
 <!-- reader_rs/mirror.md -->
