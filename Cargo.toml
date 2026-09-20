@@ -42,6 +42,13 @@ zip = "8.6"
 lopdf = "0.44"
 # mq 结构化提取引擎（P0016，选型 S007）：jq 风格 markdown 查询，MIT 纯 Rust
 mq-lang = "0.8"
+# ledger.ohmygh.com 写入签名（REQ-063 Phase 3 仓内集成）：Ed25519 签名与验证
+# （纯 Rust dalek 族，与既有 sha2 同生态；私钥运行时读，不进仓不进 argv）
+ed25519-dalek = { version = "2", default-features = false, features = ["std"] }
+# 签名头与密钥的 base64url 编解码（Ed25519 签名与 JWK x 值）
+base64 = "0.22"
+# 幂等键与 nonce 的随机字节（轻量系统熵源，无 rand 全家桶）
+getrandom = "0.3"
 
 [target.'cfg(unix)'.dependencies]
 # SIGPIPE 恢复默认处置用（M007）：管道读者早退（`reader … | head`）按 Unix 惯例
@@ -71,6 +78,9 @@ insta = "1"
 proptest = "1"
 # 测试用 EPUB 由 rbook builder 现造（P0009 起 rbook 退出主依赖，转测试侧造夹具；选型记 S003）
 rbook = "0.7.10"
+# ledger 回归层验签回核与签名解码（与主依赖同版本族；sha2 已在上方在册）
+ed25519-dalek = { version = "2", default-features = false, features = ["std"] }
+base64 = "0.22"
 # 测试用 docx 由 zip 现造最小 OOXML（P0009；anydoc 家族夹具）
 zip = "8.6"
 

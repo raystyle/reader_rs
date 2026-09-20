@@ -12,7 +12,7 @@ pub mod batch;
 pub mod document;
 pub mod figures;
 pub mod introspect;
-pub mod issue;
+pub mod ledger;
 pub mod mirror;
 pub mod ocr;
 pub mod output;
@@ -221,15 +221,27 @@ enum Commands {
         #[command(subcommand)]
         command: OcrCommands,
     },
-    /// 统一 issue 入口（issues.ohmygh.com，总台 REQ-057 契约）：new 一键提交（自动带 tool=reader 与版本/平台/主机名），list 集中列表，show 单条详情
+    /// 统一 issue 面（ledger.ohmygh.com 仓级公共账本，REQ-063；真源替代 issues.ohmygh.com 旧面）：开单、列表、详情、关单（result 引 digest 加 status done）
     #[command(after_long_help = "\
 示例:
-  reader issue new \"search 中文关键词误报\" --body \"现象与复现步骤\"
-  reader issue list --tool reader --status open
-  reader issue show 12")]
+  reader issue new \"search 中文关键词误报\" --kind bug --acceptance \"复现与修复判据\"
+  reader issue list --limit 20 --before 5
+  reader issue show 3
+  reader issue close 3 --digest sha256:<64hex>")]
     Issue {
         #[command(subcommand)]
         command: IssueCommands,
+    },
+    /// 产物共享库面（ledger.ohmygh.com artifact 流，REQ-063）：publish 登记至 attest 验证至 promote 晋级
+    #[command(after_long_help = "\
+示例:
+  reader artifact publish \"S010 图表理解定界\" --kind research --digest sha256:<64hex>
+  reader artifact attest <id> --type attest_dev
+  reader artifact promote <id>
+  reader artifact list --current")]
+    Artifact {
+        #[command(subcommand)]
+        command: ArtifactCommands,
     },
 }
 
@@ -266,27 +278,24 @@ enum OcrCommands {
 
 #[derive(Subcommand)]
 enum IssueCommands {
-    /// 一键提交缺陷反馈（自动带 tool=reader、版本、平台、主机名；每 IP 10 条/时；成功 0 / 出错 2）
+    /// 开单（BUG 错误任务或改进优化任务，自动带仓库标识；写入走 Ed25519 五头签名；成功 0 / 出错 2）
     New {
-        /// 标题（1 至 200 字）
+        /// 标题（trim 后 1 至 200 字）
         #[arg(value_name = "标题")]
         title: String,
-        /// 正文（至多 20000 字；缺省空）
+        /// 任务性质（bug 缺省 = BUG 错误任务；improvement = 改进优化任务）
+        #[arg(long, default_value = "bug", value_name = "bug或improvement")]
+        kind: String,
+        /// 验收条件（完成判据；关单须 result 事件引 digest）
+        #[arg(long, value_name = "判据")]
+        acceptance: String,
+        /// 补充正文（缺省空）
         #[arg(long, value_name = "正文")]
         body: Option<String>,
-        /// 输出形态：text（行式，缺省）或 json（包膜）
-        #[arg(long, value_enum, default_value_t = Format::Text)]
-        format: Format,
     },
-    /// 集中列表（新到旧；json 的 count 与返回条数是本次返回面非在册总数；有行 0 / 空 1 / 出错 2）
+    /// 集中列表（新到旧；has_more 精确翻页；count 是本次返回条数非在册总数；有行 0 / 空 1 / 出错 2）
     List {
-        /// 按工具名过滤（缺省不过滤；如 reader）
-        #[arg(long, value_name = "名")]
-        tool: Option<String>,
-        /// 按状态过滤（open / closed）
-        #[arg(long, value_name = "open或closed")]
-        status: Option<String>,
-        /// 最多 N 条（1 至 100，缺省 100 即服务端上限；返回条数打满上限时 stderr 提示可能截断）
+        /// 最多 N 条（1 至 100，缺省 100 即服务端上限；更早仍有条目时 stderr 提示翻页）
         #[arg(long, default_value_t = 100, value_name = "N")]
         limit: u32,
         /// keyset 游标：取该 id 之前更早的一页（响应带 has_more；json 面随 data 透出）
@@ -299,15 +308,97 @@ enum IssueCommands {
         #[arg(long)]
         filter: Option<String>,
     },
-    /// 单条详情（存在 0 / 不存在 1 / 出错 2）
+    /// 单条详情（投影加验收面加事件时间线；存在 0 / 不存在 1 / 出错 2）
     Show {
         /// issue 编号
         #[arg(value_name = "编号")]
-        id: u64,
+        n: u64,
         /// 输出形态：text（行式，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
         format: Format,
-        /// 裁剪 JSON data 的点路径（如 issue.title）；仅 --format json 下可用
+        /// 裁剪 JSON data 的点路径（如 issue.status）；仅 --format json 下可用
+        #[arg(long)]
+        filter: Option<String>,
+    },
+    /// 关单（先 result 事件引 digest（关单判据），再 status done；服务端校验前提；成功 0 / 出错 2）
+    Close {
+        /// issue 编号
+        #[arg(value_name = "编号")]
+        n: u64,
+        /// result 引用的产物或正文哈希（sha256:<64hex>）
+        #[arg(long, value_name = "sha256hex")]
+        digest: String,
+        /// 关单说明（缺省空）
+        #[arg(long, value_name = "说明")]
+        note: Option<String>,
+    },
+}
+
+#[derive(Subcommand)]
+enum ArtifactCommands {
+    /// 登记产物（共享库本体；digest 恒为正文或记录哈希，库不收二进制实体；成功 0 / 出错 2）
+    Publish {
+        /// 名称（1 至 200 字）
+        #[arg(value_name = "名")]
+        name: String,
+        /// 产物性质（experience|lesson|research|prototype|binary|image|wasm|sbom|schema|openapi|eval-set|benchmark|runbook|decision|attested-report）
+        #[arg(long, value_name = "kind")]
+        kind: String,
+        /// 内容哈希（sha256:<64hex>）
+        #[arg(long, value_name = "sha256hex")]
+        digest: String,
+        /// 版本信息（tag 或版本号）
+        #[arg(long, value_name = "版本")]
+        version: Option<String>,
+        /// 开发记录区间（如 v0.9.0..v0.9.1）
+        #[arg(long, value_name = "区间")]
+        git_range: Option<String>,
+        /// 依赖出处（artifact id，可多次）
+        #[arg(long, value_name = "id")]
+        deps: Vec<String>,
+        /// 说明正文（缺省空）
+        #[arg(long, value_name = "正文")]
+        body: Option<String>,
+    },
+    /// 产物事件（attest_dev|attest_prod|verification_failed|demote|supersede；成功 0 / 出错 2）
+    Attest {
+        /// artifact 标识
+        #[arg(value_name = "id")]
+        artifact_id: String,
+        /// 事件类型
+        #[arg(long, value_name = "type")]
+        attest_type: String,
+        /// 说明（缺省空）
+        #[arg(long, value_name = "说明")]
+        note: Option<String>,
+    },
+    /// 晋级当前产物（attest promote 简写；成功 0 / 出错 2）
+    Promote {
+        /// artifact 标识
+        #[arg(value_name = "id")]
+        artifact_id: String,
+        /// 说明（缺省空）
+        #[arg(long, value_name = "说明")]
+        note: Option<String>,
+    },
+    /// 产物列表（有行 0 / 空 1 / 出错 2）
+    List {
+        /// 按名过滤
+        #[arg(long, value_name = "名")]
+        name: Option<String>,
+        /// 按 kind 过滤
+        #[arg(long, value_name = "kind")]
+        kind: Option<String>,
+        /// 按环境过滤（dev / prod）
+        #[arg(long, value_name = "dev或prod")]
+        env: Option<String>,
+        /// 只看各 name 当前持有者（最新 promote 且未退役）
+        #[arg(long)]
+        current: bool,
+        /// 输出形态：text（行式，缺省）或 json（包膜）
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+        /// 裁剪 JSON data 的点路径（如 artifacts[].name）；仅 --format json 下可用
         #[arg(long)]
         filter: Option<String>,
     },
@@ -425,33 +516,98 @@ pub fn run() -> i32 {
         Some(Commands::Issue { command }) => match command {
             IssueCommands::New {
                 title,
+                kind,
+                acceptance,
                 body,
-                format,
-            } => match run_issue_new(&title, body.as_deref().unwrap_or(""), format) {
+            } => match run_issue_new(&title, &kind, &acceptance, body.as_deref().unwrap_or("")) {
                 Ok(()) => 0,
-                Err(err) => fail("issue new", format, err),
+                Err(err) => fail("issue new", Format::Text, err),
             },
             IssueCommands::List {
-                tool,
-                status,
                 limit,
                 before,
                 format,
                 filter,
             } => {
                 let opts = OutputOpts { format, filter };
-                match run_issue_list(tool.as_deref(), status.as_deref(), limit, before, &opts) {
+                match run_issue_list(limit, before, &opts) {
                     Ok(hit) if hit => 0,
                     Ok(_) => 1,
                     Err(err) => fail("issue list", opts.format, err),
                 }
             }
-            IssueCommands::Show { id, format, filter } => {
+            IssueCommands::Show { n, format, filter } => {
                 let opts = OutputOpts { format, filter };
-                match run_issue_show(id, &opts) {
+                match run_issue_show(n, &opts) {
                     Ok(found) if found => 0,
                     Ok(_) => 1,
                     Err(err) => fail("issue show", opts.format, err),
+                }
+            }
+            IssueCommands::Close { n, digest, note } => {
+                match run_issue_close(n, &digest, note.as_deref().unwrap_or("")) {
+                    Ok(()) => 0,
+                    Err(err) => fail("issue close", Format::Text, err),
+                }
+            }
+        },
+        Some(Commands::Artifact { command }) => match command {
+            ArtifactCommands::Publish {
+                name,
+                kind,
+                digest,
+                version,
+                git_range,
+                deps,
+                body,
+            } => match run_artifact_publish(
+                &name,
+                &kind,
+                &digest,
+                version.as_deref(),
+                git_range.as_deref(),
+                &deps,
+                body.as_deref().unwrap_or(""),
+            ) {
+                Ok(()) => 0,
+                Err(err) => fail("artifact publish", Format::Text, err),
+            },
+            ArtifactCommands::Attest {
+                artifact_id,
+                attest_type,
+                note,
+            } => {
+                match run_artifact_attest(&artifact_id, &attest_type, note.as_deref().unwrap_or(""))
+                {
+                    Ok(()) => 0,
+                    Err(err) => fail("artifact attest", Format::Text, err),
+                }
+            }
+            ArtifactCommands::Promote { artifact_id, note } => {
+                match run_artifact_attest(&artifact_id, "promote", note.as_deref().unwrap_or("")) {
+                    Ok(()) => 0,
+                    Err(err) => fail("artifact promote", Format::Text, err),
+                }
+            }
+            ArtifactCommands::List {
+                name,
+                kind,
+                env,
+                current,
+                format,
+                filter,
+            } => {
+                let opts = OutputOpts { format, filter };
+                match run_artifact_list(
+                    name.as_deref(),
+                    kind.as_deref(),
+                    env.as_deref(),
+                    current,
+                    &opts,
+                ) {
+                    Ok(hit) if hit => 0,
+                    Ok(_) => 1,
+                    Err(err) => fail("artifact list", opts.format, err),
                 }
             }
         },
@@ -872,41 +1028,35 @@ fn run_query(file: &Path, expression: &str, opts: &OutputOpts) -> Result<bool, S
     Ok(!results.is_empty())
 }
 
-fn run_issue_new(title: &str, body: &str, format: Format) -> Result<(), String> {
-    let started = Instant::now();
-    let r = issue::file_new(title, body)?;
-    match format {
-        Format::Text => println!("issue: filed #{} {}", r.id, r.url),
-        Format::Json => println!(
-            "{}",
-            output::ok_json("issue new", started, json!({ "id": r.id, "url": r.url }))?
-        ),
-    }
+fn run_issue_new(title: &str, kind: &str, acceptance: &str, body: &str) -> Result<(), String> {
+    let opened = ledger::issue_new(title, kind, acceptance, body)?;
+    println!(
+        "issue: opened #{} seq {} kind {}",
+        opened.issue, opened.seq, kind
+    );
+    println!(
+        "issue: https://ledger.ohmygh.com/repos/{}/i/{}",
+        ledger::REPO_ID,
+        opened.issue
+    );
     Ok(())
 }
 
-fn run_issue_list(
-    tool: Option<&str>,
-    status: Option<&str>,
-    limit: u32,
-    before: Option<u64>,
-    opts: &OutputOpts,
-) -> Result<bool, String> {
+fn run_issue_list(limit: u32, before: Option<u64>, opts: &OutputOpts) -> Result<bool, String> {
     let started = Instant::now();
     check_filter(opts)?;
-    let page = issue::list(tool, status, limit, before)?;
-    // 截断提示双出口（#52 修复随 #53 家族统一）：带 before 时服务端回 has_more
-    // 精确判定；不带 before 的旧形回执无此字段，退回「打满夹取后上限」启发式
-    // （恰好等量在册也提示，语义正确）。stdout 保纯数据，两形态同示。
+    let page = ledger::issue_list(limit, before)?;
+    // 翻页提示（家族标准）：more=1 请求恒带 has_more 精确判定；缺字段退回
+    // 打满启发式。stdout 保纯数据，两形态同示。
     match page.has_more {
         Some(true) => eprintln!(
-            "reader: 更早仍有条目（has_more）；--before <id> 翻更早一页，或 --status / --tool 过滤收窄"
+            "reader: 更早仍有条目（has_more）；--before <id> 翻更早一页（网页面 ledger.ohmygh.com 可看全量）"
         ),
         Some(false) => {}
         None => {
             if page.rows.len() as u32 == limit.clamp(1, 100) {
                 eprintln!(
-                    "reader: 返回条数已达上限 {}（可能截断）；--status 或 --tool 过滤收窄，或 --before <id> 翻更早一页（网页面 issues.ohmygh.com 可看全量）",
+                    "reader: 返回条数已达上限 {}（可能截断）；--before <id> 翻更早一页（网页面 ledger.ohmygh.com 可看全量）",
                     limit.clamp(1, 100)
                 );
             }
@@ -916,13 +1066,16 @@ fn run_issue_list(
         Format::Text => {
             for r in &page.rows {
                 println!(
-                    "#{} {} {} {} {} {}",
-                    r.id, r.status, r.tool, r.version, r.created_at, r.title
+                    "#{} {} {} {} {}",
+                    r.issue_n,
+                    r.status,
+                    r.kind,
+                    r.assignee.as_deref().unwrap_or("-"),
+                    r.title
                 );
             }
         }
         Format::Json => {
-            // has_more 仅带 before 的回执携带（#53）；透出供 agent 精确判翻页
             let mut data = json!({ "issues": page.rows, "count": page.rows.len() });
             if let Some(more) = page.has_more {
                 data["has_more"] = json!(more);
@@ -936,31 +1089,117 @@ fn run_issue_list(
     Ok(!page.rows.is_empty())
 }
 
-fn run_issue_show(id: u64, opts: &OutputOpts) -> Result<bool, String> {
+fn run_issue_show(n: u64, opts: &OutputOpts) -> Result<bool, String> {
     let started = Instant::now();
     check_filter(opts)?;
-    let Some(r) = issue::show(id)? else {
+    let Some(d) = ledger::issue_show(n)? else {
         return Ok(false);
     };
     match opts.format {
         Format::Text => {
-            println!("issue: #{} [{}] {} {}", r.id, r.status, r.tool, r.version);
-            println!("title: {}", r.title);
-            println!("platform: {}", r.platform);
-            println!("host: {}", r.host);
-            println!("created: {}", r.created_at);
-            println!("body:");
-            println!("{}", r.body);
+            println!(
+                "issue: #{} [{}] {} assignee {}",
+                d.issue,
+                d.status,
+                d.kind,
+                d.assignee.as_deref().unwrap_or("-")
+            );
+            println!("acceptance: {}", d.acceptance);
+            for e in &d.timeline {
+                println!(
+                    "  seq {} {}",
+                    e.get("seq").and_then(Value::as_u64).unwrap_or(0),
+                    e.get("type").and_then(Value::as_str).unwrap_or("?")
+                );
+            }
         }
         Format::Json => {
-            let mut data = json!({ "issue": r });
-            if let Some(path) = opts.filter.as_deref() {
-                data = output::filter_value(&data, path)?;
-            }
+            let data = json!({
+                "issue": d.issue,
+                "status": d.status,
+                "kind": d.kind,
+                "assignee": d.assignee,
+                "acceptance": d.acceptance,
+                "timeline": d.timeline,
+            });
+            let data = if let Some(path) = opts.filter.as_deref() {
+                output::filter_value(&data, path)?
+            } else {
+                data
+            };
             println!("{}", output::ok_json("issue show", started, data)?);
         }
     }
     Ok(true)
+}
+
+fn run_issue_close(n: u64, digest: &str, note: &str) -> Result<(), String> {
+    let (result_seq, status_seq) = ledger::issue_close(n, digest, note)?;
+    println!("issue: closed #{n} (result seq {result_seq}, status seq {status_seq})");
+    Ok(())
+}
+
+fn run_artifact_publish(
+    name: &str,
+    kind: &str,
+    digest: &str,
+    version: Option<&str>,
+    git_range: Option<&str>,
+    deps: &[String],
+    body: &str,
+) -> Result<(), String> {
+    let published = ledger::artifact_publish(name, kind, digest, version, git_range, deps, body)?;
+    println!(
+        "artifact: published {} {} {}",
+        published.artifact_id, kind, name
+    );
+    println!(
+        "artifact: digest {} seq {}",
+        published.digest, published.seq
+    );
+    Ok(())
+}
+
+fn run_artifact_attest(artifact_id: &str, attest_type: &str, note: &str) -> Result<(), String> {
+    let seq = ledger::artifact_attest(artifact_id, attest_type, note)?;
+    println!("artifact: {attest_type} {artifact_id} seq {seq}");
+    Ok(())
+}
+
+fn run_artifact_list(
+    name: Option<&str>,
+    kind: Option<&str>,
+    env: Option<&str>,
+    current: bool,
+    opts: &OutputOpts,
+) -> Result<bool, String> {
+    let started = Instant::now();
+    check_filter(opts)?;
+    let rows = ledger::artifact_list(name, kind, env, current)?;
+    match opts.format {
+        Format::Text => {
+            for r in &rows {
+                println!(
+                    "artifact: {} {} {} dev{} prod{} cur{} {}",
+                    r.name,
+                    r.kind,
+                    &r.digest[..19.min(r.digest.len())],
+                    if r.dev_verified { 1 } else { 0 },
+                    if r.prod_verified { 1 } else { 0 },
+                    if r.current { 1 } else { 0 },
+                    &r.artifact_id[..8.min(r.artifact_id.len())]
+                );
+            }
+        }
+        Format::Json => {
+            let mut data = json!({ "artifacts": rows, "count": rows.len() });
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
+            println!("{}", output::ok_json("artifact list", started, data)?);
+        }
+    }
+    Ok(!rows.is_empty())
 }
 
 /// search 的 data 树：hits 加 needs_ocr_units（不可靠页序号）。
