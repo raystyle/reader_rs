@@ -102,7 +102,7 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 | `READER_OCR_CACHE_DIR` | 覆盖 OCR 模型缓存目录 | 平台缓存目录（见下表） |
 | `READER_OCR_MODEL_SIZE` | OCR 模型档位临时覆盖（A/B 对比用），优先于 `ocr switch` 设置 | 未设（取 `ocr switch` 设置，再缺省 `tiny`） |
 | `READER_LEDGER` | 仓级公共账本基址（issue 与 artifact 面，测试与灰度用） | `https://ledger.ohmygh.com` |
-| `READER_LEDGER_KEY` | 账本 Ed25519 私钥（base64url seed；不进仓不进 argv） | 未设（走本地密档） |
+| `READER_LEDGER_KEY` | 账本 Ed25519 私钥（32 字节 seed 的 hex；不进仓不进 argv） | 未设（走本地密档） |
 | `READER_LEDGER_KEY_FILE` | 账本私钥密档路径 | `~/.config/reader/ledger-key` |
 
 **OCR 模型档位**（`READER_OCR_MODEL_SIZE`，缺省 `tiny`）：
@@ -318,17 +318,16 @@ reader search ./paper-export/ "certificate" -i
 
 #### issue 与 artifact：仓级公共账本
 
-issue 与产物面走仓级公共账本 ledger.ohmygh.com（REQ-063，真源替代旧 issues.ohmygh.com 面）：`issue new` 开单（kind 分 BUG 错误任务与改进优化任务，必带验收判据；关单须 result 事件引 digest）、`issue list` / `issue show` 读面、`issue close` 关单两连发；`artifact publish` 登记产物进共享库（digest 恒为正文或记录哈希，库不收二进制实体）、`artifact attest` / `artifact promote` 验证与晋级、`artifact list` 检索。写入走 Ed25519 五头签名（私钥 `READER_LEDGER_KEY` 或本地密档 `~/.config/reader/ledger-key`，不进仓不进 argv）。
+issue 与产物面走仓级公共账本 ledger.ohmygh.com（REQ-063，真源替代旧 issues.ohmygh.com 面；客户端 = 全舰队统一 crate ledger-client，总台令 2026-09-20 收口：各仓 CLI **只增不关不删**）：`issue new` 开单（kind 分 BUG 错误任务与改进优化任务，必带验收判据）、`issue list` / `issue show` 读面；`artifact publish` 登记产物进共享库（digest 恒为正文或记录哈希，库不收二进制实体）、`artifact attest` 验证事件（attest_dev / attest_prod / verification_failed，可携 `--checks` JSON 证据）、`artifact list` 检索。写入走 Ed25519 五头签名（crate 内签名道；私钥 `READER_LEDGER_KEY`（32 字节 hex）或本地密档 `~/.config/reader/ledger-key`，不进仓不进 argv）。关闭与删除唯一道：开发工作台经 herdr 委托 omc 工位（`omc ledger issue status/delete`）；promote/demote/supersede 同归 omc。
 
 ```bash
 reader issue new "search 中文关键词误报" --kind bug --acceptance "复现与修复判据"
 reader issue list --limit 20 --before 5
-reader issue close 3 --digest sha256:<64hex>
 reader artifact publish "S010 图表理解定界" --kind research --digest sha256:<64hex>
 reader artifact list --current
 ```
 
-issue 回执行 `issue: opened #<n> seq <seq> kind <kind>` 加详情页链；list 行式 `#<n> <status> <kind> <assignee|-> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），`--before <id>` 是 keyset 游标（带游标的回执含 `has_more` 且 json 面随 data 透出），json 形态的 `count` 是本次返回条数非在册总数，更早仍有条目时 stderr 提示翻页；close 回执行 `issue: closed #<n> (result seq <a>, status seq <b>)`；artifact 回执行 `artifact: published <id> <kind> <名>` 加 digest 行与 `artifact: <type> <id> seq <seq>`。list 空、show 不存在退出 1，出错 2；配额 per-key 50 条/UTC 日（读面免签不受限）；基址可由 `READER_LEDGER` 覆盖。
+issue 回执行 `issue: opened #<n> kind <kind>` 加详情页链；list 行式 `#<n> <status> <kind> <assignee|-> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），`--before <id>` 是 keyset 游标（带游标的回执含 `has_more` 且 json 面随 data 透出），json 形态的 `count` 是本次返回条数非在册总数，更早仍有条目时 stderr 提示翻页；artifact 回执行 `artifact: published <id> <kind> <名>` 加 digest 行与 `artifact: <type> <id> seq <seq>`。list 空、show 不存在退出 1，出错 2；配额 per-key 50 条/UTC 日（读面免签不受限）；基址可由 `READER_LEDGER` 覆盖。
 
 ### JSON 输出
 

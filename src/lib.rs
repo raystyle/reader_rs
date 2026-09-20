@@ -221,23 +221,21 @@ enum Commands {
         #[command(subcommand)]
         command: OcrCommands,
     },
-    /// 统一 issue 面（ledger.ohmygh.com 仓级公共账本，REQ-063；真源替代 issues.ohmygh.com 旧面）：开单、列表、详情、关单（result 引 digest 加 status done）
+    /// 统一 issue 面（ledger.ohmygh.com 仓级公共账本，REQ-063；只增不关不删，收口总台令 2026-09-20）：开单、列表、详情；关闭走 omc 工位
     #[command(after_long_help = "\
 示例:
   reader issue new \"search 中文关键词误报\" --kind bug --acceptance \"复现与修复判据\"
   reader issue list --limit 20 --before 5
-  reader issue show 3
-  reader issue close 3 --digest sha256:<64hex>")]
+  reader issue show 3")]
     Issue {
         #[command(subcommand)]
         command: IssueCommands,
     },
-    /// 产物共享库面（ledger.ohmygh.com artifact 流，REQ-063）：publish 登记至 attest 验证至 promote 晋级
+    /// 产物共享库面（ledger.ohmygh.com artifact 流，REQ-063；只增不删，promote/demote 走 omc 工位）：publish 登记至 attest 验证
     #[command(after_long_help = "\
 示例:
   reader artifact publish \"S010 图表理解定界\" --kind research --digest sha256:<64hex>
   reader artifact attest <id> --type attest_dev
-  reader artifact promote <id>
   reader artifact list --current")]
     Artifact {
         #[command(subcommand)]
@@ -320,18 +318,6 @@ enum IssueCommands {
         #[arg(long)]
         filter: Option<String>,
     },
-    /// 关单（先 result 事件引 digest（关单判据），再 status done；服务端校验前提；成功 0 / 出错 2）
-    Close {
-        /// issue 编号
-        #[arg(value_name = "编号")]
-        n: u64,
-        /// result 引用的产物或正文哈希（sha256:<64hex>）
-        #[arg(long, value_name = "sha256hex")]
-        digest: String,
-        /// 关单说明（缺省空）
-        #[arg(long, value_name = "说明")]
-        note: Option<String>,
-    },
 }
 
 #[derive(Subcommand)]
@@ -360,23 +346,17 @@ enum ArtifactCommands {
         #[arg(long, value_name = "正文")]
         body: Option<String>,
     },
-    /// 产物事件（attest_dev|attest_prod|verification_failed|demote|supersede；成功 0 / 出错 2）
+    /// 产物验证事件（attest_dev|attest_prod|verification_failed；promote/demote/supersede 走 omc 工位；成功 0 / 出错 2）
     Attest {
         /// artifact 标识
         #[arg(value_name = "id")]
         artifact_id: String,
-        /// 事件类型
+        /// 事件类型（attest_dev / attest_prod / verification_failed）
         #[arg(long, value_name = "type")]
         attest_type: String,
-        /// 说明（缺省空）
-        #[arg(long, value_name = "说明")]
-        note: Option<String>,
-    },
-    /// 晋级当前产物（attest promote 简写；成功 0 / 出错 2）
-    Promote {
-        /// artifact 标识
-        #[arg(value_name = "id")]
-        artifact_id: String,
+        /// 验证证据（JSON 对象，缺省空对象）
+        #[arg(long, value_name = "JSON")]
+        checks: Option<String>,
         /// 说明（缺省空）
         #[arg(long, value_name = "说明")]
         note: Option<String>,
@@ -544,12 +524,6 @@ pub fn run() -> i32 {
                     Err(err) => fail("issue show", opts.format, err),
                 }
             }
-            IssueCommands::Close { n, digest, note } => {
-                match run_issue_close(n, &digest, note.as_deref().unwrap_or("")) {
-                    Ok(()) => 0,
-                    Err(err) => fail("issue close", Format::Text, err),
-                }
-            }
         },
         Some(Commands::Artifact { command }) => match command {
             ArtifactCommands::Publish {
@@ -575,18 +549,17 @@ pub fn run() -> i32 {
             ArtifactCommands::Attest {
                 artifact_id,
                 attest_type,
+                checks,
                 note,
             } => {
-                match run_artifact_attest(&artifact_id, &attest_type, note.as_deref().unwrap_or(""))
-                {
+                match run_artifact_attest(
+                    &artifact_id,
+                    &attest_type,
+                    checks.as_deref(),
+                    note.as_deref().unwrap_or(""),
+                ) {
                     Ok(()) => 0,
                     Err(err) => fail("artifact attest", Format::Text, err),
-                }
-            }
-            ArtifactCommands::Promote { artifact_id, note } => {
-                match run_artifact_attest(&artifact_id, "promote", note.as_deref().unwrap_or("")) {
-                    Ok(()) => 0,
-                    Err(err) => fail("artifact promote", Format::Text, err),
                 }
             }
             ArtifactCommands::List {
@@ -1029,42 +1002,62 @@ fn run_query(file: &Path, expression: &str, opts: &OutputOpts) -> Result<bool, S
 }
 
 fn run_issue_new(title: &str, kind: &str, acceptance: &str, body: &str) -> Result<(), String> {
-    let opened = ledger::issue_new(title, kind, acceptance, body)?;
+    let client = ledger::connect()?;
+    let n = client
+        .issue_new(
+            title,
+            kind,
+            acceptance,
+            if body.is_empty() { None } else { Some(body) },
+        )
+        .map_err(ledger::err_line)?;
+    println!("issue: opened #{n} kind {kind}");
     println!(
-        "issue: opened #{} seq {} kind {}",
-        opened.issue, opened.seq, kind
-    );
-    println!(
-        "issue: https://ledger.ohmygh.com/repos/{}/i/{}",
-        ledger::REPO_ID,
-        opened.issue
+        "issue: https://ledger.ohmygh.com/repos/{}/i/{n}",
+        ledger::REPO_ID
     );
     Ok(())
+}
+
+/// 列表行（服务端投影字段同形；`hasResult` 服务端为驼峰）。
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+struct IssueRow {
+    /// 仓内 issue 号。
+    #[serde(rename = "issue_n")]
+    issue_n: u64,
+    /// 标题。
+    title: String,
+    /// 投影状态（open/claimed/in_progress/blocked/done）。
+    status: String,
+    /// 任务性质（bug/improvement）。
+    kind: String,
+    /// 认领者（无则 null）。
+    assignee: Option<String>,
+    /// 是否已有 result 事件（关单判据面）。
+    #[serde(rename = "hasResult")]
+    has_result: bool,
 }
 
 fn run_issue_list(limit: u32, before: Option<u64>, opts: &OutputOpts) -> Result<bool, String> {
     let started = Instant::now();
     check_filter(opts)?;
-    let page = ledger::issue_list(limit, before)?;
-    // 翻页提示（家族标准）：more=1 请求恒带 has_more 精确判定；缺字段退回
-    // 打满启发式。stdout 保纯数据，两形态同示。
-    match page.has_more {
-        Some(true) => eprintln!(
+    let client = ledger::connect()?;
+    let v = client
+        .issue_list(limit.clamp(1, 100), before)
+        .map_err(ledger::err_line)?;
+    let rows: Vec<IssueRow> =
+        serde_json::from_value(v.get("issues").cloned().ok_or("回执缺 issues 数组")?)
+            .map_err(|e| format!("回执形状不对: {e}"))?;
+    let has_more = v.get("has_more").and_then(Value::as_bool);
+    // 翻页提示（家族标准）：more=1 请求恒带 has_more 精确判定。stdout 保纯数据。
+    if has_more == Some(true) {
+        eprintln!(
             "reader: 更早仍有条目（has_more）；--before <id> 翻更早一页（网页面 ledger.ohmygh.com 可看全量）"
-        ),
-        Some(false) => {}
-        None => {
-            if page.rows.len() as u32 == limit.clamp(1, 100) {
-                eprintln!(
-                    "reader: 返回条数已达上限 {}（可能截断）；--before <id> 翻更早一页（网页面 ledger.ohmygh.com 可看全量）",
-                    limit.clamp(1, 100)
-                );
-            }
-        }
+        );
     }
     match opts.format {
         Format::Text => {
-            for r in &page.rows {
+            for r in &rows {
                 println!(
                     "#{} {} {} {} {}",
                     r.issue_n,
@@ -1076,8 +1069,8 @@ fn run_issue_list(limit: u32, before: Option<u64>, opts: &OutputOpts) -> Result<
             }
         }
         Format::Json => {
-            let mut data = json!({ "issues": page.rows, "count": page.rows.len() });
-            if let Some(more) = page.has_more {
+            let mut data = json!({ "issues": rows, "count": rows.len() });
+            if let Some(more) = has_more {
                 data["has_more"] = json!(more);
             }
             if let Some(path) = opts.filter.as_deref() {
@@ -1086,26 +1079,57 @@ fn run_issue_list(limit: u32, before: Option<u64>, opts: &OutputOpts) -> Result<
             println!("{}", output::ok_json("issue list", started, data)?);
         }
     }
-    Ok(!page.rows.is_empty())
+    Ok(!rows.is_empty())
 }
 
 fn run_issue_show(n: u64, opts: &OutputOpts) -> Result<bool, String> {
     let started = Instant::now();
     check_filter(opts)?;
-    let Some(d) = ledger::issue_show(n)? else {
-        return Ok(false);
+    let client = ledger::connect()?;
+    let v = match client.issue_show(n) {
+        Ok(v) => v,
+        Err(ledger_client::LedgerError::Api { status: 404, .. }) => return Ok(false),
+        Err(e) => return Err(ledger::err_line(e)),
     };
+    let projection = v.get("projection").cloned().ok_or("回执缺 projection")?;
+    let timeline = v
+        .get("timeline")
+        .and_then(Value::as_array)
+        .cloned()
+        .ok_or("回执缺 timeline")?;
+    let open_payload = timeline
+        .iter()
+        .find(|e| e.get("type").and_then(Value::as_str) == Some("issue_open"))
+        .and_then(|e| e.get("payload").and_then(Value::as_str))
+        .and_then(|s| serde_json::from_str::<Value>(s).ok())
+        .unwrap_or(Value::Null);
+    let status = projection
+        .get("status")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    let kind = projection
+        .get("kind")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    let assignee = projection
+        .get("assignee")
+        .and_then(Value::as_str)
+        .map(|s| s.to_string());
+    let acceptance = open_payload
+        .get("acceptance")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
     match opts.format {
         Format::Text => {
             println!(
-                "issue: #{} [{}] {} assignee {}",
-                d.issue,
-                d.status,
-                d.kind,
-                d.assignee.as_deref().unwrap_or("-")
+                "issue: #{n} [{status}] {kind} assignee {}",
+                assignee.as_deref().unwrap_or("-")
             );
-            println!("acceptance: {}", d.acceptance);
-            for e in &d.timeline {
+            println!("acceptance: {acceptance}");
+            for e in &timeline {
                 println!(
                     "  seq {} {}",
                     e.get("seq").and_then(Value::as_u64).unwrap_or(0),
@@ -1114,29 +1138,21 @@ fn run_issue_show(n: u64, opts: &OutputOpts) -> Result<bool, String> {
             }
         }
         Format::Json => {
-            let data = json!({
-                "issue": d.issue,
-                "status": d.status,
-                "kind": d.kind,
-                "assignee": d.assignee,
-                "acceptance": d.acceptance,
-                "timeline": d.timeline,
+            let mut data = json!({
+                "issue": n,
+                "status": status,
+                "kind": kind,
+                "assignee": assignee,
+                "acceptance": acceptance,
+                "timeline": timeline,
             });
-            let data = if let Some(path) = opts.filter.as_deref() {
-                output::filter_value(&data, path)?
-            } else {
-                data
-            };
+            if let Some(path) = opts.filter.as_deref() {
+                data = output::filter_value(&data, path)?;
+            }
             println!("{}", output::ok_json("issue show", started, data)?);
         }
     }
     Ok(true)
-}
-
-fn run_issue_close(n: u64, digest: &str, note: &str) -> Result<(), String> {
-    let (result_seq, status_seq) = ledger::issue_close(n, digest, note)?;
-    println!("issue: closed #{n} (result seq {result_seq}, status seq {status_seq})");
-    Ok(())
 }
 
 fn run_artifact_publish(
@@ -1148,22 +1164,78 @@ fn run_artifact_publish(
     deps: &[String],
     body: &str,
 ) -> Result<(), String> {
-    let published = ledger::artifact_publish(name, kind, digest, version, git_range, deps, body)?;
-    println!(
-        "artifact: published {} {} {}",
-        published.artifact_id, kind, name
-    );
-    println!(
-        "artifact: digest {} seq {}",
-        published.digest, published.seq
-    );
+    let client = ledger::connect()?;
+    let artifact_id = client
+        .artifact_publish(
+            name,
+            kind,
+            digest,
+            version,
+            git_range,
+            deps,
+            if body.is_empty() { None } else { Some(body) },
+        )
+        .map_err(ledger::err_line)?;
+    println!("artifact: published {artifact_id} {kind} {name}");
+    println!("artifact: digest {digest}");
     Ok(())
 }
 
-fn run_artifact_attest(artifact_id: &str, attest_type: &str, note: &str) -> Result<(), String> {
-    let seq = ledger::artifact_attest(artifact_id, attest_type, note)?;
+fn run_artifact_attest(
+    artifact_id: &str,
+    attest_type: &str,
+    checks: Option<&str>,
+    note: &str,
+) -> Result<(), String> {
+    // 收口（总台修正令 2026-09-20）：验证类三型之外（promote/demote/supersede）
+    // 与关闭删除同归 omc 工位，CLI 客户端先拒并指路
+    if !ledger_client::ATTEST_TYPES.contains(&attest_type) {
+        return Err(format!(
+            "attest --attest-type 仅 {}（验证类）；promote/demote/supersede 与关闭删除走 omc 工位（经 herdr 委托）",
+            ledger_client::ATTEST_TYPES.join("|")
+        ));
+    }
+    let checks = match checks {
+        None => json!({}),
+        Some(text) => {
+            serde_json::from_str(text).map_err(|e| format!("--checks 须为 JSON 对象: {e}"))?
+        }
+    };
+    let client = ledger::connect()?;
+    let v = client
+        .artifact_attest(
+            artifact_id,
+            attest_type,
+            checks,
+            if note.is_empty() { None } else { Some(note) },
+        )
+        .map_err(ledger::err_line)?;
+    let seq = v
+        .get("event")
+        .and_then(|e| e.get("seq"))
+        .and_then(Value::as_u64)
+        .unwrap_or(0);
     println!("artifact: {attest_type} {artifact_id} seq {seq}");
     Ok(())
+}
+
+/// 产物列表行。
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+struct ArtifactRow {
+    /// artifact 标识。
+    artifact_id: String,
+    /// 名称。
+    name: String,
+    /// kind。
+    kind: String,
+    /// digest。
+    digest: String,
+    /// dev 验证与否。
+    dev_verified: bool,
+    /// prod 验证与否。
+    prod_verified: bool,
+    /// 是否该 name 的当前持有者。
+    current: bool,
 }
 
 fn run_artifact_list(
@@ -1175,7 +1247,20 @@ fn run_artifact_list(
 ) -> Result<bool, String> {
     let started = Instant::now();
     check_filter(opts)?;
-    let rows = ledger::artifact_list(name, kind, env, current)?;
+    let client = ledger::connect()?;
+    let v = client
+        .artifact_list(current, env)
+        .map_err(ledger::err_line)?;
+    let mut rows: Vec<ArtifactRow> =
+        serde_json::from_value(v.get("artifacts").cloned().ok_or("回执缺 artifacts 数组")?)
+            .map_err(|e| format!("回执形状不对: {e}"))?;
+    // name/kind 过滤在客户端（crate 读面只带 current/env 参数）
+    if let Some(n) = name {
+        rows.retain(|r| r.name.contains(n));
+    }
+    if let Some(k) = kind {
+        rows.retain(|r| r.kind == k);
+    }
     match opts.format {
         Format::Text => {
             for r in &rows {

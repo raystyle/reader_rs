@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- **ledger 收口：统一客户端 crate 加只增面（REQ-061，总台修正令 2026-09-20）**：自研 ledger 客户端移除，改引全舰队唯一实现 `ledger-client`（git tag v0.1.0，签名道与只增面全在其中）；CLI 收口只增不关不删：`issue close` 与 `artifact promote` 面退役、`artifact attest --attest-type` 收验证类三型（attest_dev/attest_prod/verification_failed，新增 `--checks` JSON 证据参数），promote/demote/supersede 与关闭删除唯一道走 omc 工位（经 herdr 委托）；私钥 env 语义改 32 字节 hex（密档同 seed 转档，kid 不变）；issue new 回执行行去 seq 字段（crate 返回面）。
+
 ## [0.10.0] - 2026-09-20
 
 > ledger 账本集成版（REQ-060，总台令）：issue 面切 ledger.ohmygh.com（命令族契约变化与能力新增取 minor）。

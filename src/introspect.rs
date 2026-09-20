@@ -161,7 +161,7 @@ pub fn llms_text() -> String {
     s.push_str("reader query ./README.md \".h2\"\n");
     s.push_str("reader figures ./report.docx --format json --filter 'figures[].caption'\n");
     s.push_str("reader export ./paper.pdf\n");
-    s.push_str("reader issue new \"缺陷标题\" --kind bug --acceptance \"复现与修复判据\"\n");
+    s.push_str("reader issue new \"缺陷标题\" --kind bug --acceptance \"复现与修复判据\"   # 关闭走 omc 工位\n");
     s.push_str("```\n");
     s.push('\n');
     s.push_str("## 退出码与输出契约\n");
@@ -171,10 +171,10 @@ pub fn llms_text() -> String {
     s.push_str("- json 包膜：{\"ok\":bool,\"data\":...,\"meta\":{command,duration_ms[,next_offset,cta]}}\n");
     s.push_str("- text 行式：命中行 单元:行号:文本；extract 节头 == page N == / == section N == / == part N ==（超 200 行单元按行分片）；目录批量命中行前缀 路径:\n");
     s.push_str("- figures 行式：figure: kind | 锚 | 图题或- | 落盘路径 | 字节数B；export 摘要行：export: text/pages/figures/manifest <路径>\n");
-    s.push_str("- ledger 面（ledger.ohmygh.com 仓级公共账本 REQ-063，真源替代 issues.ohmygh.com 旧面）：issue new 回执行 issue: opened #<n> seq <seq> kind <kind> 加详情页链；list 行 #<n> <status> <kind> <assignee|-> <标题>（--limit 缺省与上限 100 加 --before 游标加 has_more；count 是返回条数非在册总数）；close 两连发（result 引 sha256 digest 加 status done）；show 出投影加验收面加时间线；artifact 行式 artifact: published <id> <kind> <名> 加 digest 行、attest/promote 回 artifact: <type> <id> seq <seq>\n");
-    s.push_str("- ledger 写入五头 Ed25519 签名（Idempotency-Key/X-Key-Id/X-Timestamp/X-Nonce/X-Signature；私钥 READER_LEDGER_KEY 或本地密档 ~/.config/reader/ledger-key，不进仓）；读面免签\n");
+    s.push_str("- ledger 面（ledger.ohmygh.com 仓级公共账本 REQ-063，真源替代 issues.ohmygh.com 旧面；总台令 2026-09-20 收口只增不关不删，客户端 = 统一 crate ledger-client）：issue new 回执行 issue: opened #<n> kind <kind> 加详情页链；list 行 #<n> <status> <kind> <assignee|-> <标题>（--limit 缺省与上限 100 加 --before 游标加 has_more；count 是返回条数非在册总数）；show 出投影加验收面加时间线；artifact 行式 artifact: published <id> <kind> <名> 加 digest 行、attest 回 artifact: <type> <id> seq <seq>（验证类 attest_dev|attest_prod|verification_failed）\n");
+    s.push_str("- ledger 写入五头 Ed25519 签名（crate 内签名道；私钥 READER_LEDGER_KEY（32 字节 hex）或本地密档 ~/.config/reader/ledger-key，不进仓）；读面免签；关闭删除与 promote/demote/supersede 唯一道走 omc 工位（经 herdr 委托）\n");
     s.push_str("- ocr 子命令行式：ocr_init: / ocr_doctor: / ocr_switch: 前缀、ASCII token 前置（ok / missing / corrupt / download mirror|huggingface|github / verdict）；doctor 退出码 0 双包完整 / 1 有缺损\n");
-    s.push_str("- env：READER_MIRROR（镜像基址）、READER_OCR_CACHE_DIR、READER_OCR_MODEL_SIZE、READER_LEDGER（账本基址）、READER_LEDGER_KEY / READER_LEDGER_KEY_FILE（账本私钥）、GH_TOKEN（self update 配额）\n");
+    s.push_str("- env：READER_MIRROR（镜像基址）、READER_OCR_CACHE_DIR、READER_OCR_MODEL_SIZE、READER_LEDGER_KEY / READER_LEDGER_KEY_FILE（账本私钥，32 字节 hex）、GH_TOKEN（self update 配额）\n");
     s.push_str("- 不可靠页：扫描件、编码问题页与图片以 needs_ocr 提示；--ocr 对 PDF 与图片兜底识别（首用下载约 6.2MB 模型，多核约 1-5 秒/页）；--offline 禁下载\n");
     s
 }
