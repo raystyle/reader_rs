@@ -94,3 +94,49 @@ fn issue_list_filter_flags_on_help_and_reject_missing_value(
         .stderr(predicate::str::contains("a value is required"));
     Ok(())
 }
+
+/// REQ-063 新标面：--outcome 收口 success|failure 客户端先拒（不挂网络）；
+/// --summary 必填缺失即 clap 拒；帮助面列新标旗标。
+#[test]
+fn artifact_publish_new_standard_flags() -> Result<(), Box<dyn std::error::Error>> {
+    reader()?
+        .args([
+            "artifact",
+            "publish",
+            "t",
+            "--kind",
+            "lesson",
+            "--digest",
+            "sha256:0",
+            "--summary",
+            "s",
+            "--outcome",
+            "bogus",
+        ])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("--outcome 仅 success|failure"));
+    reader()?
+        .args([
+            "artifact",
+            "publish",
+            "t",
+            "--kind",
+            "lesson",
+            "--digest",
+            "sha256:0",
+            "--outcome",
+            "success",
+        ])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("--summary"));
+    reader()?
+        .args(["artifact", "publish", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("--summary"))
+        .stdout(predicate::str::contains("--outcome"))
+        .stdout(predicate::str::contains("--git-sha"));
+    Ok(())
+}

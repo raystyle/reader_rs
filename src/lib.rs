@@ -235,7 +235,7 @@ enum Commands {
     /// 产物共享库面（ledger.ohmygh.com artifact 流，REQ-063；只增不删，promote/demote 走 omc 工位）：publish 登记至 attest 验证
     #[command(after_long_help = "\
 示例:
-  reader artifact publish \"S010 图表理解定界\" --kind research --digest sha256:<64hex>
+  reader artifact publish \"S010 图表理解定界\" --kind research --digest sha256:<64hex> --summary \"研究成果本体\" --outcome success --git-sha <sha>
   reader artifact attest <id> --type attest_dev
   reader artifact list --current")]
     Artifact {
@@ -337,9 +337,18 @@ enum ArtifactCommands {
         /// 产物性质（experience|lesson|research|prototype|binary|image|wasm|sbom|schema|openapi|eval-set|benchmark|runbook|decision|attested-report）
         #[arg(long, value_name = "kind")]
         kind: String,
-        /// 内容哈希（sha256:<64hex>）
+        /// 内容哈希（sha256:<64hex>；一律正文或记录哈希为身份）
         #[arg(long, value_name = "sha256hex")]
         digest: String,
+        /// 经验描述（成功经验加失败教训加研究成果的文字本体；总台标准必填）
+        #[arg(long, value_name = "经验描述")]
+        summary: String,
+        /// 结果倾向（success 成功经验 / failure 失败教训；如实标注）
+        #[arg(long, value_name = "success或failure")]
+        outcome: String,
+        /// 提交锚（产物对应的 commit sha，服务端落表；缺省空）
+        #[arg(long, value_name = "sha")]
+        git_sha: Option<String>,
         /// 版本信息（tag 或版本号）
         #[arg(long, value_name = "版本")]
         version: Option<String>,
@@ -349,7 +358,7 @@ enum ArtifactCommands {
         /// 依赖出处（artifact id，可多次）
         #[arg(long, value_name = "id")]
         deps: Vec<String>,
-        /// 说明正文（缺省空）
+        /// 补充说明正文（缺省空）
         #[arg(long, value_name = "正文")]
         body: Option<String>,
     },
@@ -539,6 +548,9 @@ pub fn run() -> i32 {
                 name,
                 kind,
                 digest,
+                summary,
+                outcome,
+                git_sha,
                 version,
                 git_range,
                 deps,
@@ -551,6 +563,9 @@ pub fn run() -> i32 {
                 git_range.as_deref(),
                 &deps,
                 body.as_deref().unwrap_or(""),
+                &summary,
+                &outcome,
+                git_sha.as_deref(),
             ) {
                 Ok(()) => 0,
                 Err(err) => fail("artifact publish", Format::Text, err),
@@ -1209,6 +1224,8 @@ fn run_issue_show(n: u64, opts: &OutputOpts) -> Result<bool, String> {
     Ok(true)
 }
 
+// 参数形随 crate artifact_publish_full 十参面（同 crate 侧 allow 姿势）
+#[allow(clippy::too_many_arguments)]
 fn run_artifact_publish(
     name: &str,
     kind: &str,
@@ -1217,10 +1234,21 @@ fn run_artifact_publish(
     git_range: Option<&str>,
     deps: &[String],
     body: &str,
+    summary: &str,
+    outcome: &str,
+    git_sha: Option<&str>,
 ) -> Result<(), String> {
+    // 总台标准（2026-09-22 硬校验已上）：outcome 仅 success|failure，客户端先拒
+    // 不挂网络（同 attest 类型收口姿势）。
+    if outcome != "success" && outcome != "failure" {
+        return Err(
+            "--outcome 仅 success|failure（success 成功经验 / failure 失败教训，如实标注）"
+                .to_string(),
+        );
+    }
     let client = ledger::connect()?;
     let artifact_id = client
-        .artifact_publish(
+        .artifact_publish_full(
             name,
             kind,
             digest,
@@ -1228,6 +1256,9 @@ fn run_artifact_publish(
             git_range,
             deps,
             if body.is_empty() { None } else { Some(body) },
+            Some(summary),
+            Some(outcome),
+            git_sha,
         )
         .map_err(ledger::err_line)?;
     println!("artifact: published {artifact_id} {kind} {name}");
