@@ -226,6 +226,7 @@ enum Commands {
 示例:
   reader issue new \"search 中文关键词误报\" --kind bug --acceptance \"复现与修复判据\"
   reader issue list --limit 20 --before 5
+  reader issue list --status open --kind bug
   reader issue show 3")]
     Issue {
         #[command(subcommand)]
@@ -299,6 +300,12 @@ enum IssueCommands {
         /// keyset 游标：取该 id 之前更早的一页（响应带 has_more；json 面随 data 透出）
         #[arg(long, value_name = "id")]
         before: Option<u64>,
+        /// 按状态过滤（open / done 等服务端投影值；过滤跨页精确到全量）
+        #[arg(long, value_name = "状态")]
+        status: Option<String>,
+        /// 按性质过滤（bug / improvement）
+        #[arg(long, value_name = "kind")]
+        kind: Option<String>,
         /// 输出形态：text（行式，缺省）或 json（包膜）
         #[arg(long, value_enum, default_value_t = Format::Text)]
         format: Format,
@@ -506,11 +513,13 @@ pub fn run() -> i32 {
             IssueCommands::List {
                 limit,
                 before,
+                status,
+                kind,
                 format,
                 filter,
             } => {
                 let opts = OutputOpts { format, filter };
-                match run_issue_list(limit, before, &opts) {
+                match run_issue_list(limit, before, status.as_deref(), kind.as_deref(), &opts) {
                     Ok(hit) if hit => 0,
                     Ok(_) => 1,
                     Err(err) => fail("issue list", opts.format, err),
@@ -1038,21 +1047,69 @@ struct IssueRow {
     has_result: bool,
 }
 
-fn run_issue_list(limit: u32, before: Option<u64>, opts: &OutputOpts) -> Result<bool, String> {
+/// 行匹配（REQ-062 过滤面）：status 与 kind 等值匹配，未给的维度不过滤。
+fn issue_row_matches(row: &IssueRow, status: Option<&str>, kind: Option<&str>) -> bool {
+    status.is_none_or(|s| row.status == s) && kind.is_none_or(|k| row.kind == k)
+}
+
+/// has_more 过滤面语义：服务端末页 has_more，或已取匹配行超 limit（截断即更早
+/// 侧仍有未展示匹配）任一成立为真。未过滤路径与单页直取行为等价。
+fn list_has_more(server_has_more: bool, matched: usize, want: usize) -> bool {
+    server_has_more || matched > want
+}
+
+fn run_issue_list(
+    limit: u32,
+    before: Option<u64>,
+    status: Option<&str>,
+    kind: Option<&str>,
+    opts: &OutputOpts,
+) -> Result<bool, String> {
     let started = Instant::now();
     check_filter(opts)?;
     let client = ledger::connect()?;
-    let v = client
-        .issue_list(limit.clamp(1, 100), before)
-        .map_err(ledger::err_line)?;
-    let rows: Vec<IssueRow> =
-        serde_json::from_value(v.get("issues").cloned().ok_or("回执缺 issues 数组")?)
-            .map_err(|e| format!("回执形状不对: {e}"))?;
-    let has_more = v.get("has_more").and_then(Value::as_bool);
-    // 翻页提示（家族标准）：more=1 请求恒带 has_more 精确判定。stdout 保纯数据。
-    if has_more == Some(true) {
+    let want = limit.clamp(1, 100) as usize;
+    // 过滤跨页精确到全量（REQ-062）：沿 has_more/before 翻页累积匹配行直到满
+    // limit 或账本穷尽；页深上限兜底防失控。未过滤时缺省 limit 100 单页即止，
+    // 行为与旧单页直取等价。
+    const MAX_PAGES: usize = 20;
+    let mut rows: Vec<IssueRow> = Vec::new();
+    let mut cursor = before;
+    let mut server_has_more = false;
+    let mut pages = 0usize;
+    while rows.len() < want && pages < MAX_PAGES {
+        let v = client.issue_list(100, cursor).map_err(ledger::err_line)?;
+        pages += 1;
+        let page: Vec<IssueRow> =
+            serde_json::from_value(v.get("issues").cloned().ok_or("回执缺 issues 数组")?)
+                .map_err(|e| format!("回执形状不对: {e}"))?;
+        server_has_more = v.get("has_more").and_then(Value::as_bool).unwrap_or(false);
+        let oldest = page.last().map(|r| r.issue_n);
+        rows.extend(
+            page.into_iter()
+                .filter(|r| issue_row_matches(r, status, kind)),
+        );
+        match oldest {
+            Some(n) if server_has_more => cursor = Some(n),
+            _ => break,
+        }
+    }
+    let more = list_has_more(server_has_more, rows.len(), want);
+    if pages == MAX_PAGES && server_has_more && rows.len() < want {
         eprintln!(
-            "reader: 更早仍有条目（has_more）；--before <id> 翻更早一页（网页面 ledger.ohmygh.com 可看全量）"
+            "reader: 过滤翻页达页深上限（{MAX_PAGES} 页），更早条目未穷尽；缩条件或分批 --before"
+        );
+    }
+    rows.truncate(want);
+    // 翻页提示（家族标准）：has_more 精确判定。stdout 保纯数据。
+    if more {
+        eprintln!(
+            "reader: 更早仍有{}（has_more）；--before <id> 翻更早一页（网页面 ledger.ohmygh.com 可看全量）",
+            if status.is_some() || kind.is_some() {
+                "匹配条目"
+            } else {
+                "条目"
+            }
         );
     }
     match opts.format {
@@ -1069,10 +1126,7 @@ fn run_issue_list(limit: u32, before: Option<u64>, opts: &OutputOpts) -> Result<
             }
         }
         Format::Json => {
-            let mut data = json!({ "issues": rows, "count": rows.len() });
-            if let Some(more) = has_more {
-                data["has_more"] = json!(more);
-            }
+            let mut data = json!({ "issues": rows, "count": rows.len(), "has_more": more });
             if let Some(path) = opts.filter.as_deref() {
                 data = output::filter_value(&data, path)?;
             }
@@ -1441,5 +1495,38 @@ mod tests {
             let spec = format!("{n},0");
             proptest::prop_assert!(parse_page_spec(&spec).is_err());
         }
+    }
+
+    fn trow(status: &str, kind: &str) -> IssueRow {
+        IssueRow {
+            issue_n: 1,
+            title: "t".into(),
+            status: status.into(),
+            kind: kind.into(),
+            assignee: None,
+            has_result: false,
+        }
+    }
+
+    /// REQ-062 过滤面：status/kind 等值匹配，未给维度直通，组配取交。
+    #[test]
+    fn issue_row_matches_status_kind_both_dimensions() {
+        let r = trow("open", "bug");
+        assert!(issue_row_matches(&r, None, None));
+        assert!(issue_row_matches(&r, Some("open"), None));
+        assert!(!issue_row_matches(&r, Some("done"), None));
+        assert!(issue_row_matches(&r, None, Some("bug")));
+        assert!(!issue_row_matches(&r, None, Some("improvement")));
+        assert!(issue_row_matches(&r, Some("open"), Some("bug")));
+        assert!(!issue_row_matches(&r, Some("done"), Some("bug")));
+    }
+
+    /// REQ-062 has_more 过滤面语义：服务端末页有余或匹配行超 limit 任一即真。
+    #[test]
+    fn list_has_more_covers_truncation_and_server_page() {
+        assert!(list_has_more(true, 3, 5));
+        assert!(list_has_more(false, 8, 5));
+        assert!(!list_has_more(false, 5, 5));
+        assert!(!list_has_more(false, 3, 5));
     }
 }

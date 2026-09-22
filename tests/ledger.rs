@@ -76,3 +76,21 @@ fn help_faces_note_add_only_scope() -> Result<(), Box<dyn std::error::Error>> {
         .stdout(predicate::str::contains("attest_dev"));
     Ok(())
 }
+
+/// REQ-062 过滤面：`issue list` 帮助含 --status 与 --kind；缺值即拒（零网络）。
+#[test]
+fn issue_list_filter_flags_on_help_and_reject_missing_value(
+) -> Result<(), Box<dyn std::error::Error>> {
+    reader()?
+        .args(["issue", "list", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("--status"))
+        .stdout(predicate::str::contains("--kind"));
+    reader()?
+        .args(["issue", "list", "--status"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("a value is required"));
+    Ok(())
+}

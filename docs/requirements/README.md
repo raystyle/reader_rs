@@ -26,3 +26,4 @@
 | REQ-059 | implemented | must | 家族自更新统一标准对齐 | 双通道整对回落；digest 硬拒；local_newer；三步舞自证回滚；锁加收割；ark 让位；差异表在册 |
 | REQ-060 | implemented | must | ledger账本集成issue与artifact命令族 | Ed25519 五头签名道；issue 与 artifact 命令族；替代 issues.ohmygh.com 旧面（close/promote 面随 REQ-061 收口退役） |
 | REQ-061 | implemented | must | ledger收口统一客户端crate | 只增不关不删；ledger-client crate v0.1.0 替自研；attest 收验证类三型；关闭走 omc 工位 |
+| REQ-062 | implemented | must | issue列表增status与kind过滤 | 承接账本单 #1；--status/--kind 等值匹配跨页精确到全量；客户端 post-fetch（沿 REQ-061 先例） |

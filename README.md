@@ -323,11 +323,12 @@ issue 与产物面走仓级公共账本 ledger.ohmygh.com（REQ-063，真源替�
 ```bash
 reader issue new "search 中文关键词误报" --kind bug --acceptance "复现与修复判据"
 reader issue list --limit 20 --before 5
+reader issue list --status open --kind bug
 reader artifact publish "S010 图表理解定界" --kind research --digest sha256:<64hex>
 reader artifact list --current
 ```
 
-issue 回执行 `issue: opened #<n> kind <kind>` 加详情页链；list 行式 `#<n> <status> <kind> <assignee|-> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），`--before <id>` 是 keyset 游标（带游标的回执含 `has_more` 且 json 面随 data 透出），json 形态的 `count` 是本次返回条数非在册总数，更早仍有条目时 stderr 提示翻页；artifact 回执行 `artifact: published <id> <kind> <名>` 加 digest 行与 `artifact: <type> <id> seq <seq>`。list 空、show 不存在退出 1，出错 2；配额 per-key 50 条/UTC 日（读面免签不受限）；基址可由 `READER_LEDGER` 覆盖。
+issue 回执行 `issue: opened #<n> kind <kind>` 加详情页链；list 行式 `#<n> <status> <kind> <assignee|-> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），`--before <id>` 是 keyset 游标（带游标的回执含 `has_more` 且 json 面随 data 透出），`--status` / `--kind` 过滤等值匹配且跨页精确到全量（REQ-062；空结果退出 1 同 grep 语义），json 形态的 `count` 是本次返回条数非在册总数，更早仍有条目时 stderr 提示翻页；artifact 回执行 `artifact: published <id> <kind> <名>` 加 digest 行与 `artifact: <type> <id> seq <seq>`。list 空、show 不存在退出 1，出错 2；配额 per-key 50 条/UTC 日（读面免签不受限）。
 
 ### JSON 输出
 
