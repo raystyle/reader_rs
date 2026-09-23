@@ -28,3 +28,4 @@
 | REQ-061 | implemented | must | ledger收口统一客户端crate | 只增不关不删；ledger-client crate v0.1.0 替自研；attest 收验证类三型；关闭走 omc 工位 |
 | REQ-062 | implemented | must | issue列表增status与kind过滤 | 承接账本单 #1；--status/--kind 等值匹配跨页精确到全量；客户端 post-fetch（沿 REQ-061 先例） |
 | REQ-063 | implemented | must | artifact发布对齐总台新标准 | ledger-client 升 v0.1.3；publish 必带 --summary 与 --outcome（success/failure）加 --git-sha 锚；两件真题按新标准重发 |
+| REQ-064 | implemented | must | 封版0110 | 能力新增三批取 minor；D45 dev/v0.11.0 承载 FF 合并 tag；三路验收与六 job 发布验收 |

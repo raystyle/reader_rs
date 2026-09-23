@@ -4,7 +4,13 @@
 
 ## [Unreleased]
 
-- **ledger 收口：统一客户端 crate 加只增面（REQ-061，总台修正令 2026-09-20）**：自研 ledger 客户端移除，改引全舰队唯一实现 `ledger-client`（git tag v0.1.0，签名道与只增面全在其中）；CLI 收口只增不关不删：`issue close` 与 `artifact promote` 面退役、`artifact attest --attest-type` 收验证类三型（attest_dev/attest_prod/verification_failed，新增 `--checks` JSON 证据参数），promote/demote/supersede 与关闭删除唯一道走 omc 工位（经 herdr 委托）；私钥 env 语义改 32 字节 hex（密档同 seed 转档，kid 不变）；issue new 回执行行去 seq 字段（crate 返回面）。
+## [0.11.0] - 2026-09-23
+
+> ledger 面对齐批（REQ-061 收口加 REQ-062 过滤加 REQ-063 新标发布；总台周知 2026-09-22 驱动）：能力新增取 minor（R008 判据）；publish CLI 必填化属破坏面，因服务端硬校验先拒同形调用、CLI 侧是诚实快败，随 minor 滚出（REQ-063 裁定）。
+
+- **ledger 收口：统一客户端 crate 加只增面（REQ-061，总台修正令 2026-09-20）**：自研 ledger 客户端移除，改引全舰队唯一实现 `ledger-client`（签名道与只增面全在其中）；CLI 收口只增不关不删：`issue close` 与 `artifact promote` 面退役、`artifact attest --attest-type` 收验证类三型（attest_dev/attest_prod/verification_failed，新增 `--checks` JSON 证据参数），promote/demote/supersede 与关闭删除唯一道走 omc 工位（经 herdr 委托）；私钥 env 语义改 32 字节 hex（密档同 seed 转档，kid 不变）；issue new 回执行行去 seq 字段（crate 返回面）。
+- **issue list 增 status 与 kind 过滤（REQ-062，承接账本单 #1）**：`--status <状态>` 与 `--kind <kind>` 等值匹配可组配，空结果退出 1（grep 语义保持）；过滤翻页跨页精确到全量（页深上限 20 兜底触顶 stderr 明示）；has_more 按过滤面重定义（服务端末页有余或匹配行超 limit 任一即真，未过滤路径与旧行为逐字节等价）；过滤在客户端 post-fetch（服务端与 crate 读面均无该参数，双端实查，沿 REQ-061 artifact list 先例），旗标语意与透传形兼容。
+- **artifact publish 对齐总台新标准（REQ-063，标准 2026-09-22 硬校验已上）**：`ledger-client` 升 v0.1.3 接 `artifact_publish_full`；publish 面增 `--summary`（经验描述，必填）、`--outcome`（success 成功经验 / failure 失败教训，必填，客户端先拒不挂网络）、`--git-sha`（提交锚，服务端落表）；旗标位对齐 ark_rs 先例；服务端已先拒无 summary/outcome 的发布（旧面对新役服务端任何发布必 400），CLI 必填是诚实快败非新增限制。
 
 ## [0.10.0] - 2026-09-20
 
