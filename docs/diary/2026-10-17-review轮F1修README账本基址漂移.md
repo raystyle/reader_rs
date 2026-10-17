@@ -26,3 +26,9 @@ review 复核面：全门禁绿（fmt、clippy -D warnings、`cargo test --locke
 
 - 得：v0.10.0 在册 env 契约的移除补记在案，README 与实现零漂移；review 轮全量证据随档
 - 失：无（纯文档批，二进制零变化）
+
+## 增记 PEVO check.py 路径正位
+
+> 来源：总台补验 PEVO 后指出 AGENTS.md 的 check.py 路径与实况漂移，留本工位判。
+
+总台侧补验（win 无 WSL 路径，用 `.tools/check.py` 加豁免正则，PE-11 与 PE-12 终态合规）。核况：陈路径 `plugins/evo-adr/skills/code-kit/scripts/check.py` 在市场克隆与 lan-ubuntu 均已不存在，脚本实在市场根 `~/.claude/plugins/marketplaces/project-evo/.tools/check.py`；2026-09-17 档案清退轮修过一次该路径，其后市场布局再迁，属第二次漂移。历史面（REQ trace 与 diary 的旧路径）按历史不改写纪律不动，活跃面只 AGENTS.md 一处。判：即时正位而非下批，理由两件：陈路径本周已在两台各坑一次（总台 win 侧绕道、本工位 F1 回执误报「本机不在位」），且修正指令可本机实测。修后本机复跑：PASS 11 / FAIL 0 / SKIP 1（PE-11 走豁免正则，活跃面无禁字），终态与总台侧一致 [实证: 2026-10-17 本机输出]。

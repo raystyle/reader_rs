@@ -9,7 +9,7 @@
 - `cargo test --doc` doctest 示例冒烟（纯函数面在册示例）
 - 文档门禁四件：`rumdl check .` 加 `uv run --script .tools/md-char-scan.py` 加 `uv run --script .tools/md-heading-scan.py` 加 `uv run --script .tools/md-ref-scan.py`（文档结构变更末件必跑）
 - `cargo aidoc` 生成库面投影进 `docs/aidoc/`；`cargo aidoc --check --strict` 投影漂移门禁（改 pub 项或 `///` 后先 `cargo aidoc` 再同一次提交 docs/aidoc；tool-rust 强制口径：Rust 栈 aidoc 投影强制化，bin-only 不豁免，受众是维护者与 agent，ADR-0005）
-- `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run ~/.claude/plugins/marketplaces/project-evo/plugins/evo-adr/skills/code-kit/scripts/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节）
+- `PEVO_CHECK_ALLOW='^docs/aidoc/'` 加 `uv run ~/.claude/plugins/marketplaces/project-evo/.tools/check.py .` 骨架合规自检（豁免正则在册：aidoc 条目分隔符 em dash 是渲染格式无开关，漂移真门禁是 cargo aidoc --check --strict；机制见 docs/README 存量禁字债节；脚本随 project-evo 市场克隆布局走，2026-10 在市场根 `.tools/`，本端无此路径时先定位市场克隆再跑）
 - `cargo build --release --locked` 发布构建
 - 公开契约双面：CLI 面走 `--llms`（markdown 紧凑手册，命令表自活 clap 树渲染零手维护；`--llms --json` 出机器形态 JSON，REQ-057 三面统一）加 tests/ 集成测试（clap 命令树旗标全覆盖 `--llms` 断言即漂移门禁）；库面走 `///` 与类型签名加 `docs/aidoc/` 投影（missing_docs deny 强制）
 
