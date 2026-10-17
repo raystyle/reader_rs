@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- **文档**: README env 表清 `READER_LEDGER` 残行并在 ledger 段写明基址固定（v0.11.0 REQ-061 收口将账本基址移入统一 crate 常量，v0.10.0 在册的基址 env 覆写随之移除，当时未随版记档，本笔补记；review 轮 F1）。
+
 ## [0.11.0] - 2026-09-23
 
 > ledger 面对齐批（REQ-061 收口加 REQ-062 过滤加 REQ-063 新标发布；总台周知 2026-09-22 驱动）：能力新增取 minor（R008 判据）；publish CLI 必填化属破坏面，因服务端硬校验先拒同形调用、CLI 侧是诚实快败，随 minor 滚出（REQ-063 裁定）。

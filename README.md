@@ -101,7 +101,6 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 | `READER_MIRROR` | 分发镜像基址（模型下载与 self update 查新） | `https://reader.ohmygh.com` |
 | `READER_OCR_CACHE_DIR` | 覆盖 OCR 模型缓存目录 | 平台缓存目录（见下表） |
 | `READER_OCR_MODEL_SIZE` | OCR 模型档位临时覆盖（A/B 对比用），优先于 `ocr switch` 设置 | 未设（取 `ocr switch` 设置，再缺省 `tiny`） |
-| `READER_LEDGER` | 仓级公共账本基址（issue 与 artifact 面，测试与灰度用） | `https://ledger.ohmygh.com` |
 | `READER_LEDGER_KEY` | 账本 Ed25519 私钥（32 字节 seed 的 hex；不进仓不进 argv） | 未设（走本地密档） |
 | `READER_LEDGER_KEY_FILE` | 账本私钥密档路径 | `~/.config/reader/ledger-key` |
 
@@ -318,7 +317,7 @@ reader search ./paper-export/ "certificate" -i
 
 #### issue 与 artifact：仓级公共账本
 
-issue 与产物面走仓级公共账本 ledger.ohmygh.com（REQ-063，真源替代旧 issues.ohmygh.com 面；客户端 = 全舰队统一 crate ledger-client，总台令 2026-09-20 收口：各仓 CLI **只增不关不删**）：`issue new` 开单（kind 分 BUG 错误任务与改进优化任务，必带验收判据）、`issue list` / `issue show` 读面；`artifact publish` 登记产物进共享库（digest 恒为正文或记录哈希，库不收二进制实体；总台标准 2026-09-22：必带 `--summary` 经验描述与 `--outcome success|failure`，可携 `--git-sha` 提交锚）、`artifact attest` 验证事件（attest_dev / attest_prod / verification_failed，可携 `--checks` JSON 证据）、`artifact list` 检索。写入走 Ed25519 五头签名（crate 内签名道；私钥 `READER_LEDGER_KEY`（32 字节 hex）或本地密档 `~/.config/reader/ledger-key`，不进仓不进 argv）。关闭与删除唯一道：开发工作台经 herdr 委托 omc 工位（`omc ledger issue status/delete`）；promote/demote/supersede 同归 omc。
+issue 与产物面走仓级公共账本 ledger.ohmygh.com（REQ-063，真源替代旧 issues.ohmygh.com 面；客户端 = 全舰队统一 crate ledger-client，总台令 2026-09-20 收口：各仓 CLI **只增不关不删**）：`issue new` 开单（kind 分 BUG 错误任务与改进优化任务，必带验收判据）、`issue list` / `issue show` 读面；`artifact publish` 登记产物进共享库（digest 恒为正文或记录哈希，库不收二进制实体；总台标准 2026-09-22：必带 `--summary` 经验描述与 `--outcome success|failure`，可携 `--git-sha` 提交锚）、`artifact attest` 验证事件（attest_dev / attest_prod / verification_failed，可携 `--checks` JSON 证据）、`artifact list` 检索。写入走 Ed25519 五头签名（crate 内签名道；私钥 `READER_LEDGER_KEY`（32 字节 hex）或本地密档 `~/.config/reader/ledger-key`，不进仓不进 argv）。关闭与删除唯一道：开发工作台经 herdr 委托 omc 工位（`omc ledger issue status/delete`）；promote/demote/supersede 同归 omc。账本基址固定 `https://ledger.ohmygh.com`（统一 crate 内常量），不支持 env 覆写：v0.10.0 在册的 `READER_LEDGER` 覆写口已随 v0.11.0 收口（REQ-061）移除。
 
 ```bash
 reader issue new "search 中文关键词误报" --kind bug --acceptance "复现与修复判据"
