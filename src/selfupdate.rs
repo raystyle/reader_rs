@@ -135,14 +135,14 @@ fn fetch_channels() -> Result<(ReleaseInfo, Vec<u8>), String> {
         Err(e) => {
             eprintln!("reader: 镜像通道不可用，整对回落 GitHub（{e}）");
             github_pair().map_err(|e2| {
-                format!("双通道皆不可用：镜像（{e}）；GitHub（{e2}）；下一步：重试一次，仍失败反馈 reader issue new")
+                format!("双通道皆不可用：镜像（{e}）；GitHub（{e2}）；下一步：重试一次，仍失败到 https://github.com/raystyle/reader_rs/issues 开单")
             })?
         }
     };
     let sha = format!("{:x}", Sha256::digest(&blob));
     if sha != info.sha256 {
         return Err(format!(
-            "资产 {} 校验失败（硬拒不回落）: 期望 {} 实得 {sha}；下一步：重试一次（镜像同源重取仍是同一份件；如需另一副本走 GitHub Releases 手动下载校验），仍失败反馈 reader issue new",
+            "资产 {} 校验失败（硬拒不回落）: 期望 {} 实得 {sha}；下一步：重试一次（镜像同源重取仍是同一份件；如需另一副本走 GitHub Releases 手动下载校验），仍失败到 https://github.com/raystyle/reader_rs/issues 开单",
             info.asset_name, info.sha256
         ));
     }
@@ -390,7 +390,7 @@ fn extract_bins(blob: &[u8], dir: &Path) -> Result<Vec<PathBuf>, String> {
     };
     unpack(blob, &mut want)?;
     if !names.iter().any(|n| dir.join(n).is_file()) {
-        return Err("资产中未找到 reader 二进制（打包形态与预期不符）；下一步：重试一次，仍失败反馈 reader issue new".to_string());
+        return Err("资产中未找到 reader 二进制（打包形态与预期不符）；下一步：重试一次，仍失败到 https://github.com/raystyle/reader_rs/issues 开单".to_string());
     }
     Ok(found)
 }
@@ -634,7 +634,7 @@ fn rollback_and_verify(exe: &Path, bak: &Path, new_bin: &Path) -> Result<(), Str
             exe.display()
         )),
         Err(e) => Err(format!(
-            "回滚受阻（{e}）: 旧件在 {}，新件在 {}；下一步：手动复原 mv {} {} 后反馈 reader issue new",
+            "回滚受阻（{e}）: 旧件在 {}，新件在 {}；下一步：手动复原 mv {} {} 后到 https://github.com/raystyle/reader_rs/issues 开单",
             bak.display(),
             new_bin.display(),
             bak.display(),
@@ -691,7 +691,7 @@ fn swap_and_proof(exe: &Path, new_bin: &Path, expect_version: &str) -> Result<()
     if !probe_ok {
         rollback_and_verify(exe, &bak, new_bin)?;
         return Err(format!(
-            "新件自证失败（--version 非 {expect_version}，已回滚并复核在位）；下一步：重试一次，仍失败反馈 reader issue new"
+            "新件自证失败（--version 非 {expect_version}，已回滚并复核在位）；下一步：重试一次，仍失败到 https://github.com/raystyle/reader_rs/issues 开单"
         ));
     }
     let _ = std::fs::remove_file(&bak);

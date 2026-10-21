@@ -17,7 +17,6 @@ OCR 兜底识图（`--ocr`，PP-OCRv6 三级回退源链）、图片本体导出
 - [`document`](document.md): 格式分派与统一文本单元：PDF 的页、其余格式的标题节与无标题分片，对上同为 `TextUnit`。
 - [`figures`](figures.md): 图片本体导出与文本元数据对齐（D47；S010 定界：只负责提取存储，理解归调用方 Agent）。
 - [`introspect`](introspect.md): Agent 自省与发现（P0007；三面统一批 REQ-057 对齐总台 REQ-060）：`--llms` 旗标
-- [`ledger`](ledger.md): ledger 胶水层：统一客户端 crate ledger-client（REQ-063 全舰队唯一实现）
 - [`mirror`](mirror.md): 镜像源链与镜像清单(D42):OCR 模型三级回退下载(镜像 到 HF 直连 到 GitHub
 - [`ocr`](ocr.md): OCR 兜底管线（P0014 落地、P0018 换引擎、D42 镜像源链、D43 图片文件）：needs_ocr 页经
 - [`output`](output.md): 输出层：JSON 包膜（ok/data/error 加 meta）与 filter 点路径裁剪。设计依据 S002（P0006）。
@@ -95,28 +94,6 @@ Agent 自省与发现（P0007；三面统一批 REQ-057 对齐总台 REQ-060）�
 
 - `llms_json` — `reader --llms --json`：机器形态（结构对齐族标准：name、version、description、
 - `llms_text` — `reader --llms`：markdown 紧凑手册（命令表自活命令树渲染；总长目标至多 120 行）。
-
-
-<!-- reader_rs/ledger.md -->
-# reader_rs::ledger
-
-ledger 胶水层：统一客户端 crate ledger-client（REQ-063 全舰队唯一实现）
-的仓内接线（总台修正令 2026-09-20 收口：签名道加只增面全在 crate，本仓
-不再自研副本；关闭与删除唯一道 = 开发工作台经 herdr 委托 omc 工位）。
-本模块只做三件：私钥装载（env `READER_LEDGER_KEY` 的 32 字节 hex，或本地
-密档 `READER_LEDGER_KEY_FILE` 路径，缺省 `~/.config/reader/ledger-key`，
-不进仓不进 argv）、在册 kid 对账（换对须同步 [`KEY_ID`] 与总台登记）、
-[`ledger_client::Ledger`] 装配。命令面与行式在 lib.rs。
-
-## Functions
-
-- `connect` — 装配 Ledger 客户端：装载私钥、对账在册 kid（不符即拒，防换对后写面静默 401）。
-- `err_line` — 把 crate 错误转 CLI 人读行（按状态码归因）。
-
-## Constants
-
-- `KEY_ID` — 在册 kid（2026-09-20 总台 pubkeys 登记值；换密钥对须同步本常量与登记）。
-- `REPO_ID` — 账本仓标识（规范化 remote；URL 路径原样嵌入，含斜杠）。
 
 
 <!-- reader_rs/mirror.md -->

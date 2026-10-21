@@ -1,6 +1,6 @@
 # Requirements 索引
 
-> 需求登记：新需求先立 REQ 再实现，实现后回填 trace（测试或验收命令）。新建拷 0000-template.md，编号接当前最大号。状态 draft 到 implemented 到 rejected。编号承接旧 PRD D 号口径（D 号即 REQ 号）：D01 至 D47 历史清单已随旧四原语清退（2026-09-17，ADR-0006，git 历史可查）；活跃队列 D23 至 D26 与 D36 至 D39 已按原 D 号转登记为 REQ-023 至 REQ-026 与 REQ-036 至 REQ-039；迁移本身立 REQ-048，aidoc 强制化落地立 REQ-049，分发接入立 REQ-050，封版 0.6.1 立 REQ-051，skill 退役立 REQ-052，封版 0.7.0 立 REQ-053，档案清退立 REQ-054，发布护栏批 1 立 REQ-055，issue 集成立 REQ-056，CLI 三面统一立 REQ-057，cli-docs 细标精对齐立 REQ-058，家族自更新统一标准对齐立 REQ-059，ledger 账本集成立 REQ-060，ledger 收口统一客户端 crate 立 REQ-061，此后新需求自 REQ-062 接编，三位连续不复用。
+> 需求登记：新需求先立 REQ 再实现，实现后回填 trace（测试或验收命令）。新建拷 0000-template.md，编号接当前最大号。状态 draft 到 implemented 到 rejected。编号承接旧 PRD D 号口径（D 号即 REQ 号）：D01 至 D47 历史清单已随旧四原语清退（2026-09-17，ADR-0006，git 历史可查）；活跃队列 D23 至 D26 与 D36 至 D39 已按原 D 号转登记为 REQ-023 至 REQ-026 与 REQ-036 至 REQ-039；迁移本身立 REQ-048，aidoc 强制化落地立 REQ-049，分发接入立 REQ-050，封版 0.6.1 立 REQ-051，skill 退役立 REQ-052，封版 0.7.0 立 REQ-053，档案清退立 REQ-054，发布护栏批 1 立 REQ-055，issue 集成立 REQ-056，CLI 三面统一立 REQ-057，cli-docs 细标精对齐立 REQ-058，家族自更新统一标准对齐立 REQ-059，ledger 账本集成立 REQ-060，ledger 收口统一客户端 crate 立 REQ-061，ledger 面全线退役立 REQ-065（用户裁 2026-10-21），此后新需求自 REQ-066 接编，三位连续不复用。
 
 | id | 状态 | 优先级 | 标题 | trace |
 |---|---|---|---|---|
@@ -29,3 +29,4 @@
 | REQ-062 | implemented | must | issue列表增status与kind过滤 | 承接账本单 #1；--status/--kind 等值匹配跨页精确到全量；客户端 post-fetch（沿 REQ-061 先例） |
 | REQ-063 | implemented | must | artifact发布对齐总台新标准 | ledger-client 升 v0.1.3；publish 必带 --summary 与 --outcome（success/failure）加 --git-sha 锚；两件真题按新标准重发 |
 | REQ-064 | implemented | must | 封版0110 | 能力新增三批取 minor；D45 dev/v0.11.0 承载 FF 合并 tag；三路验收与六 job 发布验收 |
+| REQ-065 | implemented | must | ledger面全线退役 | 总台令用户裁 2026-10-21；ledger 模块与 issue/artifact 命令族与 ledger-client 依赖全删；随 0.12.0 滚出；REQ-056 与 060 至 063 面随之全退（历史档不动） |

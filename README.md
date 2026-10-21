@@ -101,8 +101,6 @@ cargo install --git https://github.com/raystyle/reader_rs --force
 | `READER_MIRROR` | 分发镜像基址（模型下载与 self update 查新） | `https://reader.ohmygh.com` |
 | `READER_OCR_CACHE_DIR` | 覆盖 OCR 模型缓存目录 | 平台缓存目录（见下表） |
 | `READER_OCR_MODEL_SIZE` | OCR 模型档位临时覆盖（A/B 对比用），优先于 `ocr switch` 设置 | 未设（取 `ocr switch` 设置，再缺省 `tiny`） |
-| `READER_LEDGER_KEY` | 账本 Ed25519 私钥（32 字节 seed 的 hex；不进仓不进 argv） | 未设（走本地密档） |
-| `READER_LEDGER_KEY_FILE` | 账本私钥密档路径 | `~/.config/reader/ledger-key` |
 
 **OCR 模型档位**（`READER_OCR_MODEL_SIZE`，缺省 `tiny`）：
 
@@ -181,17 +179,16 @@ reader --llms                          # agent 说明书（紧凑命令索引）
 
 ### Agent 发现
 
-面向编码 agent 的自省接口是 `--llms` 旗标：裸出 markdown 紧凑手册（命令表自活 clap 命令树渲染、零手维护；含通用旗标、常用例、退出码与输出契约），`--llms --json` 出机器形态 JSON（name/version/commands 叶数组）；集成测试守卫 clap 命令树旗标全覆盖 `--llms` 输出，防漂移。agent 使用中发现缺陷，一行反馈（自动带版本、平台、主机名）：
+面向编码 agent 的自省接口是 `--llms` 旗标：裸出 markdown 紧凑手册（命令表自活 clap 命令树渲染、零手维护；含通用旗标、常用例、退出码与输出契约），`--llms --json` 出机器形态 JSON（name/version/commands 叶数组）；集成测试守卫 clap 命令树旗标全覆盖 `--llms` 输出，防漂移。
 
 ```bash
 reader --llms
 reader --llms --json
-reader issue new "search 中文关键词误报" --acceptance "复现与修复判据"
 ```
 
 ### 命令
 
-文档子命令五个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）、`figures`（图片本体导出）与 `export`（一键完整提取）；外加发现接口 `--llms` 旗标（见上节）、`self update` 自升级（见「升级」节）与 `issue` 缺陷反馈（见下节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
+文档子命令五个：`search`（搜）、`extract`（取）、`query`（mq 结构化提取）、`figures`（图片本体导出）与 `export`（一键完整提取）；外加发现接口 `--llms` 旗标（见上节）与 `self update` 自升级（见「升级」节）。输入文件按扩展名分派：`.pdf` 按页，markdown（`.md` / `.markdown`）与 anydoc 家族（`.doc` / `.docx` / `.epub` / `.odt` / `.rtf` / `.ppt(x)` / `.xls(x)` / `.ods` / `.odp` / `.csv`）按 GFM markdown 顶层标题分节，图片（`.png` / `.jpg` / `.jpeg` / `.bmp` / `.gif` / `.webp` / `.tiff` / `.tif`）单图即单页（D43）。`search` 也接受目录：递归批量搜支持格式，命中行带路径前缀（P0012）。
 
 #### search 搜索
 
@@ -314,20 +311,6 @@ reader export ./book.epub --out ./book-everything
 reader search ./paper-export/ "certificate" -i
 # paper-export\pages\p0009.md:1:3:certificates
 ```
-
-#### issue 与 artifact：仓级公共账本
-
-issue 与产物面走仓级公共账本 ledger.ohmygh.com（REQ-063，真源替代旧 issues.ohmygh.com 面；客户端 = 全舰队统一 crate ledger-client，总台令 2026-09-20 收口：各仓 CLI **只增不关不删**）：`issue new` 开单（kind 分 BUG 错误任务与改进优化任务，必带验收判据）、`issue list` / `issue show` 读面；`artifact publish` 登记产物进共享库（digest 恒为正文或记录哈希，库不收二进制实体；总台标准 2026-09-22：必带 `--summary` 经验描述与 `--outcome success|failure`，可携 `--git-sha` 提交锚）、`artifact attest` 验证事件（attest_dev / attest_prod / verification_failed，可携 `--checks` JSON 证据）、`artifact list` 检索。写入走 Ed25519 五头签名（crate 内签名道；私钥 `READER_LEDGER_KEY`（32 字节 hex）或本地密档 `~/.config/reader/ledger-key`，不进仓不进 argv）。关闭与删除唯一道：开发工作台经 herdr 委托 omc 工位（`omc ledger issue status/delete`）；promote/demote/supersede 同归 omc。账本基址固定 `https://ledger.ohmygh.com`（统一 crate 内常量），不支持 env 覆写：v0.10.0 在册的 `READER_LEDGER` 覆写口已随 v0.11.0 收口（REQ-061）移除。
-
-```bash
-reader issue new "search 中文关键词误报" --kind bug --acceptance "复现与修复判据"
-reader issue list --limit 20 --before 5
-reader issue list --status open --kind bug
-reader artifact publish "S010 图表理解定界" --kind research --digest sha256:<64hex> --summary "研究成果本体" --outcome success --git-sha <sha>
-reader artifact list --current
-```
-
-issue 回执行 `issue: opened #<n> kind <kind>` 加详情页链；list 行式 `#<n> <status> <kind> <assignee|-> <标题>`，`--limit` 缺省与上限各 100 条（新到旧），`--before <id>` 是 keyset 游标（带游标的回执含 `has_more` 且 json 面随 data 透出），`--status` / `--kind` 过滤等值匹配且跨页精确到全量（REQ-062；空结果退出 1 同 grep 语义），json 形态的 `count` 是本次返回条数非在册总数，更早仍有条目时 stderr 提示翻页；artifact 回执行 `artifact: published <id> <kind> <名>` 加 digest 行与 `artifact: <type> <id> seq <seq>`。list 空、show 不存在退出 1，出错 2；配额 per-key 50 条/UTC 日（读面免签不受限）。
 
 ### JSON 输出
 
