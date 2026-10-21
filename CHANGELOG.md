@@ -2,7 +2,9 @@
 
 本文件只记录**大版本里程碑**：定位变更、发布、阶段完成、核心能力整体落地。细碎条目由 `docs\diary\YYYY-MM-DD-*.md` 与 git 历史承载。
 
-## [Unreleased]
+## [0.12.0] - 2026-10-21
+
+> ledger 面全线退役版（REQ-065，总台令用户裁 2026-10-21）：契约破裂取 major 判据在 0.x 折半为 minor（R008 与 0.9.1 判例口径），命令族移除随 0.12.0 滚出。
 
 - **ledger 面全线退役**: issue 与 artifact 命令族、`ledger` 模块、`ledger-client` git 依赖全删（REQ-065，总台令用户裁 2026-10-21）；CI 与 release 的私有 git 凭据步随退（无私有 git 依赖）；env 面 `READER_LEDGER_KEY` / `READER_LEDGER_KEY_FILE` 退役；缺陷反馈道改 GitHub Issues（selfupdate 错误 CTA 与 README、AGENTS.md 同步）；历史 REQ-056 与 REQ-060 至 063 面随之全退（档案按历史不改写纪律留档）。
 - **文档**: README env 表清 `READER_LEDGER` 残行并在 ledger 段写明基址固定（v0.11.0 REQ-061 收口将账本基址移入统一 crate 常量，v0.10.0 在册的基址 env 覆写随之移除，当时未随版记档，本笔补记；review 轮 F1）。
